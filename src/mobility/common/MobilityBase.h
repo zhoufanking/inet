@@ -26,6 +26,7 @@
 #include "INETDefs.h"
 #include "ModuleAccess.h"
 #include "Coord.h"
+#include "EulerAngles.h"
 #include "IMobility.h"
 
 /**
@@ -73,6 +74,9 @@ class INET_API MobilityBase : public cSimpleModule, public IMobility
     /** @brief The last position that was reported. */
     Coord lastPosition;
 
+    /** @brief The last position that was reported. */
+    EulerAngles lastOrientation;
+
   protected:
     MobilityBase();
 
@@ -90,6 +94,9 @@ class INET_API MobilityBase : public cSimpleModule, public IMobility
 
     /** @brief Checks whether the position is valid or not. */
     virtual void checkPosition();
+
+    /** @brief Initializes the orientation from module parameters. */
+    virtual void initializeOrientation();
 
     /** @brief This modules should only receive self-messages. */
     virtual void handleMessage(cMessage *msg);
