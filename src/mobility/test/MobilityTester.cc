@@ -29,7 +29,7 @@ MobilityTester::~MobilityTester()
 }
 void MobilityTester::initialize()
 {
-    mobilityModule = check_and_cast<MobilityBase*>(getModuleByPath(par("mobilityPath")));
+    mobilityModule = check_and_cast<IMobility*>(getModuleByPath(par("mobilityPath")));
     updateTimer = new cMessage("update");
     updateInterval = par("updateInterval");
     testInterval = par("testInterval");
@@ -63,7 +63,7 @@ void MobilityTester::update()
     {
         char log_file_name[70];
         std::ofstream logfile;
-        sprintf(log_file_name, "%s.txt", mobilityModule->getClassName());//, updateInterval.str().c_str());
+        sprintf(log_file_name, "%s.txt", par("resultFileName").stringValue());
         logfile.open (log_file_name, std::fstream::app);
         logfile << updateInterval << endl;
         logfile << mobilityModule->getCurrentPosition() << endl;

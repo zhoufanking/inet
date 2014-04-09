@@ -21,4 +21,5 @@ simple MobilityTester
         double updateInterval @unit(s) = default(1s);
         double testInterval @unit(s) = default(20s);
         string mobilityPath = default("^.mobility");
+        string resultFileName = default("untitled");
 }

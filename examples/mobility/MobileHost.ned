@@ -19,6 +19,7 @@
 package inet.examples.mobility;
 
 import inet.mobility.contract.IMobility;
+import inet.mobility.test.MobilityTester;
 
 //
 // A host for demonstrating mobility models only -- it contains
@@ -35,4 +36,5 @@ module MobileHost
         //@statistic[coordZ](title="coord Z";source="zCoord(mobilityPos(mobilityStateChanged))";record=vector; interpolationmode=linear);
     submodules:
         mobility: <mobilityType> like IMobility;
+        tester: MobilityTester;
 }

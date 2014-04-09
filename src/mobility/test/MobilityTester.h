@@ -18,7 +18,6 @@
 
 #include <omnetpp.h>
 #include <IMobility.h>
-#include <MobilityBase.h>
 
 
 class MobilityTester : public cSimpleModule
@@ -27,7 +26,7 @@ class MobilityTester : public cSimpleModule
         cMessage* updateTimer;
         simtime_t updateInterval;
         simtime_t testInterval;
-        MobilityBase* mobilityModule;
+        IMobility* mobilityModule;
     public:
         MobilityTester();
         ~MobilityTester();
