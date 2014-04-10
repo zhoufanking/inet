@@ -72,11 +72,17 @@ void TurtleMobility::setTargetPosition()
     resumeScript();
 }
 
-void TurtleMobility::move()
+void TurtleMobility::handleIfOutside()
 {
-    LineSegmentsMobilityBase::move();
     Coord dummy;
-    handleIfOutside(borderPolicy, targetPosition, dummy, angle);
+    switch (borderPolicy)
+    {
+        case REFLECT:       reflectIfOutside(targetPosition, dummy, angle); break;
+        case WRAP:          wrapIfOutside(targetPosition); break;
+        case PLACERANDOMLY: placeRandomlyIfOutside(targetPosition); break;
+        case RAISEERROR:    raiseErrorIfOutside(); break;
+        default:            throw cRuntimeError("Invalid outside policy=%d in module", borderPolicy, getFullPath().c_str());
+    }
 }
 
 /**

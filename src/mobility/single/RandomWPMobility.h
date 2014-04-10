@@ -46,9 +46,6 @@ class INET_API RandomWPMobility : public LineSegmentsMobilityBase
     /** @brief Overridden from LineSegmentsMobilityBase.*/
     virtual void setTargetPosition();
 
-    /** @brief Overridden from LineSegmentsMobilityBase.*/
-    virtual void move();
-
   public:
     RandomWPMobility();
 };

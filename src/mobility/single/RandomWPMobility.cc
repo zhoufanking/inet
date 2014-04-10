@@ -55,9 +55,3 @@ void RandomWPMobility::setTargetPosition()
     }
     nextMoveIsWait = !nextMoveIsWait;
 }
-
-void RandomWPMobility::move()
-{
-    LineSegmentsMobilityBase::move();
-    raiseErrorIfOutside();
-}

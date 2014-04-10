@@ -147,11 +147,6 @@ class INET_API MobilityBase : public cSimpleModule, public IMobility
      * the constraint area.
      */
     virtual void raiseErrorIfOutside();
-
-    /** @brief Invokes one of reflectIfOutside(), wrapIfOutside() and
-     * placeRandomlyIfOutside(), depending on the given border policy.
-     */
-    virtual void handleIfOutside(BorderPolicy policy, Coord& targetPosition, Coord& speed, double& angle);
 };
 
 #endif

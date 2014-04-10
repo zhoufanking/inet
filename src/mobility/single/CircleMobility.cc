@@ -70,5 +70,5 @@ void CircleMobility::move()
     lastSpeed.z = 0;
     // do something if we reach the wall
     Coord dummyCoord; double dummyAngle;
-    handleIfOutside(REFLECT, dummyCoord, dummyCoord, dummyAngle);
+    reflectIfOutside(dummyCoord, dummyCoord, dummyAngle);
 }

@@ -59,7 +59,7 @@ class INET_API TurtleMobility : public LineSegmentsMobilityBase
     virtual void setTargetPosition();
 
     /** @brief Overridden from LineSegmentsMobilityBase.*/
-    virtual void move();
+    virtual void handleIfOutside();
 
     /** @brief Process next statements from script */
     virtual void resumeScript();

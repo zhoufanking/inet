@@ -55,7 +55,7 @@ void LinearMobility::move()
 
     // do something if we reach the wall
     Coord dummy;
-    handleIfOutside(REFLECT, dummy, dummy, angle);
+    reflectIfOutside(dummy, dummy, angle);
 
     // accelerate
     speed += acceleration * elapsedTime;

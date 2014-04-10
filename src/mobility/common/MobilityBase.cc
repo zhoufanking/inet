@@ -248,15 +248,3 @@ void MobilityBase::raiseErrorIfOutside()
               lastPosition.x, lastPosition.y, lastPosition.z);
     }
 }
-
-void MobilityBase::handleIfOutside(BorderPolicy policy, Coord& targetPosition, Coord& speed, double& angle)
-{
-    switch (policy)
-    {
-        case REFLECT:       reflectIfOutside(targetPosition, speed, angle); break;
-        case WRAP:          wrapIfOutside(targetPosition); break;
-        case PLACERANDOMLY: placeRandomlyIfOutside(targetPosition); break;
-        case RAISEERROR:    raiseErrorIfOutside(); break;
-        default:            throw cRuntimeError("Invalid outside policy=%d in module", policy, getFullPath().c_str());
-    }
-}

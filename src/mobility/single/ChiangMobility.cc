@@ -82,10 +82,8 @@ void ChiangMobility::setTargetPosition()
     targetPosition = lastPosition - lastSpeed * stateTransitionUpdateInterval;
 }
 
-void ChiangMobility::move()
+void ChiangMobility::handleIfOutside()
 {
-    LineSegmentsMobilityBase::move();
-    double dummyAngle;
-    Coord dummyPosition;
-    handleIfOutside(REFLECT, dummyPosition, lastSpeed, dummyAngle);
+    Coord dummyCoord; double dummyAngle;
+    reflectIfOutside(dummyCoord, lastSpeed, dummyAngle);
 }

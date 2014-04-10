@@ -49,8 +49,8 @@ class INET_API ChiangMobility : public LineSegmentsMobilityBase
     /** @brief Calculate a new target position to move to. */
     void setTargetPosition();
 
-    /** @brief Move the host according to the current simulation time. */
-    virtual void move();
+    /** @brief Overridden from LineSegmentsMobilityBase.*/
+    virtual void handleIfOutside();
 
   public:
     ChiangMobility();

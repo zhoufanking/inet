@@ -45,6 +45,8 @@ class INET_API LineSegmentsMobilityBase : public MovingMobilityBase
 
     virtual void move();
 
+    virtual void handleIfOutside(){raiseErrorIfOutside();}
+
     /**
      * @brief Should be redefined in subclasses. This method gets called
      * when targetPosition and nextChange has been reached, and its task is

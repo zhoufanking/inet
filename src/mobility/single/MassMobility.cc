@@ -59,20 +59,8 @@ void MassMobility::setTargetPosition()
     nextChange = simTime() + nextChangeInterval;
 }
 
-void MassMobility::move()
+
+void MassMobility::handleIfOutside()
 {
-    simtime_t now = simTime();
-    if (now == nextChange) {
-        lastPosition = targetPosition;
-        handleIfOutside(REFLECT, targetPosition, lastSpeed, angle);
-        EV_INFO << "reached current target position = " << lastPosition << endl;
-        setTargetPosition();
-        EV_INFO << "new target position = " << targetPosition << ", next change = " << nextChange << endl;
-        lastSpeed = (targetPosition - lastPosition) / (nextChange - simTime()).dbl();
-    }
-    else if (now > lastUpdate) {
-        ASSERT(nextChange == -1 || now < nextChange);
-        lastPosition += lastSpeed * (now - lastUpdate).dbl();
-        handleIfOutside(REFLECT, targetPosition, lastSpeed, angle);
-    }
+    reflectIfOutside(targetPosition, lastSpeed, angle);
 }

@@ -121,9 +121,3 @@ void ANSimMobility::extractDataFrom(cXMLElement *node)
     targetPosition.x = atof(xStr);
     targetPosition.y = atof(yStr);
 }
-
-void ANSimMobility::move()
-{
-    LineSegmentsMobilityBase::move();
-    raiseErrorIfOutside();
-}

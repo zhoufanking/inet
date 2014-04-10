@@ -52,6 +52,9 @@ class INET_API GaussMarkovMobility : public LineSegmentsMobilityBase
     /** @brief Move the host*/
     virtual void move();
 
+    /** @brief Overridden from LineSegmentsMobilityBase.*/
+    virtual void handleIfOutside();
+
     /** @brief Calculate a new target position to move to. */
     virtual void setTargetPosition();
 

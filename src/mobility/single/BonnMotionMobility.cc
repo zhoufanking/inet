@@ -83,8 +83,3 @@ void BonnMotionMobility::setTargetPosition()
     currentLine += (is3D ? 4 : 3);
 }
 
-void BonnMotionMobility::move()
-{
-    LineSegmentsMobilityBase::move();
-    raiseErrorIfOutside();
-}

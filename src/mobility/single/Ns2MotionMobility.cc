@@ -202,9 +202,3 @@ void Ns2MotionMobility::setTargetPosition()
         vecpos++;
     }
 }
-
-void Ns2MotionMobility::move()
-{
-    LineSegmentsMobilityBase::move();
-    raiseErrorIfOutside();
-}

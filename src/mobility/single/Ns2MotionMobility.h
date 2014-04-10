@@ -73,9 +73,6 @@ class INET_API Ns2MotionMobility : public LineSegmentsMobilityBase
     /** @brief Overridden from LineSegmentsMobilityBase.*/
     virtual void setTargetPosition();
 
-    /** @brief Overridden from LineSegmentsMobilityBase.*/
-    virtual void move();
-
   public:
     Ns2MotionMobility();
 

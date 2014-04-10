@@ -82,8 +82,12 @@ void GaussMarkovMobility::move()
 {
     preventBorderHugging();
     LineSegmentsMobilityBase::move();
+}
+
+void GaussMarkovMobility::handleIfOutside()
+{
     Coord dummy;
-    handleIfOutside(REFLECT, dummy, dummy, angle);
+    reflectIfOutside(dummy, dummy, angle); //TODO:Is it Right?
 }
 
 void GaussMarkovMobility::setTargetPosition()

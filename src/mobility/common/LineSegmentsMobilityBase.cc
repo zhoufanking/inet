@@ -42,6 +42,7 @@ void LineSegmentsMobilityBase::move()
     simtime_t now = simTime();
     if (now == nextChange) {
         lastPosition = targetPosition;
+        handleIfOutside();
         EV_INFO << "reached current target position = " << lastPosition << endl;
         setTargetPosition();
         EV_INFO << "new target position = " << targetPosition << ", next change = " << nextChange << endl;
@@ -50,5 +51,6 @@ void LineSegmentsMobilityBase::move()
     else if (now > lastUpdate) {
         ASSERT(nextChange == -1 || now < nextChange);
         lastPosition += lastSpeed * (now - lastUpdate).dbl();
+        handleIfOutside();
     }
 }
