@@ -168,6 +168,58 @@ Coord MobilityBase::getRandomPosition()
     return p;
 }
 
+Coord MobilityBase::csCut(Coord begining, Coord end)
+{
+    while(true){
+        unsigned char c=0;
+        if (end.x<constraintAreaMin.x) c=c+1;
+        if (end.x>constraintAreaMax.x) c=c+2;
+        if (end.y<constraintAreaMin.y) c=c+4;
+        if (end.y>constraintAreaMax.y) c=c+8;
+        if (end.z<constraintAreaMin.z) c=c+16;
+        if (end.z>constraintAreaMax.z) c=c+32;
+
+        if (c==0) return end;
+        Coord direction = end - begining;
+        if (c & 1)
+        {
+            end.x=constraintAreaMin.x;
+            end.y=(direction.y*end.x-direction.y*begining.x+direction.x*begining.y)/direction.x;
+            end.z=(direction.z*end.x-direction.z*begining.x+direction.x*begining.z)/direction.x;
+        }
+        else if (c & 2)
+        {
+            end.x=constraintAreaMax.x;
+            end.y=(direction.y*end.x-direction.y*begining.x+direction.x*begining.y)/direction.x;
+            end.z=(direction.z*end.x-direction.z*begining.x+direction.x*begining.z)/direction.x;
+        }
+        else if (c & 4)
+        {
+            end.y=constraintAreaMin.y;
+            end.x=(direction.y*end.y-direction.x*begining.y+direction.y*begining.x)/direction.y;
+            end.z=(direction.z*end.y-direction.z*begining.y+direction.y*begining.z)/direction.y;
+        }
+        else if (c & 8)
+        {
+            end.y=constraintAreaMax.y;
+            end.x=(direction.y*end.y-direction.x*begining.y+direction.y*begining.x)/direction.y;
+            end.z=(direction.z*end.y-direction.z*begining.y+direction.y*begining.z)/direction.y;
+        }
+        else if (c & 16)
+        {
+            end.z=constraintAreaMin.z;
+            end.x=(direction.x*end.z-direction.x*begining.z+direction.z*begining.x)/direction.z;
+            end.y=(direction.y*end.z-direction.y*begining.z+direction.z*begining.y)/direction.z;
+        }
+        else if (c & 32)
+        {
+            end.x=constraintAreaMax.z;
+            end.x=(direction.x*end.z-direction.x*begining.z+direction.z*begining.x)/direction.z;
+            end.y=(direction.y*end.z-direction.y*begining.z+direction.z*begining.y)/direction.z;
+        }
+    }
+}
+
 bool MobilityBase::isOutside()
 {
     return lastPosition.x < constraintAreaMin.x || lastPosition.x > constraintAreaMax.x
@@ -192,17 +244,17 @@ void MobilityBase::reflectIfOutside(Coord& targetPosition, Coord& speed, double&
     double dummy;
     if (lastPosition.x < constraintAreaMin.x || constraintAreaMax.x < lastPosition.x) {
         sign = reflect(constraintAreaMin.x, constraintAreaMax.x, lastPosition.x, speed.x);
-        reflect(constraintAreaMin.x, constraintAreaMax.x, targetPosition.x, dummy);
+        //reflect(constraintAreaMin.x, constraintAreaMax.x, targetPosition.x, dummy);
         angle = 90 + sign * (angle - 90);
     }
     if (lastPosition.y < constraintAreaMin.y || constraintAreaMax.y < lastPosition.y) {
         sign = reflect(constraintAreaMin.y, constraintAreaMax.y, lastPosition.y, speed.y);
-        reflect(constraintAreaMin.y, constraintAreaMax.y, targetPosition.y, dummy);
+        //reflect(constraintAreaMin.y, constraintAreaMax.y, targetPosition.y, dummy);
         angle = sign * angle;
     }
     if (lastPosition.z < constraintAreaMin.z || constraintAreaMax.z < lastPosition.z) {
         sign = reflect(constraintAreaMin.z, constraintAreaMax.z, lastPosition.z, speed.z);
-        reflect(constraintAreaMin.z, constraintAreaMax.z, targetPosition.z, dummy);
+        //reflect(constraintAreaMin.z, constraintAreaMax.z, targetPosition.z, dummy);
         // NOTE: angle is not affected
     }
 }

@@ -116,6 +116,9 @@ class INET_API MobilityBase : public cSimpleModule, public IMobility
     /** @brief Returns the module that represents the object moved by this mobility module. */
     virtual cModule *findVisualRepresentation() { return getContainingNode(this); }
 
+    /** @brief Returns the Coord where the a line line cuts the border of the constraintArea */
+    virtual Coord csCut(Coord begining, Coord end);
+
     /** @brief Returns true if the mobility is outside of the constraint area. */
     virtual bool isOutside();
 
