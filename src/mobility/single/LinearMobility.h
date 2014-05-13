@@ -34,11 +34,14 @@
 class INET_API LinearMobility : public MovingMobilityBase
 {
   protected:
+    simtime_t startTime;
+    Coord startPosition;
     double speed;          ///< speed of the host
     double angle;          ///< angle of linear motion
     double acceleration;   ///< acceleration of linear motion
 
   protected:
+    virtual void initializePosition();
     virtual int numInitStages() const { return NUM_INIT_STAGES; }
 
     /** @brief Initializes mobility model parameters.*/

@@ -50,6 +50,7 @@ void MassMobility::initialize(int stage)
 void MassMobility::setTargetPosition()
 {
     angle += changeAngleByParameter->doubleValue();
+    lastChangeAngle = angle;
     EV_DEBUG << "angle: " << angle << endl;
     double rad = PI * angle / 180.0;
     Coord direction(cos(rad), sin(rad));
@@ -62,5 +63,7 @@ void MassMobility::setTargetPosition()
 
 void MassMobility::handleIfOutside()
 {
-    reflectIfOutside(targetPosition, lastSpeed, angle);
+    angle = lastChangeAngle;
+    Coord dummy;
+    reflectIfOutside(dummy, lastSpeed, angle);
 }

@@ -179,7 +179,7 @@ Coord MobilityBase::csCut(Coord begining, Coord end)
         if (end.z<constraintAreaMin.z) c=c+16;
         if (end.z>constraintAreaMax.z) c=c+32;
 
-        if (c==0) return end;
+        if (c == 0) return end;
         Coord direction = end - begining;
         if (c & 1)
         {
@@ -196,13 +196,13 @@ Coord MobilityBase::csCut(Coord begining, Coord end)
         else if (c & 4)
         {
             end.y=constraintAreaMin.y;
-            end.x=(direction.y*end.y-direction.x*begining.y+direction.y*begining.x)/direction.y;
+            end.x=(direction.x*end.y-direction.x*begining.y+direction.y*begining.x)/direction.y;
             end.z=(direction.z*end.y-direction.z*begining.y+direction.y*begining.z)/direction.y;
         }
         else if (c & 8)
         {
             end.y=constraintAreaMax.y;
-            end.x=(direction.y*end.y-direction.x*begining.y+direction.y*begining.x)/direction.y;
+            end.x=(direction.x*end.y-direction.x*begining.y+direction.y*begining.x)/direction.y;
             end.z=(direction.z*end.y-direction.z*begining.y+direction.y*begining.z)/direction.y;
         }
         else if (c & 16)
@@ -213,7 +213,7 @@ Coord MobilityBase::csCut(Coord begining, Coord end)
         }
         else if (c & 32)
         {
-            end.x=constraintAreaMax.z;
+            end.z=constraintAreaMax.z;
             end.x=(direction.x*end.z-direction.x*begining.z+direction.z*begining.x)/direction.z;
             end.y=(direction.y*end.z-direction.y*begining.z+direction.z*begining.y)/direction.z;
         }

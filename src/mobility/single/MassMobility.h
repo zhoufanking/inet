@@ -43,6 +43,7 @@ class INET_API MassMobility : public LineSegmentsMobilityBase
 
     // current state
     double angle;   ///< angle of linear motion
+    double lastChangeAngle;
 
   protected:
     virtual int numInitStages() const { return NUM_INIT_STAGES; }

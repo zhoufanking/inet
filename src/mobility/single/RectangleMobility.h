@@ -35,6 +35,7 @@ class INET_API RectangleMobility : public MovingMobilityBase
   protected:
     // configuration
     double speed;          ///< speed of the host
+    simtime_t startTime;
 
     // state
     double d;  ///< distance from (x1,y1), measured clockwise on the perimeter

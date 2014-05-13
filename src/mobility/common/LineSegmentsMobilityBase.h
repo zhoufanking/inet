@@ -38,7 +38,10 @@ class INET_API LineSegmentsMobilityBase : public MovingMobilityBase
 {
   protected:
     /** @brief End position of current linear movement. */
+    Coord lastTargetPosition;
     Coord targetPosition;
+    simtime_t lastChange;
+    Coord lastChangeSpeed;
 
   protected:
     virtual void initializePosition();

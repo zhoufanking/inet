@@ -37,6 +37,7 @@ void RectangleMobility::initialize(int stage)
     EV_TRACE << "initializing RectangleMobility stage " << stage << endl;
     if (stage == INITSTAGE_LOCAL)
     {
+        startTime = simTime();
         speed = par("speed");
         stationary = (speed == 0);
 
@@ -70,37 +71,37 @@ void RectangleMobility::setInitialPosition()
 
 void RectangleMobility::move()
 {
-    double elapsedTime = (simTime() - lastUpdate).dbl();
-    d += speed * elapsedTime;
+    double elapsedTime = (simTime() - startTime).dbl();
+    double recPos = d + speed * elapsedTime;
 
-    while (d < 0)
-        d += corner4;
+    while (recPos < 0)
+        recPos += corner4;
 
     while (d >= corner4)
-        d -= corner4;
+        recPos -= corner4;
 
-    if (d < corner1)
+    if (recPos < corner1)
     {
         // top side
-        lastPosition.x = constraintAreaMin.x + d;
+        lastPosition.x = constraintAreaMin.x + recPos;
         lastPosition.y = constraintAreaMin.y;
     }
-    else if (d < corner2)
+    else if (recPos < corner2)
     {
         // right side
         lastPosition.x = constraintAreaMax.x;
-        lastPosition.y = constraintAreaMin.y + d - corner1;
+        lastPosition.y = constraintAreaMin.y + recPos - corner1;
     }
-    else if (d < corner3)
+    else if (recPos < corner3)
     {
         // bottom side
-        lastPosition.x = constraintAreaMax.x - d + corner2;
+        lastPosition.x = constraintAreaMax.x - recPos + corner2;
         lastPosition.y = constraintAreaMax.y;
     }
     else
     {
         // left side
         lastPosition.x = constraintAreaMin.x;
-        lastPosition.y = constraintAreaMax.y - d + corner3;
+        lastPosition.y = constraintAreaMax.y - recPos + corner3;
     }
 }

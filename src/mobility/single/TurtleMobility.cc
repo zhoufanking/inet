@@ -70,10 +70,12 @@ void TurtleMobility::setInitialPosition()
 void TurtleMobility::setTargetPosition()
 {
     resumeScript();
+    lastChangeAngle = angle;
 }
 
 void TurtleMobility::handleIfOutside()
 {
+    angle = lastChangeAngle;
     Coord dummy;
     switch (borderPolicy)
     {

@@ -38,6 +38,7 @@ void LinearMobility::initialize(int stage)
     EV_TRACE << "initializing LinearMobility stage " << stage << endl;
     if (stage == INITSTAGE_LOCAL)
     {
+        startTime = simTime();
         speed = par("speed");
         angle = fmod((double)par("angle"), 360);
         acceleration = par("acceleration");
@@ -45,23 +46,36 @@ void LinearMobility::initialize(int stage)
     }
 }
 
+void LinearMobility::initializePosition()
+{
+    MobilityBase::initializePosition();
+    startPosition = lastPosition;
+}
+
 void LinearMobility::move()
 {
     double rad = PI * angle / 180;
     Coord direction(cos(rad), sin(rad));
-    lastSpeed = direction * speed;
-    double elapsedTime = (simTime() - lastUpdate).dbl();
-    lastPosition += lastSpeed * elapsedTime;
 
-    // do something if we reach the wall
-    Coord dummy;
-    reflectIfOutside(dummy, dummy, angle);
+    double elapsedTime = (simTime() - startTime).dbl();
 
-    // accelerate
-    speed += acceleration * elapsedTime;
-    if (speed <= 0)
+    // when we reached zero speed
+    if (acceleration < 0 && elapsedTime >= (-speed)/acceleration)
     {
-        speed = 0;
         stationary = true;
+        lastSpeed = Coord::ZERO;
+        lastPosition = startPosition + (direction * (speed / 2 * (-speed)/acceleration));
     }
+    else
+    {
+        double currentSpeed = speed + acceleration * elapsedTime;
+        lastSpeed = direction * currentSpeed;
+        lastPosition = startPosition + (direction * ((speed + currentSpeed) / 2 * elapsedTime));
+    }
+
+    Coord dummy;
+    double dummyAngle;
+    reflectIfOutside(dummy, lastSpeed, dummyAngle);
+
+
 }
