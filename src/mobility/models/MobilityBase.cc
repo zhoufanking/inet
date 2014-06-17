@@ -75,6 +75,7 @@ void MobilityBase::initialize(int stage)
                 error("The coordinates of '%s' are invalid. Please remove automatic arrangement"
                       " (3rd argument of 'p' tag) from '@display' attribute.", visualRepresentation->getFullPath().c_str());
         }
+        WATCH(lastPosition);
     }
     else if (stage == 1)
     {
