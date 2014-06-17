@@ -997,22 +997,27 @@ void Radio::updateDisplayString() {
     if (!ev.isGUI() || !drawCoverage) // nothing to do
         return;
     if (myRadioRef) {
-        cDisplayString& d = hostModule->getDisplayString();
+        char r1[20], r2[20];
+        sprintf(r1, "r%i1", getId());
+        sprintf(r2, "r%i2", getId());
+        for(cModule *mod = hostModule; mod->getParentModule(); mod = mod->getParentModule())
+        {
+            cDisplayString& d = mod->getDisplayString();
 
-        // communication area (up to sensitivity)
-        // FIXME this overrides the ranges if more than one radio is present is a host
-        double sensitivity_limit = cc->getInterferenceRange(myRadioRef);
-        d.removeTag("r1");
-        d.insertTag("r1");
-        d.setTagArg("r1", 0, (long) sensitivity_limit);
-        d.setTagArg("r1", 2, "gray");
-        d.removeTag("r2");
-        d.insertTag("r2");
-        if (doubleRayCoverage)
-            d.setTagArg("r2", 0, (long) calcDistDoubleRay());
-        else
-            d.setTagArg("r2", 0, (long) calcDistFreeSpace());
-        d.setTagArg("r2", 2, "blue");
+            // communication area (up to sensitivity)
+            double sensitivity_limit = cc->getInterferenceRange(myRadioRef);
+            d.removeTag(r1);
+            d.insertTag(r1);
+            d.setTagArg(r1, 0, (long) sensitivity_limit);
+            d.setTagArg(r1, 2, "gray");
+            d.removeTag(r2);
+            d.insertTag(r2);
+            if (doubleRayCoverage)
+                d.setTagArg(r2, 0, (long) calcDistDoubleRay());
+            else
+                d.setTagArg(r2, 0, (long) calcDistFreeSpace());
+            d.setTagArg(r2, 2, "blue");
+        }
     }
     if (updateString==NULL && updateStringInterval>0)
         updateString = new cMessage("refresh timer");
