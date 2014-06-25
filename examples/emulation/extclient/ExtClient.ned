@@ -32,6 +32,7 @@ network ExtClient
                 IPForward = false;
                 routingTable.routingFile = "cli1d.mrt";
                 numExtInterfaces = 1;
+                networkLayer.configurator.networkConfiguratorModule = "";
                 @display("p=29,90;i=laptop3");
         }
     connections allowunconnected:
