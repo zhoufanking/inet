@@ -31,9 +31,8 @@
 #define HAVE_U_INT16_T
 #define HAVE_U_INT32_T
 #define HAVE_U_INT64_T
-#ifdef HAVE_PCAP
 #include <pcap.h>
-#endif
+
 #include "ExtFrame_m.h"
 
 class PcapRTScheduler : public cScheduler
@@ -53,12 +52,11 @@ class PcapRTScheduler : public cScheduler
          * Destructor.
          */
         virtual ~PcapRTScheduler();
-#ifdef HAVE_PCAP
+
         static std::vector<cModule *> modules;
         static std::vector<pcap_t *> pds;
         static std::vector<int> datalinks;
         static std::vector<int> headerLengths;
-#endif
         static timeval baseTime;
 
         /**

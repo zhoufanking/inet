@@ -25,6 +25,7 @@
 
 #include <headers/ethernet.h>
 
+
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
 #include <ws2tcpip.h>
 #endif
@@ -32,12 +33,10 @@
 #define PCAP_SNAPLEN 65536 /* capture all data packets with up to pcap_snaplen bytes */
 #define PCAP_TIMEOUT 10    /* Timeout in ms */
 
-#ifdef HAVE_PCAP
 std::vector<cModule *>PcapRTScheduler::modules;
 std::vector<pcap_t *>PcapRTScheduler::pds;
 std::vector<int32>PcapRTScheduler::datalinks;
 std::vector<int32>PcapRTScheduler::headerLengths;
-#endif
 timeval PcapRTScheduler::baseTime;
 
 Register_Class(PcapRTScheduler);
@@ -61,7 +60,6 @@ void PcapRTScheduler::startRun()
 {
     gettimeofday(&baseTime, NULL);
 
-#ifdef HAVE_PCAP
     // Enabling sending makes no sense when we can't receive...
     fd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
     if (fd == INVALID_SOCKET)
@@ -69,16 +67,13 @@ void PcapRTScheduler::startRun()
     const int32 on = 1;
     if (setsockopt(fd, IPPROTO_IP, IP_HDRINCL, (char *)&on, sizeof(on)) < 0)
         throw cRuntimeError("PcapRTScheduler: couldn't set sockopt for raw socket");
-#endif
 }
-
 
 void PcapRTScheduler::endRun()
 {
     close(fd);
     fd = INVALID_SOCKET;
 
-#ifdef HAVE_PCAP
     for (uint16 i=0; i<pds.size(); i++)
     {
         pcap_stat ps;
@@ -94,7 +89,6 @@ void PcapRTScheduler::endRun()
     pds.clear();
     datalinks.clear();
     headerLengths.clear();
-#endif
 }
 
 void PcapRTScheduler::executionResumed()
@@ -105,7 +99,6 @@ void PcapRTScheduler::executionResumed()
 
 void PcapRTScheduler::setInterfaceModule(cModule *mod, const char *dev, const char *filter)
 {
-#ifdef HAVE_PCAP
     char errbuf[PCAP_ERRBUF_SIZE];
     struct bpf_program fcode;
     pcap_t * pd;
@@ -160,12 +153,8 @@ void PcapRTScheduler::setInterfaceModule(cModule *mod, const char *dev, const ch
     headerLengths.push_back(headerLength);
 
     EV << "Opened pcap device " << dev << " with filter " << filter << " and datalink " << datalink << ".\n";
-#else
-    throw cRuntimeError("PcapRTScheduler::setInterfaceModule(): code was compiled without pcap support");
-#endif
 }
 
-#ifdef HAVE_PCAP
 static void packet_handler(u_char *user, const struct pcap_pkthdr *hdr, const u_char *bytes)
 {
     unsigned i;
@@ -204,24 +193,20 @@ static void packet_handler(u_char *user, const struct pcap_pkthdr *hdr, const u_
 
     simulation.msgQueue.insert(notificationMsg);
 }
-#endif
 
 bool PcapRTScheduler::receiveWithTimeout()
 {
     bool found;
     struct timeval timeout;
-#ifdef HAVE_PCAP
     int32 n;
 #ifdef LINUX
     int32 fd[FD_SETSIZE], maxfd;
     fd_set rdfds;
 #endif
-#endif
 
     found = false;
     timeout.tv_sec = 0;
     timeout.tv_usec = PCAP_TIMEOUT * 1000;
-#ifdef HAVE_PCAP
 #ifdef LINUX
     FD_ZERO(&rdfds);
     maxfd = -1;
@@ -252,9 +237,7 @@ bool PcapRTScheduler::receiveWithTimeout()
     if (!found)
         select(0, NULL, NULL, NULL, &timeout);
 #endif
-#else
-    select(0, NULL, NULL, NULL, &timeout);
-#endif
+
     return found;
 }
 
