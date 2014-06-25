@@ -1,4 +1,5 @@
-# HAVE_PCAP, -DHAVE_PCAP and -lpcap come from OMNeT++
+# HAVE_PCAP, -DHAVE_PCAP and PCAP_LIBS come from OMNeT++ (detected by configure)
+LIBS += $(PCAP_LIBS)
 
 #
 # TCP implementaion using the Network Simulation Cradle (TCP_NSC feature)
