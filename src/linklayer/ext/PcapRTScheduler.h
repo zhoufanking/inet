@@ -16,8 +16,8 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef __CSOCKETRTSCHEDULER_H__
-#define __CSOCKETRTSCHEDULER_H__
+#ifndef __INET_PCAPRTSCHEDULER_H
+#define __INET_PCAPRTSCHEDULER_H
 
 #define WANT_WINSOCK2
 
@@ -111,5 +111,5 @@ class PcapRTScheduler : public cScheduler
         void sendBytes(unsigned char *buf, size_t numBytes, struct sockaddr *from, socklen_t addrlen);
 };
 
-#endif
+#endif  // __INET_PCAPRTSCHEDULER_H
 

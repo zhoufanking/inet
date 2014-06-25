@@ -30,7 +30,7 @@
 
 #include "MACBase.h"
 #include "ExtFrame_m.h"
-#include "cSocketRTScheduler.h"
+#include "PcapRTScheduler.h"
 
 // Forward declarations:
 class InterfaceEntry;
@@ -41,7 +41,7 @@ class InterfaceEntry;
  * on the host running the simulation. Suitable for hardware-in-the-loop
  * simulations.
  *
- * Requires cSocketRTScheduler to be configured as scheduler in omnetpp.ini.
+ * Requires PcapRTScheduler to be configured as scheduler in omnetpp.ini.
  *
  * See NED file for more details.
  */
