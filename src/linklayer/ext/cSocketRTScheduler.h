@@ -36,7 +36,7 @@
 #endif
 #include "ExtFrame_m.h"
 
-class cSocketRTScheduler : public cScheduler
+class PcapRTScheduler : public cScheduler
 {
     protected:
         int fd;
@@ -47,12 +47,12 @@ class cSocketRTScheduler : public cScheduler
         /**
          * Constructor.
          */
-        cSocketRTScheduler();
+        PcapRTScheduler();
 
         /**
          * Destructor.
          */
-        virtual ~cSocketRTScheduler();
+        virtual ~PcapRTScheduler();
 #ifdef HAVE_PCAP
         static std::vector<cModule *> modules;
         static std::vector<pcap_t *> pds;

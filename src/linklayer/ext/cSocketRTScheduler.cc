@@ -33,14 +33,14 @@
 #define PCAP_TIMEOUT 10    /* Timeout in ms */
 
 #ifdef HAVE_PCAP
-std::vector<cModule *>cSocketRTScheduler::modules;
-std::vector<pcap_t *>cSocketRTScheduler::pds;
-std::vector<int32>cSocketRTScheduler::datalinks;
-std::vector<int32>cSocketRTScheduler::headerLengths;
+std::vector<cModule *>PcapRTScheduler::modules;
+std::vector<pcap_t *>PcapRTScheduler::pds;
+std::vector<int32>PcapRTScheduler::datalinks;
+std::vector<int32>PcapRTScheduler::headerLengths;
 #endif
-timeval cSocketRTScheduler::baseTime;
+timeval PcapRTScheduler::baseTime;
 
-Register_Class(cSocketRTScheduler);
+Register_Class(PcapRTScheduler);
 
 inline std::ostream& operator<<(std::ostream& out, const timeval& tv)
 {
@@ -48,16 +48,16 @@ inline std::ostream& operator<<(std::ostream& out, const timeval& tv)
 }
 
 
-cSocketRTScheduler::cSocketRTScheduler() : cScheduler()
+PcapRTScheduler::PcapRTScheduler() : cScheduler()
 {
     fd = INVALID_SOCKET;
 }
 
-cSocketRTScheduler::~cSocketRTScheduler()
+PcapRTScheduler::~PcapRTScheduler()
 {
 }
 
-void cSocketRTScheduler::startRun()
+void PcapRTScheduler::startRun()
 {
     gettimeofday(&baseTime, NULL);
 
@@ -73,7 +73,7 @@ void cSocketRTScheduler::startRun()
 }
 
 
-void cSocketRTScheduler::endRun()
+void PcapRTScheduler::endRun()
 {
     close(fd);
     fd = INVALID_SOCKET;
@@ -97,13 +97,13 @@ void cSocketRTScheduler::endRun()
 #endif
 }
 
-void cSocketRTScheduler::executionResumed()
+void PcapRTScheduler::executionResumed()
 {
     gettimeofday(&baseTime, NULL);
     baseTime = timeval_substract(baseTime, sim->getSimTime().dbl());
 }
 
-void cSocketRTScheduler::setInterfaceModule(cModule *mod, const char *dev, const char *filter)
+void PcapRTScheduler::setInterfaceModule(cModule *mod, const char *dev, const char *filter)
 {
 #ifdef HAVE_PCAP
     char errbuf[PCAP_ERRBUF_SIZE];
@@ -175,9 +175,9 @@ static void packet_handler(u_char *user, const struct pcap_pkthdr *hdr, const u_
     struct ether_header *ethernet_hdr;
 
     i = *(uint16 *)user;
-    datalink = cSocketRTScheduler::datalinks.at(i);
-    headerLength = cSocketRTScheduler::headerLengths.at(i);
-    module = cSocketRTScheduler::modules.at(i);
+    datalink = PcapRTScheduler::datalinks.at(i);
+    headerLength = PcapRTScheduler::headerLengths.at(i);
+    module = PcapRTScheduler::modules.at(i);
 
     // skip ethernet frames not encapsulating an IP packet.
     if (datalink == DLT_EN10MB)
@@ -197,7 +197,7 @@ static void packet_handler(u_char *user, const struct pcap_pkthdr *hdr, const u_
     EV << "Captured " << hdr->caplen - headerLength << " bytes for an IP packet.\n";
     timeval curTime;
     gettimeofday(&curTime, NULL);
-    curTime = timeval_substract(curTime, cSocketRTScheduler::baseTime);
+    curTime = timeval_substract(curTime, PcapRTScheduler::baseTime);
     simtime_t t = curTime.tv_sec + curTime.tv_usec*1e-6;
     // TBD assert that it's somehow not smaller than previous event's time
     notificationMsg->setArrival(module, -1, t);
@@ -206,7 +206,7 @@ static void packet_handler(u_char *user, const struct pcap_pkthdr *hdr, const u_
 }
 #endif
 
-bool cSocketRTScheduler::receiveWithTimeout()
+bool PcapRTScheduler::receiveWithTimeout()
 {
     bool found;
     struct timeval timeout;
@@ -258,7 +258,7 @@ bool cSocketRTScheduler::receiveWithTimeout()
     return found;
 }
 
-int32 cSocketRTScheduler::receiveUntil(const timeval& targetTime)
+int32 PcapRTScheduler::receiveUntil(const timeval& targetTime)
 {
     // wait until targetTime or a bit longer, wait in PCAP_TIMEOUT chunks
     // in order to keep UI responsiveness by invoking ev.idle()
@@ -276,13 +276,13 @@ int32 cSocketRTScheduler::receiveUntil(const timeval& targetTime)
 }
 
 #if OMNETPP_VERSION >= 0x0500
-cEvent *cSocketRTScheduler::guessNextEvent()
+cEvent *PcapRTScheduler::guessNextEvent()
 {
     return sim->msgQueue.peekFirst();
 }
-cEvent *cSocketRTScheduler::takeNextEvent()
+cEvent *PcapRTScheduler::takeNextEvent()
 #else
-cMessage *cSocketRTScheduler::getNextEvent()
+cMessage *PcapRTScheduler::getNextEvent()
 #define cEvent cMessage
 #endif
 {
@@ -324,13 +324,13 @@ cMessage *cSocketRTScheduler::getNextEvent()
 #undef cEvent
 
 #if OMNETPP_VERSION >= 0x0500
-void cSocketRTScheduler::putBackEvent(cEvent *event)
+void PcapRTScheduler::putBackEvent(cEvent *event)
 {
     sim->msgQueue.putBackFirst(event);
 }
 #endif
 
-void cSocketRTScheduler::sendBytes(uint8 *buf, size_t numBytes, struct sockaddr *to, socklen_t addrlen)
+void PcapRTScheduler::sendBytes(uint8 *buf, size_t numBytes, struct sockaddr *to, socklen_t addrlen)
 {
     if (fd == INVALID_SOCKET)
         throw cRuntimeError("cSocketRTScheduler::sendBytes(): no raw socket.");

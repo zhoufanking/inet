@@ -58,7 +58,7 @@ class ExtInterface : public MACBase
     int numDropped;
 
     // access to real network interface via Scheduler class:
-    cSocketRTScheduler *rtScheduler;
+    PcapRTScheduler *rtScheduler;
 
   protected:
     void displayBusy();

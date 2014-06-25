@@ -44,9 +44,9 @@ void ExtInterface::initialize(int stage)
     // subscribe at scheduler for external messages
     if (stage == INITSTAGE_LOCAL)
     {
-        if (dynamic_cast<cSocketRTScheduler *>(simulation.getScheduler()) != NULL)
+        if (dynamic_cast<PcapRTScheduler *>(simulation.getScheduler()) != NULL)
         {
-            rtScheduler = check_and_cast<cSocketRTScheduler *>(simulation.getScheduler());
+            rtScheduler = check_and_cast<PcapRTScheduler *>(simulation.getScheduler());
             //device = ev.config()->getAsString("Capture", "device", "lo0");
             device = par("device");
             //const char *filter = ev.config()->getAsString("Capture", "filter-string", "ip");
