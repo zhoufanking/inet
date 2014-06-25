@@ -25,9 +25,12 @@
 
 #include <headers/ethernet.h>
 
+#ifndef HAVE_PCAP
+#error "PcapRTScheduler requires the pcap library to be present (normally detected by OMNeT++)"
+#endif
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN__) || defined(_WIN64)
-#include <ws2tcpip.h>
+#error "PcapRTScheduler: raw sockets are not supported in modern versions of Windows (after XP)"
 #endif
 
 #define PCAP_SNAPLEN 65536 /* capture all data packets with up to pcap_snaplen bytes */
@@ -38,6 +41,7 @@ std::vector<pcap_t *>PcapRTScheduler::pds;
 std::vector<int32>PcapRTScheduler::datalinks;
 std::vector<int32>PcapRTScheduler::headerLengths;
 timeval PcapRTScheduler::baseTime;
+
 
 Register_Class(PcapRTScheduler);
 
@@ -63,10 +67,10 @@ void PcapRTScheduler::startRun()
     // Enabling sending makes no sense when we can't receive...
     fd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
     if (fd == INVALID_SOCKET)
-        throw cRuntimeError("PcapRTScheduler: Root privileges needed");
+        throw cRuntimeError("PcapRTScheduler: could not open raw socket: %s (root privileges needed?)", strerror(errno));
     const int32 on = 1;
     if (setsockopt(fd, IPPROTO_IP, IP_HDRINCL, (char *)&on, sizeof(on)) < 0)
-        throw cRuntimeError("PcapRTScheduler: couldn't set sockopt for raw socket");
+        throw cRuntimeError("PcapRTScheduler: couldn't set sockopt for raw socket: %s", strerror(errno));
 }
 
 void PcapRTScheduler::endRun()
