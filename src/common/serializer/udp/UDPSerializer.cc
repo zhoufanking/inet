@@ -43,12 +43,15 @@ using namespace INETFw;
 int UDPSerializer::serialize(const UDPPacket *pkt, unsigned char *buf, unsigned int bufsize)
 {
     struct udphdr *udphdr = (struct udphdr *) (buf);
-    int packetLength;
 
-    packetLength = pkt->getByteLength();
+    int packetLength = pkt->getByteLength();
+    ASSERT(packetLength <= bufsize);
     udphdr->uh_sport = htons(pkt->getSourcePort());
     udphdr->uh_dport = htons(pkt->getDestinationPort());
     udphdr->uh_ulen = htons(packetLength);
+    ByteArrayMessage *encapPacket = dynamic_cast<ByteArrayMessage *>(pkt->getEncapsulatedPacket());
+    if (encapPacket)
+        encapPacket->copyDataToBuffer(buf + sizeof(struct udphdr), bufsize - sizeof(struct udphdr));
     udphdr->uh_sum = TCPIPchecksum::checksum(buf, packetLength);
     return packetLength;
 }
@@ -60,7 +63,7 @@ void UDPSerializer::parse(const unsigned char *buf, unsigned int bufsize, UDPPac
 
     dest->setSourcePort(ntohs(udphdr->uh_sport));
     dest->setDestinationPort(ntohs(udphdr->uh_dport));
-    dest->setByteLength(8);
+    dest->setByteLength(sizeof(struct udphdr));
     ByteArrayMessage *encapPacket = new ByteArrayMessage("Payload-from-wire");
     encapPacket->setDataFromBuffer(buf + sizeof(struct udphdr), ntohs(udphdr->uh_ulen) - sizeof(struct udphdr));
     encapPacket->setName((const char *)buf + sizeof(struct udphdr));
