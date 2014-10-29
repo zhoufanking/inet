@@ -4,60 +4,67 @@
 \section{Overview}
 
 Modeling power consumption becomes more and more important with the increasing
-number of embedded devices and the upcoming Internet of things. Mobile personal
+number of embedded devices and the upcoming Internet of Things. Mobile personal
 medical devices, large scale wireless environment monitoring devices, electric
 vehicles, solar panels, low-power wireless sensors, etc. require paying special
-attention to power consumption. The high fidelity simulation of power
-consumption allows designing power sensitive routing protocols, MAC protocols,
+attention to power consumption. High-fidelity simulation of power
+consumption allows for designing power sensitive routing protocols, MAC protocols,
 physical layers, etc. which in turn results in more energy efficient devices.
 
-In order to help the modeling process the power model is separated from other
-simulation models. This separation makes the model extensible and it also allows
-easy experimentation with alternative implementations. In a nutshell the power
+In order to facilitate the modeling process, the power model is separated from other
+simulation models. This separation makes the model extensible, and also allows for
+easy experimentation with alternative implementations. In a nutshell, the power
 model consists of the following components:
 
 \begin{itemize}
   \item energy consumption models
-  \item energy generation models
-  \item temporary energy storage models
+  \item energy source and energy generation models
+  \item energy storage and buffering models
 \end{itemize}
 
-The following sections provide a brief overview of the power model.
 
-\section{Energy Consumer Models}
+The following sections provide a brief overview of the components of the power model.
 
-These models describe the energy consumption of devices over time. For example,
-a radio consumes energy when it transmits or receives signals, or a CPU consumes
-energy when the network layer processes packets, or a display consumes energy
-when it's turned on, etc. Energy consumers connect to an energy storage that
-provides them with the required energy.
+\section{Energy Consumption Models}
 
-The physical layer provides a \nedtype{StateBasedEnergyConsumer} module that 
+Energy consumption models describe the energy consumption of some device
+over time. In principle, the consumption model encapsulates
+\textit{behavior} and not a device, and in fact it often acts as a bridge
+between the model of a device and the model of an energy storage (or energy
+source/energy generation) model. For example, a radio consumes energy when
+it transmits or receives signals, or a CPU consumes energy when the network
+layer processes packets, or a display consumes energy when it's turned on,
+etc. Energy consumers connect to an energy storage model that provides them
+with the required energy.
+
+The physical layer provides a \nedtype{StateBasedEnergyConsumer} module that
 implements a simple radio energy consumption model. This model determines the
 current power consumption of the radio using module parameters for each valid
 combination of the radio mode, the transmitter state and the receiver state.
 
-In order to support testing energy storage models a simple energy consumer model
+For the testing of energy storage models, a simple energy consumer model
 is implemented in the \nedtype{AlternatingEnergyConsumer} module. This energy
-consumer model alternates between two modes called consumption mode and sleep
-mode. In consumption mode it consumes a randomly selected constant power for a
-random time interval. In sleep mode it doesn't consume any energy for another
-random time interval.
- 
+consumer model alternates between two modes called \textit{consumption} mode
+and \textit{sleep} mode. In consumption mode, it consumes a (randomly chosen)
+constant power for a random time interval. In sleep mode it, doesn't consume
+any energy for another random time interval.
+
 \section{Energy Generator Models}
 
-These models describe the energy generation of devices over time. A solar panel,
-for example, produces energy based on time, the panel's position on the globe,
-its orientation towards the sun and the actual weather conditions. Energy
-generators connect to an energy storage that absorbs the generated energy. 
+These models describe the energy generation of devices over time. A solar
+panel, for example, produces energy based on the time of day, the actual
+weather conditions, the sunlight's angle of incidence, and other factors.
+Energy generators connect to an energy storage that absorbs the generated
+energy.
 
 In order to support testing energy storage models a simple energy generator
 model is implemented in the \nedtype{AlternatingEnergyGenerator} module.
-This energy generator model alternates between two modes called generation mode
-and sleep mode. In generation mode it generates a randomly selected constant
-power for a random time interval. In sleep mode it doesn't generate any energy
-for another random time interval.
- 
+This energy generator model alternates between two modes called
+\textit{generation} mode and \textit{sleep} mode. In generation mode, it
+generates a randomly selected constant power for a random time interval. In
+sleep mode, it doesn't generate any energy for another random time
+interval.
+
 \section{Energy Storage Models}
 
 These models describe devices that absorb energy produced by generators, and
@@ -72,7 +79,7 @@ difference between the total absorbed power and the total provided power over
 time. It can initiate node shutdown when the residual capacity drops below a
 configured threshold. It can also initiate node start when the residual capacity
 raises above another configured threshold. Although this model is similar to a
-real word battery it lacks some important properties such memory effect,
+real word battery, it lacks some important properties such memory effect,
 self-discharge, overcharging, temperature dependence, and so on.
 
 %%% Local Variables:
