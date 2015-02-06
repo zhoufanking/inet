@@ -1423,13 +1423,6 @@ simtime_t Ieee80211Mac::getDIFS(int category)
     }
 }
 
-simtime_t Ieee80211Mac::getHeaderTime(double bitrate)
-{
-    Ieee80211PhyMode modType;
-    modType = Ieee80211Mode::getModulation(opMode, bitrate);
-    return modType.getPreambleAndHeader(wifiPreambleType);
-}
-
 simtime_t Ieee80211Mac::getAIFS(int AccessCategory)
 {
     return AIFSN(AccessCategory) * getSlotTime() + getSIFS();
