@@ -49,7 +49,7 @@ const IReceptionBitModel* Ieee80211OFDMErrorModel::computeBitModel(const Layered
     bps signalBitRate = transmissionBitModel->getHeaderBitRate();
     int dataBitLength = transmissionBitModel->getPayloadBitLength();
     bps dataBitRate = transmissionBitModel->getPayloadBitRate();
-    ASSERT(transmission->getSymbolModel() != NULL);
+    ASSERT(transmission->getSymbolModel() != nullptr);
     const IModulation *signalModulation = transmission->getSymbolModel()->getHeaderModulation();
     const IModulation *dataModulation = transmission->getSymbolModel()->getPayloadModulation();
     const BitVector *bits = transmissionBitModel->getBits();
@@ -157,7 +157,7 @@ const IReceptionPacketModel* Ieee80211OFDMErrorModel::computePacketModel(const L
     const cPacket *packet = transmissionPacketModel->getPacket();
     double per = 0.0;
     bool packetErrorless = per == 0.0;
-    return new const ReceptionPacketModel(packet, NULL, bps(NaN), per, packetErrorless);
+    return new const ReceptionPacketModel(packet, nullptr, bps(NaN), per, packetErrorless);
 }
 
 } /* namespace physicallayer */

@@ -18,10 +18,6 @@
 #ifndef __INET_IEEE80211OFDMCODE_H
 #define __INET_IEEE80211OFDMCODE_H
 
-#include "inet/common/INETDefs.h"
-#include "inet/common/Units.h"
-#include "inet/physicallayer/ieee80211/Ieee80211OFDMModulation.h"
-#include "inet/physicallayer/contract/IModulation.h"
 #include "inet/physicallayer/common/layered/AdditiveScrambling.h"
 #include "inet/physicallayer/ieee80211/layered/Ieee80211Interleaving.h"
 #include "inet/physicallayer/ieee80211/layered/Ieee80211ConvolutionalCode.h"
@@ -29,31 +25,49 @@
 namespace inet {
 namespace physicallayer {
 
-using namespace units::values;
-
 class INET_API Ieee80211OFDMCode
 {
     protected:
-        Hz channelSpacing;
-        const ConvolutionalCode *convCode;
+        const Ieee80211ConvolutionalCode *convolutionalCode;
         const Ieee80211Interleaving *interleaving;
         const AdditiveScrambling *scrambling;
 
-    protected:
-        const Ieee80211ConvolutionalCode *computeFec(uint8_t rate) const;
-        const Ieee80211Interleaving *computeInterleaving(const IModulation *modulationScheme) const;
-        const AdditiveScrambling *computeScrambling() const;
-
     public:
-        const ConvolutionalCode *getConvCode() const { return convCode; }
+        Ieee80211OFDMCode(const Ieee80211ConvolutionalCode *convolutionalCode, const Ieee80211Interleaving *interleaving, const AdditiveScrambling *scrambling);
+        ~Ieee80211OFDMCode();
+
+        const Ieee80211ConvolutionalCode *getConvolutionalCode() const { return convolutionalCode; }
         const Ieee80211Interleaving *getInterleaving() const { return interleaving; }
         const AdditiveScrambling *getScrambling() const { return scrambling; }
-        const Hz getChannelSpacing() const { return channelSpacing; }
+};
 
-        Ieee80211OFDMCode(Hz channelSpacing);
-        Ieee80211OFDMCode(uint8_t signalFieldRate, Hz channelSpacing);
-        Ieee80211OFDMCode(const ConvolutionalCode *convCode, const Ieee80211Interleaving *interleaving, const AdditiveScrambling *scrambling, Hz channelSpacing);
-        ~Ieee80211OFDMCode();
+class INET_API Ieee80211OFDMCompliantCodes
+{
+  public:
+    // Convolutional codes supported by the OFDM PHY: 18.3.5.6 Convolutional encoder
+    static const Ieee80211ConvolutionalCode ofdmConvolutionalCode1_2;
+    static const Ieee80211ConvolutionalCode ofdmConvolutionalCode2_3;
+    static const Ieee80211ConvolutionalCode ofdmConvolutionalCode3_4;
+
+    // Interleavings supported by the OFDM PHY: 18.3.5.7 Data interleaving
+    static const Ieee80211Interleaving ofdmBPSKInterleaving;
+    static const Ieee80211Interleaving ofdmQPSKInterleaving;
+    static const Ieee80211Interleaving ofdmQAM16Interleaving;
+    static const Ieee80211Interleaving ofdmQAM64Interleaving;
+
+    // Scrambling supported by the OFDM PHY: 18.3.5.5 PLCP DATA scrambler and descrambler
+    static const AdditiveScrambling ofdmScrambling;
+
+    // Codes: Table 18-4—Modulation-dependent parameters
+    static const Ieee80211OFDMCode ofdmCC1_2BPSKInterleaving;
+    static const Ieee80211OFDMCode ofdmCC1_2BPSKInterleavingWithoutScrambling; // For the SIGNAL field
+    static const Ieee80211OFDMCode ofdmCC3_4BPSKInterleaving;
+    static const Ieee80211OFDMCode ofdmCC1_2QPSKInterleaving;
+    static const Ieee80211OFDMCode ofdmCC3_4QPSKInterleaving;
+    static const Ieee80211OFDMCode ofdmCC1_2QAM16Interleaving;
+    static const Ieee80211OFDMCode ofdmCC3_4QAM16Interleaving;
+    static const Ieee80211OFDMCode ofdmCC2_3QAM64Interleaving;
+    static const Ieee80211OFDMCode ofdmCC3_4QAM64Interleaving;
 };
 
 } /* namespace physicallayer */

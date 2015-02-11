@@ -37,15 +37,13 @@ class INET_API Ieee80211OFDMEncoder : public IEncoder
         const IInterleaver *interleaver;
         const IScrambler *scrambler;
         const Ieee80211OFDMCode *code;
-        Hz channelSpacing;
 
     public:
         virtual const ITransmissionBitModel *encode(const ITransmissionPacketModel *packetModel) const;
         virtual void printToStream(std::ostream& stream) const { stream << "IEEE80211 Layered Encoder"; }
         const Ieee80211OFDMCode *getCode() const { return code; }
-        Ieee80211OFDMEncoder();
         Ieee80211OFDMEncoder(const Ieee80211OFDMCode *code);
-        Ieee80211OFDMEncoder(const IFECCoder *fecEncoder, const IInterleaver *interleaver, const IScrambler *scrambler, Hz channelSpacing);
+        Ieee80211OFDMEncoder(const IFECCoder *fecEncoder, const IInterleaver *interleaver, const IScrambler *scrambler);
         ~Ieee80211OFDMEncoder();
 };
 

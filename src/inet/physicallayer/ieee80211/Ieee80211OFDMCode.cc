@@ -15,60 +15,15 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "Ieee80211OFDMCode.h"
+#include "inet/physicallayer/ieee80211/Ieee80211OFDMCode.h"
 #include "inet/physicallayer/modulation/BPSKModulation.h"
 #include "inet/physicallayer/ieee80211/layered/Ieee80211OFDMDefs.h"
 
 namespace inet {
 namespace physicallayer {
 
-const Ieee80211ConvolutionalCode* Ieee80211OFDMCode::computeFec(uint8_t rate) const
-{
-    // Table 18-6—Contents of the SIGNAL field
-    // Table 18-4—Modulation-dependent parameters
-    if (rate == 1101_b || rate == 0101_b || rate == 1001_b)
-        return new Ieee80211ConvolutionalCode(1, 2);
-    else if (rate == 1111_b || rate == 0111_b || rate == 1011_b || rate == 0111_b)
-        return new Ieee80211ConvolutionalCode(3, 4);
-    else if (rate == 0001_b)
-        return new Ieee80211ConvolutionalCode(2, 3);
-    else
-        throw cRuntimeError("Unknown rate field  = %d", rate);
-}
-
-const Ieee80211Interleaving* Ieee80211OFDMCode::computeInterleaving(const IModulation *modulationScheme) const
-{
-    const IAPSKModulation *dataModulationScheme = dynamic_cast<const IAPSKModulation*>(modulationScheme);
-    ASSERT(dataModulationScheme != NULL);
-    return new Ieee80211Interleaving(dataModulationScheme->getCodeWordSize() * NUMBER_OF_OFDM_DATA_SUBCARRIERS, dataModulationScheme->getCodeWordSize()); // FIXME: memory leak
-}
-
-Ieee80211OFDMCode::Ieee80211OFDMCode(uint8_t signalFieldRate, Hz channelSpacing) :
-        channelSpacing(channelSpacing)
-{
-    convCode = computeFec(signalFieldRate);
-    Ieee80211OFDMModulation ofdmModulation(signalFieldRate, channelSpacing);
-    interleaving = computeInterleaving(ofdmModulation.getModulationScheme());
-    scrambling = computeScrambling();
-}
-
-const AdditiveScrambling* Ieee80211OFDMCode::computeScrambling() const
-{
-    // Default scrambling
-    return new AdditiveScrambling("1011101", "0001001");
-}
-
-Ieee80211OFDMCode::Ieee80211OFDMCode(Hz channelSpacing) :
-        channelSpacing(channelSpacing),
-        scrambling(NULL)
-{
-    convCode = new Ieee80211ConvolutionalCode(1,2);
-    interleaving = new Ieee80211Interleaving(NUMBER_OF_OFDM_DATA_SUBCARRIERS, 1);
-}
-
-Ieee80211OFDMCode::Ieee80211OFDMCode(const ConvolutionalCode* convCode, const Ieee80211Interleaving* interleaving, const AdditiveScrambling* scrambling, Hz channelSpacing) :
-        channelSpacing(channelSpacing),
-        convCode(convCode),
+Ieee80211OFDMCode::Ieee80211OFDMCode(const Ieee80211ConvolutionalCode* convolutionalCode, const Ieee80211Interleaving* interleaving, const AdditiveScrambling* scrambling) :
+        convolutionalCode(convolutionalCode),
         interleaving(interleaving),
         scrambling(scrambling)
 {
@@ -76,10 +31,35 @@ Ieee80211OFDMCode::Ieee80211OFDMCode(const ConvolutionalCode* convCode, const Ie
 
 Ieee80211OFDMCode::~Ieee80211OFDMCode()
 {
-    delete convCode;
+    delete convolutionalCode;
     delete interleaving;
     delete scrambling;
 }
+
+// Convolutional codes
+const Ieee80211ConvolutionalCode Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode1_2(1,2);
+const Ieee80211ConvolutionalCode Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode2_3(2,3);
+const Ieee80211ConvolutionalCode Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode3_4(3,4);
+
+// Interleavings
+const Ieee80211Interleaving Ieee80211OFDMCompliantCodes::ofdmBPSKInterleaving(NUMBER_OF_OFDM_DATA_SUBCARRIERS, 1);
+const Ieee80211Interleaving Ieee80211OFDMCompliantCodes::ofdmQPSKInterleaving(2 * NUMBER_OF_OFDM_DATA_SUBCARRIERS, 2);
+const Ieee80211Interleaving Ieee80211OFDMCompliantCodes::ofdmQAM16Interleaving(4 * NUMBER_OF_OFDM_DATA_SUBCARRIERS, 4);
+const Ieee80211Interleaving Ieee80211OFDMCompliantCodes::ofdmQAM64Interleaving(6 * NUMBER_OF_OFDM_DATA_SUBCARRIERS, 6);
+
+// Scrambler
+const AdditiveScrambling Ieee80211OFDMCompliantCodes::ofdmScrambling("1011101", "0001001");
+
+// Codes
+const Ieee80211OFDMCode Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleaving(&Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode1_2, &Ieee80211OFDMCompliantCodes::ofdmBPSKInterleaving, &Ieee80211OFDMCompliantCodes::ofdmScrambling);
+const Ieee80211OFDMCode Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling(&Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode1_2, &Ieee80211OFDMCompliantCodes::ofdmBPSKInterleaving, nullptr);
+const Ieee80211OFDMCode Ieee80211OFDMCompliantCodes::ofdmCC3_4BPSKInterleaving(&Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode3_4, &Ieee80211OFDMCompliantCodes::ofdmBPSKInterleaving, &Ieee80211OFDMCompliantCodes::ofdmScrambling);
+const Ieee80211OFDMCode Ieee80211OFDMCompliantCodes::ofdmCC1_2QPSKInterleaving(&Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode1_2, &Ieee80211OFDMCompliantCodes::ofdmQPSKInterleaving, &Ieee80211OFDMCompliantCodes::ofdmScrambling);
+const Ieee80211OFDMCode Ieee80211OFDMCompliantCodes::ofdmCC3_4QPSKInterleaving(&Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode3_4, &Ieee80211OFDMCompliantCodes::ofdmQPSKInterleaving, &Ieee80211OFDMCompliantCodes::ofdmScrambling);
+const Ieee80211OFDMCode Ieee80211OFDMCompliantCodes::ofdmCC1_2QAM16Interleaving(&Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode1_2, &Ieee80211OFDMCompliantCodes::ofdmQAM16Interleaving, &Ieee80211OFDMCompliantCodes::ofdmScrambling);
+const Ieee80211OFDMCode Ieee80211OFDMCompliantCodes::ofdmCC3_4QAM16Interleaving(&Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode3_4, &Ieee80211OFDMCompliantCodes::ofdmQAM16Interleaving, &Ieee80211OFDMCompliantCodes::ofdmScrambling);
+const Ieee80211OFDMCode Ieee80211OFDMCompliantCodes::ofdmCC2_3QAM64Interleaving(&Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode2_3, &Ieee80211OFDMCompliantCodes::ofdmQAM64Interleaving, &Ieee80211OFDMCompliantCodes::ofdmScrambling);
+const Ieee80211OFDMCode Ieee80211OFDMCompliantCodes::ofdmCC3_4QAM64Interleaving(&Ieee80211OFDMCompliantCodes::ofdmConvolutionalCode3_4, &Ieee80211OFDMCompliantCodes::ofdmQAM64Interleaving, &Ieee80211OFDMCompliantCodes::ofdmScrambling);
 
 } /* namespace physicallayer */
 } /* namespace inet */

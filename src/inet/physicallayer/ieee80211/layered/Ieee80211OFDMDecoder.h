@@ -39,7 +39,6 @@ class INET_API Ieee80211OFDMDecoder : public IDecoder
         const IScrambler *descrambler;
         const IFECCoder *fecDecoder;
         const IInterleaver *deinterleaver;
-        Hz channelSpacing;
 
     protected:
         const IReceptionPacketModel *createPacketModel(const BitVector *decodedBits, const IScrambling *scrambling, const IForwardErrorCorrection *fec, const IInterleaving *interleaving) const;
@@ -52,7 +51,7 @@ class INET_API Ieee80211OFDMDecoder : public IDecoder
         const IReceptionPacketModel *decode(const IReceptionBitModel *bitModel) const;
         const Ieee80211OFDMCode *getCode() const { return code; }
         Ieee80211OFDMDecoder(const Ieee80211OFDMCode *code);
-        Ieee80211OFDMDecoder(const IScrambler *descrambler, const IFECCoder *fecDecoder, const IInterleaver *deinterleaver, Hz channelSpacing);
+        Ieee80211OFDMDecoder(const IScrambler *descrambler, const IFECCoder *fecDecoder, const IInterleaver *deinterleaver);
         virtual ~Ieee80211OFDMDecoder();
 };
 

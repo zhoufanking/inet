@@ -15,13 +15,32 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "inet/physicallayer/ieee80211/Ieee80211OFDMMode.h"
+#ifndef __INET_GFSKMODULATIONBASE_H
+#define __INET_GFSKMODULATIONBASE_H
+
+#include "inet/physicallayer/contract/IModulation.h"
 
 namespace inet {
 
 namespace physicallayer {
 
+class INET_API GFSKModulationBase : public IModulation
+{
+  protected:
+    unsigned int constellationSize;
+
+  public:
+    GFSKModulationBase(unsigned int constellationSize);
+
+    double calculateBER(double snir, Hz bandwidth, bps bitrate) const;
+    double calculateSER(double snir, Hz bandwidth, bps bitrate) const;
+
+    unsigned int getConstellationSize() const { return constellationSize; }
+};
+
 } // namespace physicallayer
 
 } // namespace inet
+
+#endif // ifndef __INET_GFSKMODULATIONBASE_H
 

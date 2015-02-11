@@ -27,15 +27,7 @@ namespace inet {
 namespace physicallayer {
 
 Ieee80211OFDMDemodulator::Ieee80211OFDMDemodulator(const Ieee80211OFDMModulation *ofdmModulation) :
-        ofdmModulation(ofdmModulation),
-        demodulationScheme(ofdmModulation->getModulationScheme())
-{
-
-}
-
-Ieee80211OFDMDemodulator::Ieee80211OFDMDemodulator(const APSKModulationBase* demodulationScheme) :
-        ofdmModulation(NULL),
-        demodulationScheme(demodulationScheme)
+        ofdmModulation(ofdmModulation)
 {
 
 }
@@ -43,6 +35,7 @@ Ieee80211OFDMDemodulator::Ieee80211OFDMDemodulator(const APSKModulationBase* dem
 BitVector Ieee80211OFDMDemodulator::demodulateSymbol(const Ieee80211OFDMSymbol *signalSymbol) const
 {
     std::vector<const APSKSymbol*> apskSymbols = signalSymbol->getSubCarrierSymbols();
+    const APSKModulationBase *demodulationScheme = ofdmModulation->getModulation();
     BitVector field;
     for (unsigned int i = 0; i < apskSymbols.size(); i++)
     {

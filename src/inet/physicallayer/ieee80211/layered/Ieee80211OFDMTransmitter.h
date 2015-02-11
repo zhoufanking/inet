@@ -24,6 +24,7 @@
 #include "inet/physicallayer/contract/layered/IDigitalAnalogConverter.h"
 #include "inet/physicallayer/contract/ITransmitter.h"
 #include "inet/physicallayer/base/APSKModulationBase.h"
+#include "inet/physicallayer/ieee80211/mode/Ieee80211OFDMMode.h"
 
 namespace inet {
 
@@ -43,24 +44,16 @@ class INET_API Ieee80211OFDMTransmitter : public ITransmitter, public cSimpleMod
 
     protected:
         LevelOfDetail levelOfDetail;
+        mutable const Ieee80211OFDMMode *mode = nullptr;
         const IEncoder *signalEncoder = nullptr;
-        const IEncoder *encoder = nullptr;
+        const IEncoder *dataEncoder = nullptr;
         const IModulator *signalModulator = nullptr;
-        const IModulator *modulator = nullptr;
+        const IModulator *dataModulator = nullptr;
         const IPulseShaper *pulseShaper = nullptr;
         const IDigitalAnalogConverter *digitalAnalogConverter = nullptr;
-        mutable const APSKModulationBase *signalModulation = nullptr;
-        mutable const APSKModulationBase *dataModulation = nullptr;
         bool isCompliant;
 
-        // TODO: review
-        mutable Hz channelSpacing;
-        mutable bps netDataBitrate;
-        mutable bps netHeaderBitrate;
-        mutable bps grossDataBitrate;
-        mutable bps grossHeaderBitrate;
-
-        Hz bandwidth;
+        Hz channelSpacing;
         Hz carrierFrequency;
         W power;
 
@@ -82,23 +75,18 @@ class INET_API Ieee80211OFDMTransmitter : public ITransmitter, public cSimpleMod
         void encodeAndModulate(const ITransmissionPacketModel* packetModel, const ITransmissionBitModel *&fieldBitModel, const ITransmissionSymbolModel *&fieldSymbolModel, const IEncoder *encoder, const IModulator *modulator, bool isSignalField) const;
         void padding(BitVector *serializedPacket, unsigned int dataBitsLength, uint8_t rate) const;
 
-        bps computeNonCompliantBitrate(const APSKModulationBase *modulation, double codeRate) const;
-        bps computeNonCompliantGrossBitrate(const APSKModulationBase *modulation) const;
-        bps computeNonCompliantNetBitrate(const APSKModulationBase *modulation, const IEncoder *encoder) const;
-        bps convertToNetBitrateToGrossBitrate(bps netBitrate, const IEncoder *encoder) const;
-        double getCodeRate(const IEncoder *encoder) const;
-        void computeChannelSpacingAndBitrates(const cPacket *macFrame) const;
-        uint8_t getRate(const BitVector* serializedPacket) const; // TODO: copy
-
     public:
+        virtual ~Ieee80211OFDMTransmitter();
+
         virtual const ITransmission *createTransmission(const IRadio *radio, const cPacket *packet, const simtime_t startTime) const;
-        virtual const IEncoder *getEncoder() const { return encoder; }
-        virtual const IModulator *getModulator() const { return modulator; }
+        virtual const IEncoder *getEncoder() const { return dataEncoder; }
+        virtual const IModulator *getModulator() const { return dataModulator; }
         virtual const IPulseShaper *getPulseShaper() const{ return pulseShaper; }
         virtual const IDigitalAnalogConverter *getDigitalAnalogConverter() const { return digitalAnalogConverter; }
         virtual W getMaxPower() const { return power; }
-        const Hz getBandwidth() const { return bandwidth; }
+        const Hz getBandwidth() const { return mode->getBandwidth(); }
         const Hz getCarrierFrequency() const { return carrierFrequency; }
+        const Hz getCarrierSpacing() const { return mode->getChannelSpacing(); }
         virtual void printToStream(std::ostream& stream) const { stream << "Ieee80211OFDMTransmitter"; }
 };
 

@@ -30,7 +30,7 @@ Define_Module(Ieee80211OFDMDemodulatorModule);
 void Ieee80211OFDMDemodulatorModule::initialize(int stage)
 {
     if (stage == INITSTAGE_LOCAL)
-        ofdmDemodulator = new Ieee80211OFDMDemodulator(APSKModulationBase::findModulation(par("demodulationScheme")));
+        ofdmDemodulator = new Ieee80211OFDMDemodulator(new Ieee80211OFDMModulation(APSKModulationBase::findModulation(par("demodulationScheme"))));
 }
 
 const IReceptionBitModel *Ieee80211OFDMDemodulatorModule::demodulate(const IReceptionSymbolModel *symbolModel) const

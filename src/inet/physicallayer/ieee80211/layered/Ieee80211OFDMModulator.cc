@@ -36,18 +36,11 @@ const int Ieee80211OFDMModulator::polarityVector[] = {1,1,1,1,-1,-1,-1,1,-1,-1,-
                                                        -1,-1,-1,-1,-1,1,-1,1,1,-1,1,-1,1,1,1,-1,-1,1,-1,-1,-1,1,1,1,-1,-1,-1,-1,-1,-1,-1};
 
 Ieee80211OFDMModulator::Ieee80211OFDMModulator(const Ieee80211OFDMModulation* ofdmModulation) :
-        ofdmModulation(ofdmModulation),
-        modulationScheme(ofdmModulation->getModulationScheme())
+        ofdmModulation(ofdmModulation)
 {
 
 }
 
-Ieee80211OFDMModulator::Ieee80211OFDMModulator(const APSKModulationBase* modulationScheme) :
-        ofdmModulation(NULL),
-        modulationScheme(modulationScheme)
-{
-
-}
 
 int Ieee80211OFDMModulator::getSubcarrierIndex(int ofdmSymbolIndex) const
 {
@@ -80,6 +73,7 @@ void Ieee80211OFDMModulator::insertPilotSubcarriers(Ieee80211OFDMSymbol *ofdmSym
 const ITransmissionSymbolModel *Ieee80211OFDMModulator::modulate(const ITransmissionBitModel *bitModel) const
 {
     std::vector<const ISymbol*> *ofdmSymbols = new std::vector<const ISymbol*>();
+    const APSKModulationBase *modulationScheme = ofdmModulation->getModulation();
     const BitVector *bits = bitModel->getBits();
     // Divide the resulting coded and interleaved data string into groups of N_BPSC bits.
     unsigned int nBPSC = modulationScheme->getCodeWordSize();

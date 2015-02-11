@@ -15,21 +15,29 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef __INET_IEEE80211DSSSMODE_H
-#define __INET_IEEE80211DSSSMODE_H
+#ifndef __INET_4GFSKMODULATION_H
+#define __INET_4GFSKMODULATION_H
 
-#include "inet/physicallayer/ieee80211/Ieee80211PhyMode.h"
+#include "inet/physicallayer/base/GFSKModulationBase.h"
 
 namespace inet {
 
 namespace physicallayer {
 
-class INET_API Ieee80211DSSSMode : public Ieee80211PhyMode
+class INET_API _4GFSKModulation : public GFSKModulationBase
 {
+  public:
+    static const _4GFSKModulation singleton;
+
+  public:
+    _4GFSKModulation();
+
+    virtual void printToStream(std::ostream &stream) const { stream << "4GFSKModulation"; }
 };
 
 } // namespace physicallayer
 
 } // namespace inet
 
-#endif // ifndef __INET_IEEE80211DSSSMODE_H
+#endif // ifndef __INET_4GFSKMODULATION_H
+

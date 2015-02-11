@@ -28,7 +28,6 @@ module Ieee80211OFDMDecoder like IDecoder
         string fecType = default("");
         string deinterleaverType = default("");
         string descramblerType = default("");
-        double channelSpacing @unit(Hz);
         @class(Ieee80211OFDMDecoderModule);
 
     submodules:

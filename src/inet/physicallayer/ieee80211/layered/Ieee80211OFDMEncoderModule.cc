@@ -29,11 +29,10 @@ void Ieee80211OFDMEncoderModule::initialize(int stage)
         scrambler = dynamic_cast<IScrambler *>(getSubmodule("scrambler"));
         fecEncoder = dynamic_cast<IFECCoder *>(getSubmodule("fecEncoder"));
         interleaver = dynamic_cast<IInterleaver *>(getSubmodule("interleaver"));
-        channelSpacing = Hz(par("channelSpacing"));
     }
     else if (stage == INITSTAGE_PHYSICAL_LAYER)
     {
-        encoder = new Ieee80211OFDMEncoder(fecEncoder, interleaver, scrambler, channelSpacing);
+        encoder = new Ieee80211OFDMEncoder(fecEncoder, interleaver, scrambler);
     }
 }
 

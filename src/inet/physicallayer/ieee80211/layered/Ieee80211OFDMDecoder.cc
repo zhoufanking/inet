@@ -29,47 +29,46 @@ namespace inet {
 namespace physicallayer {
 
 Ieee80211OFDMDecoder::Ieee80211OFDMDecoder(const Ieee80211OFDMCode *code) :
-        descrambler(NULL),
-        fecDecoder(NULL),
-        deinterleaver(NULL)
+        descrambler(nullptr),
+        fecDecoder(nullptr),
+        deinterleaver(nullptr)
 {
     this->code = code;
     if (code->getScrambling())
         descrambler = new AdditiveScrambler(code->getScrambling());
-    if (code->getConvCode())
-        fecDecoder = new ConvolutionalCoder(code->getConvCode());
+    if (code->getConvolutionalCode())
+        fecDecoder = new ConvolutionalCoder(code->getConvolutionalCode());
     if (code->getInterleaving())
         deinterleaver = new Ieee80211Interleaver(code->getInterleaving());
 }
 
-Ieee80211OFDMDecoder::Ieee80211OFDMDecoder(const IScrambler *descrambler, const IFECCoder *fecDecoder, const IInterleaver *deinterleaver, Hz channelSpacing) :
+Ieee80211OFDMDecoder::Ieee80211OFDMDecoder(const IScrambler *descrambler, const IFECCoder *fecDecoder, const IInterleaver *deinterleaver) :
         descrambler(descrambler),
         fecDecoder(fecDecoder),
-        deinterleaver(deinterleaver),
-        channelSpacing(channelSpacing)
+        deinterleaver(deinterleaver)
 {
-    const ConvolutionalCode *fec = NULL;
+    const Ieee80211ConvolutionalCode *convolutionalCode = nullptr;
     if (fecDecoder)
-        fec = dynamic_cast<const ConvolutionalCode *>(fecDecoder->getForwardErrorCorrection());
-    const Ieee80211Interleaving *interleaving = NULL;
+        convolutionalCode = dynamic_cast<const Ieee80211ConvolutionalCode *>(fecDecoder->getForwardErrorCorrection());
+    const Ieee80211Interleaving *interleaving = nullptr;
     if (deinterleaver)
         interleaving = dynamic_cast<const Ieee80211Interleaving *>(deinterleaver->getInterleaving());
-    const AdditiveScrambling *scrambling = NULL;
+    const AdditiveScrambling *scrambling = nullptr;
     if (descrambler)
         scrambling = dynamic_cast<const AdditiveScrambling *>(descrambler->getScrambling());
-    code = new Ieee80211OFDMCode(fec, interleaving, scrambling, channelSpacing);
+    code = new Ieee80211OFDMCode(convolutionalCode, interleaving, scrambling);
 }
 
 const IReceptionPacketModel* Ieee80211OFDMDecoder::decode(const IReceptionBitModel* bitModel) const
 {
     BitVector *decodedBits = new BitVector(*bitModel->getBits());
-    const IInterleaving *interleaving = NULL;
+    const IInterleaving *interleaving = nullptr;
     if (deinterleaver)
     {
         *decodedBits = deinterleaver->deinterleave(*decodedBits);
         interleaving = deinterleaver->getInterleaving();
     }
-    const IForwardErrorCorrection *forwardErrorCorrection = NULL;
+    const IForwardErrorCorrection *forwardErrorCorrection = nullptr;
     if (fecDecoder)
     {
         std::pair<BitVector, bool> fecDecodedDataField = fecDecoder->decode(*decodedBits);
@@ -79,7 +78,7 @@ const IReceptionPacketModel* Ieee80211OFDMDecoder::decode(const IReceptionBitMod
         *decodedBits = fecDecodedDataField.first;
         forwardErrorCorrection = fecDecoder->getForwardErrorCorrection();
     }
-    const IScrambling *scrambling = NULL;
+    const IScrambling *scrambling = nullptr;
     if (descrambler)
     {
         scrambling = descrambler->getScrambling();
@@ -92,7 +91,7 @@ const IReceptionPacketModel* Ieee80211OFDMDecoder::createPacketModel(const BitVe
 {
     double per = -1;
     bool packetErrorless = true; // TODO: compute packet error rate, packetErrorLess
-    return new ReceptionPacketModel(NULL, decodedBits, bps(NaN), per, packetErrorless); // FIXME: memory leak
+    return new ReceptionPacketModel(nullptr, decodedBits, bps(NaN), per, packetErrorless);
 }
 
 ShortBitVector Ieee80211OFDMDecoder::getSignalFieldRate(const BitVector& signalField) const
@@ -114,7 +113,7 @@ unsigned int Ieee80211OFDMDecoder::getSignalFieldLength(const BitVector& signalF
 unsigned int Ieee80211OFDMDecoder::calculatePadding(unsigned int dataFieldLengthInBits, const IModulation *modulationScheme, const Ieee80211ConvolutionalCode *fec) const
 {
     const IAPSKModulation *dataModulationScheme = dynamic_cast<const IAPSKModulation*>(modulationScheme);
-    ASSERT(dataModulationScheme != NULL);
+    ASSERT(dataModulationScheme != nullptr);
     unsigned int codedBitsPerOFDMSymbol = dataModulationScheme->getCodeWordSize() * NUMBER_OF_OFDM_DATA_SUBCARRIERS;
     unsigned int dataBitsPerOFDMSymbol = codedBitsPerOFDMSymbol * fec->getCodeRatePuncturingK() / fec->getCodeRatePuncturingN();
     return dataBitsPerOFDMSymbol - dataFieldLengthInBits % dataBitsPerOFDMSymbol;

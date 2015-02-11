@@ -28,7 +28,6 @@ module Ieee80211OFDMEncoder like IEncoder
         string fecType = default("");
         string scramblerType = default("");
         string interleaverType = default("");
-        double channelSpacing @unit(Hz);
         @display("bgb=140,313");
         @class(Ieee80211OFDMEncoderModule);
 

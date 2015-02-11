@@ -15,11 +15,16 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "inet/physicallayer/ieee80211/Ieee80211DSSSMode.h"
+#include "inet/physicallayer/base/PPMModulationBase.h"
 
 namespace inet {
 
 namespace physicallayer {
+
+PPMModulationBase::PPMModulationBase(unsigned int numberOfPulses) :
+    numberOfPulses(numberOfPulses)
+{
+}
 
 } // namespace physicallayer
 

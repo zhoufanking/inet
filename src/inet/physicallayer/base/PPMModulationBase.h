@@ -15,21 +15,32 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef __INET_IEEE80211ERPOFDMMODE_H
-#define __INET_IEEE80211ERPOFDMMODE_H
+#ifndef __INET_PPMMODULATIONBASE_H
+#define __INET_PPMMODULATIONBASE_H
 
-#include "inet/physicallayer/ieee80211/Ieee80211PhyMode.h"
+#include "inet/physicallayer/contract/IModulation.h"
 
 namespace inet {
 
 namespace physicallayer {
 
-class INET_API Ieee80211ERPOFDMMode : public Ieee80211PhyMode
+class INET_API PPMModulationBase : public IModulation
 {
+  protected:
+    unsigned int numberOfPulses;
+
+  public:
+    PPMModulationBase(unsigned int numberOfPulses);
+
+    double calculateBER(double snir, Hz bandwidth, bps bitrate) const;
+    double calculateSER(double snir, Hz bandwidth, bps bitrate) const;
+
+    unsigned int getConstellationSize() const { return numberOfPulses; }
 };
 
 } // namespace physicallayer
 
 } // namespace inet
 
-#endif // ifndef __INET_IEEE80211ERPOFDMMODE_H
+#endif // ifndef __INET_PPMMODULATIONBASE_H
+

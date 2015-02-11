@@ -57,6 +57,36 @@ enum Ieee80211PreambleMode {
     IEEE80211_PREAMBLE_HT_GF
 };
 
+class INET_API Ieee80211PLCPPreambleMode
+{
+};
+
+class INET_API Ieee80211PLCPHeaderMode
+{
+  protected:
+    Ieee80211Code *code;
+    Ieee80211Modulation *modulation;
+};
+
+class INET_API Ieee80211PPDUMode
+{
+  protected:
+    Ieee80211Code *code;
+    Ieee80211Modulation *modulation;
+};
+
+class INET_API Ieee80211OFDMPLCPPreambleMode : public Ieee80211PLCPPreambleMode
+{
+  public:
+    enum Ieee80211OFDMPreambleMode {
+        IEEE80211_OFDM_PREAMBLE_LONG,
+        IEEE80211_OFDM_PREAMBLE_SHORT,
+    };
+
+  protected:
+    Ieee80211OFDMPreambleMode mode;
+};
+
 class INET_API Ieee80211PhyMode
 {
   protected:

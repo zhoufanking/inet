@@ -21,7 +21,7 @@ namespace inet {
 namespace physicallayer {
 
 Ieee80211ConvolutionalCode::Ieee80211ConvolutionalCode(int codeRateK, int codeRateN) :
-        ConvolutionalCode("133 171", NULL, "7", -1, -1, "truncated")
+        ConvolutionalCode("133 171", nullptr, "7", -1, -1, "truncated")
 {
     if (codeRateK == 1 && codeRateN == 2)
     {

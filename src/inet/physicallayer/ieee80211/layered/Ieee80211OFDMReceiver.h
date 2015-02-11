@@ -29,6 +29,7 @@
 #include "inet/physicallayer/contract/layered/IAnalogDigitalConverter.h"
 #include "inet/physicallayer/contract/IErrorModel.h"
 #include "inet/physicallayer/contract/layered/ILayeredErrorModel.h"
+#include "inet/physicallayer/ieee80211/mode/Ieee80211OFDMMode.h"
 
 namespace inet {
 namespace physicallayer {
@@ -46,6 +47,7 @@ class INET_API Ieee80211OFDMReceiver : public SNIRReceiverBase
 
     protected:
         LevelOfDetail levelOfDetail;
+        mutable const Ieee80211OFDMMode *mode = nullptr;
         const ILayeredErrorModel *errorModel = nullptr;
         const IDecoder *dataDecoder = nullptr;
         const IDecoder *signalDecoder = nullptr;
@@ -96,11 +98,12 @@ class INET_API Ieee80211OFDMReceiver : public SNIRReceiverBase
         double getCodeRateFromDecoderModule(const IDecoder *decoder) const;
 
     public:
+        virtual ~Ieee80211OFDMReceiver();
+
         bool computeIsReceptionPossible(const IListening *listening, const IReception *reception) const;
         const IListeningDecision* computeListeningDecision(const IListening* listening, const IInterference* interference) const;
         const IListening* createListening(const IRadio* radio, const simtime_t startTime, const simtime_t endTime, const Coord startPosition, const Coord endPosition) const;
         virtual const IReceptionDecision *computeReceptionDecision(const IListening *listening, const IReception *reception, const IInterference *interference) const;
-        Ieee80211OFDMReceiver();
 };
 
 } /* namespace physicallayer */

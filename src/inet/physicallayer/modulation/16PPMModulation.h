@@ -15,13 +15,29 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "inet/physicallayer/ieee80211/Ieee80211ERPOFDMMode.h"
+#ifndef __INET_16PPMMODULATION_H
+#define __INET_16PPMMODULATION_H
+
+#include "inet/physicallayer/base/PPMModulationBase.h"
 
 namespace inet {
 
 namespace physicallayer {
 
+class INET_API _16PPMModulation : public PPMModulationBase
+{
+  public:
+    static const _16PPMModulation singleton;
+
+  public:
+    _16PPMModulation();
+
+    virtual void printToStream(std::ostream &stream) const { stream << "16PPMModulation"; }
+};
+
 } // namespace physicallayer
 
 } // namespace inet
+
+#endif // ifndef __INET_16PPMMODULATION_H
 

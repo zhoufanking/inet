@@ -33,8 +33,7 @@ namespace physicallayer {
 class INET_API Ieee80211OFDMDemodulator : public IDemodulator
 {
     protected:
-        const Ieee80211OFDMModulation *ofdmModulation;
-        const APSKModulationBase *demodulationScheme;
+        const Ieee80211OFDMModulation *ofdmModulation; // TODO: destructor
 
     protected:
         BitVector demodulateSymbol(const Ieee80211OFDMSymbol *signalSymbol) const;
@@ -42,12 +41,11 @@ class INET_API Ieee80211OFDMDemodulator : public IDemodulator
         bool isPilotOrDcSubcarrier(int i) const;
 
     public:
-        const APSKModulationBase *getDemodulationScheme() const { return demodulationScheme; }
-        const Ieee80211OFDMModulation *getOFDMModulation() const { return ofdmModulation; }
+        Ieee80211OFDMDemodulator(const Ieee80211OFDMModulation *ofdmModulation);
+
+        const Ieee80211OFDMModulation *getModulation() const { return ofdmModulation; }
         virtual const IReceptionBitModel *demodulate(const IReceptionSymbolModel *symbolModel) const;
         void printToStream(std::ostream& stream) const { stream << "TODO"; }
-        Ieee80211OFDMDemodulator(const Ieee80211OFDMModulation *ofdmModulation);
-        Ieee80211OFDMDemodulator(const APSKModulationBase *demodulationScheme);
 };
 
 } // namespace physicallayer

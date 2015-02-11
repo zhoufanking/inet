@@ -35,21 +35,21 @@ const ITransmissionBitModel* Ieee80211OFDMEncoder::encode(const ITransmissionPac
 {
     const BitVector *serializedPacket = packetModel->getSerializedPacket();
     BitVector *encodedBits = new BitVector(*serializedPacket);
-    const IScrambling *scrambling = NULL;
+    const IScrambling *scrambling = nullptr;
     if (scrambler)
     {
         *encodedBits = scrambler->scramble(*encodedBits);
         scrambling = scrambler->getScrambling();
         EV_DEBUG << "Scrambled bits are: " << *encodedBits << endl;
     }
-    const IForwardErrorCorrection *forwardErrorCorrection = NULL;
+    const IForwardErrorCorrection *forwardErrorCorrection = nullptr;
     if (fecEncoder)
     {
         *encodedBits = fecEncoder->encode(*encodedBits);
         forwardErrorCorrection = fecEncoder->getForwardErrorCorrection();
         EV_DEBUG << "FEC encoded bits are: " << *encodedBits << endl;
     }
-    const IInterleaving *interleaving = NULL;
+    const IInterleaving *interleaving = nullptr;
     if (interleaver)
     {
         *encodedBits = interleaver->interleave(*encodedBits);
@@ -60,45 +60,34 @@ const ITransmissionBitModel* Ieee80211OFDMEncoder::encode(const ITransmissionPac
 }
 
 Ieee80211OFDMEncoder::Ieee80211OFDMEncoder(const Ieee80211OFDMCode *code) :
-        fecEncoder(NULL),
-        interleaver(NULL),
-        scrambler(NULL),
+        fecEncoder(nullptr),
+        interleaver(nullptr),
+        scrambler(nullptr),
         code(code)
 {
-    channelSpacing = code->getChannelSpacing();
     if (code->getScrambling())
         scrambler = new AdditiveScrambler(code->getScrambling());
     if (code->getInterleaving())
         interleaver = new Ieee80211Interleaver(code->getInterleaving());
-    if (code->getConvCode())
-        fecEncoder = new ConvolutionalCoder(code->getConvCode());
+    if (code->getConvolutionalCode())
+        fecEncoder = new ConvolutionalCoder(code->getConvolutionalCode());
 }
 
-Ieee80211OFDMEncoder::Ieee80211OFDMEncoder(const IFECCoder* fecEncoder, const IInterleaver* interleaver, const IScrambler* scrambler, Hz channelSpacing) :
+Ieee80211OFDMEncoder::Ieee80211OFDMEncoder(const IFECCoder* fecEncoder, const IInterleaver* interleaver, const IScrambler* scrambler) :
         fecEncoder(fecEncoder),
         interleaver(interleaver),
-        scrambler(scrambler),
-        channelSpacing(channelSpacing)
+        scrambler(scrambler)
 {
-    const ConvolutionalCode *fec = NULL;
+    const Ieee80211ConvolutionalCode *convolutionalCode = nullptr;
     if (fecEncoder)
-        fec = check_and_cast<const ConvolutionalCode *>(fecEncoder->getForwardErrorCorrection());
-    const Ieee80211Interleaving *interleaving = NULL;
+        convolutionalCode = check_and_cast<const Ieee80211ConvolutionalCode *>(fecEncoder->getForwardErrorCorrection());
+    const Ieee80211Interleaving *interleaving = nullptr;
     if (interleaver)
         interleaving = check_and_cast<const Ieee80211Interleaving *>(interleaver->getInterleaving());
-    const AdditiveScrambling *scrambling = NULL;
+    const AdditiveScrambling *scrambling = nullptr;
     if (scrambler)
         scrambling = check_and_cast<const AdditiveScrambling *>(scrambler->getScrambling());
-    code = new Ieee80211OFDMCode(fec, interleaving, scrambling, channelSpacing);
-}
-
-Ieee80211OFDMEncoder::Ieee80211OFDMEncoder() :
-        fecEncoder(NULL),
-        interleaver(NULL),
-        scrambler(NULL),
-        code(NULL),
-        channelSpacing(NaN)
-{
+    code = new Ieee80211OFDMCode(convolutionalCode, interleaving, scrambling);
 }
 
 Ieee80211OFDMEncoder::~Ieee80211OFDMEncoder()

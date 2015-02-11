@@ -29,7 +29,7 @@ Define_Module(Ieee80211OFDMModulatorModule);
 void Ieee80211OFDMModulatorModule::initialize(int stage)
 {
     if (stage == INITSTAGE_LOCAL)
-        ofdmModulator = new Ieee80211OFDMModulator(APSKModulationBase::findModulation(par("modulationScheme")));
+        ofdmModulator = new Ieee80211OFDMModulator(new Ieee80211OFDMModulation(APSKModulationBase::findModulation(par("modulationScheme"))));
 }
 
 const ITransmissionSymbolModel* Ieee80211OFDMModulatorModule::modulate(const ITransmissionBitModel* bitModel) const
