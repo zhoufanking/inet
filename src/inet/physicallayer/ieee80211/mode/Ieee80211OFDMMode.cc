@@ -162,34 +162,86 @@ const Ieee80211OFDMPreambleMode Ieee80211OFDMCompliantModes::ofdmPreambleModeCS5
 const Ieee80211OFDMPreambleMode Ieee80211OFDMCompliantModes::ofdmPreambleModeCS10MHz(MHz(10), MHz(20));
 const Ieee80211OFDMPreambleMode Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz(MHz(20), MHz(20));
 
-//Ieee80211OFDMSignalMode(const Ieee80211OFDMCode *code, const Ieee80211OFDMModulation *modulation, Hz channelSpacing, Hz bandwidth, unsigned int rate);
 // Signal Modes
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate13(MHz(20), MHz(20), 13);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate15(MHz(20), MHz(20), 15);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate5(MHz(20), MHz(20), 5);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate7(MHz(20), MHz(20), 7);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate9(MHz(20), MHz(20), 9);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate11(MHz(20), MHz(20), 11);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate1(MHz(20), MHz(20), 1);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate3(MHz(20), MHz(20), 3);
-//
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate13(MHz(10), MHz(20), 13);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate15(MHz(10), MHz(20), 15);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate5(MHz(10), MHz(20), 5);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate7(MHz(10), MHz(20), 7);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate9(MHz(10), MHz(20), 9);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate11(MHz(10), MHz(20), 11);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate1(MHz(10), MHz(20), 1);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate3(MHz(10), MHz(20), 3);
-//
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate13(MHz(5), MHz(20), 13);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate15(MHz(5), MHz(20), 15);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate5(MHz(5), MHz(20), 5);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate7(MHz(5), MHz(20), 7);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate9(MHz(5), MHz(20), 9);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate11(MHz(5), MHz(20), 11);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate1(MHz(5), MHz(20), 1);
-//const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate3(MHz(5), MHz(20), 3);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate13(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(20), MHz(20), 13);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate15(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(20), MHz(20), 15);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate5(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(20), MHz(20), 5);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate7(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(20), MHz(20), 7);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate9(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(20), MHz(20), 9);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate11(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(20), MHz(20), 11);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate1(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(20), MHz(20), 1);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate3(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(20), MHz(20), 3);
+
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate13(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(10), MHz(20), 13);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate15(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(10), MHz(20), 15);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate5(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(10), MHz(20), 5);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate7(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(10), MHz(20), 7);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate9(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(10), MHz(20), 9);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate11(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(10), MHz(20), 11);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate1(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(10), MHz(20), 1);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate3(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(10), MHz(20), 3);
+
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate13(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(5), MHz(20), 13);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate15(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(5), MHz(20), 15);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate5(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(5), MHz(20), 5);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate7(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(5), MHz(20), 7);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate9(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(5), MHz(20), 9);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate11(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(5), MHz(20), 11);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate1(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(5), MHz(20), 1);
+const Ieee80211OFDMSignalMode Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate3(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(5), MHz(20), 3);
+
+// Data modes
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode1_5Mbps(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleaving, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(5), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode2_25Mbps(&Ieee80211OFDMCompliantCodes::ofdmCC3_4BPSKInterleaving, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(5), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode3MbpsCS5MHz(&Ieee80211OFDMCompliantCodes::ofdmCC1_2QPSKInterleaving, &Ieee80211OFDMCompliantModulations::qpskModulation, MHz(5), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode3MbpsCS10MHz(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleaving, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(10), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode4_5MbpsCS5MHz(&Ieee80211OFDMCompliantCodes::ofdmCC3_4QPSKInterleaving, &Ieee80211OFDMCompliantModulations::qpskModulation, MHz(5), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode4_5MbpsCS10MHz(&Ieee80211OFDMCompliantCodes::ofdmCC3_4BPSKInterleaving, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(10), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode6MbpsCS5MHz(&Ieee80211OFDMCompliantCodes::ofdmCC1_2QAM16Interleaving, &Ieee80211OFDMCompliantModulations::qam16Modulation, MHz(5), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode6MbpsCS10MHz(&Ieee80211OFDMCompliantCodes::ofdmCC1_2QPSKInterleaving, &Ieee80211OFDMCompliantModulations::qpskModulation, MHz(10), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode6MbpsCS20MHz(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleaving, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(20), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode9MbpsCS5MHz(&Ieee80211OFDMCompliantCodes::ofdmCC3_4QAM16Interleaving, &Ieee80211OFDMCompliantModulations::qam16Modulation, MHz(5), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode9MbpsCS10MHz(&Ieee80211OFDMCompliantCodes::ofdmCC3_4QPSKInterleaving, &Ieee80211OFDMCompliantModulations::qpskModulation, MHz(10), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode9MbpsCS20MHz(&Ieee80211OFDMCompliantCodes::ofdmCC3_4BPSKInterleaving, &Ieee80211OFDMCompliantModulations::bpskModulation, MHz(20), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode12MbpsCS5MHz(&Ieee80211OFDMCompliantCodes::ofdmCC2_3QAM64Interleaving, &Ieee80211OFDMCompliantModulations::qam64Modulation, MHz(5), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode12MbpsCS10MHz(&Ieee80211OFDMCompliantCodes::ofdmCC1_2QAM16Interleaving, &Ieee80211OFDMCompliantModulations::qam16Modulation, MHz(10), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode12MbpsCS20MHz(&Ieee80211OFDMCompliantCodes::ofdmCC1_2QPSKInterleaving, &Ieee80211OFDMCompliantModulations::qpskModulation, MHz(20), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode13_5Mbps(&Ieee80211OFDMCompliantCodes::ofdmCC3_4QAM64Interleaving, &Ieee80211OFDMCompliantModulations::qam64Modulation, MHz(5), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode18MbpsCS10MHz(&Ieee80211OFDMCompliantCodes::ofdmCC3_4QAM16Interleaving, &Ieee80211OFDMCompliantModulations::qam16Modulation, MHz(10), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode18MbpsCS20MHz(&Ieee80211OFDMCompliantCodes::ofdmCC3_4QPSKInterleaving, &Ieee80211OFDMCompliantModulations::qpskModulation, MHz(20), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode24MbpsCS10MHz(&Ieee80211OFDMCompliantCodes::ofdmCC2_3QAM64Interleaving, &Ieee80211OFDMCompliantModulations::qam64Modulation, MHz(10), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode24MbpsCS20MHz(&Ieee80211OFDMCompliantCodes::ofdmCC1_2QAM16Interleaving, &Ieee80211OFDMCompliantModulations::qam16Modulation, MHz(20), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode27Mbps(&Ieee80211OFDMCompliantCodes::ofdmCC2_3QAM64Interleaving, &Ieee80211OFDMCompliantModulations::qam64Modulation, MHz(20), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode36Mbps(&Ieee80211OFDMCompliantCodes::ofdmCC3_4QAM16Interleaving, &Ieee80211OFDMCompliantModulations::qam16Modulation, MHz(20), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode48Mbps(&Ieee80211OFDMCompliantCodes::ofdmCC2_3QAM64Interleaving, &Ieee80211OFDMCompliantModulations::qam64Modulation, MHz(20), MHz(20));
+const Ieee80211OFDMDataMode Ieee80211OFDMCompliantModes::ofdmDataMode54Mbps(&Ieee80211OFDMCompliantCodes::ofdmCC3_4QAM64Interleaving, &Ieee80211OFDMCompliantModulations::qam64Modulation, MHz(20), MHz(20));
+
+
+// Modes
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode1_5Mbps(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS5MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate13, &Ieee80211OFDMCompliantModes::ofdmDataMode1_5Mbps, MHz(5), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode2_25Mbps(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS5MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate15, &Ieee80211OFDMCompliantModes::ofdmDataMode2_25Mbps, MHz(5), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode3MbpsCS5MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS5MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate5, &Ieee80211OFDMCompliantModes::ofdmDataMode3MbpsCS5MHz, MHz(5), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode3MbpsCS10MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS10MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate13, &Ieee80211OFDMCompliantModes::ofdmDataMode3MbpsCS10MHz, MHz(10), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode4_5MbpsCS5MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS5MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate7, &Ieee80211OFDMCompliantModes::ofdmDataMode4_5MbpsCS5MHz, MHz(5), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode4_5MbpsCS10MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS10MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate15, &Ieee80211OFDMCompliantModes::ofdmDataMode4_5MbpsCS10MHz, MHz(10), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode6MbpsCS5MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS5MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate9, &Ieee80211OFDMCompliantModes::ofdmDataMode6MbpsCS5MHz, MHz(5), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode6MbpsCS10MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS10MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate5, &Ieee80211OFDMCompliantModes::ofdmDataMode6MbpsCS10MHz, MHz(10), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode6MbpsCS20MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate13, &Ieee80211OFDMCompliantModes::ofdmDataMode6MbpsCS20MHz, MHz(20), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode9MbpsCS5MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS5MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate11, &Ieee80211OFDMCompliantModes::ofdmDataMode9MbpsCS5MHz, MHz(5), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode9MbpsCS10MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS10MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate7, &Ieee80211OFDMCompliantModes::ofdmDataMode9MbpsCS10MHz, MHz(10), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode9MbpsCS20MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate15, &Ieee80211OFDMCompliantModes::ofdmDataMode9MbpsCS20MHz, MHz(20), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode12MbpsCS5MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS5MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate1, &Ieee80211OFDMCompliantModes::ofdmDataMode12MbpsCS5MHz, MHz(5), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode12MbpsCS10MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS10MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate9, &Ieee80211OFDMCompliantModes::ofdmDataMode12MbpsCS10MHz, MHz(10), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode12MbpsCS20MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate5, &Ieee80211OFDMCompliantModes::ofdmDataMode12MbpsCS20MHz, MHz(20), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode13_5Mbps(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS5MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode1_5MbpsRate3, &Ieee80211OFDMCompliantModes::ofdmDataMode13_5Mbps, MHz(5), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode18MbpsCS10MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS10MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate11, &Ieee80211OFDMCompliantModes::ofdmDataMode18MbpsCS10MHz, MHz(10), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode18MbpsCS20MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate7, &Ieee80211OFDMCompliantModes::ofdmDataMode18MbpsCS20MHz, MHz(20), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode24MbpsCS10MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS10MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate1, &Ieee80211OFDMCompliantModes::ofdmDataMode24MbpsCS10MHz, MHz(10), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode24MbpsCS20MHz(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate9, &Ieee80211OFDMCompliantModes::ofdmDataMode24MbpsCS20MHz, MHz(20), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode27Mbps(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS10MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode3MbpsRate3, &Ieee80211OFDMCompliantModes::ofdmDataMode27Mbps, MHz(10), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode36Mbps(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate11, &Ieee80211OFDMCompliantModes::ofdmDataMode36Mbps, MHz(20), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode48Mbps(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate1, &Ieee80211OFDMCompliantModes::ofdmDataMode48Mbps, MHz(20), MHz(20));
+const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode54Mbps(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate3, &Ieee80211OFDMCompliantModes::ofdmDataMode54Mbps, MHz(20), MHz(20));
 
 } // namespace physicallayer
 

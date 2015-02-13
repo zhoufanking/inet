@@ -154,7 +154,7 @@ class INET_API Ieee80211OFDMCompliantModes
     static const Ieee80211OFDMSignalMode ofdmHeaderMode1_5MbpsRate1;
     static const Ieee80211OFDMSignalMode ofdmHeaderMode1_5MbpsRate3;
 
-    // Data modes: Table 18-6—Contents of the SIGNAL field
+    // Data modes: Table 18-4—Modulation-dependent parameters
     static const Ieee80211OFDMDataMode ofdmDataMode1_5Mbps;
     static const Ieee80211OFDMDataMode ofdmDataMode2_25Mbps;
     static const Ieee80211OFDMDataMode ofdmDataMode3MbpsCS5MHz;
@@ -180,7 +180,7 @@ class INET_API Ieee80211OFDMCompliantModes
     static const Ieee80211OFDMDataMode ofdmDataMode48Mbps;
     static const Ieee80211OFDMDataMode ofdmDataMode54Mbps;
 
-    // OFDM Modes:
+    // Modes
     static const Ieee80211OFDMMode ofdmMode1_5Mbps;
     static const Ieee80211OFDMMode ofdmMode2_25Mbps;
     static const Ieee80211OFDMMode ofdmMode3MbpsCS5MHz;
@@ -205,8 +205,6 @@ class INET_API Ieee80211OFDMCompliantModes
     static const Ieee80211OFDMMode ofdmMode36Mbps;
     static const Ieee80211OFDMMode ofdmMode48Mbps;
     static const Ieee80211OFDMMode ofdmMode54Mbps;
-
-    // TODO: define
 
   public:
     static const Ieee80211OFDMMode& getCompliantMode(unsigned int signalRateField, Hz channelSpacing);
