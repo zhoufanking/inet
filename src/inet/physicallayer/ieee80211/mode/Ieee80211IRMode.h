@@ -36,8 +36,8 @@ class INET_API Ieee80211IrPreambleMode
     inline int getSyncSlotLength() const { return syncSlotLength; }
     inline int getSFDSlotLength() const { return 4; }
     inline int getSlotLength() const { return getSyncSlotLength() + getSFDSlotLength(); }
-    inline simtime_t getSlotDuration() const { return 250E-9; }
-    inline simtime_t getDuration() const { return getSlotLength() * getSlotDuration(); }
+    inline const simtime_t getSlotDuration() const { return 250E-9; }
+    inline const simtime_t getDuration() const { return getSlotLength() * getSlotDuration(); }
 };
 
 class INET_API Ieee80211IrHeaderMode
@@ -55,8 +55,8 @@ class INET_API Ieee80211IrHeaderMode
     inline int getSlotLength() const { return getDRSlotLength() + getDCLASlotLength(); }
     inline int getBitLength() const { return getLengthBitLength() + getCRCBitLength(); }
     inline bps getBitrate() const { return Mbps(1); }
-    inline simtime_t getSlotDuration() const { return 250E-9; }
-    inline simtime_t getDuration() const { return getBitLength() / getBitrate().get() + getSlotLength() * getSlotDuration(); }
+    inline const simtime_t getSlotDuration() const { return 250E-9; }
+    inline const simtime_t getDuration() const { return getBitLength() / getBitrate().get() + getSlotLength() * getSlotDuration(); }
 };
 
 class INET_API Ieee80211IrDataMode
@@ -68,7 +68,7 @@ class INET_API Ieee80211IrDataMode
     Ieee80211IrDataMode(const PPMModulationBase *modulation);
 
     inline bps getBitrate() const { return Mbps(1) * modulation->getConstellationSize(); }
-    inline simtime_t getDuration(int bitLength) const { return bitLength / getBitrate().get(); }
+    inline const simtime_t getDuration(int bitLength) const { return bitLength / getBitrate().get(); }
 
     const PPMModulationBase *getModulation() const { return modulation; }
 };
@@ -87,7 +87,7 @@ class INET_API Ieee80211IrMode : public IIeee80211Mode
   public:
     Ieee80211IrMode(const Ieee80211IrPreambleMode *preambleMode, const Ieee80211IrHeaderMode *headerMode, const Ieee80211IrDataMode *dataMode);
 
-    inline simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
+    inline const simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
 };
 
 /**

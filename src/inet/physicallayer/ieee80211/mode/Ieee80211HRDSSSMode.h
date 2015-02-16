@@ -44,7 +44,7 @@ class INET_API Ieee80211HrDsssPreambleMode
     inline int getSFDBitLength() const { return 16; }
     inline int getBitLength() const { return getSyncBitLength() + getSFDBitLength(); }
     inline bps getBitrate() const { return Mbps(1); }
-    inline simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
+    inline const simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
 
     const DBPSKModulation *getModulation() const { return &DBPSKModulation::singleton; }
 };
@@ -77,7 +77,7 @@ class INET_API Ieee80211HrDsssDataMode
     Ieee80211HrDsssDataMode(bps bitrate);
 
     inline bps getBitrate() const { return bitrate; }
-    inline simtime_t getDuration(int bitLength) const { return bitLength / getBitrate().get(); }
+    inline const simtime_t getDuration(int bitLength) const { return bitLength / getBitrate().get(); }
 };
 
 /**
@@ -97,10 +97,10 @@ class INET_API Ieee80211HrDsssMode : public IIeee80211Mode
     inline Hz getChannelSpacing() const { return MHz(5); }
     inline Hz getBandwidth() const { return MHz(22); }
 
-    inline simtime_t getSlotTime() const { return 20E-6; }
-    inline simtime_t getSIFSTime() const { return 10E-6; }
+    inline const simtime_t getSlotTime() const { return 20E-6; }
+    inline const simtime_t getSIFSTime() const { return 10E-6; }
 
-    inline simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
+    inline const simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
 };
 
 /**

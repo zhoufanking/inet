@@ -26,6 +26,8 @@ namespace physicallayer {
 
 class INET_API IIeee80211Mode
 {
+  public:
+    virtual const simtime_t getDuration(int dataBitLength) const = 0;
 };
 
 } // namespace physicallayer

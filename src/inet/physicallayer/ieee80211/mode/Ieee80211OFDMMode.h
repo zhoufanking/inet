@@ -29,8 +29,8 @@ namespace physicallayer {
 class INET_API Ieee80211OFDMModeBase
 {
   protected:
-    Hz channelSpacing;
-    Hz bandwidth;
+    const Hz channelSpacing;
+    const Hz bandwidth;
 
   protected:
     bps computeGrossBitrate(const Ieee80211OFDMModulation *modulation) const;
@@ -38,11 +38,12 @@ class INET_API Ieee80211OFDMModeBase
 
   public:
     Ieee80211OFDMModeBase(Hz channelSpacing, Hz bandwidth);
+    virtual ~Ieee80211OFDMModeBase() {}
 
     Hz getSubcarrierFrequencySpacing() const { return channelSpacing / 64; }
-    simtime_t getFFTTransformPeriod() const { return simtime_t(1 / getSubcarrierFrequencySpacing().get()); }
-    simtime_t getGIDuration() const { return getFFTTransformPeriod() / 4; }
-    simtime_t getSymbolInterval() const { return getGIDuration() + getFFTTransformPeriod(); }
+    const simtime_t getFFTTransformPeriod() const { return simtime_t(1 / getSubcarrierFrequencySpacing().get()); }
+    const simtime_t getGIDuration() const { return getFFTTransformPeriod() / 4; }
+    const simtime_t getSymbolInterval() const { return getGIDuration() + getFFTTransformPeriod(); }
 
     Hz getChannelSpacing() const { return channelSpacing; }
     Hz getBandwidth() const { return bandwidth; }
@@ -53,10 +54,10 @@ class INET_API Ieee80211OFDMPreambleMode : public Ieee80211OFDMModeBase
   public:
     Ieee80211OFDMPreambleMode(Hz channelSpacing, Hz bandwidth);
 
-    simtime_t getTrainingSymbolGIDuration() const { return getFFTTransformPeriod() / 2; }
-    simtime_t getShortTrainingSequenceDuration() const { return 10 * getFFTTransformPeriod() / 4; }
-    simtime_t getLongTrainingSequenceDuration() const { return getTrainingSymbolGIDuration() + 2 * getFFTTransformPeriod(); }
-    simtime_t getDuration() const { return getShortTrainingSequenceDuration() + getLongTrainingSequenceDuration(); }
+    const simtime_t getTrainingSymbolGIDuration() const { return getFFTTransformPeriod() / 2; }
+    const simtime_t getShortTrainingSequenceDuration() const { return 10 * getFFTTransformPeriod() / 4; }
+    const simtime_t getLongTrainingSequenceDuration() const { return getTrainingSymbolGIDuration() + 2 * getFFTTransformPeriod(); }
+    const simtime_t getDuration() const { return getShortTrainingSequenceDuration() + getLongTrainingSequenceDuration(); }
 };
 
 class INET_API  Ieee80211OFDMSignalMode: public Ieee80211OFDMModeBase
@@ -73,7 +74,7 @@ class INET_API  Ieee80211OFDMSignalMode: public Ieee80211OFDMModeBase
 
     const Ieee80211OFDMCode* getCode() const { return code; }
     const Ieee80211OFDMModulation* getModulation() const { return modulation; }
-    simtime_t getDuration() const { return getSymbolInterval(); }
+    const simtime_t getDuration() const { return getSymbolInterval(); }
 
     bps getGrossBitrate() const { return grossBitrate; }
     bps getNetBitrate() const { return netBitrate; }
@@ -96,6 +97,8 @@ class INET_API Ieee80211OFDMDataMode : public Ieee80211OFDMModeBase
     const Ieee80211OFDMModulation* getModulation() const { return modulation; }
     const bps getGrossBitrate() const { return grossBitrate; }
     const bps getNetBitrate() const { return netBitrate; }
+
+    const simtime_t getDuration(int bitLength) const { return bitLength / grossBitrate.get(); }
 };
 
 class INET_API Ieee80211OFDMMode : public Ieee80211OFDMModeBase, public IIeee80211Mode
@@ -115,6 +118,8 @@ class INET_API Ieee80211OFDMMode : public Ieee80211OFDMModeBase, public IIeee802
     const Ieee80211OFDMDataMode* getDataMode() const { return dataMode; }
     const Ieee80211OFDMSignalMode* getSignalMode() const { return signalMode; }
     const Ieee80211OFDMPreambleMode* getPreambleMode() const { return preambleMode; }
+
+    const simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + signalMode->getDuration() + dataMode->getDuration(dataBitLength); }
 
     // TODO: Table 18-17—OFDM PHY characteristics
 };

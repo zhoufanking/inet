@@ -33,7 +33,7 @@ class INET_API Ieee80211DsssPreambleMode
     inline int getSFDBitLength() const { return 16; }
     inline int getBitLength() const { return getSYNCBitLength() + getSFDBitLength(); }
     inline bps getBitrate() const { return Mbps(1); }
-    inline simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
+    inline const simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
 
     const DBPSKModulation *getModulation() const { return &DBPSKModulation::singleton; }
 };
@@ -47,7 +47,7 @@ class INET_API Ieee80211DsssHeaderMode
     inline int getCRCBitLength() const { return 16; }
     inline int getBitLength() const { return getSignalBitLength() + getServiceBitLength() + getLengthBitLength() + getCRCBitLength(); }
     inline bps getBitrate() const { return Mbps(1); }
-    inline simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
+    inline const simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
 
     const DBPSKModulation *getModulation() const { return &DBPSKModulation::singleton; }
 };
@@ -61,7 +61,7 @@ class INET_API Ieee80211DsssDataMode
     Ieee80211DsssDataMode(const DPSKModulationBase *modulation);
 
     inline bps getBitrate() const { return Mbps(1) * modulation->getConstellationSize(); }
-    inline simtime_t getDuration(int bitLength) const { return bitLength / getBitrate().get(); }
+    inline const simtime_t getDuration(int bitLength) const { return bitLength / getBitrate().get(); }
 
     const DPSKModulationBase *getModulation() const { return modulation; }
 };
@@ -83,9 +83,9 @@ class INET_API Ieee80211DsssMode : public IIeee80211Mode
     inline Hz getChannelSpacing() const { return MHz(5); }
     inline Hz getBandwidth() const { return MHz(22); }
 
-    inline simtime_t getSlotTime() const { return 20E-6; }
-    inline simtime_t getSIFSTime() const { return 10E-6; }
-    inline simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
+    inline const simtime_t getSlotTime() const { return 20E-6; }
+    inline const simtime_t getSIFSTime() const { return 10E-6; }
+    inline const simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
 };
 
 /**

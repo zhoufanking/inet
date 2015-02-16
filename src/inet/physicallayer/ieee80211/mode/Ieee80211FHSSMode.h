@@ -32,7 +32,7 @@ class INET_API Ieee80211FhssPreambleMode
     inline int getSFDBitLength() const { return 16; }
     inline int getBitLength() const { return getSYNCBitLength() + getSFDBitLength(); }
     inline bps getBitrate() const { return Mbps(1); }
-    inline simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
+    inline const simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
 };
 
 class INET_API Ieee80211FhssHeaderMode
@@ -43,7 +43,7 @@ class INET_API Ieee80211FhssHeaderMode
     inline int getHECBitLength() const { return 16; }
     inline int getBitLength() const { return getPLWBitLength() + getPSFBitLength() + getHECBitLength(); }
     inline bps getBitrate() const { return Mbps(1); }
-    inline simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
+    inline const simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
 };
 
 class INET_API Ieee80211FhssDataMode
@@ -55,7 +55,7 @@ class INET_API Ieee80211FhssDataMode
     Ieee80211FhssDataMode(const GFSKModulationBase *modulation);
 
     inline bps getBitrate() const { return Mbps(1) * modulation->getConstellationSize(); }
-    inline simtime_t getDuration(int bitLength) const { return bitLength / getBitrate().get(); }
+    inline const simtime_t getDuration(int bitLength) const { return bitLength / getBitrate().get(); }
 
     const GFSKModulationBase *getModulation() const { return modulation; }
 };
@@ -74,7 +74,7 @@ class INET_API Ieee80211FhssMode : public IIeee80211Mode
   public:
     Ieee80211FhssMode(const Ieee80211FhssPreambleMode *preambleMode, const Ieee80211FhssHeaderMode *headerMode, const Ieee80211FhssDataMode *dataMode);
 
-    inline simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
+    inline const simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
 };
 
 /**
