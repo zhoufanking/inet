@@ -37,7 +37,8 @@ Ieee80211DimensionalTransmitter::Ieee80211DimensionalTransmitter() :
     APSKDimensionalTransmitter(),
     opMode('\0'),
     preambleMode((Ieee80211PreambleMode) - 1),
-    phyMode(nullptr)
+    phyMode(nullptr),
+    mode(nullptr)
 {
 }
 
@@ -87,7 +88,7 @@ const ITransmission *Ieee80211DimensionalTransmitter::createTransmission(const I
         transmissionHeaderBitLength = HEADER_WITHOUT_PREAMBLE;
     else
         transmissionHeaderBitLength = 24;
-    return new Ieee80211DimensionalTransmission(transmitter, macFrame, startTime, endTime, startPosition, endPosition, startOrientation, endOrientation, modulation, transmissionHeaderBitLength, macFrame->getBitLength(), carrierFrequency, bandwidth, transmissionBitrate, powerMapping, opMode, preambleMode, transmissionPhyMode);
+    return new Ieee80211DimensionalTransmission(transmitter, macFrame, startTime, endTime, startPosition, endPosition, startOrientation, endOrientation, modulation, transmissionHeaderBitLength, macFrame->getBitLength(), carrierFrequency, bandwidth, transmissionBitrate, powerMapping, opMode, preambleMode, transmissionPhyMode, mode);
 }
 
 } // namespace physicallayer

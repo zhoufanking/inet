@@ -18,8 +18,8 @@
 #ifndef __INET_IEEE80211TRANSMISSIONBASE_H
 #define __INET_IEEE80211TRANSMISSIONBASE_H
 
-#include "inet/common/INETDefs.h"
 #include "inet/physicallayer/ieee80211/Ieee80211PhyMode.h"
+#include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h"
 
 namespace inet {
 
@@ -28,13 +28,15 @@ namespace physicallayer {
 class INET_API Ieee80211TransmissionBase
 {
   protected:
-    const char opMode;
-    const Ieee80211PreambleMode preambleMode;
-    const Ieee80211PhyMode *phyMode;
+    const char opMode; // TODO: delete
+    const Ieee80211PreambleMode preambleMode; // TODO: delete
+    const Ieee80211PhyMode *phyMode; // TODO: delete
+    const IIeee80211Mode *mode;
 
   public:
-    Ieee80211TransmissionBase(char opMode, Ieee80211PreambleMode preambleMode, const Ieee80211PhyMode *phyMode);
+    Ieee80211TransmissionBase(char opMode, Ieee80211PreambleMode preambleMode, const Ieee80211PhyMode *phyMode, const IIeee80211Mode *mode);
 
+    virtual const IIeee80211Mode *getMode() const { return mode; }
     virtual char getOpMode() const { return opMode; }
     virtual Ieee80211PreambleMode getPreambleMode() const { return preambleMode; }
     virtual const Ieee80211PhyMode *getPhyMode() const { return phyMode; }
