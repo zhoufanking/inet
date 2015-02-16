@@ -19,6 +19,7 @@
 #define __INET_IEEE80211IRMODE_H
 
 #include "inet/physicallayer/base/PPMModulationBase.h"
+#include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h"
 
 namespace inet {
 
@@ -76,7 +77,7 @@ class INET_API Ieee80211IrDataMode
  * Represents an Infrared PHY mode as described in IEEE 802.11-2012 specification
  * clause 15.
  */
-class INET_API Ieee80211IrMode
+class INET_API Ieee80211IrMode : public IIeee80211Mode
 {
   protected:
     const Ieee80211IrPreambleMode *preambleMode;

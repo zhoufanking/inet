@@ -19,6 +19,7 @@
 #define __INET_IEEE80211FHSSMODE_H
 
 #include "inet/physicallayer/base/GFSKModulationBase.h"
+#include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h"
 
 namespace inet {
 
@@ -63,7 +64,7 @@ class INET_API Ieee80211FhssDataMode
  * Represents a Frequency-Hopping Spread Spectrum PHY mode as described in IEEE
  * 802.11-2012 specification clause 14.
  */
-class INET_API Ieee80211FhssMode
+class INET_API Ieee80211FhssMode : public IIeee80211Mode
 {
   protected:
     const Ieee80211FhssPreambleMode *preambleMode;

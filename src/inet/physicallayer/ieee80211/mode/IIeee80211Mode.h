@@ -15,33 +15,22 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef __INET_IEEE80211DSSSOFDMMODE_H
-#define __INET_IEEE80211DSSSOFDMMODE_H
+#ifndef __INET_IIEEE80211MODE_H
+#define __INET_IIEEE80211MODE_H
 
-#include "inet/physicallayer/ieee80211/mode/Ieee80211DSSSMode.h"
-#include "inet/physicallayer/ieee80211/mode/Ieee80211OFDMMode.h"
+#include "inet/common/INETDefs.h"
 
 namespace inet {
 
 namespace physicallayer {
 
-/**
- * Represents a Direct Sequence Spread Spectrum with Orthogonal Frequency Division
- * Multiplexing PHY mode as described in IEEE 802.11-2012 specification subclause
- * 19.3.2.6.
- */
-class INET_API Ieee80211DsssOfdmMode : public IIeee80211Mode
+class INET_API IIeee80211Mode
 {
-  protected:
-    const Ieee80211DsssPreambleMode dsssPreambleMode;
-    const Ieee80211DsssHeaderMode *dsssHeaderMode;
-    const Ieee80211OFDMPreambleMode *ofdmPreambleMode;
-    const Ieee80211OFDMSignalMode *ofdmSignalMode;
-    const Ieee80211OFDMDataMode *ofdmDataMode;
 };
 
 } // namespace physicallayer
 
 } // namespace inet
 
-#endif // ifndef __INET_IEEE80211DSSSOFDMMODE_H
+#endif // ifndef __INET_IIEEE80211MODE_H
+

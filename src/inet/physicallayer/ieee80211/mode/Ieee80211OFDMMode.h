@@ -20,6 +20,7 @@
 
 #include "inet/physicallayer/ieee80211/Ieee80211OFDMModulation.h"
 #include "inet/physicallayer/ieee80211/Ieee80211OFDMCode.h"
+#include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h"
 
 namespace inet {
 
@@ -97,7 +98,7 @@ class INET_API Ieee80211OFDMDataMode : public Ieee80211OFDMModeBase
     const bps getNetBitrate() const { return netBitrate; }
 };
 
-class INET_API Ieee80211OFDMMode : public Ieee80211OFDMModeBase
+class INET_API Ieee80211OFDMMode : public Ieee80211OFDMModeBase, public IIeee80211Mode
 {
   protected:
     const Ieee80211OFDMPreambleMode *preambleMode;

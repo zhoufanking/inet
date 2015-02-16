@@ -20,6 +20,7 @@
 
 #include "inet/physicallayer/modulation/DBPSKModulation.h"
 #include "inet/physicallayer/modulation/DQPSKModulation.h"
+#include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h"
 
 namespace inet {
 
@@ -83,7 +84,7 @@ class INET_API Ieee80211HrDsssDataMode
  * Represents a High Rate Direct Sequence Spread Spectrum PHY mode as described
  * in the IEEE 802.11-2012 specification clause 17.
  */
-class INET_API Ieee80211HrDsssMode
+class INET_API Ieee80211HrDsssMode : public IIeee80211Mode
 {
   protected:
     const Ieee80211HrDsssPreambleMode *preambleMode;
