@@ -24,9 +24,17 @@ namespace inet {
 
 namespace physicallayer {
 
+class INET_API IIeee80211DataMode
+{
+  public:
+    virtual bps getGrossBitrate() const = 0;
+};
+
 class INET_API IIeee80211Mode
 {
   public:
+    virtual const IIeee80211DataMode *getDataMode() const = 0;
+
     virtual const simtime_t getDuration(int dataBitLength) const = 0;
 };
 

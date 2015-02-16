@@ -82,7 +82,7 @@ class INET_API  Ieee80211OFDMSignalMode: public Ieee80211OFDMModeBase
 
 };
 
-class INET_API Ieee80211OFDMDataMode : public Ieee80211OFDMModeBase
+class INET_API Ieee80211OFDMDataMode : public Ieee80211OFDMModeBase, public IIeee80211DataMode
 {
   protected:
     const Ieee80211OFDMCode *code;
@@ -95,8 +95,8 @@ class INET_API Ieee80211OFDMDataMode : public Ieee80211OFDMModeBase
 
     const Ieee80211OFDMCode* getCode() const { return code; }
     const Ieee80211OFDMModulation* getModulation() const { return modulation; }
-    const bps getGrossBitrate() const { return grossBitrate; }
-    const bps getNetBitrate() const { return netBitrate; }
+    virtual bps getGrossBitrate() const { return grossBitrate; }
+    virtual bps getNetBitrate() const { return netBitrate; }
 
     const simtime_t getDuration(int bitLength) const { return bitLength / grossBitrate.get(); }
 };

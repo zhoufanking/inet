@@ -21,6 +21,15 @@ namespace inet {
 
 namespace physicallayer {
 
+Ieee80211DsssOfdmMode::Ieee80211DsssOfdmMode(const Ieee80211DsssPreambleMode *dsssPreambleMode, const Ieee80211DsssHeaderMode *dsssHeaderMode, const Ieee80211OFDMPreambleMode *ofdmPreambleMode, const Ieee80211OFDMSignalMode *ofdmSignalMode, const Ieee80211OFDMDataMode *ofdmDataMode) :
+    dsssPreambleMode(dsssPreambleMode),
+    dsssHeaderMode(dsssHeaderMode),
+    ofdmPreambleMode(ofdmPreambleMode),
+    ofdmSignalMode(ofdmSignalMode),
+    ofdmDataMode(ofdmDataMode)
+{
+}
+
 } // namespace physicallayer
 
 } // namespace inet

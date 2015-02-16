@@ -83,6 +83,52 @@ int Ieee80211ModeSet::getModeIndex(const IIeee80211Mode *mode) const
     return -1;
 }
 
+const IIeee80211Mode *Ieee80211ModeSet::getMode(bps bitrate) const
+{
+    for (int index = 0; index < (int)entries.size(); index++) {
+        if (entries[index].mode->getDataMode()->getGrossBitrate() == bitrate)
+            return entries[index].mode;
+    }
+    return nullptr;
+}
+
+const IIeee80211Mode *Ieee80211ModeSet::getSlowestMode() const
+{
+    return entries.front().mode;
+}
+
+const IIeee80211Mode *Ieee80211ModeSet::getFastestMode() const
+{
+    return entries.back().mode;
+}
+
+const IIeee80211Mode *Ieee80211ModeSet::getSlowerMode(const IIeee80211Mode *mode) const
+{
+    int index = getModeIndex(mode);
+    if (index > 0)
+        return entries[index - 1].mode;
+    else
+        return nullptr;
+}
+
+const IIeee80211Mode *Ieee80211ModeSet::getFasterMode(const IIeee80211Mode *mode) const
+{
+    int index = getModeIndex(mode);
+    if (index < (int)entries.size() - 1)
+        return entries[index + 1].mode;
+    else
+        return nullptr;
+}
+
+const Ieee80211ModeSet *Ieee80211ModeSet::getModeSet(char mode) {
+    for (int index = 0; index < (int)Ieee80211ModeSet::modeSets.size(); index++) {
+        const Ieee80211ModeSet *modeSet = &Ieee80211ModeSet::modeSets[index];
+        if (modeSet->getName() == mode)
+            return modeSet;
+    }
+    return nullptr;
+}
+
 } // namespace physicallayer
 
 } // namespace inet

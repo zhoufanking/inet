@@ -52,7 +52,7 @@ class INET_API Ieee80211DsssHeaderMode
     const DBPSKModulation *getModulation() const { return &DBPSKModulation::singleton; }
 };
 
-class INET_API Ieee80211DsssDataMode
+class INET_API Ieee80211DsssDataMode : public IIeee80211DataMode
 {
   protected:
     const DPSKModulationBase *modulation;
@@ -60,8 +60,8 @@ class INET_API Ieee80211DsssDataMode
   public:
     Ieee80211DsssDataMode(const DPSKModulationBase *modulation);
 
-    inline bps getBitrate() const { return Mbps(1) * modulation->getConstellationSize(); }
-    inline const simtime_t getDuration(int bitLength) const { return bitLength / getBitrate().get(); }
+    virtual inline bps getGrossBitrate() const { return Mbps(1) * modulation->getConstellationSize(); }
+    inline const simtime_t getDuration(int bitLength) const { return bitLength / getGrossBitrate().get(); }
 
     const DPSKModulationBase *getModulation() const { return modulation; }
 };
@@ -79,6 +79,8 @@ class INET_API Ieee80211DsssMode : public IIeee80211Mode
 
   public:
     Ieee80211DsssMode(const Ieee80211DsssPreambleMode *preambleMode, const Ieee80211DsssHeaderMode *headerMode, const Ieee80211DsssDataMode *dataMode);
+
+    const IIeee80211DataMode *getDataMode() const { return dataMode; }
 
     inline Hz getChannelSpacing() const { return MHz(5); }
     inline Hz getBandwidth() const { return MHz(22); }

@@ -33,11 +33,16 @@ namespace physicallayer {
 class INET_API Ieee80211DsssOfdmMode : public IIeee80211Mode
 {
   protected:
-    const Ieee80211DsssPreambleMode dsssPreambleMode;
+    const Ieee80211DsssPreambleMode *dsssPreambleMode;
     const Ieee80211DsssHeaderMode *dsssHeaderMode;
     const Ieee80211OFDMPreambleMode *ofdmPreambleMode;
     const Ieee80211OFDMSignalMode *ofdmSignalMode;
     const Ieee80211OFDMDataMode *ofdmDataMode;
+
+  public:
+    Ieee80211DsssOfdmMode(const Ieee80211DsssPreambleMode *dsssPreambleMode, const Ieee80211DsssHeaderMode *dsssHeaderMode, const Ieee80211OFDMPreambleMode *ofdmPreambleMode, const Ieee80211OFDMSignalMode *ofdmSignalMode, const Ieee80211OFDMDataMode *ofdmDataMode);
+
+    const IIeee80211DataMode *getDataMode() const { return ofdmDataMode; }
 };
 
 } // namespace physicallayer
