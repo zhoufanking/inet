@@ -21,6 +21,7 @@
 #include "inet/physicallayer/base/FlatTransmitterBase.h"
 #include "inet/physicallayer/ieee80211/Ieee80211PhyMode.h"
 #include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h"
+#include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
 
 namespace inet {
 
@@ -32,6 +33,7 @@ class INET_API Ieee80211ScalarTransmitter : public FlatTransmitterBase
     char opMode;
     Ieee80211PreambleMode preambleMode;
     const Ieee80211PhyMode *phyMode;
+    const Ieee80211ModeSet *modeSet;
     const IIeee80211Mode *mode;
 
   protected:

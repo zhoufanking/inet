@@ -38,6 +38,7 @@ Ieee80211ScalarTransmitter::Ieee80211ScalarTransmitter() :
     opMode('\0'),
     preambleMode((Ieee80211PreambleMode) - 1),
     phyMode(nullptr),
+    modeSet(nullptr),
     mode(nullptr)
 {
 }
@@ -56,7 +57,7 @@ void Ieee80211ScalarTransmitter::initialize(int stage)
         else if (!strcmp("p", opModeString))
             opMode = 'p';
         else
-            opMode = 'g';
+            throw cRuntimeError("Unknown op mode");
         const char *preambleModeString = par("preambleMode");
         if (!strcmp("short", preambleModeString))
             preambleMode = IEEE80211_PREAMBLE_SHORT;
@@ -66,6 +67,8 @@ void Ieee80211ScalarTransmitter::initialize(int stage)
             throw cRuntimeError("Unknown preamble mode");
         carrierFrequency = Hz(CENTER_FREQUENCIES[par("channelNumber")]);
         phyMode = &Ieee80211Mode::getPhyMode(opMode, bitrate.get());
+        modeSet = Ieee80211ModeSet::getModeSet(opMode);
+        mode = modeSet->getMode(bitrate);
     }
 }
 
@@ -75,6 +78,7 @@ const ITransmission *Ieee80211ScalarTransmitter::createTransmission(const IRadio
     W transmissionPower = controlInfo && !isNaN(controlInfo->getPower().get()) ? controlInfo->getPower() : power;
     bps transmissionBitrate = controlInfo && !isNaN(controlInfo->getBitrate().get()) ? controlInfo->getBitrate() : bitrate;
     const Ieee80211PhyMode *transmissionPhyMode = transmissionBitrate != bitrate ? &Ieee80211Mode::getPhyMode(opMode, transmissionBitrate.get()) : phyMode;
+    const IIeee80211Mode *transmissionMode = transmissionBitrate != bitrate ? modeSet->getMode(transmissionBitrate) : mode;
     const simtime_t duration = transmissionPhyMode->calculateTxDuration(macFrame->getBitLength(), preambleMode);
     const simtime_t endTime = startTime + duration;
     IMobility *mobility = transmitter->getAntenna()->getMobility();
@@ -87,7 +91,7 @@ const ITransmission *Ieee80211ScalarTransmitter::createTransmission(const IRadio
         transmissionHeaderBitLength = HEADER_WITHOUT_PREAMBLE;
     else
         transmissionHeaderBitLength = 24;
-    return new Ieee80211ScalarTransmission(transmitter, macFrame, startTime, endTime, startPosition, endPosition, startOrientation, endOrientation, modulation, transmissionHeaderBitLength, macFrame->getBitLength(), carrierFrequency, bandwidth, transmissionBitrate, transmissionPower, opMode, preambleMode, transmissionPhyMode, mode);
+    return new Ieee80211ScalarTransmission(transmitter, macFrame, startTime, endTime, startPosition, endPosition, startOrientation, endOrientation, modulation, transmissionHeaderBitLength, macFrame->getBitLength(), carrierFrequency, bandwidth, transmissionBitrate, transmissionPower, opMode, preambleMode, transmissionPhyMode, transmissionMode);
 }
 
 } // namespace physicallayer

@@ -18,7 +18,7 @@
 #ifndef __INET_IIEEE80211MODE_H
 #define __INET_IIEEE80211MODE_H
 
-#include "inet/common/INETDefs.h"
+#include "inet/physicallayer/base/PhysicalLayerDefs.h"
 
 namespace inet {
 
