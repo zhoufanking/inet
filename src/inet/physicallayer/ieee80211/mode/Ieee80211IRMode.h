@@ -67,7 +67,8 @@ class INET_API Ieee80211IrDataMode : public IIeee80211DataMode
   public:
     Ieee80211IrDataMode(const PPMModulationBase *modulation);
 
-    virtual inline bps getGrossBitrate() const override { return Mbps(1) * modulation->getConstellationSize(); }
+    virtual inline bps getNetBitrate() const override { return Mbps(1) * modulation->getConstellationSize() / 2; }
+    virtual inline bps getGrossBitrate() const { return getNetBitrate(); }
     inline const simtime_t getDuration(int bitLength) const { return bitLength / getGrossBitrate().get(); }
 
     const PPMModulationBase *getModulation() const { return modulation; }

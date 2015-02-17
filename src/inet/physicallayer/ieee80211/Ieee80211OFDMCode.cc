@@ -31,9 +31,9 @@ Ieee80211OFDMCode::Ieee80211OFDMCode(const Ieee80211ConvolutionalCode* convoluti
 
 Ieee80211OFDMCode::~Ieee80211OFDMCode()
 {
-    delete convolutionalCode;
-    delete interleaving;
-    delete scrambling;
+//    delete convolutionalCode;
+//    delete interleaving;
+//    delete scrambling;
 }
 
 // Convolutional codes

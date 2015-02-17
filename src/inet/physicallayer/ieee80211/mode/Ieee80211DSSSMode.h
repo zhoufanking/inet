@@ -60,8 +60,9 @@ class INET_API Ieee80211DsssDataMode : public IIeee80211DataMode
   public:
     Ieee80211DsssDataMode(const DPSKModulationBase *modulation);
 
-    virtual inline bps getGrossBitrate() const { return Mbps(1) * modulation->getConstellationSize(); }
-    inline const simtime_t getDuration(int bitLength) const { return bitLength / getGrossBitrate().get(); }
+    virtual inline bps getNetBitrate() const { return Mbps(1) * modulation->getConstellationSize() / 2; }
+    virtual inline bps getGrossBitrate() const { return getNetBitrate(); }
+    const simtime_t getDuration(int bitLength) const;
 
     const DPSKModulationBase *getModulation() const { return modulation; }
 };

@@ -36,6 +36,11 @@ Ieee80211HrDsssDataMode::Ieee80211HrDsssDataMode(bps bitrate) :
 {
 }
 
+const simtime_t Ieee80211HrDsssDataMode::getDuration(int bitLength) const
+{
+    return (simtime_t)(lrint(ceil(bitLength / bitrate.get() * 1E+6))) / 1E+6;
+}
+
 Ieee80211HrDsssMode::Ieee80211HrDsssMode(const Ieee80211HrDsssPreambleMode *preambleMode, const Ieee80211HrDsssHeaderMode *headerMode, const Ieee80211HrDsssDataMode *dataMode) :
     preambleMode(preambleMode),
     headerMode(headerMode),

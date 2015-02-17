@@ -27,6 +27,7 @@ namespace physicallayer {
 class INET_API IIeee80211DataMode
 {
   public:
+    virtual bps getNetBitrate() const = 0;
     virtual bps getGrossBitrate() const = 0;
 };
 

@@ -54,8 +54,8 @@ Ieee80211OFDMSignalMode::Ieee80211OFDMSignalMode(const Ieee80211OFDMCode* code, 
         modulation(modulation),
         rate(rate)
 {
-    grossBitrate = computeGrossBitrate(modulation);
-    netBitrate = computeNetBitrate(grossBitrate, code);
+//    grossBitrate = computeGrossBitrate(modulation);
+//    netBitrate = computeNetBitrate(grossBitrate, code);
 }
 
 Ieee80211OFDMDataMode::Ieee80211OFDMDataMode(const Ieee80211OFDMCode* code, const Ieee80211OFDMModulation* modulation, Hz channelSpacing, Hz bandwidth) :
@@ -63,8 +63,8 @@ Ieee80211OFDMDataMode::Ieee80211OFDMDataMode(const Ieee80211OFDMCode* code, cons
         code(code),
         modulation(modulation)
 {
-    grossBitrate = computeGrossBitrate(modulation);
-    netBitrate = computeNetBitrate(grossBitrate, code);
+//    grossBitrate = computeGrossBitrate(modulation);
+//    netBitrate = computeNetBitrate(grossBitrate, code);
 }
 
 Ieee80211OFDMModeBase::Ieee80211OFDMModeBase(Hz channelSpacing, Hz bandwidth) :

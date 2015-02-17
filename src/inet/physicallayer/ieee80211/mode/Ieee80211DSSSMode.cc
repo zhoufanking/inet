@@ -26,6 +26,12 @@ Ieee80211DsssDataMode::Ieee80211DsssDataMode(const DPSKModulationBase *modulatio
 {
 }
 
+const simtime_t Ieee80211DsssDataMode::getDuration(int bitLength) const
+{
+    return (simtime_t)(lrint(ceil(bitLength / getGrossBitrate().get() * 1E+6))) / 1E+6;
+}
+
+
 Ieee80211DsssMode::Ieee80211DsssMode(const Ieee80211DsssPreambleMode *preambleMode, const Ieee80211DsssHeaderMode *headerMode, const Ieee80211DsssDataMode *dataMode) :
     preambleMode(preambleMode),
     headerMode(headerMode),

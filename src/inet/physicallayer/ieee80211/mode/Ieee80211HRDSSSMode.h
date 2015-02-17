@@ -62,8 +62,8 @@ class INET_API Ieee80211HrDsssHeaderMode
     inline int getLengthBitLength() const { return 16; }
     inline int getCRCBitLength() const { return 16; }
     inline int getBitLength() const { return getSignalBitLength() + getServiceBitLength() + getLengthBitLength() + getCRCBitLength(); }
-    inline bps getBitrate() const { return Mbps(2); }
-    inline int getDuration() const { return getBitLength() / getBitrate().get(); }
+    inline bps getBitrate() const { return preambleType == IEEE80211_HRDSSS_PREAMBLE_TYPE_SHORT ? Mbps(2) : Mbps(1); }
+    inline const simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
 
     const DPSKModulationBase *getModulation() const { return preambleType == IEEE80211_HRDSSS_PREAMBLE_TYPE_SHORT ? static_cast<const DPSKModulationBase *>(&DQPSKModulation::singleton) : static_cast<const DPSKModulationBase *>(&DBPSKModulation::singleton); }
 };
@@ -76,8 +76,9 @@ class INET_API Ieee80211HrDsssDataMode : public IIeee80211DataMode
   public:
     Ieee80211HrDsssDataMode(bps bitrate);
 
+    virtual inline bps getNetBitrate() const { return bitrate; }
     virtual inline bps getGrossBitrate() const { return bitrate; }
-    inline const simtime_t getDuration(int bitLength) const { return bitLength / getGrossBitrate().get(); }
+    const simtime_t getDuration(int bitLength) const;
 };
 
 /**

@@ -27,28 +27,30 @@ namespace physicallayer {
 
 const std::vector<Ieee80211ModeSet> Ieee80211ModeSet::modeSets = {
     Ieee80211ModeSet('a', {
-//        {true, Ieee80211PhyMode::GetOfdmRate6Mbps()},
-//        {false, Ieee80211PhyMode::GetOfdmRate9Mbps()},
-//        {true, Ieee80211PhyMode::GetOfdmRate12Mbps()},
-//        {false, Ieee80211PhyMode::GetOfdmRate18Mbps()},
-//        {true, Ieee80211PhyMode::GetOfdmRate24Mbps()},
-//        {false, Ieee80211PhyMode::GetOfdmRate36Mbps()},
-//        {false, Ieee80211PhyMode::GetOfdmRate48Mbps()},
-//        {false, Ieee80211PhyMode::GetOfdmRate54Mbps()},
+        {true, &Ieee80211OFDMCompliantModes::ofdmMode6MbpsCS20MHz},
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode9MbpsCS20MHz},
+        {true, &Ieee80211OFDMCompliantModes::ofdmMode12MbpsCS20MHz},
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode18MbpsCS20MHz},
+        {true, &Ieee80211OFDMCompliantModes::ofdmMode24MbpsCS20MHz},
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode36Mbps},
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode48Mbps},
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode54Mbps},
     }),
     Ieee80211ModeSet('b', {
         {true, &Ieee80211DsssCompliantModes::dsssMode1Mbps},
         {true, &Ieee80211DsssCompliantModes::dsssMode2Mbps},
-        {true, &Ieee80211HrDsssCompliantModes::hrDsssMode5_5MbpsCckShortPreamble},
-        {true, &Ieee80211HrDsssCompliantModes::hrDsssMode11MbpsCckShortPreamble},
+        {true, &Ieee80211HrDsssCompliantModes::hrDsssMode5_5MbpsCckLongPreamble},
+        {true, &Ieee80211HrDsssCompliantModes::hrDsssMode11MbpsCckLongPreamble},
     }),
     Ieee80211ModeSet('g', {
         {true, &Ieee80211DsssCompliantModes::dsssMode1Mbps},
         {true, &Ieee80211DsssCompliantModes::dsssMode2Mbps},
-        {true, &Ieee80211HrDsssCompliantModes::hrDsssMode5_5MbpsCckShortPreamble},
+        {true, &Ieee80211HrDsssCompliantModes::hrDsssMode5_5MbpsCckLongPreamble},
+        // TODO:
 //        {true, Ieee80211PhyMode::GetErpOfdmRate6Mbps()},
 //        {false, Ieee80211PhyMode::GetErpOfdmRate9Mbps()},
-        {true, &Ieee80211HrDsssCompliantModes::hrDsssMode11MbpsCckShortPreamble},
+        {true, &Ieee80211HrDsssCompliantModes::hrDsssMode11MbpsCckLongPreamble},
+        // TODO:
 //        {true, Ieee80211PhyMode::GetErpOfdmRate12Mbps()},
 //        {false, Ieee80211PhyMode::GetErpOfdmRate18Mbps()},
 //        {true, Ieee80211PhyMode::GetErpOfdmRate24Mbps()},
@@ -57,14 +59,14 @@ const std::vector<Ieee80211ModeSet> Ieee80211ModeSet::modeSets = {
 //        {false, Ieee80211PhyMode::GetErpOfdmRate54Mbps()},
     }),
     Ieee80211ModeSet('p', {
-//        {true, Ieee80211PhyMode::GetOfdmRate3MbpsCS10MHz()},
-//        {false, Ieee80211PhyMode::GetOfdmRate4_5MbpsCS10MHz()},
-//        {true, Ieee80211PhyMode::GetOfdmRate6MbpsCS10MHz()},
-//        {false, Ieee80211PhyMode::GetOfdmRate9MbpsCS10MHz()},
-//        {true, Ieee80211PhyMode::GetOfdmRate12MbpsCS10MHz()},
-//        {false, Ieee80211PhyMode::GetOfdmRate18MbpsCS10MHz()},
-//        {false, Ieee80211PhyMode::GetOfdmRate24MbpsCS10MHz()},
-//        {false, Ieee80211PhyMode::GetOfdmRate27MbpsCS10MHz()},
+        {true, &Ieee80211OFDMCompliantModes::ofdmMode3MbpsCS10MHz},
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode4_5MbpsCS10MHz},
+        {true, &Ieee80211OFDMCompliantModes::ofdmMode6MbpsCS10MHz},
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode9MbpsCS10MHz},
+        {true, &Ieee80211OFDMCompliantModes::ofdmMode12MbpsCS10MHz},
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode18MbpsCS10MHz},
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode24MbpsCS10MHz},
+// TODO:        {false, &Ieee80211OFDMCompliantModes::ofdmMode27MbpsCS10MHz},
     }),
 };
 
@@ -86,7 +88,7 @@ int Ieee80211ModeSet::getModeIndex(const IIeee80211Mode *mode) const
 const IIeee80211Mode *Ieee80211ModeSet::getMode(bps bitrate) const
 {
     for (int index = 0; index < (int)entries.size(); index++) {
-        if (entries[index].mode->getDataMode()->getGrossBitrate() == bitrate)
+        if (entries[index].mode->getDataMode()->getNetBitrate() == bitrate)
             return entries[index].mode;
     }
     return nullptr;

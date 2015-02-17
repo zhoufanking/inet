@@ -54,8 +54,9 @@ class INET_API Ieee80211FhssDataMode : public IIeee80211DataMode
   public:
     Ieee80211FhssDataMode(const GFSKModulationBase *modulation);
 
-    virtual inline bps getGrossBitrate() const { return Mbps(1) * modulation->getConstellationSize(); }
-    inline const simtime_t getDuration(int bitLength) const { return bitLength / getGrossBitrate().get(); }
+    virtual inline bps getNetBitrate() const { return Mbps(1) * modulation->getConstellationSize() / 2; }
+    virtual inline bps getGrossBitrate() const { return getNetBitrate(); }
+    inline const simtime_t getDuration(int bitLength) const { return bitLength / getNetBitrate().get(); }
 
     const GFSKModulationBase *getModulation() const { return modulation; }
 };
