@@ -65,8 +65,8 @@ class INET_API  Ieee80211OFDMSignalMode: public Ieee80211OFDMModeBase
   protected:
     const Ieee80211OFDMCode *code;
     const Ieee80211OFDMModulation *modulation;
-    bps netBitrate;
-    bps grossBitrate;
+    mutable bps netBitrate;
+    mutable bps grossBitrate;
     unsigned int rate;
 
   public:
@@ -76,8 +76,8 @@ class INET_API  Ieee80211OFDMSignalMode: public Ieee80211OFDMModeBase
     const Ieee80211OFDMModulation* getModulation() const { return modulation; }
     const simtime_t getDuration() const { return getSymbolInterval(); }
 
-    bps getGrossBitrate() const { return grossBitrate; }
-    bps getNetBitrate() const { return netBitrate; }
+    bps getGrossBitrate() const;
+    bps getNetBitrate() const;
     unsigned int getRate() const { return rate; }
 
 };
@@ -87,18 +87,18 @@ class INET_API Ieee80211OFDMDataMode : public Ieee80211OFDMModeBase, public IIee
   protected:
     const Ieee80211OFDMCode *code;
     const Ieee80211OFDMModulation *modulation;
-    bps netBitrate;
-    bps grossBitrate;
+    mutable bps netBitrate;
+    mutable bps grossBitrate;
 
   public:
     Ieee80211OFDMDataMode(const Ieee80211OFDMCode *code, const Ieee80211OFDMModulation *modulation, Hz channelSpacing, Hz bandwidth);
 
     const Ieee80211OFDMCode* getCode() const { return code; }
     const Ieee80211OFDMModulation* getModulation() const { return modulation; }
-    virtual bps getNetBitrate() const { return netBitrate; }
-    virtual bps getGrossBitrate() const { return grossBitrate; }
+    virtual bps getNetBitrate() const;
+    virtual bps getGrossBitrate() const;
 
-    const simtime_t getDuration(int bitLength) const { return bitLength / grossBitrate.get(); }
+    const simtime_t getDuration(int bitLength) const;
 };
 
 class INET_API Ieee80211OFDMMode : public Ieee80211OFDMModeBase, public IIeee80211Mode

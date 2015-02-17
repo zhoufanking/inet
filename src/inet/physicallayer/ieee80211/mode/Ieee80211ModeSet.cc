@@ -46,17 +46,15 @@ const std::vector<Ieee80211ModeSet> Ieee80211ModeSet::modeSets = {
         {true, &Ieee80211DsssCompliantModes::dsssMode1Mbps},
         {true, &Ieee80211DsssCompliantModes::dsssMode2Mbps},
         {true, &Ieee80211HrDsssCompliantModes::hrDsssMode5_5MbpsCckLongPreamble},
-        // TODO:
-//        {true, Ieee80211PhyMode::GetErpOfdmRate6Mbps()},
-//        {false, Ieee80211PhyMode::GetErpOfdmRate9Mbps()},
+        {true, &Ieee80211OFDMCompliantModes::ofdmMode6MbpsCS20MHz}, // TODO: should be ErpOfdm
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode9MbpsCS20MHz}, // TODO: should be ErpOfdm
         {true, &Ieee80211HrDsssCompliantModes::hrDsssMode11MbpsCckLongPreamble},
-        // TODO:
-//        {true, Ieee80211PhyMode::GetErpOfdmRate12Mbps()},
-//        {false, Ieee80211PhyMode::GetErpOfdmRate18Mbps()},
-//        {true, Ieee80211PhyMode::GetErpOfdmRate24Mbps()},
-//        {false, Ieee80211PhyMode::GetErpOfdmRate36Mbps()},
-//        {false, Ieee80211PhyMode::GetErpOfdmRate48Mbps()},
-//        {false, Ieee80211PhyMode::GetErpOfdmRate54Mbps()},
+        {true, &Ieee80211OFDMCompliantModes::ofdmMode12MbpsCS20MHz}, // TODO: should be ErpOfdm
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode18MbpsCS20MHz}, // TODO: should be ErpOfdm
+        {true, &Ieee80211OFDMCompliantModes::ofdmMode24MbpsCS20MHz}, // TODO: should be ErpOfdm
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode36Mbps}, // TODO: should be ErpOfdm
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode48Mbps}, // TODO: should be ErpOfdm
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode54Mbps}, // TODO: should be ErpOfdm
     }),
     Ieee80211ModeSet('p', {
         {true, &Ieee80211OFDMCompliantModes::ofdmMode3MbpsCS10MHz},
@@ -66,7 +64,7 @@ const std::vector<Ieee80211ModeSet> Ieee80211ModeSet::modeSets = {
         {true, &Ieee80211OFDMCompliantModes::ofdmMode12MbpsCS10MHz},
         {false, &Ieee80211OFDMCompliantModes::ofdmMode18MbpsCS10MHz},
         {false, &Ieee80211OFDMCompliantModes::ofdmMode24MbpsCS10MHz},
-// TODO:        {false, &Ieee80211OFDMCompliantModes::ofdmMode27MbpsCS10MHz},
+        {false, &Ieee80211OFDMCompliantModes::ofdmMode27Mbps},
     }),
 };
 
@@ -88,7 +86,8 @@ int Ieee80211ModeSet::getModeIndex(const IIeee80211Mode *mode) const
 const IIeee80211Mode *Ieee80211ModeSet::getMode(bps bitrate) const
 {
     for (int index = 0; index < (int)entries.size(); index++) {
-        if (entries[index].mode->getDataMode()->getNetBitrate() == bitrate)
+        const IIeee80211Mode *mode = entries[index].mode;
+        if (mode->getDataMode()->getNetBitrate() == bitrate)
             return entries[index].mode;
     }
     return nullptr;

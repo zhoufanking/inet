@@ -26,19 +26,16 @@ namespace physicallayer {
 bps Ieee80211OFDMModeBase::computeGrossBitrate(const Ieee80211OFDMModulation *modulation) const
 {
     int codedBitsPerOFDMSymbol = modulation->getModulation()->getCodeWordSize() * NUMBER_OF_OFDM_DATA_SUBCARRIERS;
-    double dataBitsPerOFDMSymbol = codedBitsPerOFDMSymbol;
-    simtime_t symbolDuration = getSymbolInterval();
-    return bps(dataBitsPerOFDMSymbol / symbolDuration);
+    return bps(codedBitsPerOFDMSymbol / getSymbolInterval());
 }
 
 bps Ieee80211OFDMModeBase::computeNetBitrate(bps grossBitrate, const Ieee80211OFDMCode* code) const
 {
     const ConvolutionalCode *convolutionalCode = code ? code->getConvolutionalCode() : nullptr;
     if (convolutionalCode)
-        return bps(convolutionalCode->getCodeRatePuncturingK() * grossBitrate.get() / convolutionalCode->getCodeRatePuncturingN());
+        return grossBitrate * convolutionalCode->getCodeRatePuncturingK() / convolutionalCode->getCodeRatePuncturingN();
     return grossBitrate;
 }
-
 
 Ieee80211OFDMMode::Ieee80211OFDMMode(const Ieee80211OFDMPreambleMode *preambleMode, const Ieee80211OFDMSignalMode* signalMode, const Ieee80211OFDMDataMode* dataMode, Hz channelSpacing, Hz bandwidth) :
         Ieee80211OFDMModeBase(channelSpacing, bandwidth),
@@ -52,19 +49,68 @@ Ieee80211OFDMSignalMode::Ieee80211OFDMSignalMode(const Ieee80211OFDMCode* code, 
         Ieee80211OFDMModeBase(channelSpacing, bandwidth),
         code(code),
         modulation(modulation),
+        netBitrate(bps(NaN)),
+        grossBitrate(bps(NaN)),
         rate(rate)
 {
-//    grossBitrate = computeGrossBitrate(modulation);
-//    netBitrate = computeNetBitrate(grossBitrate, code);
+}
+
+bps Ieee80211OFDMSignalMode::getGrossBitrate() const
+{
+    if (isNaN(grossBitrate.get()))
+        grossBitrate = computeGrossBitrate(modulation);
+    return grossBitrate;
+}
+
+bps Ieee80211OFDMSignalMode::getNetBitrate() const
+{
+    if (isNaN(netBitrate.get()))
+        netBitrate = computeNetBitrate(getGrossBitrate(), code);
+    return netBitrate;
 }
 
 Ieee80211OFDMDataMode::Ieee80211OFDMDataMode(const Ieee80211OFDMCode* code, const Ieee80211OFDMModulation* modulation, Hz channelSpacing, Hz bandwidth) :
         Ieee80211OFDMModeBase(channelSpacing, bandwidth),
         code(code),
-        modulation(modulation)
+        modulation(modulation),
+        netBitrate(bps(NaN)),
+        grossBitrate(bps(NaN))
 {
-//    grossBitrate = computeGrossBitrate(modulation);
-//    netBitrate = computeNetBitrate(grossBitrate, code);
+}
+
+bps Ieee80211OFDMDataMode::getGrossBitrate() const
+{
+    if (isNaN(grossBitrate.get()))
+        grossBitrate = computeGrossBitrate(modulation);
+    return grossBitrate;
+}
+
+bps Ieee80211OFDMDataMode::getNetBitrate() const
+{
+    if (isNaN(netBitrate.get()))
+        netBitrate = computeNetBitrate(getGrossBitrate(), code);
+    return netBitrate;
+}
+
+const simtime_t Ieee80211OFDMDataMode::getDuration(int bitLength) const
+{
+    // IEEE Std 802.11-2007, section 17.3.2.2, table 17-3
+    // corresponds to N_{DBPS} in the table
+    int codedBitsPerOFDMSymbol = modulation->getModulation()->getCodeWordSize() * NUMBER_OF_OFDM_DATA_SUBCARRIERS;
+    const ConvolutionalCode *convolutionalCode = code ? code->getConvolutionalCode() : nullptr;
+    int dataBitsPerOFDMSymbol;
+    if (convolutionalCode)
+        dataBitsPerOFDMSymbol = codedBitsPerOFDMSymbol * convolutionalCode->getCodeRatePuncturingK() / convolutionalCode->getCodeRatePuncturingN();
+    else
+        dataBitsPerOFDMSymbol = codedBitsPerOFDMSymbol;
+    // IEEE Std 802.11-2007, section 17.3.5.3, equation (17-11)
+    int numberOfSymbols = lrint(ceil((16 + bitLength + 6.0) / dataBitsPerOFDMSymbol));
+    // Add signal extension for ERP PHY
+    // TODO: cleanup
+//    if (getModulationClass() == MOD_CLASS_ERP_OFDM)
+        return numberOfSymbols * getSymbolInterval() + 6E-6;
+//    else
+//        return numberOfSymbols * getSymbolInterval();
 }
 
 Ieee80211OFDMModeBase::Ieee80211OFDMModeBase(Hz channelSpacing, Hz bandwidth) :
