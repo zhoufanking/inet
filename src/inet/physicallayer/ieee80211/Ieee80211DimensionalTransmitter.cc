@@ -79,9 +79,7 @@ const ITransmission *Ieee80211DimensionalTransmitter::createTransmission(const I
     bps transmissionBitrate = controlInfo && !isNaN(controlInfo->getBitrate().get()) ? controlInfo->getBitrate() : bitrate;
     const Ieee80211PhyMode *transmissionPhyMode = transmissionBitrate != bitrate ? &Ieee80211Mode::getPhyMode(opMode, transmissionBitrate.get()) : phyMode;
     const IIeee80211Mode *transmissionMode = transmissionBitrate != bitrate ? modeSet->getMode(transmissionBitrate) : mode;
-    const simtime_t durationOld = transmissionPhyMode->calculateTxDuration(macFrame->getBitLength(), preambleMode);
     const simtime_t duration = transmissionMode->getDuration(macFrame->getBitLength());
-    ASSERT(durationOld == duration);
     const simtime_t endTime = startTime + duration;
     IMobility *mobility = transmitter->getAntenna()->getMobility();
     const Coord startPosition = mobility->getCurrentPosition();
