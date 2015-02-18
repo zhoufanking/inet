@@ -36,9 +36,9 @@ void Ieee80211OFDMDecoderModule::initialize(int stage)
     }
     else if (stage == INITSTAGE_PHYSICAL_LAYER)
     {
-        const Ieee80211ConvolutionalCode *convolutionalCode = nullptr;
+        const ConvolutionalCode *convolutionalCode = nullptr;
         if (fecDecoder)
-            convolutionalCode = dynamic_cast<const Ieee80211ConvolutionalCode *>(fecDecoder->getForwardErrorCorrection());
+            convolutionalCode = dynamic_cast<const ConvolutionalCode *>(fecDecoder->getForwardErrorCorrection());
         const Ieee80211Interleaving *interleaving = nullptr;
         if (deinterleaver)
             interleaving = dynamic_cast<const Ieee80211Interleaving *>(deinterleaver->getInterleaving());

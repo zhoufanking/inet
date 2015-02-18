@@ -55,8 +55,6 @@ class INET_API Ieee80211OFDMReceiver : public SNIRReceiverBase
         const IDemodulator *signalDemodulator = nullptr;
         const IPulseFilter *pulseFilter = nullptr;
         const IAnalogDigitalConverter *analogDigitalConverter = nullptr;
-        const APSKModulationBase *signalDemodulation = nullptr;
-        const APSKModulationBase *dataDemodulation = nullptr;
 
         W energyDetection;
         W sensitivity;
@@ -91,7 +89,7 @@ class INET_API Ieee80211OFDMReceiver : public SNIRReceiverBase
         const IReceptionPacketModel *createPacketModel(const LayeredTransmission* transmission, const ISNIR* snir) const;
         const IReceptionPacketModel *createCompletePacketModel(const IReceptionPacketModel *signalFieldPacketModel, const IReceptionPacketModel *dataFieldPacketModel) const;
 
-
+        const Ieee80211OFDMMode *computeMode(Hz bandwidth) const;
         uint8_t getRate(const BitVector *serializedPacket) const;
         unsigned int getSignalFieldLength(const BitVector *signalField) const;
         unsigned int calculatePadding(unsigned int dataFieldLengthInBits, const APSKModulationBase *modulation, double codeRate) const;

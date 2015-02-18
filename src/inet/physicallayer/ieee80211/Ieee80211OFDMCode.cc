@@ -22,18 +22,11 @@
 namespace inet {
 namespace physicallayer {
 
-Ieee80211OFDMCode::Ieee80211OFDMCode(const Ieee80211ConvolutionalCode* convolutionalCode, const Ieee80211Interleaving* interleaving, const AdditiveScrambling* scrambling) :
+Ieee80211OFDMCode::Ieee80211OFDMCode(const ConvolutionalCode* convolutionalCode, const Ieee80211Interleaving* interleaving, const AdditiveScrambling* scrambling) :
         convolutionalCode(convolutionalCode),
         interleaving(interleaving),
         scrambling(scrambling)
 {
-}
-
-Ieee80211OFDMCode::~Ieee80211OFDMCode()
-{
-//    delete convolutionalCode;
-//    delete interleaving;
-//    delete scrambling;
 }
 
 // Convolutional codes

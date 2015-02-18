@@ -53,6 +53,7 @@ class INET_API Ieee80211OFDMTransmitter : public ITransmitter, public cSimpleMod
         const IDigitalAnalogConverter *digitalAnalogConverter = nullptr;
         bool isCompliant;
 
+        Hz bandwidth;
         Hz channelSpacing;
         Hz carrierFrequency;
         W power;
@@ -73,7 +74,8 @@ class INET_API Ieee80211OFDMTransmitter : public ITransmitter, public cSimpleMod
 
         BitVector *serialize(const cPacket* packet) const;
         void encodeAndModulate(const ITransmissionPacketModel* packetModel, const ITransmissionBitModel *&fieldBitModel, const ITransmissionSymbolModel *&fieldSymbolModel, const IEncoder *encoder, const IModulator *modulator, bool isSignalField) const;
-        void padding(BitVector *serializedPacket, unsigned int dataBitsLength, uint8_t rate) const;
+        void appendPadding(BitVector *serializedPacket, unsigned int dataBitsLength, uint8_t rate) const;
+        const Ieee80211OFDMMode *computeMode(Hz bandwidth) const;
 
     public:
         virtual ~Ieee80211OFDMTransmitter();

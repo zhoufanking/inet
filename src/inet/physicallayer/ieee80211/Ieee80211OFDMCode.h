@@ -28,15 +28,14 @@ namespace physicallayer {
 class INET_API Ieee80211OFDMCode
 {
     protected:
-        const Ieee80211ConvolutionalCode *convolutionalCode;
+        const ConvolutionalCode *convolutionalCode;
         const Ieee80211Interleaving *interleaving;
         const AdditiveScrambling *scrambling;
 
     public:
-        Ieee80211OFDMCode(const Ieee80211ConvolutionalCode *convolutionalCode, const Ieee80211Interleaving *interleaving, const AdditiveScrambling *scrambling);
-        ~Ieee80211OFDMCode();
+        Ieee80211OFDMCode(const ConvolutionalCode *convolutionalCode, const Ieee80211Interleaving *interleaving, const AdditiveScrambling *scrambling);
 
-        const Ieee80211ConvolutionalCode *getConvolutionalCode() const { return convolutionalCode; }
+        const ConvolutionalCode *getConvolutionalCode() const { return convolutionalCode; }
         const Ieee80211Interleaving *getInterleaving() const { return interleaving; }
         const AdditiveScrambling *getScrambling() const { return scrambling; }
 };

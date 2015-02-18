@@ -67,7 +67,7 @@ void Ieee80211OFDMReceiver::initialize(int stage)
         channelSpacing = Hz(par("channelSpacing"));
         isCompliant = par("isCompliant").boolValue();
         if (isCompliant && (dataDecoder || signalDecoder || dataDemodulator || signalDemodulator
-                            || pulseFilter || analogDigitalConverter || !isNaN(bandwidth.get()))) // TODO: check modulations
+                            || pulseFilter || analogDigitalConverter)) // TODO: check modulations
         {
             throw cRuntimeError("In compliant mode it is forbidden to the following parameters: dataDecoder, signalDecoder, dataDemodulator, signalDemodulator, pulseFilter, analogDigitalConverter, bandwidth.");
         }
@@ -82,27 +82,6 @@ void Ieee80211OFDMReceiver::initialize(int stage)
             levelOfDetail = PACKET_DOMAIN;
         else
             throw cRuntimeError("Unknown level of detail='%s'", levelOfDetailStr);
-        if (!isCompliant)
-        {
-            // create mode
-            signalDemodulation = APSKModulationBase::findModulation(par("signalDemodulation"));
-            dataDemodulation = APSKModulationBase::findModulation(par("dataDemodulation"));
-            const Ieee80211OFDMDecoderModule *ofdmSignalDecoderModule = check_and_cast<const Ieee80211OFDMDecoderModule *>(signalDecoder);
-            const Ieee80211OFDMDecoderModule *ofdmDataDecoderModule = check_and_cast<const Ieee80211OFDMDecoderModule *>(dataDecoder);
-            const Ieee80211OFDMSignalMode *signalMode = nullptr;
-            const Ieee80211OFDMDataMode *dataMode = nullptr;
-            if (levelOfDetail >= BIT_DOMAIN)
-            {
-                signalMode = new Ieee80211OFDMSignalMode(ofdmSignalDecoderModule->getCode(), new Ieee80211OFDMModulation(signalDemodulation), channelSpacing, bandwidth, 0);
-                dataMode = new Ieee80211OFDMDataMode(ofdmDataDecoderModule->getCode(), new Ieee80211OFDMModulation(dataDemodulation), channelSpacing, bandwidth);
-            }
-            if (levelOfDetail < BIT_DOMAIN)
-            {
-                signalMode = new Ieee80211OFDMSignalMode(nullptr, new Ieee80211OFDMModulation(signalDemodulation), channelSpacing, bandwidth, 0);
-                dataMode = new Ieee80211OFDMDataMode(nullptr, new Ieee80211OFDMModulation(dataDemodulation), channelSpacing, bandwidth);
-            }
-            mode = new Ieee80211OFDMMode(new Ieee80211OFDMPreambleMode(channelSpacing, bandwidth), signalMode, dataMode, channelSpacing, bandwidth);
-        }
     }
 }
 
@@ -328,7 +307,7 @@ const IReceptionBitModel* Ieee80211OFDMReceiver::createDataFieldBitModel(const I
             const Ieee80211OFDMDecoderModule *decoderModule = check_and_cast<const Ieee80211OFDMDecoderModule *>(dataDecoder);
             const Ieee80211OFDMCode *code = decoderModule->getCode();
             convolutionalCode = code->getConvolutionalCode();
-            modulation = dataDemodulation;
+            modulation = mode->getDataMode()->getModulation()->getModulation();
             codeRate = getCodeRateFromDecoderModule(dataDecoder);
         }
         dataFieldLengthInBits += calculatePadding(dataFieldLengthInBits, modulation, 1.0 / codeRate);
@@ -373,6 +352,27 @@ const IReceptionPacketModel* Ieee80211OFDMReceiver::createCompletePacketModel(co
     return new ReceptionPacketModel(phyFrame, mergedBits, bps(NaN), 0, true);
 }
 
+const Ieee80211OFDMMode* Ieee80211OFDMReceiver::computeMode(Hz bandwidth) const
+{
+   const APSKModulationBase *signalDemodulation = APSKModulationBase::findModulation(par("signalDemodulation"));
+   const APSKModulationBase *dataDemodulation = APSKModulationBase::findModulation(par("dataDemodulation"));
+   const Ieee80211OFDMDecoderModule *ofdmSignalDecoderModule = check_and_cast<const Ieee80211OFDMDecoderModule *>(signalDecoder);
+   const Ieee80211OFDMDecoderModule *ofdmDataDecoderModule = check_and_cast<const Ieee80211OFDMDecoderModule *>(dataDecoder);
+   const Ieee80211OFDMSignalMode *signalMode = nullptr;
+   const Ieee80211OFDMDataMode *dataMode = nullptr;
+   if (levelOfDetail >= BIT_DOMAIN)
+   {
+       signalMode = new Ieee80211OFDMSignalMode(ofdmSignalDecoderModule->getCode(), new Ieee80211OFDMModulation(signalDemodulation), channelSpacing, bandwidth, 0);
+       dataMode = new Ieee80211OFDMDataMode(ofdmDataDecoderModule->getCode(), new Ieee80211OFDMModulation(dataDemodulation), channelSpacing, bandwidth);
+   }
+   if (levelOfDetail < BIT_DOMAIN)
+   {
+       signalMode = new Ieee80211OFDMSignalMode(nullptr, new Ieee80211OFDMModulation(signalDemodulation), channelSpacing, bandwidth, 0);
+       dataMode = new Ieee80211OFDMDataMode(nullptr, new Ieee80211OFDMModulation(dataDemodulation), channelSpacing, bandwidth);
+   }
+   return new Ieee80211OFDMMode(new Ieee80211OFDMPreambleMode(channelSpacing, bandwidth), signalMode, dataMode, channelSpacing, bandwidth);
+}
+
 const IReceptionDecision *Ieee80211OFDMReceiver::computeReceptionDecision(const IListening *listening, const IReception *reception, const IInterference *interference) const
 {
     const IRadio *receiver = reception->getReceiver();
@@ -394,6 +394,8 @@ const IReceptionDecision *Ieee80211OFDMReceiver::computeReceptionDecision(const 
         uint8_t rate = getRate(signalFieldPacketModel->getSerializedPacket());
         mode = &Ieee80211OFDMCompliantModes::getCompliantMode(rate, channelSpacing);
     }
+    else if (!mode)
+        mode = computeMode(bandwidth);
     const IReceptionBitModel *dataFieldBitModel = createDataFieldBitModel(bitModel, dataFieldSymbolModel, signalFieldPacketModel, signalFieldBitModel);
     const IReceptionPacketModel *dataFieldPacketModel = createDataFieldPacketModel(signalFieldBitModel, dataFieldBitModel, signalFieldPacketModel);
 
@@ -423,7 +425,7 @@ const IListening* Ieee80211OFDMReceiver::createListening(const IRadio* radio, co
 {
     Hz bandwidth = MHz(20); // We assume that in compliant mode the bandwidth is always 20MHz.
     if (!isCompliant)
-        bandwidth = mode->getBandwidth();
+        bandwidth = MHz(20); //mode->getBandwidth();
     return new BandListening(radio, startTime, endTime, startPosition, endPosition, carrierFrequency, bandwidth);
 }
 
