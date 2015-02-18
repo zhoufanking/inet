@@ -18,24 +18,44 @@
 #ifndef __INET_IIEEE80211MODE_H
 #define __INET_IIEEE80211MODE_H
 
-#include "inet/physicallayer/base/PhysicalLayerDefs.h"
+#include "inet/physicallayer/contract/IModulation.h"
 
 namespace inet {
 
 namespace physicallayer {
 
-class INET_API IIeee80211DataMode
+class INET_API IIeee80211ChunkMode
 {
   public:
     virtual bps getNetBitrate() const = 0;
     virtual bps getGrossBitrate() const = 0;
+    virtual const IModulation *getModulation() const = 0;
+};
+
+class INET_API IIeee80211PreambleMode : public virtual IIeee80211ChunkMode
+{
+  public:
+    virtual const simtime_t getDuration() const = 0;
+};
+
+class INET_API IIeee80211HeaderMode : public virtual IIeee80211ChunkMode
+{
+  public:
+    virtual const simtime_t getDuration() const = 0;
+};
+
+class INET_API IIeee80211DataMode : public virtual IIeee80211ChunkMode
+{
+  public:
+    virtual const simtime_t getDuration(int dataBitLength) const = 0;
 };
 
 class INET_API IIeee80211Mode
 {
   public:
+    virtual const IIeee80211PreambleMode *getPreambleMode() const = 0;
+    virtual const IIeee80211HeaderMode *getHeaderMode() const = 0;
     virtual const IIeee80211DataMode *getDataMode() const = 0;
-
     virtual const simtime_t getDuration(int dataBitLength) const = 0;
 };
 

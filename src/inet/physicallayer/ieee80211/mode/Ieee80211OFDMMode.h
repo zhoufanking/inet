@@ -49,7 +49,7 @@ class INET_API Ieee80211OFDMModeBase
     Hz getBandwidth() const { return bandwidth; }
 };
 
-class INET_API Ieee80211OFDMPreambleMode : public Ieee80211OFDMModeBase
+class INET_API Ieee80211OFDMPreambleMode : public Ieee80211OFDMModeBase, public virtual IIeee80211PreambleMode
 {
   public:
     Ieee80211OFDMPreambleMode(Hz channelSpacing, Hz bandwidth);
@@ -57,48 +57,48 @@ class INET_API Ieee80211OFDMPreambleMode : public Ieee80211OFDMModeBase
     const simtime_t getTrainingSymbolGIDuration() const { return getFFTTransformPeriod() / 2; }
     const simtime_t getShortTrainingSequenceDuration() const { return 10 * getFFTTransformPeriod() / 4; }
     const simtime_t getLongTrainingSequenceDuration() const { return getTrainingSymbolGIDuration() + 2 * getFFTTransformPeriod(); }
-    const simtime_t getDuration() const { return getShortTrainingSequenceDuration() + getLongTrainingSequenceDuration(); }
+
+    virtual bps getGrossBitrate() const override { return bps(NaN); }
+    virtual bps getNetBitrate() const override { return bps(NaN); }
+    virtual IModulation *getModulation() const override { return nullptr; }
+    virtual const simtime_t getDuration() const override { return getShortTrainingSequenceDuration() + getLongTrainingSequenceDuration(); }
 };
 
-class INET_API  Ieee80211OFDMSignalMode: public Ieee80211OFDMModeBase
+class INET_API Ieee80211OFDMChunkMode: public Ieee80211OFDMModeBase, public virtual IIeee80211ChunkMode
 {
   protected:
     const Ieee80211OFDMCode *code;
     const Ieee80211OFDMModulation *modulation;
     mutable bps netBitrate;
     mutable bps grossBitrate;
+
+  public:
+    Ieee80211OFDMChunkMode(const Ieee80211OFDMCode *code, const Ieee80211OFDMModulation *modulation, Hz channelSpacing, Hz bandwidth);
+
+    const Ieee80211OFDMCode* getCode() const { return code; }
+    virtual const Ieee80211OFDMModulation* getModulation() const { return modulation; }
+    virtual bps getGrossBitrate() const;
+    virtual bps getNetBitrate() const;
+};
+
+class INET_API Ieee80211OFDMSignalMode: public Ieee80211OFDMChunkMode, public virtual IIeee80211HeaderMode
+{
+  protected:
     unsigned int rate;
 
   public:
     Ieee80211OFDMSignalMode(const Ieee80211OFDMCode *code, const Ieee80211OFDMModulation *modulation, Hz channelSpacing, Hz bandwidth, unsigned int rate);
 
-    const Ieee80211OFDMCode* getCode() const { return code; }
-    const Ieee80211OFDMModulation* getModulation() const { return modulation; }
-    const simtime_t getDuration() const { return getSymbolInterval(); }
-
-    bps getGrossBitrate() const;
-    bps getNetBitrate() const;
     unsigned int getRate() const { return rate; }
-
+    virtual const simtime_t getDuration() const override { return getSymbolInterval(); }
 };
 
-class INET_API Ieee80211OFDMDataMode : public Ieee80211OFDMModeBase, public IIeee80211DataMode
+class INET_API Ieee80211OFDMDataMode : public Ieee80211OFDMChunkMode, public virtual IIeee80211DataMode
 {
-  protected:
-    const Ieee80211OFDMCode *code;
-    const Ieee80211OFDMModulation *modulation;
-    mutable bps netBitrate;
-    mutable bps grossBitrate;
-
   public:
     Ieee80211OFDMDataMode(const Ieee80211OFDMCode *code, const Ieee80211OFDMModulation *modulation, Hz channelSpacing, Hz bandwidth);
 
-    const Ieee80211OFDMCode* getCode() const { return code; }
-    const Ieee80211OFDMModulation* getModulation() const { return modulation; }
-    virtual bps getNetBitrate() const;
-    virtual bps getGrossBitrate() const;
-
-    const simtime_t getDuration(int bitLength) const;
+    virtual const simtime_t getDuration(int bitLength) const override;
 };
 
 class INET_API Ieee80211OFDMMode : public Ieee80211OFDMModeBase, public IIeee80211Mode
@@ -115,11 +115,12 @@ class INET_API Ieee80211OFDMMode : public Ieee80211OFDMModeBase, public IIeee802
     int getNumberOfPilotSubcarriers() const { return 4; }
     int getNumberOfTotalSubcarriers() const { return getNumberOfDataSubcarriers() + getNumberOfPilotSubcarriers(); }
 
-    const Ieee80211OFDMDataMode* getDataMode() const { return dataMode; }
+    virtual const Ieee80211OFDMPreambleMode* getPreambleMode() const override { return preambleMode; }
+    virtual const Ieee80211OFDMSignalMode *getHeaderMode() const override { return signalMode; }
+    virtual const Ieee80211OFDMDataMode* getDataMode() const override { return dataMode; }
     const Ieee80211OFDMSignalMode* getSignalMode() const { return signalMode; }
-    const Ieee80211OFDMPreambleMode* getPreambleMode() const { return preambleMode; }
 
-    const simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + signalMode->getDuration() + dataMode->getDuration(dataBitLength); }
+    const simtime_t getDuration(int dataBitLength) const override { return preambleMode->getDuration() + signalMode->getDuration() + dataMode->getDuration(dataBitLength); }
 
     // TODO: Table 18-17—OFDM PHY characteristics
 };

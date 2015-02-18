@@ -26,20 +26,25 @@ namespace inet {
 
 namespace physicallayer {
 
-class INET_API Ieee80211DsssPreambleMode
+class INET_API Ieee80211DsssChunkMode
+{
+};
+
+class INET_API Ieee80211DsssPreambleMode : public Ieee80211DsssChunkMode, public IIeee80211PreambleMode
 {
   public:
     Ieee80211DsssPreambleMode() {}
     inline int getSYNCBitLength() const { return 128; }
     inline int getSFDBitLength() const { return 16; }
     inline int getBitLength() const { return getSYNCBitLength() + getSFDBitLength(); }
-    inline bps getBitrate() const { return Mbps(1); }
-    inline const simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
 
-    const DBPSKModulation *getModulation() const { return &DBPSKModulation::singleton; }
+    virtual inline bps getNetBitrate() const override { return Mbps(1); }
+    virtual inline bps getGrossBitrate() const override { return getNetBitrate(); }
+    virtual inline const simtime_t getDuration() const override { return getBitLength() / getNetBitrate().get(); }
+    virtual const DBPSKModulation *getModulation() const override { return &DBPSKModulation::singleton; }
 };
 
-class INET_API Ieee80211DsssHeaderMode
+class INET_API Ieee80211DsssHeaderMode : public Ieee80211DsssChunkMode, public IIeee80211HeaderMode
 {
   public:
     Ieee80211DsssHeaderMode() {}
@@ -48,13 +53,14 @@ class INET_API Ieee80211DsssHeaderMode
     inline int getLengthBitLength() const { return 16; }
     inline int getCRCBitLength() const { return 16; }
     inline int getBitLength() const { return getSignalBitLength() + getServiceBitLength() + getLengthBitLength() + getCRCBitLength(); }
-    inline bps getBitrate() const { return Mbps(1); }
-    inline const simtime_t getDuration() const { return getBitLength() / getBitrate().get(); }
 
-    const DBPSKModulation *getModulation() const { return &DBPSKModulation::singleton; }
+    virtual inline bps getNetBitrate() const override { return Mbps(1); }
+    virtual inline bps getGrossBitrate() const override { return getNetBitrate(); }
+    virtual inline const simtime_t getDuration() const override { return getBitLength() / getNetBitrate().get(); }
+    virtual const DBPSKModulation *getModulation() const override { return &DBPSKModulation::singleton; }
 };
 
-class INET_API Ieee80211DsssDataMode : public IIeee80211DataMode
+class INET_API Ieee80211DsssDataMode : public Ieee80211DsssChunkMode, public IIeee80211DataMode
 {
   protected:
     const DPSKModulationBase *modulation;
@@ -62,11 +68,10 @@ class INET_API Ieee80211DsssDataMode : public IIeee80211DataMode
   public:
     Ieee80211DsssDataMode(const DPSKModulationBase *modulation);
 
-    virtual inline bps getNetBitrate() const { return Mbps(1) * modulation->getConstellationSize() / 2; }
-    virtual inline bps getGrossBitrate() const { return getNetBitrate(); }
-    const simtime_t getDuration(int bitLength) const;
-
-    const DPSKModulationBase *getModulation() const { return modulation; }
+    virtual inline bps getNetBitrate() const override { return Mbps(1) * modulation->getConstellationSize() / 2; }
+    virtual inline bps getGrossBitrate() const override { return getNetBitrate(); }
+    virtual const simtime_t getDuration(int bitLength) const override;
+    virtual const DPSKModulationBase *getModulation() const override { return modulation; }
 };
 
 /**
@@ -83,19 +88,15 @@ class INET_API Ieee80211DsssMode : public IIeee80211Mode
   public:
     Ieee80211DsssMode(const Ieee80211DsssPreambleMode *preambleMode, const Ieee80211DsssHeaderMode *headerMode, const Ieee80211DsssDataMode *dataMode);
 
-    const IIeee80211DataMode *getDataMode() const { return dataMode; }
-
     inline Hz getChannelSpacing() const { return MHz(5); }
     inline Hz getBandwidth() const { return MHz(22); }
-
-#ifdef USE_DOUBLE_SIMTIME
     inline const simtime_t getSlotTime() const { return 20E-6; }
     inline const simtime_t getSIFSTime() const { return 10E-6; }
-#else
-    inline const simtime_t getSlotTime() const { return SimTime(20, SIMTIME_US); }
-    inline const simtime_t getSIFSTime() const { return SimTime(10, SIMTIME_US); }
-#endif
-    inline const simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
+
+    virtual const IIeee80211PreambleMode *getPreambleMode() const override { return preambleMode; }
+    virtual const IIeee80211HeaderMode *getHeaderMode() const override { return headerMode; }
+    virtual const IIeee80211DataMode *getDataMode() const override { return dataMode; }
+    virtual inline const simtime_t getDuration(int dataBitLength) const override { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
 };
 
 /**

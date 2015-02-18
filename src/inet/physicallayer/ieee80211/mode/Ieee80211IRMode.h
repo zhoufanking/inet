@@ -25,7 +25,7 @@ namespace inet {
 
 namespace physicallayer {
 
-class INET_API Ieee80211IrPreambleMode
+class INET_API Ieee80211IrPreambleMode : public IIeee80211PreambleMode
 {
   protected:
     const int syncSlotLength;
@@ -37,10 +37,14 @@ class INET_API Ieee80211IrPreambleMode
     inline int getSFDSlotLength() const { return 4; }
     inline int getSlotLength() const { return getSyncSlotLength() + getSFDSlotLength(); }
     inline const simtime_t getSlotDuration() const { return 250E-9; }
-    inline const simtime_t getDuration() const { return getSlotLength() * getSlotDuration(); }
+
+    virtual inline bps getNetBitrate() const override { return bps(NaN); }
+    virtual inline bps getGrossBitrate() const override { return bps(NaN); }
+    virtual inline const simtime_t getDuration() const override { return getSlotLength() * getSlotDuration(); }
+    virtual const IModulation *getModulation() const override { return nullptr; }
 };
 
-class INET_API Ieee80211IrHeaderMode
+class INET_API Ieee80211IrHeaderMode : public IIeee80211HeaderMode
 {
   protected:
     const PPMModulationBase *modulation;
@@ -54,9 +58,12 @@ class INET_API Ieee80211IrHeaderMode
     inline int getCRCBitLength() const { return 16; }
     inline int getSlotLength() const { return getDRSlotLength() + getDCLASlotLength(); }
     inline int getBitLength() const { return getLengthBitLength() + getCRCBitLength(); }
-    inline bps getBitrate() const { return Mbps(1); }
     inline const simtime_t getSlotDuration() const { return 250E-9; }
-    inline const simtime_t getDuration() const { return getBitLength() / getBitrate().get() + getSlotLength() * getSlotDuration(); }
+
+    virtual inline bps getNetBitrate() const override { return Mbps(1); }
+    virtual inline bps getGrossBitrate() const override { return getNetBitrate(); }
+    virtual inline const simtime_t getDuration() const override { return getBitLength() / getNetBitrate().get() + getSlotLength() * getSlotDuration(); }
+    virtual const PPMModulationBase *getModulation() const override { return modulation; }
 };
 
 class INET_API Ieee80211IrDataMode : public IIeee80211DataMode
@@ -68,10 +75,9 @@ class INET_API Ieee80211IrDataMode : public IIeee80211DataMode
     Ieee80211IrDataMode(const PPMModulationBase *modulation);
 
     virtual inline bps getNetBitrate() const override { return Mbps(1) * modulation->getConstellationSize() / 2; }
-    virtual inline bps getGrossBitrate() const { return getNetBitrate(); }
-    inline const simtime_t getDuration(int bitLength) const { return bitLength / getGrossBitrate().get(); }
-
-    const PPMModulationBase *getModulation() const { return modulation; }
+    virtual inline bps getGrossBitrate() const override { return getNetBitrate(); }
+    virtual inline const simtime_t getDuration(int bitLength) const override { return bitLength / getGrossBitrate().get(); }
+    virtual const PPMModulationBase *getModulation() const override { return modulation; }
 };
 
 /**
@@ -88,9 +94,11 @@ class INET_API Ieee80211IrMode : public IIeee80211Mode
   public:
     Ieee80211IrMode(const Ieee80211IrPreambleMode *preambleMode, const Ieee80211IrHeaderMode *headerMode, const Ieee80211IrDataMode *dataMode);
 
-    const IIeee80211DataMode *getDataMode() const { return dataMode; }
+    virtual const IIeee80211PreambleMode *getPreambleMode() const override { return preambleMode; }
+    virtual const IIeee80211HeaderMode *getHeaderMode() const override { return headerMode; }
+    virtual const IIeee80211DataMode *getDataMode() const override { return dataMode; }
 
-    inline const simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
+    inline const simtime_t getDuration(int dataBitLength) const override { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
 };
 
 /**

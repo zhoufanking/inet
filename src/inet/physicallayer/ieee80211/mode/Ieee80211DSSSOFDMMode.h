@@ -42,7 +42,9 @@ class INET_API Ieee80211DsssOfdmMode : public IIeee80211Mode
   public:
     Ieee80211DsssOfdmMode(const Ieee80211DsssPreambleMode *dsssPreambleMode, const Ieee80211DsssHeaderMode *dsssHeaderMode, const Ieee80211OFDMPreambleMode *ofdmPreambleMode, const Ieee80211OFDMSignalMode *ofdmSignalMode, const Ieee80211OFDMDataMode *ofdmDataMode);
 
-    const IIeee80211DataMode *getDataMode() const { return ofdmDataMode; }
+    virtual const IIeee80211PreambleMode *getPreambleMode() const override { return nullptr; }
+    virtual const IIeee80211HeaderMode *getHeaderMode() const override { return nullptr; }
+    virtual const IIeee80211DataMode *getDataMode() const override { return ofdmDataMode; }
 };
 
 } // namespace physicallayer

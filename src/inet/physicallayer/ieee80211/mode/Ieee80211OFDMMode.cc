@@ -37,6 +37,20 @@ bps Ieee80211OFDMModeBase::computeNetBitrate(bps grossBitrate, const Ieee80211OF
     return grossBitrate;
 }
 
+bps Ieee80211OFDMChunkMode::getGrossBitrate() const
+{
+    if (isNaN(grossBitrate.get()))
+        grossBitrate = computeGrossBitrate(modulation);
+    return grossBitrate;
+}
+
+bps Ieee80211OFDMChunkMode::getNetBitrate() const
+{
+    if (isNaN(netBitrate.get()))
+        netBitrate = computeNetBitrate(getGrossBitrate(), code);
+    return netBitrate;
+}
+
 Ieee80211OFDMMode::Ieee80211OFDMMode(const Ieee80211OFDMPreambleMode *preambleMode, const Ieee80211OFDMSignalMode* signalMode, const Ieee80211OFDMDataMode* dataMode, Hz channelSpacing, Hz bandwidth) :
         Ieee80211OFDMModeBase(channelSpacing, bandwidth),
         preambleMode(preambleMode),
@@ -45,51 +59,24 @@ Ieee80211OFDMMode::Ieee80211OFDMMode(const Ieee80211OFDMPreambleMode *preambleMo
 {
 }
 
+Ieee80211OFDMChunkMode::Ieee80211OFDMChunkMode(const Ieee80211OFDMCode* code, const Ieee80211OFDMModulation* modulation, Hz channelSpacing, Hz bandwidth) :
+    Ieee80211OFDMModeBase(channelSpacing, bandwidth),
+    code(code),
+    modulation(modulation),
+    netBitrate(bps(NaN)),
+    grossBitrate(bps(NaN))
+{
+}
+
 Ieee80211OFDMSignalMode::Ieee80211OFDMSignalMode(const Ieee80211OFDMCode* code, const Ieee80211OFDMModulation* modulation, Hz channelSpacing, Hz bandwidth, unsigned int rate) :
-        Ieee80211OFDMModeBase(channelSpacing, bandwidth),
-        code(code),
-        modulation(modulation),
-        netBitrate(bps(NaN)),
-        grossBitrate(bps(NaN)),
+        Ieee80211OFDMChunkMode(code, modulation, channelSpacing, bandwidth),
         rate(rate)
 {
 }
 
-bps Ieee80211OFDMSignalMode::getGrossBitrate() const
-{
-    if (isNaN(grossBitrate.get()))
-        grossBitrate = computeGrossBitrate(modulation);
-    return grossBitrate;
-}
-
-bps Ieee80211OFDMSignalMode::getNetBitrate() const
-{
-    if (isNaN(netBitrate.get()))
-        netBitrate = computeNetBitrate(getGrossBitrate(), code);
-    return netBitrate;
-}
-
 Ieee80211OFDMDataMode::Ieee80211OFDMDataMode(const Ieee80211OFDMCode* code, const Ieee80211OFDMModulation* modulation, Hz channelSpacing, Hz bandwidth) :
-        Ieee80211OFDMModeBase(channelSpacing, bandwidth),
-        code(code),
-        modulation(modulation),
-        netBitrate(bps(NaN)),
-        grossBitrate(bps(NaN))
+        Ieee80211OFDMChunkMode(code, modulation, channelSpacing, bandwidth)
 {
-}
-
-bps Ieee80211OFDMDataMode::getGrossBitrate() const
-{
-    if (isNaN(grossBitrate.get()))
-        grossBitrate = computeGrossBitrate(modulation);
-    return grossBitrate;
-}
-
-bps Ieee80211OFDMDataMode::getNetBitrate() const
-{
-    if (isNaN(netBitrate.get()))
-        netBitrate = computeNetBitrate(getGrossBitrate(), code);
-    return netBitrate;
 }
 
 const simtime_t Ieee80211OFDMDataMode::getDuration(int bitLength) const
