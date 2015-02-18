@@ -107,7 +107,6 @@ const ITransmissionSymbolModel *Ieee80211OFDMModulator::modulate(const ITransmis
         EV_DEBUG << "Modulated OFDM symbol: " << *ofdmSymbol << endl;
         ofdmSymbols->push_back(ofdmSymbol);
     }
-    // FIXME: We need the channel spacing to compute the symbol rates.
     return new Ieee80211OFDMTransmissionSymbolModel(1, NaN, ofdmSymbols->size() - 1, NaN, ofdmSymbols, modulationScheme, modulationScheme);
 }
 
