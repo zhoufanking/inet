@@ -29,6 +29,7 @@ namespace physicallayer {
 class INET_API Ieee80211DsssPreambleMode
 {
   public:
+    Ieee80211DsssPreambleMode() {}
     inline int getSYNCBitLength() const { return 128; }
     inline int getSFDBitLength() const { return 16; }
     inline int getBitLength() const { return getSYNCBitLength() + getSFDBitLength(); }
@@ -41,6 +42,7 @@ class INET_API Ieee80211DsssPreambleMode
 class INET_API Ieee80211DsssHeaderMode
 {
   public:
+    Ieee80211DsssHeaderMode() {}
     inline int getSignalBitLength() const { return 8; }
     inline int getServiceBitLength() const { return 8; }
     inline int getLengthBitLength() const { return 16; }
