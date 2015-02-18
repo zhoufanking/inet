@@ -18,10 +18,8 @@
 #include "inet/mobility/contract/IMobility.h"
 #include "inet/physicallayer/contract/IRadio.h"
 #include "inet/physicallayer/contract/RadioControlInfo_m.h"
-#include "inet/physicallayer/ieee80211/Ieee80211PhyMode.h"
 #include "inet/physicallayer/ieee80211/Ieee80211DimensionalTransmitter.h"
 #include "inet/physicallayer/ieee80211/Ieee80211DimensionalTransmission.h"
-#include "inet/physicallayer/ieee80211/Ieee80211PhyMode.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Consts.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Mode.h"
 
@@ -37,7 +35,6 @@ Ieee80211DimensionalTransmitter::Ieee80211DimensionalTransmitter() :
     APSKDimensionalTransmitter(),
     opMode('\0'),
     preambleMode((Ieee80211PreambleMode) - 1),
-    phyMode(nullptr),
     modeSet(nullptr),
     mode(nullptr)
 {
@@ -66,7 +63,6 @@ void Ieee80211DimensionalTransmitter::initialize(int stage)
         else
             throw cRuntimeError("Unknown preamble mode");
         carrierFrequency = Hz(CENTER_FREQUENCIES[par("channelNumber")]);
-        phyMode = &Ieee80211Mode::getPhyMode(opMode, bitrate.get());
         modeSet = Ieee80211ModeSet::getModeSet(opMode);
         mode = modeSet->getMode(bitrate);
     }
@@ -77,7 +73,6 @@ const ITransmission *Ieee80211DimensionalTransmitter::createTransmission(const I
     TransmissionRequest *controlInfo = dynamic_cast<TransmissionRequest *>(macFrame->getControlInfo());
     W transmissionPower = controlInfo && !isNaN(controlInfo->getPower().get()) ? controlInfo->getPower() : power;
     bps transmissionBitrate = controlInfo && !isNaN(controlInfo->getBitrate().get()) ? controlInfo->getBitrate() : bitrate;
-    const Ieee80211PhyMode *transmissionPhyMode = transmissionBitrate != bitrate ? &Ieee80211Mode::getPhyMode(opMode, transmissionBitrate.get()) : phyMode;
     const IIeee80211Mode *transmissionMode = transmissionBitrate != bitrate ? modeSet->getMode(transmissionBitrate) : mode;
     const simtime_t duration = transmissionMode->getDuration(macFrame->getBitLength());
     const simtime_t endTime = startTime + duration;
@@ -92,7 +87,7 @@ const ITransmission *Ieee80211DimensionalTransmitter::createTransmission(const I
         transmissionHeaderBitLength = HEADER_WITHOUT_PREAMBLE;
     else
         transmissionHeaderBitLength = 24;
-    return new Ieee80211DimensionalTransmission(transmitter, macFrame, startTime, endTime, startPosition, endPosition, startOrientation, endOrientation, modulation, transmissionHeaderBitLength, macFrame->getBitLength(), carrierFrequency, bandwidth, transmissionBitrate, powerMapping, opMode, transmissionPhyMode, transmissionMode);
+    return new Ieee80211DimensionalTransmission(transmitter, macFrame, startTime, endTime, startPosition, endPosition, startOrientation, endOrientation, modulation, transmissionHeaderBitLength, macFrame->getBitLength(), carrierFrequency, bandwidth, transmissionBitrate, powerMapping, opMode, transmissionMode);
 }
 
 } // namespace physicallayer

@@ -29,15 +29,13 @@ class INET_API Ieee80211TransmissionBase
 {
   protected:
     const char opMode; // TODO: delete
-    const Ieee80211PhyMode *phyMode; // TODO: delete
     const IIeee80211Mode *mode;
 
   public:
-    Ieee80211TransmissionBase(char opMode, const Ieee80211PhyMode *phyMode, const IIeee80211Mode *mode);
+    Ieee80211TransmissionBase(char opMode, const IIeee80211Mode *mode);
 
     virtual const IIeee80211Mode *getMode() const { return mode; }
     virtual char getOpMode() const { return opMode; }
-    virtual const Ieee80211PhyMode *getPhyMode() const { return phyMode; }
 };
 
 } // namespace physicallayer
