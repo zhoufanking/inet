@@ -60,7 +60,7 @@ void Ieee80211DimensionalReceiver::initialize(int stage)
 bool Ieee80211DimensionalReceiver::computeIsReceptionPossible(const ITransmission *transmission) const
 {
     const Ieee80211DimensionalTransmission *ieee80211Transmission = check_and_cast<const Ieee80211DimensionalTransmission *>(transmission);
-    return NarrowbandReceiverBase::computeIsReceptionPossible(transmission) && ieee80211Transmission->getOpMode() == opMode && ieee80211Transmission->getPreambleMode() == preambleMode;
+    return NarrowbandReceiverBase::computeIsReceptionPossible(transmission) && ieee80211Transmission->getOpMode() == opMode;
 }
 
 } // namespace physicallayer
