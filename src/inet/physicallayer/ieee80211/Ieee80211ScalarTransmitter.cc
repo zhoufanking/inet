@@ -86,7 +86,7 @@ const ITransmission *Ieee80211ScalarTransmitter::createTransmission(const IRadio
         transmissionHeaderBitLength = HEADER_WITHOUT_PREAMBLE;
     else
         transmissionHeaderBitLength = 24;
-    return new Ieee80211ScalarTransmission(transmitter, macFrame, startTime, endTime, startPosition, endPosition, startOrientation, endOrientation, modulation, transmissionHeaderBitLength, macFrame->getBitLength(), carrierFrequency, bandwidth, transmissionBitrate, transmissionPower, opMode, transmissionMode);
+    return new Ieee80211ScalarTransmission(transmitter, macFrame, startTime, endTime, startPosition, endPosition, startOrientation, endOrientation, modulation, transmissionHeaderBitLength, macFrame->getBitLength(), carrierFrequency, bandwidth, transmissionBitrate, transmissionPower, transmissionMode);
 }
 
 } // namespace physicallayer

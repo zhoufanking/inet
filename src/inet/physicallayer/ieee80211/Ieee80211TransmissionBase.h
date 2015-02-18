@@ -28,14 +28,12 @@ namespace physicallayer {
 class INET_API Ieee80211TransmissionBase
 {
   protected:
-    const char opMode; // TODO: delete
     const IIeee80211Mode *mode;
 
   public:
-    Ieee80211TransmissionBase(char opMode, const IIeee80211Mode *mode);
+    Ieee80211TransmissionBase(const IIeee80211Mode *mode);
 
     virtual const IIeee80211Mode *getMode() const { return mode; }
-    virtual char getOpMode() const { return opMode; }
 };
 
 } // namespace physicallayer

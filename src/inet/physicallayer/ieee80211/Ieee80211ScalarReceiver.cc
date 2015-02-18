@@ -60,7 +60,8 @@ void Ieee80211ScalarReceiver::initialize(int stage)
 bool Ieee80211ScalarReceiver::computeIsReceptionPossible(const ITransmission *transmission) const
 {
     const Ieee80211ScalarTransmission *ieee80211Transmission = check_and_cast<const Ieee80211ScalarTransmission *>(transmission);
-    return NarrowbandReceiverBase::computeIsReceptionPossible(transmission) && ieee80211Transmission->getOpMode() == opMode;
+    // TODO: check whether the mode on the transmission is receivable or not
+    return NarrowbandReceiverBase::computeIsReceptionPossible(transmission);
 }
 
 } // namespace physicallayer
