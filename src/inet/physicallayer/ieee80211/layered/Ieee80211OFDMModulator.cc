@@ -111,11 +111,6 @@ const ITransmissionSymbolModel *Ieee80211OFDMModulator::modulate(const ITransmis
     return new Ieee80211OFDMTransmissionSymbolModel(1, NaN, ofdmSymbols->size() - 1, NaN, ofdmSymbols, modulationScheme, modulationScheme);
 }
 
-Ieee80211OFDMModulator::~Ieee80211OFDMModulator()
-{
-    delete ofdmModulation;
-}
-
 } // namespace physicallayer
 } // namespace inet
 
