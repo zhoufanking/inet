@@ -26,10 +26,6 @@
 #include "inet/physicallayer/common/BandListening.h"
 #include "inet/physicallayer/ieee80211/layered/Ieee80211OFDMDecoderModule.h"
 #include "inet/physicallayer/ieee80211/layered/Ieee80211OFDMDemodulatorModule.h"
-#include "inet/physicallayer/modulation/QAM16Modulation.h"
-#include "inet/physicallayer/modulation/QAM64Modulation.h"
-#include "inet/physicallayer/modulation/BPSKModulation.h"
-#include "inet/physicallayer/modulation/QPSKModulation.h"
 #include "inet/physicallayer/ieee80211/Ieee80211OFDMModulation.h"
 #include "inet/physicallayer/base/NarrowbandNoiseBase.h"
 #include "inet/physicallayer/common/ListeningDecision.h"
@@ -170,8 +166,7 @@ const IReceptionPacketModel* Ieee80211OFDMReceiver::createSignalFieldPacketModel
         else // complaint
         {
             // In compliant mode the code for the signal field is always the following:
-            const Ieee80211OFDMCode *code = new Ieee80211OFDMCode(new Ieee80211ConvolutionalCode(1,2), new Ieee80211Interleaving(NUMBER_OF_OFDM_DATA_SUBCARRIERS, 1), nullptr);
-            const Ieee80211OFDMDecoder decoder(code);
+            const Ieee80211OFDMDecoder decoder(&Ieee80211OFDMCompliantCodes::ofdmCC1_2BPSKInterleavingWithoutScrambling);
             signalFieldPacketModel = decoder.decode(signalFieldBitModel);
         }
     }
