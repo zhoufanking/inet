@@ -163,7 +163,7 @@ double Ieee80211YansErrorModel::GetChunkSuccessRate(const IIeee80211ChunkMode *c
 {
     if (dynamic_cast<const Ieee80211OFDMChunkMode *>(chunkMode) /* TODO: || dynamic_cast<const Ieee80211ERPOFDMChunkMode *>(mode)*/) {
         const Ieee80211OFDMChunkMode *ofdmChunkMode = dynamic_cast<const Ieee80211OFDMChunkMode *>(chunkMode);
-        const Ieee80211ConvolutionalCode *convolutionalCode = ofdmChunkMode->getCode()->getConvolutionalCode();
+        const ConvolutionalCode *convolutionalCode = ofdmChunkMode->getCode()->getConvolutionalCode();
         if (ofdmChunkMode->getModulation()->getModulation() == &BPSKModulation::singleton) {
             if (convolutionalCode->getCodeRatePuncturingK() == 1 && convolutionalCode->getCodeRatePuncturingN() == 2) {
                 return GetFecBpskBer(snr,
