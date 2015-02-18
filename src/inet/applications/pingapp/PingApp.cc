@@ -191,12 +191,12 @@ void PingApp::sendPingRequest()
     PingPayload *msg = new PingPayload(name);
     msg->setOriginatorId(pid);
     msg->setSeqNo(sendSeqNo);
-    msg->setByteLength(packetSize);
+    msg->setByteLength(packetSize + 4);
     std::string time = SIMTIME_STR(simTime());
     int timeLength = time.length();
     // TODO: Revise.
-    msg->setDataArraySize(packetSize - 4);
-    for (int i = 0; i < packetSize - 4; i++)
+    msg->setDataArraySize(packetSize);
+    for (int i = 0; i < packetSize; i++)
         if (i < timeLength)
             msg->setData(i, time[i]);
         else
