@@ -161,7 +161,7 @@ double Ieee80211YansErrorModel::GetFecQamBer(double snr, uint32_t nbits,
 //
 double Ieee80211YansErrorModel::GetChunkSuccessRate(const IIeee80211ChunkMode *chunkMode, double snr, uint32_t nbits) const
 {
-    if (dynamic_cast<const Ieee80211OFDMChunkMode *>(chunkMode) /*|| dynamic_cast<const Ieee80211ERPOFDMChunkMode *>(mode)*/) {
+    if (dynamic_cast<const Ieee80211OFDMChunkMode *>(chunkMode) /* TODO: || dynamic_cast<const Ieee80211ERPOFDMChunkMode *>(mode)*/) {
         const Ieee80211OFDMChunkMode *ofdmChunkMode = dynamic_cast<const Ieee80211OFDMChunkMode *>(chunkMode);
         const Ieee80211ConvolutionalCode *convolutionalCode = ofdmChunkMode->getCode()->getConvolutionalCode();
         if (ofdmChunkMode->getModulation()->getModulation() == &BPSKModulation::singleton) {
@@ -256,6 +256,8 @@ double Ieee80211YansErrorModel::GetChunkSuccessRate(const IIeee80211ChunkMode *c
                         );
             }
         }
+        else
+            throw cRuntimeError("Unknown modulation");
     }
     else if (dynamic_cast<const Ieee80211DsssChunkMode *>(chunkMode) || dynamic_cast<const Ieee80211HrDsssChunkMode *>(chunkMode)) {
         switch ((int)chunkMode->getNetBitrate().get()) {
