@@ -19,7 +19,7 @@
 #define __INET_IEEE80211ERRORMODELBASE_H
 
 #include "inet/physicallayer/base/ErrorModelBase.h"
-#include "inet/physicallayer/ieee80211/Ieee80211PhyMode.h"
+#include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h"
 #include "inet/physicallayer/ieee80211/BerParseFile.h"
 
 namespace inet {
@@ -36,7 +36,7 @@ class INET_API Ieee80211ErrorModelBase : public ErrorModelBase
 
   protected:
     virtual void initialize(int stage) override;
-    virtual double GetChunkSuccessRate(Ieee80211PhyMode mode, double snr, uint32_t nbits) const = 0;
+    virtual double GetChunkSuccessRate(const IIeee80211ChunkMode *chunkMode, double snr, uint32_t nbits) const = 0;
 
   public:
     Ieee80211ErrorModelBase();

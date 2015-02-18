@@ -17,6 +17,14 @@
  *
  * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
+
+#include "inet/physicallayer/modulation/BPSKModulation.h"
+#include "inet/physicallayer/modulation/QPSKModulation.h"
+#include "inet/physicallayer/modulation/QAM16Modulation.h"
+#include "inet/physicallayer/modulation/QAM64Modulation.h"
+#include "inet/physicallayer/ieee80211/mode/Ieee80211DSSSMode.h"
+#include "inet/physicallayer/ieee80211/mode/Ieee80211HRDSSSMode.h"
+#include "inet/physicallayer/ieee80211/mode/Ieee80211OFDMMode.h"
 #include "inet/physicallayer/ieee80211/errormodel/Ieee80211YansErrorModel.h"
 #include <math.h>
 
@@ -151,17 +159,17 @@ double Ieee80211YansErrorModel::GetFecQamBer(double snr, uint32_t nbits,
 //
 // This method return the probability of NO ERROR
 //
-double Ieee80211YansErrorModel::GetChunkSuccessRate(Ieee80211PhyMode mode, double snr, uint32_t nbits) const
+double Ieee80211YansErrorModel::GetChunkSuccessRate(const IIeee80211ChunkMode *chunkMode, double snr, uint32_t nbits) const
 {
-    if (mode.getModulationClass() == MOD_CLASS_ERP_OFDM ||
-        mode.getModulationClass() == MOD_CLASS_OFDM)
-    {
-        if (mode.getModulation().getConstellationSize() == 2) {
-            if (mode.getCode().getCodeRate() == CODE_RATE_1_2) {
+    if (dynamic_cast<const Ieee80211OFDMChunkMode *>(chunkMode) /*|| dynamic_cast<const Ieee80211ERPOFDMChunkMode *>(mode)*/) {
+        const Ieee80211OFDMChunkMode *ofdmChunkMode = dynamic_cast<const Ieee80211OFDMChunkMode *>(chunkMode);
+        const Ieee80211ConvolutionalCode *convolutionalCode = ofdmChunkMode->getCode()->getConvolutionalCode();
+        if (ofdmChunkMode->getModulation()->getModulation() == &BPSKModulation::singleton) {
+            if (convolutionalCode->getCodeRatePuncturingK() == 1 && convolutionalCode->getCodeRatePuncturingN() == 2) {
                 return GetFecBpskBer(snr,
                         nbits,
-                        mode.getBandwidth(),    // signal spread
-                        mode.getPhyRate(),    // phy rate
+                        ofdmChunkMode->getBandwidth(),    // signal spread
+                        chunkMode->getGrossBitrate(),    // phy rate
                         10,    // dFree
                         11    // adFree
                         );
@@ -169,19 +177,19 @@ double Ieee80211YansErrorModel::GetChunkSuccessRate(Ieee80211PhyMode mode, doubl
             else {
                 return GetFecBpskBer(snr,
                         nbits,
-                        mode.getBandwidth(),    // signal spread
-                        mode.getPhyRate(),    // phy rate
+                        ofdmChunkMode->getBandwidth(),    // signal spread
+                        chunkMode->getGrossBitrate(),    // phy rate
                         5,    // dFree
                         8    // adFree
                         );
             }
         }
-        else if (mode.getModulation().getConstellationSize() == 4) {
-            if (mode.getCode().getCodeRate() == CODE_RATE_1_2) {
+        else if (ofdmChunkMode->getModulation()->getModulation() == &QPSKModulation::singleton) {
+            if (convolutionalCode->getCodeRatePuncturingK() == 1 && convolutionalCode->getCodeRatePuncturingN() == 2) {
                 return GetFecQamBer(snr,
                         nbits,
-                        mode.getBandwidth(),    // signal spread
-                        mode.getPhyRate(),    // phy rate
+                        ofdmChunkMode->getBandwidth(),    // signal spread
+                        chunkMode->getGrossBitrate(),    // phy rate
                         4,    // m
                         10,    // dFree
                         11,    // adFree
@@ -191,8 +199,8 @@ double Ieee80211YansErrorModel::GetChunkSuccessRate(Ieee80211PhyMode mode, doubl
             else {
                 return GetFecQamBer(snr,
                         nbits,
-                        mode.getBandwidth(),    // signal spread
-                        mode.getPhyRate(),    // phy rate
+                        ofdmChunkMode->getBandwidth(),    // signal spread
+                        chunkMode->getGrossBitrate(),    // phy rate
                         4,    // m
                         5,    // dFree
                         8,    // adFree
@@ -200,12 +208,12 @@ double Ieee80211YansErrorModel::GetChunkSuccessRate(Ieee80211PhyMode mode, doubl
                         );
             }
         }
-        else if (mode.getModulation().getConstellationSize() == 16) {
-            if (mode.getCode().getCodeRate() == CODE_RATE_1_2) {
+        else if (ofdmChunkMode->getModulation()->getModulation() == &QAM16Modulation::singleton) {
+            if (convolutionalCode->getCodeRatePuncturingK() == 1 && convolutionalCode->getCodeRatePuncturingN() == 2) {
                 return GetFecQamBer(snr,
                         nbits,
-                        mode.getBandwidth(),    // signal spread
-                        mode.getPhyRate(),    // phy rate
+                        ofdmChunkMode->getBandwidth(),    // signal spread
+                        chunkMode->getGrossBitrate(),    // phy rate
                         16,    // m
                         10,    // dFree
                         11,    // adFree
@@ -215,8 +223,8 @@ double Ieee80211YansErrorModel::GetChunkSuccessRate(Ieee80211PhyMode mode, doubl
             else {
                 return GetFecQamBer(snr,
                         nbits,
-                        mode.getBandwidth(),    // signal spread
-                        mode.getPhyRate(),    // phy rate
+                        ofdmChunkMode->getBandwidth(),    // signal spread
+                        chunkMode->getGrossBitrate(),    // phy rate
                         16,    // m
                         5,    // dFree
                         8,    // adFree
@@ -224,12 +232,12 @@ double Ieee80211YansErrorModel::GetChunkSuccessRate(Ieee80211PhyMode mode, doubl
                         );
             }
         }
-        else if (mode.getModulation().getConstellationSize() == 64) {
-            if (mode.getCode().getCodeRate() == CODE_RATE_2_3) {
+        else if (ofdmChunkMode->getModulation()->getModulation() == &QAM64Modulation::singleton) {
+            if (convolutionalCode->getCodeRatePuncturingK() == 2 && convolutionalCode->getCodeRatePuncturingN() == 3) {
                 return GetFecQamBer(snr,
                         nbits,
-                        mode.getBandwidth(),    // signal spread
-                        mode.getPhyRate(),    // phy rate
+                        ofdmChunkMode->getBandwidth(),    // signal spread
+                        chunkMode->getGrossBitrate(),    // phy rate
                         64,    // m
                         6,    // dFree
                         1,    // adFree
@@ -239,8 +247,8 @@ double Ieee80211YansErrorModel::GetChunkSuccessRate(Ieee80211PhyMode mode, doubl
             else {
                 return GetFecQamBer(snr,
                         nbits,
-                        mode.getBandwidth(),    // signal spread
-                        mode.getPhyRate(),    // phy rate
+                        ofdmChunkMode->getBandwidth(),    // signal spread
+                        chunkMode->getGrossBitrate(),    // phy rate
                         64,    // m
                         5,    // dFree
                         8,    // adFree
@@ -249,8 +257,8 @@ double Ieee80211YansErrorModel::GetChunkSuccessRate(Ieee80211PhyMode mode, doubl
             }
         }
     }
-    else if (mode.getModulationClass() == MOD_CLASS_DSSS) {
-        switch ((int)mode.getDataRate().get()) {
+    else if (dynamic_cast<const Ieee80211DsssChunkMode *>(chunkMode) || dynamic_cast<const Ieee80211HrDsssChunkMode *>(chunkMode)) {
+        switch ((int)chunkMode->getNetBitrate().get()) {
             case 1000000:
                 return DsssErrorRateModel::GetDsssDbpskSuccessRate(snr, nbits);
 

@@ -71,40 +71,22 @@ double Ieee80211ErrorModelBase::computePacketErrorRate(const ISNIR *snir) const
     const ITransmission *transmission = snir->getReception()->getTransmission();
     const FlatTransmissionBase *flatTransmission = check_and_cast<const FlatTransmissionBase *>(transmission);
     const Ieee80211TransmissionBase *ieee80211Transmission = check_and_cast<const Ieee80211TransmissionBase *>(transmission);
-    const Ieee80211PhyMode *phyMode = ieee80211Transmission->getPhyMode();
-    int payloadBitLength = flatTransmission->getPayloadBitLength();
-    int headerBitLength = flatTransmission->getHeaderBitLength();
-    double bitrate = flatTransmission->getBitrate().get();
-    const Ieee80211PreambleMode preambleMode = ieee80211Transmission->getPreambleMode();
-//    char opMode = ieee80211Transmission->getOpMode();
-//
-//    uint32_t headerSize;
-//    if (opMode == 'b')
-//        headerSize = HEADER_WITHOUT_PREAMBLE;
-//    else
-//        headerSize = 24;
-    Ieee80211PhyMode modeHeader = phyMode->getPlcpHeaderMode(preambleMode);
-//    if (opMode == 'g') {
-//        if (autoHeaderSize) {
-//            Ieee80211PhyMode modeBodyA = Ieee80211Mode::getPhyMode('a', bitrate);
-//            headerSize = ceil(SIMTIME_DBL(modeBodyA.getPlcpHeaderDuration(preambleMode)) * modeHeader.getDataRate().get());
-//        }
-//    }
-//    else if (opMode == 'b' || opMode == 'a' || opMode == 'p') {
-//        if (autoHeaderSize)
-//            headerSize = ceil(SIMTIME_DBL(modeBody.getPlcpHeaderDuration(preambleMode)) * modeHeader.getDataRate().get());
-//    }
-//    else
-//        throw cRuntimeError("Radio model not supported yet, must be a,b,g or p");
+    const IIeee80211Mode *mode = ieee80211Transmission->getMode();
+
+    // probability of no bit error in the header
     double minSNIR = snir->getMin();
-    double headerSuccessRate = GetChunkSuccessRate(modeHeader, minSNIR, headerBitLength);
+    int headerBitLength = flatTransmission->getHeaderBitLength();
+    double headerSuccessRate = GetChunkSuccessRate(mode->getHeaderMode(), minSNIR, headerBitLength);
 
     // probability of no bit error in the MPDU
+    int payloadBitLength = flatTransmission->getPayloadBitLength();
     double payloadSuccessRate;
-    if (berTableFile)
+    if (berTableFile) {
+        double bitrate = flatTransmission->getBitrate().get();
         payloadSuccessRate = 1 - berTableFile->getPer(bitrate, minSNIR, payloadBitLength / 8);
+    }
     else
-        payloadSuccessRate = GetChunkSuccessRate(*phyMode, minSNIR, payloadBitLength);
+        payloadSuccessRate = GetChunkSuccessRate(mode->getDataMode(), minSNIR, payloadBitLength);
 
     EV_DEBUG << "min SNIR = " << minSNIR << ", bit length = " << payloadBitLength << ", header error rate = " << 1 - headerSuccessRate << ", payload error rate = " << 1 - payloadSuccessRate << endl;
 
