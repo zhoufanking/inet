@@ -88,8 +88,13 @@ class INET_API Ieee80211DsssMode : public IIeee80211Mode
     inline Hz getChannelSpacing() const { return MHz(5); }
     inline Hz getBandwidth() const { return MHz(22); }
 
+#ifdef USE_DOUBLE_SIMTIME
     inline const simtime_t getSlotTime() const { return 20E-6; }
     inline const simtime_t getSIFSTime() const { return 10E-6; }
+#else
+    inline const simtime_t getSlotTime() const { return SimTime(20, SIMTIME_US); }
+    inline const simtime_t getSIFSTime() const { return SimTime(10, SIMTIME_US); }
+#endif
     inline const simtime_t getDuration(int dataBitLength) const { return preambleMode->getDuration() + headerMode->getDuration() + dataMode->getDuration(dataBitLength); }
 };
 
