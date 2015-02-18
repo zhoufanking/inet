@@ -32,7 +32,17 @@ void Ieee80211OFDMEncoderModule::initialize(int stage)
     }
     else if (stage == INITSTAGE_PHYSICAL_LAYER)
     {
-        encoder = new Ieee80211OFDMEncoder(fecEncoder, interleaver, scrambler);
+        const Ieee80211ConvolutionalCode *convolutionalCode = nullptr;
+        if (fecEncoder)
+            convolutionalCode = check_and_cast<const Ieee80211ConvolutionalCode *>(fecEncoder->getForwardErrorCorrection());
+        const Ieee80211Interleaving *interleaving = nullptr;
+        if (interleaver)
+            interleaving = check_and_cast<const Ieee80211Interleaving *>(interleaver->getInterleaving());
+        const AdditiveScrambling *scrambling = nullptr;
+        if (scrambler)
+            scrambling = check_and_cast<const AdditiveScrambling *>(scrambler->getScrambling());
+        code = new Ieee80211OFDMCode(convolutionalCode, interleaving, scrambling);
+        encoder = new Ieee80211OFDMEncoder(code);
     }
 }
 
@@ -43,6 +53,7 @@ const ITransmissionBitModel* Ieee80211OFDMEncoderModule::encode(const ITransmiss
 
 Ieee80211OFDMEncoderModule::~Ieee80211OFDMEncoderModule()
 {
+    delete code;
     delete encoder;
 }
 

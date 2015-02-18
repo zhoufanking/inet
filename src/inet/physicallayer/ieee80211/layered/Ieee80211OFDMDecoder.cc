@@ -29,34 +29,17 @@ namespace inet {
 namespace physicallayer {
 
 Ieee80211OFDMDecoder::Ieee80211OFDMDecoder(const Ieee80211OFDMCode *code) :
+        code(code),
         descrambler(nullptr),
         fecDecoder(nullptr),
         deinterleaver(nullptr)
 {
-    this->code = code;
     if (code->getScrambling())
         descrambler = new AdditiveScrambler(code->getScrambling());
     if (code->getConvolutionalCode())
         fecDecoder = new ConvolutionalCoder(code->getConvolutionalCode());
     if (code->getInterleaving())
         deinterleaver = new Ieee80211Interleaver(code->getInterleaving());
-}
-
-Ieee80211OFDMDecoder::Ieee80211OFDMDecoder(const IScrambler *descrambler, const IFECCoder *fecDecoder, const IInterleaver *deinterleaver) :
-        descrambler(descrambler),
-        fecDecoder(fecDecoder),
-        deinterleaver(deinterleaver)
-{
-    const Ieee80211ConvolutionalCode *convolutionalCode = nullptr;
-    if (fecDecoder)
-        convolutionalCode = dynamic_cast<const Ieee80211ConvolutionalCode *>(fecDecoder->getForwardErrorCorrection());
-    const Ieee80211Interleaving *interleaving = nullptr;
-    if (deinterleaver)
-        interleaving = dynamic_cast<const Ieee80211Interleaving *>(deinterleaver->getInterleaving());
-    const AdditiveScrambling *scrambling = nullptr;
-    if (descrambler)
-        scrambling = dynamic_cast<const AdditiveScrambling *>(descrambler->getScrambling());
-    code = new Ieee80211OFDMCode(convolutionalCode, interleaving, scrambling);
 }
 
 const IReceptionPacketModel* Ieee80211OFDMDecoder::decode(const IReceptionBitModel* bitModel) const
@@ -124,7 +107,6 @@ Ieee80211OFDMDecoder::~Ieee80211OFDMDecoder()
     delete deinterleaver;
     delete descrambler;
     delete fecDecoder;
-    delete code;
 }
 
 } /* namespace physicallayer */

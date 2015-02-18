@@ -36,6 +36,7 @@ class INET_API Ieee80211OFDMDecoderModule : public cSimpleModule, public IDecode
         const IScrambler *descrambler;
         const IFECCoder *fecDecoder;
         const IInterleaver *deinterleaver;
+        const Ieee80211OFDMCode *code;
 
     protected:
         virtual int numInitStages() const { return NUM_INIT_STAGES; }
@@ -44,7 +45,7 @@ class INET_API Ieee80211OFDMDecoderModule : public cSimpleModule, public IDecode
 
     public:
         virtual void printToStream(std::ostream& stream) const { stream << "Ieee80211OFDMDecoder"; }
-        const Ieee80211OFDMCode *getCode() const { return ofdmDecoder->getCode(); }
+        const Ieee80211OFDMCode *getCode() const { return code; }
         const IReceptionPacketModel *decode(const IReceptionBitModel *bitModel) const;
         virtual ~Ieee80211OFDMDecoderModule();
 };

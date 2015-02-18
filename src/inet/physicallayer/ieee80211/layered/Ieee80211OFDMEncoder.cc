@@ -73,29 +73,11 @@ Ieee80211OFDMEncoder::Ieee80211OFDMEncoder(const Ieee80211OFDMCode *code) :
         fecEncoder = new ConvolutionalCoder(code->getConvolutionalCode());
 }
 
-Ieee80211OFDMEncoder::Ieee80211OFDMEncoder(const IFECCoder* fecEncoder, const IInterleaver* interleaver, const IScrambler* scrambler) :
-        fecEncoder(fecEncoder),
-        interleaver(interleaver),
-        scrambler(scrambler)
-{
-    const Ieee80211ConvolutionalCode *convolutionalCode = nullptr;
-    if (fecEncoder)
-        convolutionalCode = check_and_cast<const Ieee80211ConvolutionalCode *>(fecEncoder->getForwardErrorCorrection());
-    const Ieee80211Interleaving *interleaving = nullptr;
-    if (interleaver)
-        interleaving = check_and_cast<const Ieee80211Interleaving *>(interleaver->getInterleaving());
-    const AdditiveScrambling *scrambling = nullptr;
-    if (scrambler)
-        scrambling = check_and_cast<const AdditiveScrambling *>(scrambler->getScrambling());
-    code = new Ieee80211OFDMCode(convolutionalCode, interleaving, scrambling);
-}
-
 Ieee80211OFDMEncoder::~Ieee80211OFDMEncoder()
 {
     delete fecEncoder;
     delete interleaver;
     delete scrambler;
-    delete code;
 }
 
 } /* namespace physicallayer */

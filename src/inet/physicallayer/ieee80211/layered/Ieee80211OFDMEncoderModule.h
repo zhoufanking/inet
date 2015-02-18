@@ -30,8 +30,7 @@ class INET_API Ieee80211OFDMEncoderModule : public IEncoder, public cSimpleModul
         const IScrambler *scrambler;
         const IFECCoder *fecEncoder;
         const IInterleaver *interleaver;
-        Hz channelSpacing;
-        bps headerBitrate;
+        const Ieee80211OFDMCode *code;
 
     protected:
         virtual int numInitStages() const { return NUM_INIT_STAGES; }
@@ -40,7 +39,7 @@ class INET_API Ieee80211OFDMEncoderModule : public IEncoder, public cSimpleModul
 
     public:
         virtual void printToStream(std::ostream& stream) const { stream << "Ieee80211OFDMEncoder"; }
-        const Ieee80211OFDMCode *getCode() const { return encoder->getCode(); }
+        const Ieee80211OFDMCode *getCode() const { return code; }
         virtual const ITransmissionBitModel *encode(const ITransmissionPacketModel *packetModel) const;
         virtual ~Ieee80211OFDMEncoderModule();
 };

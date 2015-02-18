@@ -36,7 +36,17 @@ void Ieee80211OFDMDecoderModule::initialize(int stage)
     }
     else if (stage == INITSTAGE_PHYSICAL_LAYER)
     {
-        ofdmDecoder = new Ieee80211OFDMDecoder(descrambler , fecDecoder, deinterleaver);
+        const Ieee80211ConvolutionalCode *convolutionalCode = nullptr;
+        if (fecDecoder)
+            convolutionalCode = dynamic_cast<const Ieee80211ConvolutionalCode *>(fecDecoder->getForwardErrorCorrection());
+        const Ieee80211Interleaving *interleaving = nullptr;
+        if (deinterleaver)
+            interleaving = dynamic_cast<const Ieee80211Interleaving *>(deinterleaver->getInterleaving());
+        const AdditiveScrambling *scrambling = nullptr;
+        if (descrambler)
+            scrambling = dynamic_cast<const AdditiveScrambling *>(descrambler->getScrambling());
+        code = new Ieee80211OFDMCode(convolutionalCode, interleaving, scrambling);
+        ofdmDecoder = new Ieee80211OFDMDecoder(code);
     }
 }
 
@@ -47,6 +57,7 @@ const IReceptionPacketModel* Ieee80211OFDMDecoderModule::decode(const IReception
 
 Ieee80211OFDMDecoderModule::~Ieee80211OFDMDecoderModule()
 {
+    delete code;
     delete ofdmDecoder;
 }
 

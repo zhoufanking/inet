@@ -47,12 +47,13 @@ class INET_API Ieee80211OFDMDecoder : public IDecoder
         unsigned int calculatePadding(unsigned int dataFieldLengthInBits, const IModulation *modulationScheme, const Ieee80211ConvolutionalCode *fec) const;
 
     public:
+        Ieee80211OFDMDecoder(const IScrambler *descrambler, const IFECCoder *fecDecoder, const IInterleaver *deinterleaver);
+        Ieee80211OFDMDecoder(const Ieee80211OFDMCode *code);
+        virtual ~Ieee80211OFDMDecoder();
+
         virtual void printToStream(std::ostream& stream) const { stream << "Ieee80211OFDMDecoder"; }
         const IReceptionPacketModel *decode(const IReceptionBitModel *bitModel) const;
         const Ieee80211OFDMCode *getCode() const { return code; }
-        Ieee80211OFDMDecoder(const Ieee80211OFDMCode *code);
-        Ieee80211OFDMDecoder(const IScrambler *descrambler, const IFECCoder *fecDecoder, const IInterleaver *deinterleaver);
-        virtual ~Ieee80211OFDMDecoder();
 };
 
 } /* namespace physicallayer */
