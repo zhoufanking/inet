@@ -421,7 +421,10 @@ const IReceptionDecision *Ieee80211OFDMReceiver::computeReceptionDecision(const 
 
 const IListening* Ieee80211OFDMReceiver::createListening(const IRadio* radio, const simtime_t startTime, const simtime_t endTime, const Coord startPosition, const Coord endPosition) const
 {
-    return new BandListening(radio, startTime, endTime, startPosition, endPosition, carrierFrequency, mode->getBandwidth());
+    Hz bandwidth = MHz(20); // We assume that in compliant mode the bandwidth is always 20MHz.
+    if (!isCompliant)
+        bandwidth = mode->getBandwidth();
+    return new BandListening(radio, startTime, endTime, startPosition, endPosition, carrierFrequency, bandwidth);
 }
 
 // TODO: copy
