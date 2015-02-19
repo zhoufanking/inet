@@ -123,16 +123,16 @@ class INET_API Ieee80211OFDMMode : public Ieee80211OFDMModeBase, public IIeee802
     const simtime_t getDuration(int dataBitLength) const override { return preambleMode->getDuration() + signalMode->getDuration() + dataMode->getDuration(dataBitLength); }
 
     // Table 18-17—OFDM PHY characteristics
-    const simtime_t getSlotTime() const;
-    const simtime_t getSifsTime() const;
-    const simtime_t getCcaTime() const;
-    const simtime_t getPhyRxStartDelay() const;
-    const simtime_t getRxTxTurnaroundTime() const;
-    const simtime_t getPlcpHeaderLength() const { return getSymbolInterval(); }
-    const simtime_t getPreambleLength() { return preambleMode->getDuration(); }
-    inline int getCwMax() const { return 1023; }
-    inline int getCwMint() const { return 15; }
-    inline int getMpduMaxLength() const { return 4095; }
+    virtual const simtime_t getSlotTime() const;
+    virtual const simtime_t getSifsTime() const;
+    virtual const simtime_t getCcaTime() const;
+    virtual const simtime_t getPhyRxStartDelay() const;
+    virtual const simtime_t getRxTxTurnaroundTime() const;
+    virtual const simtime_t getPlcpHeaderLength() const { return getSymbolInterval(); }
+    virtual const simtime_t getPreambleLength() { return preambleMode->getDuration(); }
+    virtual inline int getCwMax() const { return 1023; }
+    virtual inline int getCwMint() const { return 15; }
+    virtual inline int getMpduMaxLength() const { return 4095; }
 };
 
 class INET_API Ieee80211OFDMCompliantModes
