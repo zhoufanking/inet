@@ -15,8 +15,8 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "inet/physicallayer/ieee80211/Ieee80211PhyMode.h"
 #include "inet/physicallayer/base/FlatTransmissionBase.h"
+#include "inet/physicallayer/ieee80211/Ieee80211PhyMode.h"
 #include "inet/physicallayer/ieee80211/Ieee80211PhyMode.h"
 #include "inet/physicallayer/ieee80211/Ieee80211TransmissionBase.h"
 #include "inet/physicallayer/ieee80211/errormodel/Ieee80211ErrorModelBase.h"
@@ -29,39 +29,8 @@ namespace physicallayer {
 
 using namespace ieee80211;
 
-Ieee80211ErrorModelBase::Ieee80211ErrorModelBase() :
-    opMode('\0'),
-    berTableFile(nullptr)
+Ieee80211ErrorModelBase::Ieee80211ErrorModelBase()
 {
-}
-
-Ieee80211ErrorModelBase::~Ieee80211ErrorModelBase()
-{
-    delete berTableFile;
-}
-
-void Ieee80211ErrorModelBase::initialize(int stage)
-{
-    if (stage == INITSTAGE_LOCAL) {
-        const char *opModeString = par("opMode");
-        if (!strcmp("b", opModeString))
-            opMode = 'b';
-        else if (!strcmp("g", opModeString))
-            opMode = 'g';
-        else if (!strcmp("a", opModeString))
-            opMode = 'a';
-        else if (!strcmp("p", opModeString))
-            opMode = 'p';
-        else
-            opMode = 'g';
-        const char *fname = par("berTableFile");
-        std::string name(fname);
-        if (!name.empty()) {
-            // TODO: remove opMode from here and also from BerParseFile
-            berTableFile = new BerParseFile(opMode);
-            berTableFile->parseFile(fname);
-        }
-    }
 }
 
 double Ieee80211ErrorModelBase::computePacketErrorRate(const ISNIR *snir) const
@@ -70,24 +39,14 @@ double Ieee80211ErrorModelBase::computePacketErrorRate(const ISNIR *snir) const
     const FlatTransmissionBase *flatTransmission = check_and_cast<const FlatTransmissionBase *>(transmission);
     const Ieee80211TransmissionBase *ieee80211Transmission = check_and_cast<const Ieee80211TransmissionBase *>(transmission);
     const IIeee80211Mode *mode = ieee80211Transmission->getMode();
-
     // probability of no bit error in the header
     double minSNIR = snir->getMin();
     int headerBitLength = flatTransmission->getHeaderBitLength();
     double headerSuccessRate = GetChunkSuccessRate(mode->getHeaderMode(), minSNIR, headerBitLength);
-
     // probability of no bit error in the MPDU
     int payloadBitLength = flatTransmission->getPayloadBitLength();
-    double payloadSuccessRate;
-    if (berTableFile) {
-        double bitrate = flatTransmission->getBitrate().get();
-        payloadSuccessRate = 1 - berTableFile->getPer(bitrate, minSNIR, payloadBitLength / 8);
-    }
-    else
-        payloadSuccessRate = GetChunkSuccessRate(mode->getDataMode(), minSNIR, payloadBitLength);
-
+    double payloadSuccessRate = GetChunkSuccessRate(mode->getDataMode(), minSNIR, payloadBitLength);
     EV_DEBUG << "min SNIR = " << minSNIR << ", bit length = " << payloadBitLength << ", header error rate = " << 1 - headerSuccessRate << ", payload error rate = " << 1 - payloadSuccessRate << endl;
-
     if (headerSuccessRate >= 1)
         headerSuccessRate = 1;
     if (payloadSuccessRate >= 1)

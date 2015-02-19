@@ -19,10 +19,10 @@ package inet.physicallayer.ieee80211.errormodel;
 
 import inet.physicallayer.base.ErrorModelBase;
 
-module Ieee80211ErrorModelBase extends ErrorModelBase
+module Ieee80211BerTableErrorModel extends ErrorModelBase
 {
     parameters:
         string opMode @enum("b","g","a","p");
-        string berTableFile = default("");
-        @class(Ieee80211ErrorModelBase);
+        string berTableFile;
+        @class(Ieee80211BerTableErrorModel);
 }
