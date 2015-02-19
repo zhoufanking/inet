@@ -27,8 +27,7 @@ Define_Module(Ieee80211DimensionalReceiver);
 
 Ieee80211DimensionalReceiver::Ieee80211DimensionalReceiver() :
     FlatReceiverBase(),
-    opMode('\0'),
-    preambleMode((Ieee80211PreambleMode) - 1)
+    opMode('\0')
 {
 }
 
@@ -47,20 +46,13 @@ void Ieee80211DimensionalReceiver::initialize(int stage)
             opMode = 'p';
         else
             opMode = 'g';
-        const char *preambleModeString = par("preambleMode");
-        if (!strcmp("short", preambleModeString))
-            preambleMode = IEEE80211_PREAMBLE_SHORT;
-        else if (!strcmp("long", preambleModeString))
-            preambleMode = IEEE80211_PREAMBLE_LONG;
-        else
-            throw cRuntimeError("Unknown preamble mode");
     }
 }
 
 bool Ieee80211DimensionalReceiver::computeIsReceptionPossible(const ITransmission *transmission) const
 {
-    const Ieee80211DimensionalTransmission *ieee80211Transmission = check_and_cast<const Ieee80211DimensionalTransmission *>(transmission);
     // TODO: check whether the mode on the transmission is receivable or not
+    // const Ieee80211DimensionalTransmission *ieee80211Transmission = check_and_cast<const Ieee80211DimensionalTransmission *>(transmission);
     return NarrowbandReceiverBase::computeIsReceptionPossible(transmission);
 }
 

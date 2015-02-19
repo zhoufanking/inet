@@ -27,8 +27,7 @@ Define_Module(Ieee80211ScalarReceiver);
 
 Ieee80211ScalarReceiver::Ieee80211ScalarReceiver() :
     FlatReceiverBase(),
-    opMode('\0'),
-    preambleMode((Ieee80211PreambleMode)-1)
+    opMode('\0')
 {
 }
 
@@ -47,13 +46,6 @@ void Ieee80211ScalarReceiver::initialize(int stage)
             opMode = 'p';
         else
             opMode = 'g';
-        const char *preambleModeString = par("preambleMode");
-        if (!strcmp("short", preambleModeString))
-            preambleMode = IEEE80211_PREAMBLE_SHORT;
-        else if (!strcmp("long", preambleModeString))
-            preambleMode = IEEE80211_PREAMBLE_LONG;
-        else
-            throw cRuntimeError("Unknown preamble mode");
     }
 }
 

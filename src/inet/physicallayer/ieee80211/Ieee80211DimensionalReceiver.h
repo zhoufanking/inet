@@ -30,7 +30,6 @@ class INET_API Ieee80211DimensionalReceiver : public FlatReceiverBase
 {
   protected:
     char opMode;
-    Ieee80211PreambleMode preambleMode;
 
   protected:
     virtual void initialize(int stage) override;

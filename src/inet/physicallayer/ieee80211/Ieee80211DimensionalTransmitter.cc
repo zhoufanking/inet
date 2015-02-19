@@ -34,7 +34,6 @@ Define_Module(Ieee80211DimensionalTransmitter);
 Ieee80211DimensionalTransmitter::Ieee80211DimensionalTransmitter() :
     APSKDimensionalTransmitter(),
     opMode('\0'),
-    preambleMode((Ieee80211PreambleMode) - 1),
     modeSet(nullptr),
     mode(nullptr)
 {
@@ -55,13 +54,6 @@ void Ieee80211DimensionalTransmitter::initialize(int stage)
             opMode = 'p';
         else
             throw cRuntimeError("Unknown op mode");
-        const char *preambleModeString = par("preambleMode");
-        if (!strcmp("short", preambleModeString))
-            preambleMode = IEEE80211_PREAMBLE_SHORT;
-        else if (!strcmp("long", preambleModeString))
-            preambleMode = IEEE80211_PREAMBLE_LONG;
-        else
-            throw cRuntimeError("Unknown preamble mode");
         carrierFrequency = Hz(CENTER_FREQUENCIES[par("channelNumber")]);
         modeSet = Ieee80211ModeSet::getModeSet(opMode);
         mode = modeSet->getMode(bitrate);
