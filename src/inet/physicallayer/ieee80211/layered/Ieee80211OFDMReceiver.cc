@@ -26,6 +26,7 @@
 #include "inet/physicallayer/common/BandListening.h"
 #include "inet/physicallayer/ieee80211/layered/Ieee80211OFDMDecoderModule.h"
 #include "inet/physicallayer/ieee80211/layered/Ieee80211OFDMDemodulatorModule.h"
+#include "inet/physicallayer/modulation/BPSKModulation.h"
 #include "inet/physicallayer/ieee80211/Ieee80211OFDMModulation.h"
 #include "inet/physicallayer/base/NarrowbandNoiseBase.h"
 #include "inet/physicallayer/common/ListeningDecision.h"
