@@ -23,13 +23,13 @@ namespace inet {
 
 namespace physicallayer {
 
-bps Ieee80211OFDMModeBase::computeGrossBitrate(const Ieee80211OFDMModulation *modulation) const
+bps Ieee80211OFDMChunkMode::computeGrossBitrate(const Ieee80211OFDMModulation *modulation) const
 {
     int codedBitsPerOFDMSymbol = modulation->getModulation()->getCodeWordSize() * NUMBER_OF_OFDM_DATA_SUBCARRIERS;
     return bps(codedBitsPerOFDMSymbol / getSymbolInterval());
 }
 
-bps Ieee80211OFDMModeBase::computeNetBitrate(bps grossBitrate, const Ieee80211OFDMCode* code) const
+bps Ieee80211OFDMChunkMode::computeNetBitrate(bps grossBitrate, const Ieee80211OFDMCode* code) const
 {
     const ConvolutionalCode *convolutionalCode = code ? code->getConvolutionalCode() : nullptr;
     if (convolutionalCode)

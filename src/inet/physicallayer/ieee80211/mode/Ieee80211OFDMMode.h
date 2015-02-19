@@ -32,10 +32,6 @@ class INET_API Ieee80211OFDMModeBase
     const Hz channelSpacing;
     const Hz bandwidth;
 
-  protected:
-    bps computeGrossBitrate(const Ieee80211OFDMModulation *modulation) const;
-    bps computeNetBitrate(bps grossBitrate, const Ieee80211OFDMCode *code) const;
-
   public:
     Ieee80211OFDMModeBase(Hz channelSpacing, Hz bandwidth);
     virtual ~Ieee80211OFDMModeBase() {}
@@ -71,6 +67,10 @@ class INET_API Ieee80211OFDMChunkMode: public Ieee80211OFDMModeBase, public virt
     const Ieee80211OFDMModulation *modulation;
     mutable bps netBitrate;
     mutable bps grossBitrate;
+
+  protected:
+    bps computeGrossBitrate(const Ieee80211OFDMModulation *modulation) const;
+    bps computeNetBitrate(bps grossBitrate, const Ieee80211OFDMCode *code) const;
 
   public:
     Ieee80211OFDMChunkMode(const Ieee80211OFDMCode *code, const Ieee80211OFDMModulation *modulation, Hz channelSpacing, Hz bandwidth);
