@@ -79,6 +79,61 @@ Ieee80211OFDMDataMode::Ieee80211OFDMDataMode(const Ieee80211OFDMCode* code, cons
 {
 }
 
+const simtime_t Ieee80211OFDMMode::getSlotTime() const
+{
+    if (channelSpacing == MHz(20))
+        return 9 * 10E-6;
+    else if (channelSpacing == MHz(10))
+        return 13 * 10E-6;
+    else if (channelSpacing == MHz(5))
+        return 21 * 10E-6;
+    else
+        throw cRuntimeError("Unknown channel spacing = %f", channelSpacing.get());
+}
+
+const simtime_t Ieee80211OFDMMode::getSifsTime() const
+{
+    if (channelSpacing == MHz(20))
+        return 16 * 10E-6;
+    else if (channelSpacing == MHz(10))
+        return 32 * 10E-6;
+    else if (channelSpacing == MHz(5))
+        return 64 * 10E-6;
+    else
+        throw cRuntimeError("Unknown channel spacing = %f", channelSpacing.get());
+}
+
+const simtime_t Ieee80211OFDMMode::getCcaTime() const
+{
+    // < 4, < 8, < 16
+    if (channelSpacing == MHz(20))
+        return 4 * 10E-6;
+    else if (channelSpacing == MHz(10))
+        return 8 * 10E-6;
+    else if (channelSpacing == MHz(5))
+        return 16 * 10E-6;
+    else
+        throw cRuntimeError("Unknown channel spacing = %f", channelSpacing.get());
+}
+
+const simtime_t Ieee80211OFDMMode::getPhyRxStartDelay() const
+{
+    if (channelSpacing == MHz(20))
+        return 25 * 10E-6;
+    else if (channelSpacing == MHz(10))
+        return 49 * 10E-6;
+    else if (channelSpacing == MHz(5))
+        return 97 * 10E-6;
+    else
+        throw cRuntimeError("Unknown channel spacing = %f", channelSpacing.get());
+}
+
+const simtime_t Ieee80211OFDMMode::getRxTxTurnaroundTime() const
+{
+    throw cRuntimeError("< 2");
+    return 0;
+}
+
 const simtime_t Ieee80211OFDMDataMode::getDuration(int bitLength) const
 {
     // IEEE Std 802.11-2007, section 17.3.2.2, table 17-3
@@ -275,61 +330,6 @@ const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode27Mbps(&Ieee80211OF
 const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode36Mbps(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate11, &Ieee80211OFDMCompliantModes::ofdmDataMode36Mbps, MHz(20), MHz(20));
 const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode48Mbps(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate1, &Ieee80211OFDMCompliantModes::ofdmDataMode48Mbps, MHz(20), MHz(20));
 const Ieee80211OFDMMode Ieee80211OFDMCompliantModes::ofdmMode54Mbps(&Ieee80211OFDMCompliantModes::ofdmPreambleModeCS20MHz, &Ieee80211OFDMCompliantModes::ofdmHeaderMode6MbpsRate3, &Ieee80211OFDMCompliantModes::ofdmDataMode54Mbps, MHz(20), MHz(20));
-
-const simtime_t Ieee80211OFDMMode::getSlotTime() const
-{
-    if (channelSpacing == MHz(20))
-        return 9 * 10E-6;
-    else if (channelSpacing == MHz(10))
-        return 13 * 10E-6;
-    else if (channelSpacing == MHz(5))
-        return 21 * 10E-6;
-    else
-        throw cRuntimeError("Unknown channel spacing = %f", channelSpacing.get());
-}
-
-const simtime_t Ieee80211OFDMMode::getSifsTime() const
-{
-    if (channelSpacing == MHz(20))
-        return 16 * 10E-6;
-    else if (channelSpacing == MHz(10))
-        return 32 * 10E-6;
-    else if (channelSpacing == MHz(5))
-        return 64 * 10E-6;
-    else
-        throw cRuntimeError("Unknown channel spacing = %f", channelSpacing.get());
-}
-
-const simtime_t Ieee80211OFDMMode::getCcaTime() const
-{
-    // < 4, < 8, < 16
-    if (channelSpacing == MHz(20))
-        return 4 * 10E-6;
-    else if (channelSpacing == MHz(10))
-        return 8 * 10E-6;
-    else if (channelSpacing == MHz(5))
-        return 16 * 10E-6;
-    else
-        throw cRuntimeError("Unknown channel spacing = %f", channelSpacing.get());
-}
-
-const simtime_t Ieee80211OFDMMode::getPhyRxStartDelay() const
-{
-    if (channelSpacing == MHz(20))
-        return 25 * 10E-6;
-    else if (channelSpacing == MHz(10))
-        return 49 * 10E-6;
-    else if (channelSpacing == MHz(5))
-        return 97 * 10E-6;
-    else
-        throw cRuntimeError("Unknown channel spacing = %f", channelSpacing.get());
-}
-
-const simtime_t Ieee80211OFDMMode::getRxTxTurnaroundTime() const
-{
-    throw cRuntimeError("< 2");
-    return 0;
-}
 
 } // namespace physicallayer
 
