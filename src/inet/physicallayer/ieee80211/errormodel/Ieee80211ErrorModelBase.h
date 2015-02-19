@@ -31,7 +31,6 @@ class INET_API Ieee80211ErrorModelBase : public ErrorModelBase
   protected:
     // TODO: remove opMode from here and also from BerParseFile
     char opMode;
-    bool autoHeaderSize;
     BerParseFile *berTableFile;
 
   protected:

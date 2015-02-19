@@ -23,7 +23,6 @@ module Ieee80211ErrorModelBase extends ErrorModelBase
 {
     parameters:
         string opMode @enum("b","g","a","p");
-        bool autoHeaderSize = default(false);
         string berTableFile = default("");
         @class(Ieee80211ErrorModelBase);
 }

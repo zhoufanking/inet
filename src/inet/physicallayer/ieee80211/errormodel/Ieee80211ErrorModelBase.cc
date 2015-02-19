@@ -31,7 +31,6 @@ using namespace ieee80211;
 
 Ieee80211ErrorModelBase::Ieee80211ErrorModelBase() :
     opMode('\0'),
-    autoHeaderSize(false),
     berTableFile(nullptr)
 {
 }
@@ -55,7 +54,6 @@ void Ieee80211ErrorModelBase::initialize(int stage)
             opMode = 'p';
         else
             opMode = 'g';
-        autoHeaderSize = par("autoHeaderSize");
         const char *fname = par("berTableFile");
         std::string name(fname);
         if (!name.empty()) {
