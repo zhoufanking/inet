@@ -121,13 +121,21 @@ const IIeee80211Mode *Ieee80211ModeSet::getFasterMode(const IIeee80211Mode *mode
         return nullptr;
 }
 
-const Ieee80211ModeSet *Ieee80211ModeSet::getModeSet(char mode) {
+const Ieee80211ModeSet *Ieee80211ModeSet::findModeSet(char mode) {
     for (int index = 0; index < (int)Ieee80211ModeSet::modeSets.size(); index++) {
         const Ieee80211ModeSet *modeSet = &Ieee80211ModeSet::modeSets[index];
         if (modeSet->getName() == mode)
             return modeSet;
     }
     return nullptr;
+}
+
+const Ieee80211ModeSet *Ieee80211ModeSet::getModeSet(char mode) {
+    const Ieee80211ModeSet *modeSet = findModeSet(mode);
+    if (modeSet == nullptr)
+        throw cRuntimeError("Unknown op mode");
+    else
+        return modeSet;
 }
 
 } // namespace physicallayer

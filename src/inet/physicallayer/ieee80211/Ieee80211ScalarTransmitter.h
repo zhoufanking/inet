@@ -30,7 +30,6 @@ namespace physicallayer {
 class INET_API Ieee80211ScalarTransmitter : public FlatTransmitterBase
 {
   protected:
-    char opMode;
     const Ieee80211ModeSet *modeSet;
     const IIeee80211Mode *mode;
 

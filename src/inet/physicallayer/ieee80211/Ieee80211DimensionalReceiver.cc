@@ -18,8 +18,11 @@
 #include "inet/physicallayer/base/NarrowbandTransmissionBase.h"
 #include "inet/physicallayer/ieee80211/Ieee80211DimensionalReceiver.h"
 #include "inet/physicallayer/ieee80211/Ieee80211DimensionalTransmission.h"
+#include "inet/linklayer/ieee80211/mac/Ieee80211Consts.h"
 
 namespace inet {
+
+using namespace ieee80211;
 
 namespace physicallayer {
 
@@ -27,7 +30,7 @@ Define_Module(Ieee80211DimensionalReceiver);
 
 Ieee80211DimensionalReceiver::Ieee80211DimensionalReceiver() :
     FlatReceiverBase(),
-    opMode('\0')
+    modeSet(nullptr)
 {
 }
 
@@ -35,17 +38,8 @@ void Ieee80211DimensionalReceiver::initialize(int stage)
 {
     FlatReceiverBase::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
-        const char *opModeString = par("opMode");
-        if (!strcmp("b", opModeString))
-            opMode = 'b';
-        else if (!strcmp("g", opModeString))
-            opMode = 'g';
-        else if (!strcmp("a", opModeString))
-            opMode = 'a';
-        else if (!strcmp("p", opModeString))
-            opMode = 'p';
-        else
-            opMode = 'g';
+        carrierFrequency = Hz(CENTER_FREQUENCIES[par("channelNumber")]);
+        modeSet = Ieee80211ModeSet::getModeSet(*par("opMode").stringValue());
     }
 }
 

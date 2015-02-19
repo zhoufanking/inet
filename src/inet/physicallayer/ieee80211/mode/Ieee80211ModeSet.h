@@ -55,6 +55,7 @@ class INET_API Ieee80211ModeSet
     const IIeee80211Mode *getSlowerMode(const IIeee80211Mode *mode) const;
     const IIeee80211Mode *getFasterMode(const IIeee80211Mode *mode) const;
 
+    static const Ieee80211ModeSet *findModeSet(char mode);
     static const Ieee80211ModeSet *getModeSet(char mode);
 };
 

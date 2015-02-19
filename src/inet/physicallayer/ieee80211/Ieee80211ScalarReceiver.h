@@ -20,7 +20,7 @@
 
 #include "inet/physicallayer/base/FlatReceiverBase.h"
 #include "inet/physicallayer/ieee80211/BerParseFile.h"
-#include "inet/physicallayer/ieee80211/Ieee80211PhyMode.h"
+#include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
 
 namespace inet {
 
@@ -29,7 +29,7 @@ namespace physicallayer {
 class INET_API Ieee80211ScalarReceiver : public FlatReceiverBase
 {
   protected:
-    char opMode;
+    const Ieee80211ModeSet *modeSet;
 
   protected:
     virtual void initialize(int stage) override;

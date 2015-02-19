@@ -31,7 +31,6 @@ namespace physicallayer {
 class INET_API Ieee80211DimensionalTransmitter : public APSKDimensionalTransmitter
 {
   protected:
-    char opMode;
     const Ieee80211ModeSet *modeSet;
     const IIeee80211Mode *mode;
 

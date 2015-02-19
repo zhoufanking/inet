@@ -33,7 +33,6 @@ Define_Module(Ieee80211ScalarTransmitter);
 
 Ieee80211ScalarTransmitter::Ieee80211ScalarTransmitter() :
     FlatTransmitterBase(),
-    opMode('\0'),
     modeSet(nullptr),
     mode(nullptr)
 {
@@ -43,19 +42,8 @@ void Ieee80211ScalarTransmitter::initialize(int stage)
 {
     FlatTransmitterBase::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
-        const char *opModeString = par("opMode");
-        if (!strcmp("b", opModeString))
-            opMode = 'b';
-        else if (!strcmp("g", opModeString))
-            opMode = 'g';
-        else if (!strcmp("a", opModeString))
-            opMode = 'a';
-        else if (!strcmp("p", opModeString))
-            opMode = 'p';
-        else
-            throw cRuntimeError("Unknown op mode");
         carrierFrequency = Hz(CENTER_FREQUENCIES[par("channelNumber")]);
-        modeSet = Ieee80211ModeSet::getModeSet(opMode);
+        modeSet = Ieee80211ModeSet::getModeSet(*par("opMode").stringValue());
         mode = modeSet->getMode(bitrate);
     }
 }
