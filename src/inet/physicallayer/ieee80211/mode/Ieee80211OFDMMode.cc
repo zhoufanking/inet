@@ -134,7 +134,12 @@ const simtime_t Ieee80211OFDMMode::getRxTxTurnaroundTime() const
     return 0;
 }
 
-const simtime_t Ieee80211OFDMDataMode::getDuration(int bitLength) const
+int Ieee80211OFDMDataMode::getBitLength(int dataBitLength) const
+{
+    return getServiceBitLength() + dataBitLength + getTailBitLength();
+}
+
+const simtime_t Ieee80211OFDMDataMode::getDuration(int dataBitLength) const
 {
     // IEEE Std 802.11-2007, section 17.3.2.2, table 17-3
     // corresponds to N_{DBPS} in the table
@@ -146,7 +151,7 @@ const simtime_t Ieee80211OFDMDataMode::getDuration(int bitLength) const
     else
         dataBitsPerOFDMSymbol = codedBitsPerOFDMSymbol;
     // IEEE Std 802.11-2007, section 17.3.5.3, equation (17-11)
-    int numberOfSymbols = lrint(ceil((16 + bitLength + 6.0) / dataBitsPerOFDMSymbol));
+    int numberOfSymbols = lrint(ceil((double)getBitLength(dataBitLength) / dataBitsPerOFDMSymbol));
     // Add signal extension for ERP PHY
     // TODO: cleanup
 //    if (getModulationClass() == MOD_CLASS_ERP_OFDM)

@@ -66,8 +66,8 @@ class INET_API Ieee80211HrDsssHeaderMode : public Ieee80211HrDsssChunkMode, publ
     inline int getServiceBitLength() const { return 8; }
     inline int getLengthBitLength() const { return 16; }
     inline int getCRCBitLength() const { return 16; }
-    inline int getBitLength() const { return getSignalBitLength() + getServiceBitLength() + getLengthBitLength() + getCRCBitLength(); }
 
+    virtual inline int getBitLength() const override { return getSignalBitLength() + getServiceBitLength() + getLengthBitLength() + getCRCBitLength(); }
     virtual inline bps getNetBitrate() const override { return preambleType == IEEE80211_HRDSSS_PREAMBLE_TYPE_SHORT ? Mbps(2) : Mbps(1); }
     virtual inline bps getGrossBitrate() const override { return getNetBitrate(); }
     virtual inline const simtime_t getDuration() const override { return getBitLength() / getNetBitrate().get(); }
@@ -84,8 +84,9 @@ class INET_API Ieee80211HrDsssDataMode : public Ieee80211HrDsssChunkMode, public
 
     virtual inline bps getNetBitrate() const override { return bitrate; }
     virtual inline bps getGrossBitrate() const override { return bitrate; }
-    virtual IModulation *getModulation() const override { return nullptr; } // TODO:
+    virtual int getBitLength(int dataBitLength) const override { return dataBitLength; }
     virtual const simtime_t getDuration(int bitLength) const override;
+    virtual IModulation *getModulation() const override { return nullptr; } // TODO:
 };
 
 /**

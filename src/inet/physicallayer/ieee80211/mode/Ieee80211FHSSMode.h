@@ -29,6 +29,7 @@ class INET_API Ieee80211FhssPreambleMode : public IIeee80211PreambleMode
 {
   public:
     Ieee80211FhssPreambleMode() {}
+
     inline int getSYNCBitLength() const { return 80; }
     inline int getSFDBitLength() const { return 16; }
     inline int getBitLength() const { return getSYNCBitLength() + getSFDBitLength(); }
@@ -43,11 +44,12 @@ class INET_API Ieee80211FhssHeaderMode : public IIeee80211HeaderMode
 {
   public:
     Ieee80211FhssHeaderMode() {}
+
     inline int getPLWBitLength() const { return 12; }
     inline int getPSFBitLength() const { return 4; }
     inline int getHECBitLength() const { return 16; }
-    inline int getBitLength() const { return getPLWBitLength() + getPSFBitLength() + getHECBitLength(); }
 
+    virtual inline int getBitLength() const override { return getPLWBitLength() + getPSFBitLength() + getHECBitLength(); }
     virtual inline bps getNetBitrate() const override { return Mbps(1); }
     virtual inline bps getGrossBitrate() const override { return getNetBitrate(); }
     virtual inline const simtime_t getDuration() const override { return getBitLength() / getNetBitrate().get(); }
@@ -64,6 +66,7 @@ class INET_API Ieee80211FhssDataMode : public IIeee80211DataMode
 
     virtual inline bps getNetBitrate() const override { return Mbps(1) * modulation->getConstellationSize() / 2; }
     virtual inline bps getGrossBitrate() const override { return getNetBitrate(); }
+    virtual int getBitLength(int dataBitLength) const override { return dataBitLength; }
     virtual inline const simtime_t getDuration(int bitLength) const override { return bitLength / getNetBitrate().get(); }
     virtual const GFSKModulationBase *getModulation() const override { return modulation; }
 };

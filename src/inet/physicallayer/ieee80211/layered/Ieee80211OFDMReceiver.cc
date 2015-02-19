@@ -36,6 +36,7 @@
 #include "inet/physicallayer/ieee80211/layered/Ieee80211OFDMSymbolModel.h"
 #include "inet/physicallayer/ieee80211/layered/Ieee80211OFDMSymbol.h"
 #include "inet/physicallayer/ieee80211/mode/Ieee80211OFDMMode.h"
+#include "inet/physicallayer/modulation/BPSKModulation.h"
 
 namespace inet {
 namespace physicallayer {

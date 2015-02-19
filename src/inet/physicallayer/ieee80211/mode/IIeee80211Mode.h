@@ -41,12 +41,14 @@ class INET_API IIeee80211PreambleMode : public virtual IIeee80211ChunkMode
 class INET_API IIeee80211HeaderMode : public virtual IIeee80211ChunkMode
 {
   public:
+    virtual int getBitLength() const = 0;
     virtual const simtime_t getDuration() const = 0;
 };
 
 class INET_API IIeee80211DataMode : public virtual IIeee80211ChunkMode
 {
   public:
+    virtual int getBitLength(int dataBitLength) const = 0;
     virtual const simtime_t getDuration(int dataBitLength) const = 0;
 };
 

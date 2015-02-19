@@ -90,6 +90,13 @@ class INET_API Ieee80211OFDMSignalMode: public Ieee80211OFDMChunkMode, public vi
     Ieee80211OFDMSignalMode(const Ieee80211OFDMCode *code, const Ieee80211OFDMModulation *modulation, Hz channelSpacing, Hz bandwidth, unsigned int rate);
 
     unsigned int getRate() const { return rate; }
+    inline int getRateBitLength() const { return 4; }
+    inline int getReservedBitLength() const { return 1; }
+    inline int getLengthBitLength() const { return 12; }
+    inline int getParityBitLength() const { return 1; }
+    inline int getTailBitLength() const { return 6; }
+
+    virtual int getBitLength() const override { return getRateBitLength() + getReservedBitLength() + getLengthBitLength() + getParityBitLength() + getTailBitLength(); }
     virtual const simtime_t getDuration() const override { return getSymbolInterval(); }
 };
 
@@ -98,7 +105,11 @@ class INET_API Ieee80211OFDMDataMode : public Ieee80211OFDMChunkMode, public vir
   public:
     Ieee80211OFDMDataMode(const Ieee80211OFDMCode *code, const Ieee80211OFDMModulation *modulation, Hz channelSpacing, Hz bandwidth);
 
-    virtual const simtime_t getDuration(int bitLength) const override;
+    inline int getServiceBitLength() const { return 16; }
+    inline int getTailBitLength() const { return 6; }
+
+    virtual int getBitLength(int dataBitLength) const override;
+    virtual const simtime_t getDuration(int dataBitLength) const override;
 };
 
 class INET_API Ieee80211OFDMMode : public Ieee80211OFDMModeBase, public IIeee80211Mode

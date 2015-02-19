@@ -34,6 +34,7 @@ class INET_API Ieee80211DsssPreambleMode : public Ieee80211DsssChunkMode, public
 {
   public:
     Ieee80211DsssPreambleMode() {}
+
     inline int getSYNCBitLength() const { return 128; }
     inline int getSFDBitLength() const { return 16; }
     inline int getBitLength() const { return getSYNCBitLength() + getSFDBitLength(); }
@@ -48,12 +49,13 @@ class INET_API Ieee80211DsssHeaderMode : public Ieee80211DsssChunkMode, public I
 {
   public:
     Ieee80211DsssHeaderMode() {}
+
     inline int getSignalBitLength() const { return 8; }
     inline int getServiceBitLength() const { return 8; }
     inline int getLengthBitLength() const { return 16; }
     inline int getCRCBitLength() const { return 16; }
-    inline int getBitLength() const { return getSignalBitLength() + getServiceBitLength() + getLengthBitLength() + getCRCBitLength(); }
 
+    virtual inline int getBitLength() const override { return getSignalBitLength() + getServiceBitLength() + getLengthBitLength() + getCRCBitLength(); }
     virtual inline bps getNetBitrate() const override { return Mbps(1); }
     virtual inline bps getGrossBitrate() const override { return getNetBitrate(); }
     virtual inline const simtime_t getDuration() const override { return getBitLength() / getNetBitrate().get(); }
@@ -70,6 +72,7 @@ class INET_API Ieee80211DsssDataMode : public Ieee80211DsssChunkMode, public IIe
 
     virtual inline bps getNetBitrate() const override { return Mbps(1) * modulation->getConstellationSize() / 2; }
     virtual inline bps getGrossBitrate() const override { return getNetBitrate(); }
+    virtual int getBitLength(int dataBitLength) const override { return dataBitLength; }
     virtual const simtime_t getDuration(int bitLength) const override;
     virtual const DPSKModulationBase *getModulation() const override { return modulation; }
 };
