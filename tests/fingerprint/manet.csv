@@ -32,4 +32,4 @@
 /examples/manetrouting/net80211_control/, -f omnetpp.ini -c OLSR -r 0,              10s,             1796-5b18
 /examples/manetrouting/net80211_control/, -f omnetpp.ini -c DSDV_2 -r 0,            3s,              c485-5073
 /examples/manetrouting/net80211_control/, -f omnetpp.ini -c DYMOFau -r 0,           10s,             2995-5539
-/examples/manetrouting/net80211_control/, -f omnetpp.ini -c Batman -r 0,            10s,             33a4-734e
+/examples/manetrouting/net80211_control/, -f omnetpp.ini -c Batman -r 0,            10s,             4bbb-d1d6
