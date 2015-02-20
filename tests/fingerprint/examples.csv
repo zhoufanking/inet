@@ -8,7 +8,7 @@
 
 /examples/aodv/,                     -f omnetpp.ini -c IPv4SlowMobility -r 0,          50s,           91e7-24fa
 /examples/aodv/,                     -f omnetpp.ini -c IPv4ModerateFastMobility -r 0,  50s,           f543-efa0
-/examples/aodv/,                     -f omnetpp.ini -c IPv4FastMobility -r 0,          50s,           f6fc-1cf8
+/examples/aodv/,                     -f omnetpp.ini -c IPv4FastMobility -r 0,          50s,           20f2-3a07
 /examples/aodv/,                     -f omnetpp.ini -c Static -r 0,                    50s,           282f-f982
 /examples/aodv/,                     -f omnetpp.ini -c Dynamic -r 0,                   60s,           3565-638d
 /examples/aodv/,                     -f omnetpp.ini -c MoreDynamic -r 0,              100s,           b217-a801
