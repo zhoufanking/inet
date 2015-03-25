@@ -18,8 +18,9 @@
 //
 
 cplusplus {{
-#include "inet/networklayer/common/L3Address.h"
 #include "inet/common/geometry/common/Coord.h"
+#include "inet/networklayer/common/IPProtocolId_m.h"
+#include "inet/networklayer/common/L3Address.h"
 #include "inet/routing/gpsr/GPSRDefs.h"
 }}
 
@@ -30,6 +31,8 @@ class noncobject L3Address;
 class noncobject Coord;
 
 class noncobject GPSRForwardingMode;
+
+enum IPProtocolId;
 
 //
 // The GPSR beacon packet is sent periodically by all GPSR routers to notify
@@ -50,6 +53,7 @@ packet GPSRBeacon {
 // http://www.eecs.harvard.edu/~htk/publication/2000-mobi-karp-kung.pdf
 //
 packet GPSRPacket {
+    int transportProtocol @enum(IPProtocolId) = IP_PROT_NONE;
     GPSRForwardingMode routingMode = (GPSRForwardingMode)-1;
     Coord destinationPosition;               // D
     Coord perimeterRoutingStartPosition;     // Lp

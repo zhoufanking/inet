@@ -18,11 +18,18 @@
 //
 
 #include "inet/routing/gpsr/GPSR.h"
+
+#include "inet/common/ModuleAccess.h"
+#include "inet/common/lifecycle/NodeOperations.h"
 #include "inet/networklayer/common/IPProtocolId_m.h"
 #include "inet/networklayer/common/IPSocket.h"
-#include "inet/common/lifecycle/NodeOperations.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
-#include "inet/common/ModuleAccess.h"
+#ifdef WITH_IPv6
+#include "inet/networklayer/icmpv6/ICMPv6Message_m.h"
+#endif
+#ifdef WITH_IPv4
+#include "inet/networklayer/ipv4/ICMPMessage_m.h"
+#endif
 
 namespace inet {
 
@@ -116,7 +123,21 @@ void GPSR::processSelfMessage(cMessage *message)
 void GPSR::processMessage(cMessage *message)
 {
     if (dynamic_cast<UDPPacket *>(message))
-        processUDPPacket((UDPPacket *)message);
+        processUDPPacket(static_cast<UDPPacket *>(message));
+#ifdef WITH_IPv4
+    else if (dynamic_cast<ICMPMessage *>(message)) {
+        ICMPMessage *icmp = static_cast<ICMPMessage *>(message);
+        EV_ERROR << "GPSR: incoming ICMP '" << icmp->getFullName() << "' message dropped\n";
+        delete icmp;
+    }
+#endif
+#ifdef WITH_IPv6
+    else if (dynamic_cast<ICMPv6Message *>(message)) {
+        ICMPv6Message *icmp = static_cast<ICMPv6Message *>(message);
+        EV_ERROR << "GPSR: incoming ICMPv6 '" << icmp->getFullName() << "' message dropped\n";
+        delete icmp;
+    }
+#endif
     else
         throw cRuntimeError("Unknown message");
 }
@@ -250,6 +271,8 @@ GPSRPacket *GPSR::createPacket(L3Address destination, cPacket *content)
 
 int GPSR::computePacketBitLength(GPSRPacket *packet)
 {
+    // protocol ID
+    int protocolIdBits = 0;     //FIXME 8
     // routingMode
     int routingModeBits = 1;
     // destinationPosition, perimeterRoutingStartPosition, perimeterRoutingForwardPosition
@@ -257,7 +280,7 @@ int GPSR::computePacketBitLength(GPSRPacket *packet)
     // currentFaceFirstSenderAddress, currentFaceFirstReceiverAddress, senderAddress
     int addressesBits = 3 * 8 * getSelfAddress().getAddressType()->getAddressByteLength();
     // TODO: address size
-    return routingModeBits + positionsBits + addressesBits;
+    return protocolIdBits + routingModeBits + positionsBits + addressesBits;
 }
 
 //
@@ -568,6 +591,8 @@ INetfilter::IHook::Result GPSR::routeDatagram(INetworkDatagram *datagram, const 
 
 INetfilter::IHook::Result GPSR::datagramPreRoutingHook(INetworkDatagram *datagram, const InterfaceEntry *inputInterfaceEntry, const InterfaceEntry *& outputInterfaceEntry, L3Address& nextHop)
 {
+    if (datagram->getTransportProtocol() != IP_PROT_MANET)
+        return ACCEPT;
     const L3Address& destination = datagram->getDestinationAddress();
     if (destination.isMulticast() || destination.isBroadcast() || routingTable->isLocalAddress(destination))
         return ACCEPT;
@@ -577,12 +602,15 @@ INetfilter::IHook::Result GPSR::datagramPreRoutingHook(INetworkDatagram *datagra
 
 INetfilter::IHook::Result GPSR::datagramLocalInHook(INetworkDatagram *datagram, const InterfaceEntry *inputInterfaceEntry)
 {
-    cPacket *networkPacket = check_and_cast<cPacket *>(datagram);
-    GPSRPacket *gpsrPacket = dynamic_cast<GPSRPacket *>(networkPacket->getEncapsulatedPacket());
-    if (gpsrPacket) {
-        networkPacket->decapsulate();
-        networkPacket->encapsulate(gpsrPacket->decapsulate());
-        delete gpsrPacket;
+    if (datagram->getTransportProtocol() == IP_PROT_MANET) {
+        cPacket *networkPacket = check_and_cast<cPacket *>(datagram);
+        GPSRPacket *gpsrPacket = dynamic_cast<GPSRPacket *>(networkPacket->getEncapsulatedPacket());
+        if (gpsrPacket) {
+            networkPacket->decapsulate();
+            networkPacket->encapsulate(gpsrPacket->decapsulate());
+            datagram->setTransportProtocol(gpsrPacket->getTransportProtocol());
+            delete gpsrPacket;
+        }
     }
     return ACCEPT;
 }
@@ -595,7 +623,9 @@ INetfilter::IHook::Result GPSR::datagramLocalOutHook(INetworkDatagram *datagram,
     else {
         cPacket *networkPacket = check_and_cast<cPacket *>(datagram);
         GPSRPacket *gpsrPacket = createPacket(datagram->getDestinationAddress(), networkPacket->decapsulate());
+        gpsrPacket->setTransportProtocol(datagram->getTransportProtocol());
         networkPacket->encapsulate(gpsrPacket);
+        datagram->setTransportProtocol(IP_PROT_MANET);
         return routeDatagram(datagram, outputInterfaceEntry, nextHop);
     }
 }
