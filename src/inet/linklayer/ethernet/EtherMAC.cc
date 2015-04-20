@@ -482,6 +482,17 @@ void EtherMAC::startFrameTransmission()
     if (frame->getByteLength() < minFrameLength)
         frame->setByteLength(minFrameLength);
 
+    {   // serializer test
+        using namespace serializer;
+        int64 length = frame->getByteLength();
+        char *buffer = new char[length];
+        Buffer b(buffer, length);
+        Context c;
+        c.throwOnSerializerNotFound = false;
+        SerializerBase::lookupAndSerializeAndCheck(frame, b, c, LINKTYPE, LINKTYPE_ETHERNET);
+        delete[] buffer;
+    }
+
     // add preamble and SFD (Starting Frame Delimiter), then send out
     frame->addByteLength(PREAMBLE_BYTES + SFD_BYTES);
 
@@ -489,6 +500,8 @@ void EtherMAC::startFrameTransmission()
         updateConnectionColor(TRANSMITTING_STATE);
 
     currentSendPkTreeID = frame->getTreeId();
+
+
     send(frame, physOutGate);
 
     // check for collisions (there might be an ongoing reception which we don't know about, see below)

@@ -116,6 +116,25 @@ void EtherMACFullDuplex::startFrameTransmission()
     if (frame->getByteLength() < curEtherDescr->frameMinBytes)
         frame->setByteLength(curEtherDescr->frameMinBytes);
 
+#if 1
+    {
+        cPacket *enc = frame->getEncapsulatedPacket();
+        if (enc && enc->getByteLength() == frame->getByteLength()) {
+            throw cRuntimeError("ethernet frame length error");
+        }
+    }
+    {   // serializer test
+        using namespace serializer;
+        int64 length = frame->getByteLength();
+        char *buffer = new char[length];
+        Buffer b(buffer, length);
+        Context c;
+        c.throwOnSerializerNotFound = false;
+        SerializerBase::lookupAndSerializeAndCheck(frame, b, c, LINKTYPE, LINKTYPE_ETHERNET);
+        delete[] buffer;
+    }
+#endif
+
     // add preamble and SFD (Starting Frame Delimiter), then send out
     frame->addByteLength(PREAMBLE_BYTES + SFD_BYTES);
 
@@ -126,6 +145,8 @@ void EtherMACFullDuplex::startFrameTransmission()
     scheduleAt(transmissionChannel->getTransmissionFinishTime(), endTxMsg);
     transmitState = TRANSMITTING_STATE;
 }
+
+
 
 void EtherMACFullDuplex::processFrameFromUpperLayer(EtherFrame *frame)
 {

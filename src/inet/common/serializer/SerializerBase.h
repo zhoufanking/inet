@@ -80,6 +80,7 @@ class INET_API SerializerBase : public cOwnedObject
 
     static SerializerBase & lookupSerializer(const cPacket *pkt, Context& context, ProtocolGroup group, int id);
     static void lookupAndSerialize(const cPacket *pkt, Buffer &b, Context& context, ProtocolGroup group, int id, unsigned int maxLength = (unsigned int)(-1));
+    static void lookupAndSerializeAndCheck(const cPacket *pkt, Buffer &b, Context& context, ProtocolGroup group, int id, unsigned int maxLength = (unsigned int)(-1));
     void serializePacket(const cPacket *pkt, Buffer &b, Context& context);
 
     static SerializerBase & lookupDeserializer(Context& context, ProtocolGroup group, int id);

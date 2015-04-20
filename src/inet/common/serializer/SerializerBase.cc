@@ -35,8 +35,11 @@ void SerializerBase::serializePacket(const cPacket *pkt, Buffer &b, Context& c)
 {
     unsigned int startPos = b.getPos();
     serialize(pkt, b, c);
-    if (!b.hasError() && (b.getPos() - startPos != pkt->getByteLength()))
+    if (!b.hasError() && (b.getPos() - startPos != pkt->getByteLength())) {
+        b.seek(startPos);
+        serialize(pkt, b, c);
         throw cRuntimeError("%s serializer error: packet %s (%s) length is %d but serialized length is %d", getClassName(), pkt->getName(), pkt->getClassName(), pkt->getByteLength(), b.getPos() - startPos);
+    }
 }
 
 cPacket *SerializerBase::deserializePacket(const Buffer &b, Context& context)
@@ -94,6 +97,83 @@ void SerializerBase::lookupAndSerialize(const cPacket *pkt, Buffer &b, Context& 
     b.accessNBytes(subBuffer.getPos());
     if (subBuffer.hasError())
         b.setError();
+}
+
+void SerializerBase::lookupAndSerializeAndCheck(const cPacket *pkt, Buffer &b, Context& c, ProtocolGroup group, int id, unsigned int maxLength)
+{
+    ASSERT(pkt);
+    Buffer subBuffer(b, maxLength);
+    SerializerBase & serializer = lookupSerializer(pkt, c, group, id);
+    serializer.serializePacket(pkt, subBuffer, c);
+    b.accessNBytes(subBuffer.getPos());
+    if (subBuffer.hasError())
+        b.setError();
+#if 1   //DEBUG only
+    Buffer b1(subBuffer._getBuf(), subBuffer._getBufSize());
+    Context c1(c);
+    cPacket *deserialized = serializer.deserialize(b1, c1);
+    if (deserialized) {
+        std::ostringstream to, td;
+        for (const cPacket *p = pkt; p; p = p->getEncapsulatedPacket()) {
+            to << p->getClassName() << "(" << p->getByteLength() << ")/";
+        }
+        for (const cPacket *p = deserialized; p; p = p->getEncapsulatedPacket()) {
+            td << p->getClassName() << "(" << p->getByteLength() << ")/";
+        }
+        int64 length = subBuffer.hasError() ? subBuffer.getPos() : pkt->getByteLength();
+        const cPacket *po = pkt, *pd = deserialized;
+        int64 olen = po->getByteLength() + 1;
+        while (po && pd) {
+            if (po->getByteLength() > olen) {
+                break;          // encapsulated chunk, deserialized length should be differ, it's OK
+            }
+            if (pd != deserialized && dynamic_cast<const RawPacket *>(pd)) {
+                break;          // deserialize to RawPacket eat all padding bytes, parent packet length was OK, it's OK
+            }
+            if ((po->getByteLength() != pd->getByteLength())) {
+                Buffer bx(subBuffer._getBuf(), subBuffer._getBufSize());
+                Context cx(c);
+                cPacket *deserialized2 = serializer.deserialize(bx, cx);
+                for (int64_t i = 0; i < length && i < subBuffer._getBufSize(); i++) {
+                    if (i % 16 == 0) std::cout << std::endl;
+                    char buf[20]; sprintf(buf, " %02X", (unsigned int)(subBuffer._getBuf()[i])); std::cout << buf;
+                }
+                std::cout << std::endl;
+                throw cRuntimeError("%s serializer error: packet %s (%s) and serialized-deserialized (%s) length are differ at %s:%s", serializer.getClassName(), pkt->getName(), to.str().c_str(), td.str().c_str(), po->getClassName(), pd->getClassName());
+            }
+            if (pd == deserialized && typeid(*pd) == typeid(cPacket))
+                break; // using DefaultSerializer in top level, OK
+            if (typeid(*po) != typeid(*pd)) {
+                throw cRuntimeError("%s serializer error: packet %s (%s) and serialized-deserialized (%s) types are differ at %s:%s", serializer.getClassName(), pkt->getName(), to.str().c_str(), td.str().c_str(), po->getClassName(), pd->getClassName());
+            }
+            olen = po->getByteLength();
+            po = po->getEncapsulatedPacket();
+            pd = pd->getEncapsulatedPacket();
+        }
+        unsigned char *buffer2 = new unsigned char[length];
+        Buffer b2(buffer2, length);
+        Context c2(c);
+        serializer.serialize(deserialized, b2, c2);
+        for (int64_t n = 0; n < length; n++) {
+            if (subBuffer._getBuf()[n] != buffer2[n]) {
+                Buffer bx(buffer2, length);
+                Context cx(c);
+                serializer.serialize(deserialized, bx, cx);
+                for (int64_t i = 0; i < length && i < subBuffer._getBufSize(); i++) {
+                    if (i % 16 == 0)
+                        std::cout << std::endl;
+                    char buf[20];
+                    sprintf(buf, " %02X:%02X%c", (unsigned int)(subBuffer._getBuf()[i]), (unsigned int)(buffer2[i]), ((subBuffer._getBuf()[i] != buffer2[i]) ? '*' : ' '));
+                    std::cout << buf;
+                }
+                std::cout << std::endl;
+                throw cRuntimeError("%s serializer error: packet %s (%s) length is %d, serialized and serialized-deserialized-(%s)-serialized contents are differ at %d", serializer.getClassName(), pkt->getName(), to.str().c_str(), pkt->getByteLength(), td.str().c_str(), n);
+            }
+        }
+        delete[] buffer2;
+        delete deserialized;
+    }
+#endif
 }
 
 cPacket *SerializerBase::lookupAndDeserialize(const Buffer &b, Context& context, ProtocolGroup group, int id, unsigned int maxLength)
