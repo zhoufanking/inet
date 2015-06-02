@@ -41,7 +41,7 @@ class IIPv4RoutingTable;
 /**
  * Implements the IPv4 protocol.
  */
-class INET_API IPv4 : public QueueBase, public INetfilter, public ILifecycle, public INetworkProtocol, public cListener
+class INET_API IPv4 : public QueueBase, public INetfilter, public ILifecycle, public INetworkProtocol, public IARP::CallbackInterface
 {
   public:
     /**
@@ -112,11 +112,14 @@ class INET_API IPv4 : public QueueBase, public INetfilter, public ILifecycle, pu
     // utility: show current statistics above the icon
     virtual void updateDisplayString();
 
+    // utility: processing requested ARP resolution initiated
+    void arpResolutionInitiated(L3Address l3Address) override {}
+
     // utility: processing requested ARP resolution completed
-    void arpResolutionCompleted(IARP::Notification *entry);
+    void arpResolutionCompleted(L3Address l3Address, MACAddress macAddress, const InterfaceEntry *ie) override;
 
     // utility: processing requested ARP resolution timed out
-    void arpResolutionTimedOut(IARP::Notification *entry);
+    void arpResolutionFailed(L3Address l3Address, const InterfaceEntry *ie) override;
 
     /**
      * Encapsulate packet coming from higher layers into IPv4Datagram, using
@@ -300,9 +303,6 @@ class INET_API IPv4 : public QueueBase, public INetfilter, public ILifecycle, pu
      * ILifecycle method
      */
     virtual bool handleOperationStage(LifecycleOperation *operation, int stage, IDoneCallback *doneCallback) override;
-
-    /// cListener method
-    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj) override;
 
   protected:
     virtual bool isNodeUp();

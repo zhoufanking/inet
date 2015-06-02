@@ -25,5 +25,14 @@ const simsignal_t IARP::initiatedARPResolutionSignal = cComponent::registerSigna
 const simsignal_t IARP::completedARPResolutionSignal = cComponent::registerSignal("completedARPResolution");
 const simsignal_t IARP::failedARPResolutionSignal = cComponent::registerSignal("failedARPResolution");
 
+void IARP::setCallbackObject(IARP::CallbackInterface *newCb)
+{
+    if (newCb != nullptr && cb != nullptr)
+        throw cRuntimeError("CallbackObject is already specified");
+    if (newCb == nullptr && cb == nullptr)
+        throw cRuntimeError("CallbackObject is already unspecified");
+    cb = newCb;
+}
+
 } // namespace inet
 

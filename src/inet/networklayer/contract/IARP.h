@@ -51,10 +51,21 @@ class INET_API IARP
             : l3Address(l3Address), macAddress(macAddress), ie(ie) {}
     };
 
+    class CallbackInterface
+    {
+      public:
+        virtual void arpResolutionInitiated(L3Address l3Address) = 0;
+        virtual void arpResolutionCompleted(L3Address l3Address, MACAddress macAddress, const InterfaceEntry *ie) = 0;
+        virtual void arpResolutionFailed(L3Address l3Address, const InterfaceEntry *ie) = 0;
+    };
+
     /** @brief Signals used to publish ARP state changes. */
     static const simsignal_t initiatedARPResolutionSignal;
     static const simsignal_t completedARPResolutionSignal;
     static const simsignal_t failedARPResolutionSignal;
+
+  protected:
+    CallbackInterface *cb = nullptr;
 
   public:
     virtual ~IARP() {}
@@ -73,6 +84,21 @@ class INET_API IARP
      * resolution procedure terminates.
      */
     virtual MACAddress resolveL3Address(const L3Address& address, const InterfaceEntry *ie) = 0;
+
+    /**
+     * Sets a callback object, to be used when ARP state changes.
+     * This callback object may be your simple module itself (if it multiply inherits
+     * from CallbackInterface too, that is you declared it as
+     * <pre>
+     * class MyModule : public cSimpleModule, public IARP::CallbackInterface
+     * </pre>
+     * and redefined the necessary virtual functions; or you may use
+     * dedicated class (and objects) for this purpose.
+     *
+     * ARP doesn't delete the callback object in the destructor
+     * or on any other occasion.
+     */
+    void setCallbackObject(CallbackInterface *cb);
 };
 
 } // namespace inet

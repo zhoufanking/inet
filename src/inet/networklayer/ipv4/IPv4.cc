@@ -65,6 +65,7 @@ void IPv4::initialize(int stage)
 
         arpInGate = gate("arpIn");
         arpOutGate = gate("arpOut");
+        arp->setCallbackObject(this);
         transportInGateBaseId = gateBaseId("transportIn");
         queueOutGateBaseId = gateBaseId("queueOut");
 
@@ -85,9 +86,6 @@ void IPv4::initialize(int stage)
         queuedDatagramsForHooks.clear();
 
         pendingPackets.clear();
-        cModule *arpModule = check_and_cast<cModule *>(arp);
-        arpModule->subscribe(IARP::completedARPResolutionSignal, this);
-        arpModule->subscribe(IARP::failedARPResolutionSignal, this);
 
         WATCH(numMulticast);
         WATCH(numLocalDeliver);
@@ -828,33 +826,35 @@ void IPv4::sendDatagramToOutput(IPv4Datagram *datagram, const InterfaceEntry *ie
     }
 }
 
-void IPv4::arpResolutionCompleted(IARP::Notification *entry)
+void IPv4::arpResolutionCompleted(L3Address l3Address, MACAddress macAddress, const InterfaceEntry *ie)
 {
-    if (entry->l3Address.getType() != L3Address::IPv4)
+    Enter_Method("arpResolutionCompleted()");
+    if (l3Address.getType() != L3Address::IPv4)
         return;
-    auto it = pendingPackets.find(entry->l3Address.toIPv4());
+    auto it = pendingPackets.find(l3Address.toIPv4());
     if (it != pendingPackets.end()) {
         cPacketQueue& packetQueue = it->second;
-        EV << "ARP resolution completed for " << entry->l3Address << ". Sending " << packetQueue.getLength()
+        EV << "ARP resolution completed for " << l3Address << ". Sending " << packetQueue.getLength()
            << " waiting packets from the queue\n";
 
         while (!packetQueue.isEmpty()) {
             cPacket *msg = packetQueue.pop();
             EV << "Sending out queued packet " << msg << "\n";
-            sendPacketToIeee802NIC(msg, entry->ie, entry->macAddress, ETHERTYPE_IPv4);
+            sendPacketToIeee802NIC(msg, ie, macAddress, ETHERTYPE_IPv4);
         }
         pendingPackets.erase(it);
     }
 }
 
-void IPv4::arpResolutionTimedOut(IARP::Notification *entry)
+void IPv4::arpResolutionFailed(L3Address l3Address, const InterfaceEntry *ie)
 {
-    if (entry->l3Address.getType() != L3Address::IPv4)
+    Enter_Method("arpResolutionFailed()");
+    if (l3Address.getType() != L3Address::IPv4)
         return;
-    auto it = pendingPackets.find(entry->l3Address.toIPv4());
+    auto it = pendingPackets.find(l3Address.toIPv4());
     if (it != pendingPackets.end()) {
         cPacketQueue& packetQueue = it->second;
-        EV << "ARP resolution failed for " << entry->l3Address << ",  dropping " << packetQueue.getLength() << " packets\n";
+        EV << "ARP resolution failed for " << l3Address << ",  dropping " << packetQueue.getLength() << " packets\n";
         packetQueue.clear();
         pendingPackets.erase(it);
     }
@@ -1160,18 +1160,6 @@ void IPv4::sendOnTransportOutGateByProtocolId(cPacket *packet, int protocolId)
     int gateindex = mapping.getOutputGateForProtocol(protocolId);
     cGate *outGate = gate("transportOut", gateindex);
     send(packet, outGate);
-}
-
-void IPv4::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
-{
-    Enter_Method_Silent();
-
-    if (signalID == IARP::completedARPResolutionSignal) {
-        arpResolutionCompleted(check_and_cast<IARP::Notification *>(obj));
-    }
-    if (signalID == IARP::failedARPResolutionSignal) {
-        arpResolutionTimedOut(check_and_cast<IARP::Notification *>(obj));
-    }
 }
 
 } // namespace inet

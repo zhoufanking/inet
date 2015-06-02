@@ -201,6 +201,9 @@ void ARP::initiateARPResolution(ARPCacheEntry *entry)
     numResolutions++;
     Notification signal(nextHopAddr, MACAddress::UNSPECIFIED_ADDRESS, entry->ie);
     emit(initiatedARPResolutionSignal, &signal);
+    if (!cb)
+        throw cRuntimeError("CallbackObject is unspecified");
+    cb->arpResolutionInitiated(nextHopAddr);
 }
 
 void ARP::sendPacketToNIC(cMessage *msg, const InterfaceEntry *ie, const MACAddress& macAddress, int etherType)
@@ -260,6 +263,9 @@ void ARP::requestTimedOut(cMessage *selfmsg)
     EV << "ARP timeout, max retry count " << retryCount << " for " << entry->myIter->first << " reached.\n";
     Notification signal(entry->myIter->first, MACAddress::UNSPECIFIED_ADDRESS, entry->ie);
     emit(failedARPResolutionSignal, &signal);
+    if (!cb)
+        throw cRuntimeError("CallbackObject is unspecified");
+    cb->arpResolutionFailed(entry->myIter->first, entry->ie);
     arpCache.erase(entry->myIter);
     delete entry;
     numFailedResolutions++;
@@ -429,6 +435,9 @@ void ARP::updateARPCache(ARPCacheEntry *entry, const MACAddress& macAddress)
     entry->lastUpdate = simTime();
     Notification signal(entry->myIter->first, macAddress, entry->ie);
     emit(completedARPResolutionSignal, &signal);
+    if (!cb)
+        throw cRuntimeError("CallbackObject is unspecified");
+    cb->arpResolutionCompleted(entry->myIter->first, macAddress, entry->ie);
 }
 
 MACAddress ARP::resolveL3Address(const L3Address& address, const InterfaceEntry *ie)
