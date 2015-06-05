@@ -108,6 +108,11 @@ void TCPConnection::process_OPEN_PASSIVE(TCPEventCode& event, TCPCommand *tcpCom
     delete msg;
 }
 
+void TCPConnection::process_ACCEPT(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg)
+{
+    delete msg;
+}
+
 void TCPConnection::process_SEND(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg)
 {
     TCPSendCommand *sendCommand = check_and_cast<TCPSendCommand *>(tcpCommand);

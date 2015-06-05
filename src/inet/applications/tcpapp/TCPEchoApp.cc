@@ -140,10 +140,10 @@ void TCPEchoApp::handleMessage(cMessage *msg)
                 scheduleAt(simTime() + delay, pkt); // send after a delay
         }
     }
-    else {
-        // some indication -- ignore
+    else if (msg->getKind() == TCP_I_ESTABLISHED)
         delete msg;
-    }
+    else
+        socket.processMessage(msg);
 
     if (hasGUI()) {
         char buf[80];
