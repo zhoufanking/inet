@@ -788,6 +788,7 @@ TCPEventCode TCPConnection::processSegmentInListen(TCPSegment *tcpseg, L3Address
         if (state->fork) {
             TCPConnection *conn = cloneListeningConnection();    // "conn" is the clone which will stay LISTENing, while "this" gets updated with the remote address
             tcpMain->addForkedConnection(this, conn, destAddr, srcAddr, tcpseg->getDestPort(), tcpseg->getSrcPort());
+            sendAvailableIndicationToApp(conn->connId);
             EV_DETAIL << "Connection forked: this connection got new connId=" << connId << ", "
                                                                                            "spinoff keeps LISTENing with connId=" << conn->connId << "\n";
         }

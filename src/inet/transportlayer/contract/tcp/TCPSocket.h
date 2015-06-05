@@ -137,6 +137,7 @@ class INET_API TCPSocket
       public:
         virtual ~CallbackInterface() {}
         virtual void socketDataArrived(int connId, void *yourPtr, cPacket *msg, bool urgent) = 0;
+        virtual void socketAvailable(int connId, void *yourPtr) {}
         virtual void socketEstablished(int connId, void *yourPtr) {}
         virtual void socketPeerClosed(int connId, void *yourPtr) {}
         virtual void socketClosed(int connId, void *yourPtr) {}
@@ -294,6 +295,11 @@ class INET_API TCPSocket
      * See TCPOpenCommand documentation (neddoc) for more info.
      */
     void listenOnce() { listen(false); }
+
+    /**
+     * TODO
+     */
+    void accept(int socketId);
 
     /**
      * Active OPEN to the given remote socket.

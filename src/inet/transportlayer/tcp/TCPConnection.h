@@ -85,6 +85,7 @@ enum TCPEventCode {
     // (Note: no RECEIVE command, data are automatically passed up)
     TCP_E_OPEN_ACTIVE,
     TCP_E_OPEN_PASSIVE,
+    TCP_E_ACCEPT,
     TCP_E_SEND,
     TCP_E_CLOSE,
     TCP_E_ABORT,
@@ -387,6 +388,7 @@ class INET_API TCPConnection
     //@{
     virtual void process_OPEN_ACTIVE(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg);
     virtual void process_OPEN_PASSIVE(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg);
+    virtual void process_ACCEPT(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg);
     virtual void process_SEND(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg);
     virtual void process_CLOSE(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg);
     virtual void process_ABORT(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg);
@@ -534,6 +536,9 @@ class INET_API TCPConnection
 
     /** Utility: sends status indication (TCP_I_xxx) to application */
     virtual void sendIndicationToApp(int code, const int id = 0);
+
+    /** Utility: sends TCP_I_AVAILABLE indication with TCPAvailableInfo to application */
+    virtual void sendAvailableIndicationToApp(int listenConnId);
 
     /** Utility: sends TCP_I_ESTABLISHED indication with TCPConnectInfo to application */
     virtual void sendEstabIndicationToApp();

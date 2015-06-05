@@ -103,6 +103,7 @@ const char *TCPConnection::indicationName(int code)
     switch (code) {
         CASE(TCP_I_DATA);
         CASE(TCP_I_URGENT_DATA);
+        CASE(TCP_I_AVAILABLE);
         CASE(TCP_I_ESTABLISHED);
         CASE(TCP_I_PEER_CLOSED);
         CASE(TCP_I_CLOSED);
@@ -296,6 +297,24 @@ void TCPConnection::sendIndicationToApp(int code, const int id)
     TCPCommand *ind = new TCPCommand();
     ind->setSocketId(connId);
     ind->setUserId(id);
+    msg->setControlInfo(ind);
+    sendToApp(msg);
+}
+
+void TCPConnection::sendAvailableIndicationToApp(int listenConnId)
+{
+    EV_INFO << "Notifying app: " << indicationName(TCP_I_AVAILABLE) << "\n";
+    cMessage *msg = new cMessage(indicationName(TCP_I_AVAILABLE));
+    msg->setKind(TCP_I_AVAILABLE);
+
+    TCPAvailableInfo *ind = new TCPAvailableInfo();
+    ind->setSocketId(listenConnId);
+    ind->setNewSocketId(connId);
+    ind->setLocalAddr(localAddr);
+    ind->setRemoteAddr(remoteAddr);
+    ind->setLocalPort(localPort);
+    ind->setRemotePort(remotePort);
+
     msg->setControlInfo(ind);
     sendToApp(msg);
 }

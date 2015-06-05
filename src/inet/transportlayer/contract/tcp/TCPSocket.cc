@@ -145,6 +145,15 @@ void TCPSocket::listen(bool fork)
     sockstate = LISTENING;
 }
 
+void TCPSocket::accept(int socketId)
+{
+    cMessage *msg = new cMessage("ACCEPT", TCP_C_ACCEPT);
+    TCPAcceptCommand *acceptCmd = new TCPAcceptCommand();
+    acceptCmd->setSocketId(socketId);
+    msg->setControlInfo(acceptCmd);
+    sendToTCP(msg);
+}
+
 void TCPSocket::connect(L3Address remoteAddress, int remotePort)
 {
     if (sockstate != NOT_BOUND && sockstate != BOUND)
@@ -253,6 +262,7 @@ void TCPSocket::processMessage(cMessage *msg)
     ASSERT(belongsToSocket(msg));
 
     TCPStatusInfo *status;
+    TCPAvailableInfo *availableInfo;
     TCPConnectInfo *connectInfo;
 
     switch (msg->getKind()) {
@@ -269,6 +279,16 @@ void TCPSocket::processMessage(cMessage *msg)
                 cb->socketDataArrived(connId, yourPtr, PK(msg), true);
             else
                 delete msg;
+
+            break;
+
+        case TCP_I_AVAILABLE:
+            availableInfo = check_and_cast<TCPAvailableInfo *>(msg->getControlInfo());
+            accept(availableInfo->getNewSocketId());
+            delete msg;
+
+            if (cb)
+                cb->socketAvailable(connId, yourPtr);
 
             break;
 
