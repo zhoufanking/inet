@@ -316,8 +316,7 @@ class INET_API TCPStateVariables : public cObject
 class INET_API TCPConnection
 {
   public:
-    // connection identification by apps: appgateIndex+connId
-    int appGateIndex = -1;    // application gate index
+    // connection identification by apps: connId
     int connId = -1;    // identifies connection within the app
 
     // socket pair
@@ -571,7 +570,7 @@ class INET_API TCPConnection
     /**
      * The "normal" constructor.
      */
-    TCPConnection(TCP *mod, int appGateIndex, int connId);
+    TCPConnection(TCP *mod, int connId);
 
     /**
      * Note: this default ctor is NOT used to create live connections, only
