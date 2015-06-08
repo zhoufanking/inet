@@ -66,7 +66,6 @@ bool UDP::MulticastMembership::isSourceAllowed(L3Address sourceAddr)
 static std::ostream& operator<<(std::ostream& os, const UDP::SockDesc& sd)
 {
     os << "sockId=" << sd.sockId;
-    os << " appGateIndex=" << sd.appGateIndex;
     os << " localPort=" << sd.localPort;
     if (sd.remotePort != -1)
         os << " remotePort=" << sd.remotePort;
@@ -91,10 +90,9 @@ static std::ostream& operator<<(std::ostream& os, const UDP::SockDescList& list)
 
 //--------
 
-UDP::SockDesc::SockDesc(int sockId_, int appGateIndex_)
+UDP::SockDesc::SockDesc(int sockId_)
 {
     sockId = sockId_;
-    appGateIndex = appGateIndex_;
 }
 
 UDP::SockDesc::~SockDesc()
@@ -205,7 +203,7 @@ void UDP::processCommandFromApp(cMessage *msg)
 
         case UDP_C_SETOPTION: {
             UDPSetOptionCommand *ctrl = check_and_cast<UDPSetOptionCommand *>(msg->getControlInfo());
-            SockDesc *sd = getOrCreateSocket(ctrl->getSockId(), msg->getArrivalGate()->getIndex());
+            SockDesc *sd = getOrCreateSocket(ctrl->getSockId());
 
             if (dynamic_cast<UDPSetTimeToLiveCommand *>(ctrl))
                 setTimeToLive(sd, ((UDPSetTimeToLiveCommand *)ctrl)->getTtl());
@@ -293,7 +291,7 @@ void UDP::processPacketFromApp(cPacket *appData)
 {
     UDPSendCommand *ctrl = check_and_cast<UDPSendCommand *>(appData->removeControlInfo());
 
-    SockDesc *sd = getOrCreateSocket(ctrl->getSockId(), appData->getArrivalGate()->getIndex());
+    SockDesc *sd = getOrCreateSocket(ctrl->getSockId());
     const L3Address& destAddr = ctrl->getDestAddr().isUnspecified() ? sd->remoteAddr : ctrl->getDestAddr();
     int destPort = ctrl->getDestPort() == -1 ? sd->remotePort : ctrl->getDestPort();
     if (destAddr.isUnspecified() || destPort == -1)
@@ -541,7 +539,7 @@ void UDP::bind(int sockId, int gateIndex, const L3Address& localAddr, int localP
         }
     }
     else {
-        sd = createSocket(sockId, gateIndex, localAddr, localPort);
+        sd = createSocket(sockId, localAddr, localPort);
         sd->isBound = true;
     }
 }
@@ -553,7 +551,7 @@ void UDP::connect(int sockId, int gateIndex, const L3Address& remoteAddr, int re
     if (remotePort <= 0 || remotePort > 65535)
         throw cRuntimeError("connect: invalid remote port number %d", remotePort);
 
-    SockDesc *sd = getOrCreateSocket(sockId, gateIndex);
+    SockDesc *sd = getOrCreateSocket(sockId);
     sd->remoteAddr = remoteAddr;
     sd->remotePort = remotePort;
     sd->onlyLocalPortIsSet = false;
@@ -561,10 +559,10 @@ void UDP::connect(int sockId, int gateIndex, const L3Address& remoteAddr, int re
     EV_INFO << "Socket connected: " << *sd << "\n";
 }
 
-UDP::SockDesc *UDP::createSocket(int sockId, int gateIndex, const L3Address& localAddr, int localPort)
+UDP::SockDesc *UDP::createSocket(int sockId, const L3Address& localAddr, int localPort)
 {
     // create and fill in SockDesc
-    SockDesc *sd = new SockDesc(sockId, gateIndex);
+    SockDesc *sd = new SockDesc(sockId);
     sd->isBound = false;
     sd->localAddr = localAddr;
     sd->localPort = localPort == -1 ? getEphemeralPort() : localPort;
@@ -725,7 +723,7 @@ void UDP::sendUp(cPacket *payload, SockDesc *sd, const L3Address& srcAddr, ushor
     payload->setKind(UDP_I_DATA);
 
     emit(passedUpPkSignal, payload);
-    send(payload, "appOut", sd->appGateIndex);
+    send(payload, "appOut");
     numPassedUp++;
 }
 
@@ -740,7 +738,7 @@ void UDP::sendUpErrorIndication(SockDesc *sd, const L3Address& localAddr, ushort
     udpCtrl->setDestPort(remotePort);
     notifyMsg->setControlInfo(udpCtrl);
 
-    send(notifyMsg, "appOut", sd->appGateIndex);
+    send(notifyMsg, "appOut");
 }
 
 void UDP::sendDown(cPacket *appData, const L3Address& srcAddr, ushort srcPort, const L3Address& destAddr, ushort destPort,
@@ -824,7 +822,7 @@ UDP::SockDesc *UDP::getSocketById(int sockId)
     return it->second;
 }
 
-UDP::SockDesc *UDP::getOrCreateSocket(int sockId, int gateIndex)
+UDP::SockDesc *UDP::getOrCreateSocket(int sockId)
 {
     // validate sockId
     if (sockId == -1)
@@ -834,7 +832,7 @@ UDP::SockDesc *UDP::getOrCreateSocket(int sockId, int gateIndex)
     if (it != socketsByIdMap.end())
         return it->second;
 
-    return createSocket(sockId, gateIndex, L3Address(), -1);
+    return createSocket(sockId, L3Address(), -1);
 }
 
 void UDP::setTimeToLive(SockDesc *sd, int ttl)
