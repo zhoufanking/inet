@@ -96,15 +96,11 @@ class INET_API TCP : public cSimpleModule, public ILifecycle
   public:
     struct AppConnKey    // XXX this class is redundant since connId is already globally unique
     {
-        int appGateIndex;
         int connId;
 
         inline bool operator<(const AppConnKey& b) const
         {
-            if (appGateIndex != b.appGateIndex)
-                return appGateIndex < b.appGateIndex;
-            else
-                return connId < b.connId;
+            return connId < b.connId;
         }
     };
     struct SockPair
@@ -139,11 +135,11 @@ class INET_API TCP : public cSimpleModule, public ILifecycle
 
   protected:
     /** Factory method; may be overriden for customizing TCP */
-    virtual TCPConnection *createConnection(int appGateIndex, int connId);
+    virtual TCPConnection *createConnection(int connId);
 
     // utility methods
     virtual TCPConnection *findConnForSegment(TCPSegment *tcpseg, L3Address srcAddr, L3Address destAddr);
-    virtual TCPConnection *findConnForApp(int appGateIndex, int connId);
+    virtual TCPConnection *findConnForApp(int connId);
     virtual void segmentArrivalWhileClosed(TCPSegment *tcpseg, L3Address src, L3Address dest);
     virtual void removeConnection(TCPConnection *conn);
     virtual void updateDisplayString();

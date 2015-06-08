@@ -149,7 +149,7 @@ void TCPConnection::printConnBrief() const
 {
     EV_DETAIL << "Connection "
               << localAddr << ":" << localPort << " to " << remoteAddr << ":" << remotePort
-              << "  on app[" << appGateIndex << "], connId=" << connId
+              << "  on connId=" << connId
               << "  in " << stateName(fsm.getState())
               << "\n";
 }
@@ -198,7 +198,7 @@ void TCPConnection::printSegmentBrief(TCPSegment *tcpseg)
 
 TCPConnection *TCPConnection::cloneListeningConnection()
 {
-    TCPConnection *conn = new TCPConnection(tcpMain, appGateIndex, connId);
+    TCPConnection *conn = new TCPConnection(tcpMain, connId);
 
     conn->transferMode = transferMode;
     // following code to be kept consistent with initConnection()
@@ -319,7 +319,7 @@ void TCPConnection::sendEstabIndicationToApp()
 
 void TCPConnection::sendToApp(cMessage *msg)
 {
-    tcpMain->send(msg, "appOut", appGateIndex);
+    tcpMain->send(msg, "appOut");
 }
 
 void TCPConnection::initConnection(TCPOpenCommand *openCmd)
