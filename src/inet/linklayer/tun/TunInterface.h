@@ -43,12 +43,12 @@ class TunInterface : public MACBase
         InterfaceEntry *createInterfaceEntry() override;
         virtual void flushQueue() override;
         virtual void clearQueue() override;
-        virtual bool isUpperMsg(cMessage *msg) override { return msg->arrivedOn("upperLayerIn"); }
+        virtual bool isUpperMsg(cMessage *message) override { return message->arrivedOn("upperLayerIn"); }
 
     public:
         virtual int numInitStages() const override { return NUM_INIT_STAGES; }
         virtual void initialize(int stage) override;
-        virtual void handleMessage(cMessage *msg) override;
+        virtual void handleMessage(cMessage *message) override;
         virtual void finish() override;
 };
 

@@ -16,6 +16,7 @@
 //
 
 #include "inet/common/INETUtils.h"
+#include "inet/linklayer/contract/IMACProtocolControlInfo.h"
 #include "inet/linklayer/tun/TunInterface.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
 
@@ -40,15 +41,17 @@ InterfaceEntry *TunInterface::createInterfaceEntry()
     return new InterfaceEntry(this);
 }
 
-void TunInterface::handleMessage(cMessage *msg)
+void TunInterface::handleMessage(cMessage *message)
 {
-    if (msg->getArrivalGate()->isName("appIn")) {
-        emit(packetSentToUpperSignal, msg);
-        send(msg, "upperLayerOut");
+    if (message->getArrivalGate()->isName("appIn")) {
+        IMACProtocolControlInfo *controlInfo = check_and_cast<IMACProtocolControlInfo *>(message->getControlInfo());
+        controlInfo->setInterfaceId(interfaceEntry->getInterfaceId());
+        emit(packetSentToUpperSignal, message);
+        send(message, "upperLayerOut");
     }
-    else if (msg->getArrivalGate()->isName("upperLayerIn")) {
-        emit(packetReceivedFromUpperSignal, msg);
-        send(msg, "appOut");
+    else if (message->getArrivalGate()->isName("upperLayerIn")) {
+        emit(packetReceivedFromUpperSignal, message);
+        send(message, "appOut");
     }
     if (hasGUI())
         updateDisplayString();
