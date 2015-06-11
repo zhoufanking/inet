@@ -24,7 +24,7 @@ package inet.networklayer.common;
 simple EchoProtocol
 {
     parameters:
-        @display("i=block/control_s");
+        @display("i=block/control");
     gates:
         input localIn @labels(GenericNetworkProtocolControlInfo/up);
         output sendOut @labels(GenericNetworkProtocolControlInfo/down);  // towards network
