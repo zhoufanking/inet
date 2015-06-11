@@ -19,12 +19,12 @@
 //
 package inet.networklayer.ipv6;
 
+import inet.common.MessageDispatcher;
 import inet.networklayer.contract.IIPv6Tunneling;
 import inet.networklayer.contract.INetworkLayer;
 import inet.networklayer.contract.IxMIPv6Support;
 import inet.networklayer.icmpv6.ICMPv6;
 import inet.networklayer.icmpv6.IPv6NeighbourDiscovery;
-
 
 //
 // Represents an IPv6 network layer (L3).
@@ -59,37 +59,41 @@ module IPv6NetworkLayer like INetworkLayer
     submodules:
         routingTable: IPv6RoutingTable {
             parameters:
-                @display("p=100,750;is=s");
+                @display("p=100,50;is=s");
+        }
+        dp: MessageDispatcher {
+            parameters:
+                @display("b=300,5,,,,1;p=400,200");
         }
         // TODO: rename to ip
         ipv6: IPv6 {
             parameters:
-                @display("p=84,129");
+                @display("p=400,300");
         }
         icmpv6: ICMPv6 {
             parameters:
-                @display("p=189,79");
+                @display("p=500,100");
         }
         ipv6ErrorHandling: IPv6ErrorHandling {
             parameters:
-                @display("p=280,79");
+                @display("p=619,100");
         }
         neighbourDiscovery: IPv6NeighbourDiscovery {
             parameters:
-                @display("p=257,149");
+                @display("p=500,300");
         }
         iptunneling: <default(firstAvailable("IPv6Tunneling"))> like IIPv6Tunneling {
             parameters:
-                @display("p=44,168");
+                @display("p=282,300");
         }
         mipv6support: <default("xMIPv6Support")> like IxMIPv6Support if xMIPv6Support {
             parameters:
-                @display("p=44,79");
+                @display("p=282,232");
         }
 
     connections allowunconnected:  // FIXME remove 'nocheck'!
-        ipv6.transportOut++ --> { @display("m=n"); } --> transportOut;
-        ipv6.transportIn++ <-- { @display("m=n"); } <-- transportIn;
+        dp.upperLayerOut++ --> { @display("m=n"); } --> transportOut;
+        dp.upperLayerIn++ <-- { @display("m=n"); } <-- transportIn;
 
         // IPv6 to IPv6 Tunneling
         iptunneling.upperLayerIn <-- ipv6.upperTunnelingOut;
@@ -98,8 +102,11 @@ module IPv6NetworkLayer like INetworkLayer
         iptunneling.linkLayerOut --> ipv6.lowerTunnelingIn;
 
         // IPv6 to ICMPv6
-        ipv6.transportOut++ --> icmpv6.ipv6In;
-        ipv6.transportIn++ <-- icmpv6.ipv6Out;
+        dp.upperLayerOut++ --> icmpv6.ipv6In;
+        dp.upperLayerIn++ <-- icmpv6.ipv6Out;
+
+        dp.lowerLayerOut++ --> ipv6.transportIn;
+        dp.lowerLayerIn++ <-- ipv6.transportOut;
 
         // ICMPv6 to IPv6ErrorHandling
         icmpv6.errorOut --> ipv6ErrorHandling.in;
