@@ -45,11 +45,13 @@ module IPv6NetworkLayer like INetworkLayer
         *.icmpv6Module = default(absPath(".icmpv6"));
         *.ipv6TunnelingModule = default(absPath(".iptunneling"));
         @display("i=block/fork");
+
     gates:
-        input ifIn[] @labels(INetworkDatagram);
-        output ifOut[] @labels(INetworkDatagram);
-        input transportIn[] @labels(IPv4ControlInfo/down);
-        output transportOut[] @labels(IPv4ControlInfo/up);
+        input ifIn @labels(INetworkDatagram);
+        output ifOut @labels(INetworkDatagram);
+        input transportIn @labels(IPv4ControlInfo/down);
+        output transportOut @labels(IPv4ControlInfo/up);
+
     submodules:
         routingTable: IPv6RoutingTable {
             parameters:
@@ -59,9 +61,6 @@ module IPv6NetworkLayer like INetworkLayer
         ipv6: IPv6 {
             parameters:
                 @display("p=84,129");
-            gates:
-                queueIn[sizeof(ifIn)];
-                queueOut[sizeof(ifIn)];
         }
         icmpv6: ICMPv6 {
             parameters:
@@ -85,12 +84,8 @@ module IPv6NetworkLayer like INetworkLayer
         }
 
     connections allowunconnected:  // FIXME remove 'nocheck'!
-        for i=0..sizeof(transportIn)-1 {
-            transportIn[i] --> { @display("m=n"); } --> ipv6.transportIn++;
-        }
-        for i=0..sizeof(transportOut)-1 {
-            ipv6.transportOut++ --> { @display("m=n"); } --> transportOut[i];
-        }
+        ipv6.transportOut++ --> { @display("m=n"); } --> transportOut;
+        ipv6.transportIn++ <-- { @display("m=n"); } <-- transportIn;
 
         // IPv6 to IPv6 Tunneling
         iptunneling.upperLayerIn <-- ipv6.upperTunnelingOut;
@@ -114,11 +109,7 @@ module IPv6NetworkLayer like INetworkLayer
         ipv6.xMIPv6In <-- mipv6support.toIPv6 if xMIPv6Support;
 
         // IPv6 to L2
-        for i=0..sizeof(ifIn)-1 {
-            ifIn[i] --> { @display("m=s"); } --> ipv6.queueIn[i];
-        }
-        for i=0..sizeof(ifOut)-1 {
-            ipv6.queueOut[i] --> { @display("m=s"); } --> ifOut[i];
-        }
+        ifIn --> { @display("m=s"); } --> ipv6.queueIn;
+        ipv6.queueOut --> { @display("m=s"); } --> ifOut;
 }
 
