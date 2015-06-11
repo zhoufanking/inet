@@ -32,8 +32,11 @@ void NetworkProtocolBase::initialize(int stage)
         interfaceTable = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
 }
 
+void NetworkProtocolBase::handleRegisterProtocol(const Protocol& protocol, cGate *gate)
 void NetworkProtocolBase::handleUpperCommand(cMessage *message)
 {
+    Enter_Method("handleRegisterProtocol");
+    protocolMapping.addProtocolMapping(protocol.getId(), gate->getIndex());
     if (dynamic_cast<RegisterTransportProtocolCommand *>(message)) {
         RegisterTransportProtocolCommand *command = check_and_cast<RegisterTransportProtocolCommand *>(message);
         protocolMapping.addProtocolMapping(command->getProtocol(), message->getArrivalGate()->getIndex());
