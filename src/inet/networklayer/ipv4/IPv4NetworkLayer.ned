@@ -35,9 +35,8 @@ module IPv4NetworkLayer like INetworkLayer
         string igmpType = default("IGMPv2");
         string arpType = default("ARP");
         string interfaceTableModule;
-        string routingTableModule;
         *.interfaceTableModule = default(absPath(interfaceTableModule));
-        *.routingTableModule = default(absPath(routingTableModule));
+        *.routingTableModule = default(absPath(".routingTable"));
         *.arpModule = default(absPath(".arp"));
         *.icmpModule = default(absPath(".icmp"));
         arp.respondToProxyARP = proxyARP;
@@ -58,6 +57,7 @@ module IPv4NetworkLayer like INetworkLayer
         configurator: IPv4NodeConfigurator {
             @display("p=39,158");
         }
+        routingTable: IPv4RoutingTable {
         ip: IPv4 {
             parameters:
                 useProxyARP = true; // as routes with unspecified next-hop addr are quite common
