@@ -31,7 +31,6 @@ module GenericNetworkLayer like INetworkLayer
         bool forwarding = default(false);
         bool multicastForwarding = default(false);
         string interfaceTableModule;
-        string routingTableModule;
         *.forwarding = default(forwarding);
         *.multicastForwarding = default(multicastForwarding);
         *.interfaceTableModule = default(absPath(interfaceTableModule));
