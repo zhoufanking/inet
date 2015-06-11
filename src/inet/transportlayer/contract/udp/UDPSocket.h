@@ -44,7 +44,7 @@ class UDPDataIndication;
  *
  * <pre>
  *   UDPSocket socket;
- *   socket.setOutputGate(gate("udpOut"));
+ *   socket.setOutputGate(gate("socketOut"));
  *   socket.connect(Address("10.0.0.2"), 2000);
  *
  *   cPacket *pk = new cPacket("dgram");
@@ -105,7 +105,7 @@ class INET_API UDPSocket
 
     /**
      * Sets the gate on which to send to UDP. Must be invoked before socket
-     * can be used. Example: <tt>socket.setOutputGate(gate("udpOut"));</tt>
+     * can be used. Example: <tt>socket.setOutputGate(gate("socketOut"));</tt>
      */
     void setOutputGate(cGate *toUdp) { gateToUdp = toUdp; }
 

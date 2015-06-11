@@ -17,7 +17,7 @@
 
 package inet.node.inet;
 
-import inet.applications.contract.IUDPApp;
+import inet.applications.contract.IApp;
 import inet.routing.contract.IBGPRouting;
 import inet.routing.contract.IIPRouting;
 import inet.routing.contract.IPIMRouting;
@@ -63,7 +63,7 @@ module Router extends ApplicationLayerNodeBase
                 ospfRoutingModule = default(hasOSPF ? "^.ospf" : "");
                 @display("p=400,100");
         }
-        rip: <"RIPRouting"> like IUDPApp if hasRIP {
+        rip: <"RIPRouting"> like IApp if hasRIP {
             parameters:
                 @display("p=300,100");
         }
@@ -83,8 +83,8 @@ module Router extends ApplicationLayerNodeBase
         bgp.tcpOut --> at.upperLayerIn++ if hasBGP;
         bgp.tcpIn <-- at.upperLayerOut++ if hasBGP;
 
-        rip.udpOut --> at.upperLayerIn++ if hasRIP;
-        rip.udpIn <-- at.upperLayerOut++ if hasRIP;
+        rip.socketOut --> at.upperLayerIn++ if hasRIP;
+        rip.socketIn <-- at.upperLayerOut++ if hasRIP;
 
         pim.networkLayerOut --> tn.upperLayerIn++ if hasPIM;
         pim.networkLayerIn <-- tn.upperLayerOut++ if hasPIM;
