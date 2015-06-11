@@ -18,6 +18,7 @@
 
 package inet.networklayer.ipv4;
 
+import inet.common.MessageDispatcher;
 import inet.networklayer.contract.IARP;
 import inet.networklayer.configurator.ipv4.IPv4NodeConfigurator;
 import inet.networklayer.contract.INetworkLayer;
@@ -42,10 +43,10 @@ module IPv4NetworkLayer like INetworkLayer
         arp.respondToProxyARP = proxyARP;
         @display("i=block/fork");
     gates:
-        input ifIn[] @labels(INetworkDatagram);
-        output ifOut[] @labels(INetworkDatagram);
-        input transportIn[] @labels(IPv4ControlInfo/down);
-        output transportOut[] @labels(IPv4ControlInfo/up);
+        input ifIn @labels(INetworkDatagram);
+        output ifOut @labels(INetworkDatagram);
+        input transportIn @labels(IPv4ControlInfo/down);
+        output transportOut @labels(IPv4ControlInfo/up);
         input igmpIn;
         output igmpOut;
         input arpIn;
@@ -61,8 +62,6 @@ module IPv4NetworkLayer like INetworkLayer
                 useProxyARP = true; // as routes with unspecified next-hop addr are quite common
                 @display("p=85,95;q=queue");
             gates:
-                queueIn[sizeof(ifIn)];
-                queueOut[sizeof(ifOut)];
         }
         arp: <arpType> like IARP {
             parameters:
@@ -71,6 +70,10 @@ module IPv4NetworkLayer like INetworkLayer
         icmp: ICMP {
             parameters:
                 @display("p=165,70");
+        }
+        dp: MessageDispatcher {
+            parameters:
+                @display("b=300,5,,,,1;p=400,200");
         }
         igmp: <igmpType> like IIGMP {
             parameters:
@@ -82,24 +85,17 @@ module IPv4NetworkLayer like INetworkLayer
         }
 
     connections allowunconnected:
-        for i=0..sizeof(transportIn)-1 {
-            transportIn[i] --> { @display("m=n"); } --> ip.transportIn++;
-        }
-        for i=0..sizeof(transportOut)-1 {
-            ip.transportOut++ --> { @display("m=n"); } --> transportOut[i];
-        }
+        dp.upperLayerOut++ --> { @display("m=n"); } --> transportOut;
+        dp.upperLayerIn++ <-- { @display("m=n"); } <-- transportIn;
 
-        ip.transportOut++ --> icmp.localIn;
-        ip.transportIn++ <-- icmp.sendOut;
+        dp.upperLayerOut++ --> icmp.ipIn;
+        dp.upperLayerIn++ <-- icmp.ipOut;
 
-        ip.transportOut++ --> igmp.ipIn;
-        ip.transportIn++ <-- igmp.ipOut;
+        dp.upperLayerOut++ --> igmp.ipIn;
+        dp.upperLayerIn++ <-- igmp.ipOut;
 
-
-        icmp.errorOut --> errorHandling.in;
-
-        ip.arpOut --> arp.netwIn;
-        ip.arpIn <-- arp.netwOut;
+        ip.transportOut --> dp.lowerLayerIn++;
+        ip.transportIn <-- dp.lowerLayerOut++;
 
         arp.ifOut --> arpOut;
         arp.ifIn <-- arpIn;
@@ -107,11 +103,7 @@ module IPv4NetworkLayer like INetworkLayer
         igmp.routerOut --> igmpOut;
         igmp.routerIn <-- igmpIn;
 
-        for i=0..sizeof(ifIn)-1 {
-            ip.queueIn[i] <-- { @display("m=s"); } <-- ifIn[i];
-        }
-        for i=0..sizeof(ifOut)-1 {
-            ip.queueOut[i] --> { @display("m=s"); } --> ifOut[i];
-        }
+        ip.queueIn <-- { @display("m=s"); } <-- ifIn;
+        ip.queueOut --> { @display("m=s"); } --> ifOut;
 }
 
