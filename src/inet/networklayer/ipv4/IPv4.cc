@@ -163,15 +163,10 @@ void IPv4::endService(cPacket *packet)
     if (packet->getArrivalGate()->isName("transportIn")) {    //TODO packet->getArrivalGate()->getBaseId() == transportInGateBaseId
         handlePacketFromHL(packet);
     }
-    else if (packet->getArrivalGate() == arpInGate) {
-        handlePacketFromARP(packet);
-    }
     else {    // from network
         EV_INFO << "Received " << packet << " from network.\n";
         const InterfaceEntry *fromIE = getSourceInterfaceFrom(packet);
-        if (dynamic_cast<ARPPacket *>(packet))
-            handleIncomingARPPacket((ARPPacket *)packet, fromIE);
-        else if (dynamic_cast<IPv4Datagram *>(packet))
+        if (dynamic_cast<IPv4Datagram *>(packet))
             handleIncomingDatagram((IPv4Datagram *)packet, fromIE);
         else
             throw cRuntimeError(packet, "Unexpected packet type");
@@ -279,15 +274,6 @@ void IPv4::preroutingFinish(IPv4Datagram *datagram, const InterfaceEntry *fromIE
     }
 }
 
-void IPv4::handleIncomingARPPacket(ARPPacket *packet, const InterfaceEntry *fromIE)
-{
-    // give it to the ARP module
-    IMACProtocolControlInfo *ctrl = check_and_cast<IMACProtocolControlInfo *>(packet->getControlInfo());
-    ctrl->setInterfaceId(fromIE->getInterfaceId());
-    EV_INFO << "Sending " << packet << " to arp.\n";
-    send(packet, arpOutGate);
-}
-
 void IPv4::handleIncomingICMP(ICMPMessage *packet)
 {
     switch (packet->getType()) {
@@ -345,15 +331,6 @@ void IPv4::handlePacketFromHL(cPacket *packet)
     L3Address nextHopAddr(IPv4Address::UNSPECIFIED_ADDRESS);
     if (datagramLocalOutHook(datagram, destIE, nextHopAddr) == INetfilter::IHook::ACCEPT)
         datagramLocalOut(datagram, destIE, nextHopAddr.toIPv4());
-}
-
-void IPv4::handlePacketFromARP(cPacket *packet)
-{
-    EV_INFO << "Received " << packet << " from arp.\n";
-    // send out packet on the appropriate interface
-    IMACProtocolControlInfo *ctrl = check_and_cast<IMACProtocolControlInfo *>(packet->getControlInfo());
-    InterfaceEntry *destIE = ift->getInterfaceById(ctrl->getInterfaceId());
-    sendPacketToNIC(packet, destIE);
 }
 
 void IPv4::datagramLocalOut(IPv4Datagram *datagram, const InterfaceEntry *destIE, IPv4Address requestedNextHopAddress)
