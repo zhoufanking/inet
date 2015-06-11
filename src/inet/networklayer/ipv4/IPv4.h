@@ -157,20 +157,10 @@ class INET_API IPv4 : public QueueBase, public INetfilter, public ILifecycle, pu
     virtual void handlePacketFromHL(cPacket *packet);
 
     /**
-     * TODO
-     */
-    virtual void handlePacketFromARP(cPacket *packet);
-
-    /**
      * Routes and sends datagram received from higher layers.
      * Invokes datagramLocalOutHook(), then routePacket().
      */
     virtual void datagramLocalOut(IPv4Datagram *datagram, const InterfaceEntry *destIE, IPv4Address nextHopAddr);
-
-    /**
-     * Handle incoming ARP packets by sending them over to ARP.
-     */
-    virtual void handleIncomingARPPacket(ARPPacket *packet, const InterfaceEntry *fromIE);
 
     /**
      * Handle incoming ICMP messages.
