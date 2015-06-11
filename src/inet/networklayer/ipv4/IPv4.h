@@ -76,8 +76,6 @@ class INET_API IPv4 : public QueueBase, public INetfilter, public ILifecycle, pu
     IInterfaceTable *ift = nullptr;
     IARP *arp = nullptr;
     ICMP *icmp = nullptr;
-    cGate *arpInGate = nullptr;
-    cGate *arpOutGate = nullptr;
     int transportInGateBaseId = -1;
     int queueOutGateBaseId = -1;
 
