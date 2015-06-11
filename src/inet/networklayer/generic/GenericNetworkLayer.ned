@@ -28,8 +28,12 @@ import inet.networklayer.contract.INetworkLayer;
 module GenericNetworkLayer like INetworkLayer
 {
     parameters:
+        bool forwarding = default(false);
+        bool multicastForwarding = default(false);
         string interfaceTableModule;
         string routingTableModule;
+        *.forwarding = default(forwarding);
+        *.multicastForwarding = default(multicastForwarding);
         *.interfaceTableModule = default(absPath(interfaceTableModule));
         *.routingTableModule = default(absPath(".routingTable"));
         *.arpModule = default(absPath(".arp"));

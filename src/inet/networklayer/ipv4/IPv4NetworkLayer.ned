@@ -33,9 +33,13 @@ module IPv4NetworkLayer like INetworkLayer
 {
     parameters:
         bool proxyARP = default(true);
+        bool forwarding = default(false);
+        bool multicastForwarding = default(false);
         string igmpType = default("IGMPv2");
         string arpType = default("ARP");
         string interfaceTableModule;
+        *.forwarding = default(forwarding);
+        *.multicastForwarding = default(multicastForwarding);
         *.interfaceTableModule = default(absPath(interfaceTableModule));
         *.routingTableModule = default(absPath(".routingTable"));
         *.arpModule = default(absPath(".arp"));
