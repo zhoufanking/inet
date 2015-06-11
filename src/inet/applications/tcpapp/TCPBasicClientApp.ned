@@ -17,7 +17,7 @@
 
 package inet.applications.tcpapp;
 
-import inet.applications.contract.ITCPApp;
+import inet.applications.contract.IApp;
 
 
 //
@@ -89,7 +89,7 @@ import inet.applications.contract.ITCPApp;
 //
 // @see ~TCPGenericSrvApp, ~GenericAppMsg, ~TelnetApp
 //
-simple TCPBasicClientApp like ITCPApp
+simple TCPBasicClientApp like IApp
 {
     parameters:
         string localAddress = default(""); // may be left empty ("")
