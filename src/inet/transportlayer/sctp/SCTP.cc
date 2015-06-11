@@ -16,12 +16,12 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/transportlayer/sctp/SCTP.h"
 #include "inet/transportlayer/sctp/SCTPAssociation.h"
 #include "inet/transportlayer/contract/sctp/SCTPCommand_m.h"
 #include "inet/networklayer/contract/IL3AddressType.h"
 #include "inet/networklayer/contract/INetworkProtocolControlInfo.h"
-#include "inet/networklayer/common/IPSocket.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/serializer/sctp/SCTPSerializer.h"
 
@@ -104,10 +104,8 @@ void SCTP::initialize(int stage)
             testTimeout = (simtime_t)netw->par("testTimeout");
         }
     }
-    else if (stage == INITSTAGE_TRANSPORT_LAYER) {
-        IPSocket socket(gate("to_ip"));
-        socket.registerProtocol(IP_PROT_SCTP);
-    }
+    else if (stage == INITSTAGE_TRANSPORT_LAYER)
+        registerProtocol(Protocol::sctp, gate("to_ip"));
     else if (stage == INITSTAGE_TRANSPORT_LAYER_2) {
         if (par("udpEncapsEnabled").boolValue()) {
             bindPortForUDP();
