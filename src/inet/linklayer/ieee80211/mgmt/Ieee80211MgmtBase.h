@@ -18,6 +18,7 @@
 #ifndef __INET_IEEE80211MGMTBASE_H
 #define __INET_IEEE80211MGMTBASE_H
 
+#include "inet/common/IInterfaceRegistrationListener.h"
 #include "inet/common/lifecycle/ILifecycle.h"
 #include "inet/common/queue/PassiveQueueBase.h"
 #include "inet/linklayer/common/MACAddress.h"
@@ -36,7 +37,7 @@ namespace ieee80211 {
  *
  * @author Andras Varga
  */
-class INET_API Ieee80211MgmtBase : public PassiveQueueBase, public ILifecycle
+class INET_API Ieee80211MgmtBase : public PassiveQueueBase, public ILifecycle, public IInterfaceRegistrationListener
 {
   protected:
     // configuration
@@ -123,6 +124,7 @@ class INET_API Ieee80211MgmtBase : public PassiveQueueBase, public ILifecycle
 
   public:
     virtual bool handleOperationStage(LifecycleOperation *operation, int stage, IDoneCallback *doneCallback) override;
+    virtual void handleRegisterInterface(const InterfaceEntry &interface, cGate *gate) override;
     //@}
 };
 

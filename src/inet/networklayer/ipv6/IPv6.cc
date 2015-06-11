@@ -103,6 +103,12 @@ void IPv6::initialize(int stage)
     }
 }
 
+void IPv6::handleRegisterProtocol(const Protocol& protocol, cGate *gate)
+{
+    Enter_Method("handleRegisterProtocol");
+    mapping.addProtocolMapping(protocol.getId(), gate->getIndex());
+}
+
 void IPv6::updateDisplayString()
 {
     char buf[80] = "";
