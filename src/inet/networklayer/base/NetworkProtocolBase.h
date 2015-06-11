@@ -37,8 +37,6 @@ class INET_API NetworkProtocolBase : public LayeredProtocolBase, public IProtoco
 
     virtual void initialize(int stage) override;
 
-    virtual void handleUpperCommand(cMessage *message) override;
-
     virtual void sendUp(cMessage *message, int transportProtocol);
     virtual void sendDown(cMessage *message, int interfaceId = -1);
 

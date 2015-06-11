@@ -14,9 +14,8 @@
 // Author: Andras Varga (andras@omnetpp.org)
 //
 
-#include "inet/networklayer/base/NetworkProtocolBase.h"
 #include "inet/common/ModuleAccess.h"
-#include "inet/networklayer/contract/NetworkProtocolCommand_m.h"
+#include "inet/networklayer/base/NetworkProtocolBase.h"
 
 namespace inet {
 
@@ -33,17 +32,9 @@ void NetworkProtocolBase::initialize(int stage)
 }
 
 void NetworkProtocolBase::handleRegisterProtocol(const Protocol& protocol, cGate *gate)
-void NetworkProtocolBase::handleUpperCommand(cMessage *message)
 {
     Enter_Method("handleRegisterProtocol");
     protocolMapping.addProtocolMapping(protocol.getId(), gate->getIndex());
-    if (dynamic_cast<RegisterTransportProtocolCommand *>(message)) {
-        RegisterTransportProtocolCommand *command = check_and_cast<RegisterTransportProtocolCommand *>(message);
-        protocolMapping.addProtocolMapping(command->getProtocol(), message->getArrivalGate()->getIndex());
-        delete message;
-    }
-    else
-        LayeredProtocolBase::handleUpperCommand(message);
 }
 
 void NetworkProtocolBase::sendUp(cMessage *message, int transportProtocol)
