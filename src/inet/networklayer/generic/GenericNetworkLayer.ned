@@ -51,16 +51,15 @@ module GenericNetworkLayer like INetworkLayer
         }
         gnp: GenericNetworkProtocol {
             parameters:
-                @display("p=85,95;q=queue");
-            gates:
+                @display("p=300,100;q=queue");
         }
         echo: EchoProtocol {
             parameters:
-                @display("p=160,63");
+                @display("p=300,150");
         }
         arp: GenericARP {
             parameters:
-                @display("p=202,142;q=pendingQueue");
+                @display("p=300,200;q=pendingQueue");
         }
     connections allowunconnected:
         gnp.transportOut++ --> { @display("m=n"); } --> transportOut;
