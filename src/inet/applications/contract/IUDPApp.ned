@@ -21,14 +21,14 @@ package inet.applications.contract;
 // Template for UDP applications. It shows what gates a UDP app
 // needs, to be able to be used in ~StandardHost etc.
 //
-moduleinterface IUDPApp
-{
-    parameters:
-        @display("i=block/app");
-    gates:
-        input udpIn @labels(UDPControlInfo/up);
-        output udpOut @labels(UDPControlInfo/down);
-}
+//moduleinterface IUDPApp
+//{
+//    parameters:
+//        @display("i=block/app");
+//    gates:
+//        input udpIn @labels(UDPControlInfo/up);
+//        output udpOut @labels(UDPControlInfo/down);
+//}
 
 
 
