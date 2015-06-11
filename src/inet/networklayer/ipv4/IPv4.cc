@@ -63,8 +63,6 @@ void IPv4::initialize(int stage)
         arp = getModuleFromPar<IARP>(par("arpModule"), this);
         icmp = getModuleFromPar<ICMP>(par("icmpModule"), this);
 
-        arpInGate = gate("arpIn");
-        arpOutGate = gate("arpOut");
         transportInGateBaseId = gateBaseId("transportIn");
         queueOutGateBaseId = gateBaseId("queueOut");
 
