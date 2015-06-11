@@ -140,8 +140,6 @@ void IPv4::handleMessage(cMessage *msg)
             socketIdToSocketDescriptor.erase(it);
         }
     }
-    else if (!msg->isSelfMessage() && msg->getArrivalGate()->isName("arpIn"))
-        endService(PK(msg));
     else
         QueueBase::handleMessage(msg);
 }
