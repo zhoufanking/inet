@@ -15,18 +15,16 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-
 package inet.examples.inet.routerperf;
 
 import inet.applications.generic.IIPvXTrafficGenerator;
-import inet.node.inet.NodeBase;
-
+import inet.node.inet.NetworkLayerNodeBase;
 
 //
 // Definition of an IP node with a transport generator that connects
 // to IP directly, without TCP or UDP.
 //
-module BurstHost extends NodeBase
+module BurstHost extends NetworkLayerNodeBase
 {
     parameters:
         @networkNode();
