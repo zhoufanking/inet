@@ -17,17 +17,19 @@
 //
 
 cplusplus {{
+#include "inet/common/Protocol.h"
+#include "inet/common/IProtocolControlInfo.h"
+#include "inet/common/ISocketControlInfo.h"
 #include "inet/linklayer/common/Ieee802Ctrl.h"
 #include "inet/networklayer/contract/INetworkProtocolControlInfo.h"
-#include "inet/applications/contract/ISocketControlInfo.h"
 }}
 
 namespace inet;
 
 class IPSocketCommand
 {
-    @implements(INetworkLayerControlInfo, ISocketControlInfo);
-    int networkProtocol = ETHERTYPE_IPv4;
+    @implements(ISocketControlInfo, IProtocolControlInfo);
+    int controlInfoProtocolId = Protocol::ipv4.getId();
     int socketId;
 }
 
