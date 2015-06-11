@@ -94,8 +94,8 @@ module BGPRouterEx
         bgp.tcpOut --> { @display("m=s"); } --> snifferOut.in;
         bgp.tcpIn <-- { @display("m=s"); } <-- snifferIn.out;
 
-        snifferOut.out --> { @display("m=s"); } --> tcp.appIn++;
-        snifferIn.in <-- { @display("m=s"); } <-- tcp.appOut++;
+        snifferOut.out --> { @display("m=s"); } --> tcp.appIn;
+        snifferIn.in <-- { @display("m=s"); } <-- tcp.appOut;
 
         tcp.ipOut --> { @display("m=s"); } --> networkLayer.transportIn++;
         tcp.ipIn <-- { @display("m=s"); } <-- networkLayer.transportOut++;
