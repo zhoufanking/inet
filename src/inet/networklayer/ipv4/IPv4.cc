@@ -125,12 +125,7 @@ void IPv4::updateDisplayString()
 
 void IPv4::handleMessage(cMessage *msg)
 {
-    if (dynamic_cast<RegisterTransportProtocolCommand *>(msg)) {
-        RegisterTransportProtocolCommand *command = check_and_cast<RegisterTransportProtocolCommand *>(msg);
-        mapping.addProtocolMapping(command->getProtocol(), msg->getArrivalGate()->getIndex());
-        delete msg;
-    }
-    else if (dynamic_cast<IPSocketBindCommand *>(msg->getControlInfo())) {
+    if (dynamic_cast<IPSocketBindCommand *>(msg->getControlInfo())) {
         IPSocketBindCommand *command = dynamic_cast<IPSocketBindCommand *>(msg->getControlInfo());
         SocketDescriptor *descriptor = new SocketDescriptor(command->getSocketId(), command->getProtoclId());
         socketIdToSocketDescriptor[command->getSocketId()] = descriptor;
