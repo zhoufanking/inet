@@ -593,15 +593,26 @@ void IPv4::reassembleAndDeliverFinish(IPv4Datagram *datagram, const InterfaceEnt
 {
     // decapsulate and send on appropriate output gate
     int protocol = datagram->getTransportProtocol();
-
+    cPacket *packet = decapsulate(datagram, fromIE);
+    // deliver to sockets
+    IPv4ControlInfo *controlInfo = check_and_cast<IPv4ControlInfo *>(packet->getControlInfo());
+    auto lowerBound = protoclIdToSocketDescriptors.lower_bound(protocol);
+    auto upperBound = protoclIdToSocketDescriptors.upper_bound(protocol);
+    for (auto it = lowerBound; it != upperBound; it++) {
+        IPv4ControlInfo *controlInfoCopy = controlInfo->dup();
+        controlInfoCopy->setSocketId(it->second->socketId);
+        cPacket *packetCopy = packet->dup();
+        packetCopy->setControlInfo(controlInfoCopy);
+        send(packetCopy, "transportOut");
+    }
     if (protocol == IP_PROT_ICMP) {
         // incoming ICMP packets are handled specially
-        handleIncomingICMP(check_and_cast<ICMPMessage *>(decapsulate(datagram)));
+        handleIncomingICMP(check_and_cast<ICMPMessage *>(packet));
         numLocalDeliver++;
     }
     else if (protocol == IP_PROT_IP) {
         // tunnelled IP packets are handled separately
-        send(decapsulate(datagram), "preRoutingOut");    //FIXME There is no "preRoutingOut" gate in the IPv4 module.
+        send(packet, "preRoutingOut");    //FIXME There is no "preRoutingOut" gate in the IPv4 module.
     }
     else {
         cGate *outGate = gate("transportOut");
