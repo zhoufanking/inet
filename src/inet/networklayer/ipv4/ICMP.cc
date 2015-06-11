@@ -211,7 +211,7 @@ void ICMP::processICMPMessage(ICMPMessage *icmpmsg)
 
 void ICMP::errorOut(ICMPMessage *icmpmsg)
 {
-    send(icmpmsg, "errorOut");
+    delete icmpmsg;
 }
 
 void ICMP::processEchoRequest(ICMPMessage *request)
