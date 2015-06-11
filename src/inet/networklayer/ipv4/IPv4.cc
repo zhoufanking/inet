@@ -64,7 +64,6 @@ void IPv4::initialize(int stage)
         icmp = getModuleFromPar<ICMP>(par("icmpModule"), this);
 
         transportInGateBaseId = gateBaseId("transportIn");
-        queueOutGateBaseId = gateBaseId("queueOut");
 
         defaultTimeToLive = par("timeToLive");
         defaultMCTimeToLive = par("multicastTimeToLive");
@@ -274,18 +273,14 @@ void IPv4::handleIncomingICMP(ICMPMessage *packet)
         case ICMP_TIME_EXCEEDED:
         case ICMP_PARAMETER_PROBLEM: {
             // ICMP errors are delivered to the appropriate higher layer protocol
-            IPv4Datagram *bogusPacket = check_and_cast<IPv4Datagram *>(packet->getEncapsulatedPacket());
-            int protocol = bogusPacket->getTransportProtocol();
-            int gateindex = mapping.getOutputGateForProtocol(protocol);
-            send(packet, "transportOut", gateindex);
+            send(packet, "transportOut");
             break;
         }
 
         default: {
             // all others are delivered to ICMP: ICMP_ECHO_REQUEST, ICMP_ECHO_REPLY,
             // ICMP_TIMESTAMP_REQUEST, ICMP_TIMESTAMP_REPLY, etc.
-            int gateindex = mapping.getOutputGateForProtocol(IP_PROT_ICMP);
-            send(packet, "transportOut", gateindex);
+            send(packet, "transportOut");
             break;
         }
     }
@@ -608,15 +603,11 @@ void IPv4::reassembleAndDeliverFinish(IPv4Datagram *datagram, const InterfaceEnt
         send(decapsulate(datagram), "preRoutingOut");    //FIXME There is no "preRoutingOut" gate in the IPv4 module.
     }
     else {
-        int gateindex = mapping.findOutputGateForProtocol(protocol);
-        // check if the transportOut port are connected, otherwise discard the packet
-        if (gateindex >= 0) {
-            cGate *outGate = gate("transportOut", gateindex);
-            if (outGate->isPathOK()) {
-                send(decapsulate(datagram), outGate);
-                numLocalDeliver++;
-                return;
-            }
+        cGate *outGate = gate("transportOut");
+        if (outGate->isPathOK()) {
+            send(packet, outGate);
+            numLocalDeliver++;
+            return;
         }
 
         EV_ERROR << "Transport protocol ID=" << protocol << " not connected, discarding packet\n";
@@ -884,7 +875,7 @@ void IPv4::sendPacketToIeee802NIC(cPacket *packet, const InterfaceEntry *ie, con
 void IPv4::sendPacketToNIC(cPacket *packet, const InterfaceEntry *ie)
 {
     EV_INFO << "Sending " << packet << " to output interface = " << ie->getName() << ".\n";
-    send(packet, queueOutGateBaseId + ie->getNetworkLayerGateIndex());
+    send(packet, "queueOut");
 }
 
 // NetFilter:
