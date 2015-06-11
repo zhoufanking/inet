@@ -19,6 +19,9 @@
 #include <iostream>
 
 #include "inet/applications/pingapp/PingApp.h"
+#include "inet/networklayer/ipv4/ICMPMessage.h"
+#include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
+#include "inet/networklayer/common/IPProtocolId_m.h"
 
 #include "inet/applications/pingapp/PingPayload_m.h"
 
@@ -104,8 +107,8 @@ void PingApp::initialize(int stage)
 
         // references
         timer = new cMessage("sendPing", PING_FIRST_ADDR);
-
-
+        socket.setOutputGate(gate("socketOut"));
+        socket.bind(IP_PROT_ICMP);
     }
     else if (stage == INITSTAGE_APPLICATION_LAYER) {
         // startup
@@ -167,7 +170,7 @@ void PingApp::handleMessage(cMessage *msg)
         ASSERT2(msg->getKind() == PING_SEND, "Unknown kind in self message.");
 
         // send a ping
-        sendPing();
+        sendPingRequest();
 
         if (count > 0 && sendSeqNo % count == 0) {
             // choose next dest address
@@ -184,8 +187,11 @@ void PingApp::handleMessage(cMessage *msg)
         scheduleNextPingRequest(simTime(), msg->getKind() == PING_CHANGE_ADDR);
     }
     else {
-        // process ping response
-        processPingResponse(check_and_cast<PingPayload *>(msg));
+        ICMPMessage *icmpMessage = check_and_cast<ICMPMessage *>(msg);
+        PingPayload *pingPayload = check_and_cast<PingPayload *>(icmpMessage->decapsulate());
+        pingPayload->setControlInfo(icmpMessage->removeControlInfo());
+        processPingResponse(pingPayload);
+        delete icmpMessage;
     }
 
     if (hasGUI()) {
@@ -264,6 +270,41 @@ bool PingApp::isNodeUp()
 bool PingApp::isEnabled()
 {
     return par("destAddr").stringValue()[0] && (count == -1 || sentCount < count);
+}
+
+void PingApp::sendPingRequest()
+{
+    char name[32];
+    sprintf(name, "ping%ld", sendSeqNo);
+
+    PingPayload *msg = new PingPayload(name);
+    ASSERT(pid != -1);
+    msg->setOriginatorId(pid);
+    msg->setSeqNo(sendSeqNo);
+    msg->setByteLength(packetSize + 4);
+
+    // store the sending time in a circular buffer so we can compute RTT when the packet returns
+    sendTimeHistory[sendSeqNo % PING_HISTORY_SIZE] = simTime();
+
+    emit(pingTxSeqSignal, sendSeqNo);
+    sendSeqNo++;
+    sentCount++;
+    IL3AddressType *addressType = destAddr.getAddressType();
+    INetworkProtocolControlInfo *controlInfo = addressType->createNetworkProtocolControlInfo();
+    controlInfo->setSourceAddress(srcAddr);
+    controlInfo->setDestinationAddress(destAddr);
+    controlInfo->setHopLimit(hopLimit);
+    // TODO: remove
+    controlInfo->setTransportProtocol(IP_PROT_ICMP);
+    EV_INFO << "Sending ping request #" << msg->getSeqNo() << " to lower layer.\n";
+
+    ICMPMessage *request = new ICMPMessage(msg->getName());
+    request->setByteLength(4);
+    request->setType(ICMP_ECHO_REQUEST);
+    request->encapsulate(msg);
+    request->setControlInfo(dynamic_cast<cObject *>(controlInfo));
+
+    socket.send(request);
 }
 
 void PingApp::processPingResponse(PingPayload *msg)
@@ -405,35 +446,6 @@ void PingApp::finish()
         cout << "stddev (ms): " << (rttStat.getStddev() * 1000.0) << "   variance:" << rttStat.getVariance() << endl;
         cout << "--------------------------------------------------------" << endl;
     }
-}
-
-void PingApp::sendPing()
-{
-    char name[32];
-    sprintf(name, "ping%ld", sendSeqNo);
-
-    PingPayload *msg = new PingPayload(name);
-    ASSERT(pid != -1);
-    msg->setOriginatorId(pid);
-    msg->setSeqNo(sendSeqNo);
-    msg->setByteLength(packetSize + 4);
-
-    // store the sending time in a circular buffer so we can compute RTT when the packet returns
-    sendTimeHistory[sendSeqNo % PING_HISTORY_SIZE] = simTime();
-
-    emit(pingTxSeqSignal, sendSeqNo);
-    sendSeqNo++;
-    sentCount++;
-    IL3AddressType *addressType = destAddr.getAddressType();
-    INetworkProtocolControlInfo *controlInfo = addressType->createNetworkProtocolControlInfo();
-    controlInfo->setSourceAddress(srcAddr);
-    controlInfo->setDestinationAddress(destAddr);
-    controlInfo->setHopLimit(hopLimit);
-    // TODO: remove
-    controlInfo->setTransportProtocol(1);    // IP_PROT_ICMP);
-    msg->setControlInfo(dynamic_cast<cObject *>(controlInfo));
-    EV_INFO << "Sending ping request #" << msg->getSeqNo() << " to lower layer.\n";
-    send(msg, "pingOut");
 }
 
 } // namespace inet
