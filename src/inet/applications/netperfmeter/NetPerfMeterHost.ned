@@ -28,16 +28,15 @@
 package inet.applications.netperfmeter;
 
 import inet.applications.contract.INetPerfMeterApp;
-import inet.node.inet.NodeBase;
+import inet.node.inet.NetworkLayerNodeBase;
 import inet.transportlayer.contract.ISCTP;
 import inet.transportlayer.contract.ITCP;
 import inet.transportlayer.contract.IUDP;
 
-
 //
 // NetPerfMeter application host.
 //
-module NetPerfMeterHost extends NodeBase
+module NetPerfMeterHost extends NetworkLayerNodeBase
 {
     parameters:
         @display("i=device/pc2");
@@ -67,12 +66,12 @@ module NetPerfMeterHost extends NodeBase
 
     connections allowunconnected:
         for i=0..numNetPerfMeterApps-1 {
-            netPerfMeterApp[i].tcpOut --> tcp.appIn++;
-            netPerfMeterApp[i].tcpIn <-- tcp.appOut++;
+            netPerfMeterApp[i].tcpOut --> tcp.appIn;
+            netPerfMeterApp[i].tcpIn <-- tcp.appOut;
             netPerfMeterApp[i].sctpOut --> sctp.from_appl++;
             netPerfMeterApp[i].sctpIn <-- sctp.to_appl++;
-            netPerfMeterApp[i].udpOut --> udp.appIn++;
-            netPerfMeterApp[i].udpIn <-- udp.appOut++;
+            netPerfMeterApp[i].udpOut --> udp.appIn;
+            netPerfMeterApp[i].udpIn <-- udp.appOut;
         }
 
         tcp.ipOut --> networkLayer.transportIn++ if (numNetPerfMeterApps > 0);
