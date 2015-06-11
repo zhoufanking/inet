@@ -21,8 +21,6 @@ import inet.applications.contract.IUDPApp;
 import inet.routing.contract.IBGPRouting;
 import inet.routing.contract.IIPRouting;
 import inet.routing.contract.IPIMRouting;
-import inet.transportlayer.contract.ITCP;
-import inet.transportlayer.contract.IUDP;
 
 //
 // IPv4 router that supports wireless, Ethernet, PPP and external interfaces.
@@ -47,7 +45,7 @@ import inet.transportlayer.contract.IUDP;
 // By default, dynamic routing is not supported. Specific routing protocols can
 // be added by setting the hasOSPF/hasRIP/hasBGP parameters.
 //
-module Router extends NodeBase
+module Router extends ApplicationLayerNodeBase
 {
     parameters:
         @display("i=abstract/router");
@@ -56,58 +54,38 @@ module Router extends NodeBase
         bool hasRIP = default(false);
         bool hasBGP = default(false);
         bool hasPIM = default(false);
-        string tcpType = default(firstAvailableOrEmpty("TCP", "TCP_lwIP", "TCP_NSC"));  // tcp implementation (e.g. ~TCP, ~TCP_lwIP, ~TCP_NSC) or ~TCPSpoof
-        string udpType = default("UDP");
+        bgp.routingTableModule = default(absPath(".ipv4.routingTable"));
+        ospf.routingTableModule = default(absPath(".ipv4.routingTable"));
 
     submodules:
-        ospf: <"OSPFRouting"> like IIPRouting if hasOSPF {
-            parameters:
-                @display("p=465,287,row");
-        }
         bgp: <"BGPRouting"> like IBGPRouting if hasBGP {
             parameters:
                 ospfRoutingModule = default(hasOSPF ? "^.ospf" : "");
-                @display("p=214,80;i=block/network");
-        }
-        tcp: <tcpType> like ITCP if hasBGP && tcpType != "" {
-            parameters:
-                @display("p=214,180;i=block/transport");
+                @display("p=400,100");
         }
         rip: <"RIPRouting"> like IUDPApp if hasRIP {
             parameters:
-                @display("p=404,80");
+                @display("p=300,100");
         }
-        udp: <udpType> like IUDP if hasRIP {
-            @display("p=404,180");
+        ospf: <"OSPFRouting"> like IIPRouting if hasOSPF {
+            parameters:
+                @display("p=700,300");
         }
         pim: <"PIMRouting"> like IPIMRouting if hasPIM {
-            @display("p=175,287");
+            parameters:
+                @display("p=800,300");
         }
 
     connections allowunconnected:
-        if hasOSPF {
-            ospf.ipOut --> networkLayer.transportIn++;
-            ospf.ipIn <-- networkLayer.transportOut++;
-        }
+        ospf.ipOut --> tn.upperLayerIn++ if hasOSPF;
+        ospf.ipIn <-- tn.upperLayerOut++ if hasOSPF;
 
-        if hasBGP {
-            bgp.tcpOut --> tcp.appIn++;
-            bgp.tcpIn <-- tcp.appOut++;
+        bgp.tcpOut --> at.upperLayerIn++ if hasBGP;
+        bgp.tcpIn <-- at.upperLayerOut++ if hasBGP;
 
-            tcp.ipOut --> networkLayer.transportIn++;
-            tcp.ipIn <-- networkLayer.transportOut++;
-        }
+        rip.udpOut --> at.upperLayerIn++ if hasRIP;
+        rip.udpIn <-- at.upperLayerOut++ if hasRIP;
 
-        if hasRIP {
-            rip.udpOut --> udp.appIn++;
-            rip.udpIn <-- udp.appOut++;
-
-            udp.ipOut --> networkLayer.transportIn++;
-            udp.ipIn <-- networkLayer.transportOut++;
-        }
-
-        if hasPIM {
-            pim.networkLayerOut --> networkLayer.transportIn++;
-            pim.networkLayerIn <-- networkLayer.transportOut++;
-        }
+        pim.networkLayerOut --> tn.upperLayerIn++ if hasPIM;
+        pim.networkLayerIn <-- tn.upperLayerOut++ if hasPIM;
 }
