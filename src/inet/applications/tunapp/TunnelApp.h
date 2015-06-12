@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2015 Irene Ruengeler
+// Copyright (C) 2013 OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -18,8 +18,9 @@
 #ifndef __INET_TUNNELAPP_H
 #define __INET_TUNNELAPP_H
 
-#include "inet/applications/base/ApplicationBase.h"
+#include "inet/linklayer/tun/TunSocket.h"
 #include "inet/transportlayer/contract/udp/UDPSocket.h"
+#include "inet/applications/base/ApplicationBase.h"
 
 namespace inet {
 
@@ -33,6 +34,7 @@ protected:
 
     UDPSocket serverSocket;
     UDPSocket clientSocket;
+    TunSocket tunSocket;
 
 public:
     TunnelApp();
