@@ -54,8 +54,9 @@ module Router extends ApplicationLayerNodeBase
         bool hasRIP = default(false);
         bool hasBGP = default(false);
         bool hasPIM = default(false);
-        bgp.routingTableModule = default(absPath(".ipv4.routingTable"));
-        ospf.routingTableModule = default(absPath(".ipv4.routingTable"));
+        bgp.routingTableModule = default(absPath("."+_firstNL+".routingTable"));
+        ospf.routingTableModule = default(absPath("."+_firstNL+".routingTable"));
+        rip.routingTableModule = default(absPath("."+_firstNL+".routingTable"));
 
     submodules:
         bgp: <"BGPRouting"> like IBGPRouting if hasBGP {
