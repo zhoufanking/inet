@@ -136,6 +136,15 @@ void IPv4::handleMessage(cMessage *msg)
         IPSocketCloseCommand *command = dynamic_cast<IPSocketCloseCommand *>(msg->getControlInfo());
         auto it = socketIdToSocketDescriptor.find(command->getSocketId());
         if (it != socketIdToSocketDescriptor.end()) {
+            int protocol = it->second->protocolId;
+            auto lowerBound = protoclIdToSocketDescriptors.lower_bound(protocol);
+            auto upperBound = protoclIdToSocketDescriptors.upper_bound(protocol);
+            for (auto jt = lowerBound; jt != upperBound; jt++) {
+                if (it->second == jt->second) {
+                    protoclIdToSocketDescriptors.erase(jt);
+                    break;
+                }
+            }
             delete it->second;
             socketIdToSocketDescriptor.erase(it);
         }
