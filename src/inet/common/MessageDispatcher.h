@@ -53,6 +53,8 @@ class INET_API MessageDispatcher : public cSimpleModule, public IProtocolRegistr
         virtual int computeUpperLayerProtocolId(cMessage *message);
         virtual int computeLowerLayerProtocolId(cMessage *message);
 
+        virtual const char *findProtocolName(int protocolId);
+
     public:
         MessageDispatcher();
 
