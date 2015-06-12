@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2014 Irene Ruengeler
+// Copyright (C) 2013 OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -15,10 +15,12 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "inet/applications/tunapp/TunnelApp.h"
-#include "inet/linklayer/common/Ieee802Ctrl.h"
+#include "inet/common/ModuleAccess.h"
+#include "inet/linklayer/tun/TunControlInfo_m.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
+#include "inet/transportlayer/contract/udp/UDPControlInfo.h"
+#include "inet/applications/tunapp/TunnelApp.h"
 
 namespace inet {
 
@@ -40,44 +42,40 @@ void TunnelApp::initialize(int stage)
         destAddress = par("destAddress");
         destPort = par("destPort");
         localPort = par("localPort");
-
-        // TODO: use tun device socket?
-        IInterfaceTable *interfaceTable = check_and_cast<IInterfaceTable *>(getParentModule()->getSubmodule("interfaceTable"));
-        InterfaceEntry *interfaceEntry = interfaceTable->getInterfaceByName(tunInterface);
-        cModule* interfaceModule = interfaceEntry->getInterfaceModule();
-        gate("tunOut")->connectTo(interfaceModule->gate("appIn"));
-        interfaceModule->gate("appOut")->connectTo(gate("tunIn"));
     }
     else if (stage == INITSTAGE_APPLICATION_LAYER) {
         serverSocket.setOutputGate(gate("socketOut"));
-        clientSocket.setOutputGate(gate("socketOut"));
         if (localPort != -1)
             serverSocket.bind(localPort);
+        clientSocket.setOutputGate(gate("socketOut"));
         if (destPort != -1)
             clientSocket.connect(L3AddressResolver().resolve(destAddress), destPort);
+        IInterfaceTable *interfaceTable = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
+        InterfaceEntry *interfaceEntry = interfaceTable->getInterfaceByName(tunInterface);
+        if (interfaceEntry == nullptr)
+            throw cRuntimeError("TUN interface not found: %s", tunInterface);
+        tunSocket.setOutputGate(gate("socketOut"));
+        tunSocket.open(interfaceEntry->getInterfaceId());
     }
 }
 
 void TunnelApp::handleMessageWhenUp(cMessage *message)
 {
     if (message->arrivedOn("socketIn")) {
-        if (message->getKind() == UDP_I_DATA) {
+        cObject *controlInfo = message->getControlInfo();
+        if (dynamic_cast<UDPControlInfo *>(controlInfo)) {
             delete message->removeControlInfo();
-            Ieee802Ctrl *controlInfo = new Ieee802Ctrl();
-            controlInfo->setNetworkProtocol(ETHERTYPE_IPv4);
-            message->setControlInfo(controlInfo);
-            send(message, "tunOut");
+            tunSocket.send(PK(message));
+        }
+        else if (dynamic_cast<TunControlInfo *>(controlInfo)) {
+            delete message->removeControlInfo();
+            clientSocket.send(PK(message));
         }
         else
-            throw cRuntimeError("Unknown message");
-    }
-    else if (message->arrivedOn("tunIn")) {
-        cPacket *packet = check_and_cast<cPacket *>(message);
-        delete packet->removeControlInfo();
-        clientSocket.send(packet);
+            throw cRuntimeError("Unknown message: %s", message->getName());
     }
     else
-        throw cRuntimeError("Unknown message");
+        throw cRuntimeError("Unknown message: %s", message->getName());
 }
 
 } // namespace inet
