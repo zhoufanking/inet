@@ -18,13 +18,13 @@
 package inet.examples.inet.routerperf;
 
 import inet.applications.generic.IIPvXTrafficGenerator;
-import inet.node.inet.NetworkLayerNodeBase;
+import inet.node.inet.TransportLayerNodeBase;
 
 //
 // Definition of an IP node with a transport generator that connects
 // to IP directly, without TCP or UDP.
 //
-module BurstHost extends NetworkLayerNodeBase
+module BurstHost extends TransportLayerNodeBase
 {
     parameters:
         @networkNode();
@@ -37,7 +37,7 @@ module BurstHost extends NetworkLayerNodeBase
         }
     connections allowunconnected:
         // transport connections
-        networkLayer.transportOut++ --> trafGen.ipIn;
-        networkLayer.transportIn++ <-- trafGen.ipOut;
+        trafGen.ipOut --> tn.upperLayerIn++;
+        trafGen.ipIn <-- tn.upperLayerOut++;
 }
 
