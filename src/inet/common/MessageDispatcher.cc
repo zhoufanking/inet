@@ -53,6 +53,12 @@ int MessageDispatcher::computeLowerLayerProtocolId(cMessage *message)
     return controlInfo != nullptr ? controlInfo->getControlInfoProtocolId() : -1;
 }
 
+const char *MessageDispatcher::findProtocolName(int protocolId)
+{
+    const Protocol *protocol = Protocol::findProtocol(protocolId);
+    return protocol != nullptr ? protocol->getName() : "<unknown>";
+}
+
 void MessageDispatcher::handleMessage(cMessage *message)
 {
     if (message->arrivedOn("upperLayerIn")) {
@@ -87,7 +93,7 @@ void MessageDispatcher::handleUpperLayerPacket(cMessage *message)
         if (it != protocolIdToLowerLayerGateIndex.end())
             send(message, "lowerLayerOut", it->second);
         else
-            throw cRuntimeError("Unknown protocol: id = %d", protocolId);
+            throw cRuntimeError("Unknown protocol: id = %d, name = %s", protocolId, findProtocolName(protocolId));
     }
     else
         throw cRuntimeError("Unknown packet: %s", message->getName());
@@ -109,7 +115,7 @@ void MessageDispatcher::handleLowerLayerPacket(cMessage *message)
         if (it != protocolIdToUpperLayerGateIndex.end())
             send(message, "upperLayerOut", it->second);
         else
-            throw cRuntimeError("Unknown protocol: id = %d", protocolId);
+            throw cRuntimeError("Unknown protocol: id = %d, name = %s", protocolId, findProtocolName(protocolId));
     }
     else
         throw cRuntimeError("Unknown packet: %s", message->getName());
@@ -134,7 +140,7 @@ void MessageDispatcher::handleUpperLayerCommand(cMessage *message)
         if (it != protocolIdToLowerLayerGateIndex.end())
             send(message, "lowerLayerOut", it->second);
         else
-            throw cRuntimeError("Unknown protocol: id = %d", protocolId);
+            throw cRuntimeError("Unknown protocol: id = %d, name = %s", protocolId, findProtocolName(protocolId));
     }
     else
         throw cRuntimeError("Unknown message: %s", message->getName());
