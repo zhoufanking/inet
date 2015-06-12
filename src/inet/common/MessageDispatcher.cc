@@ -19,7 +19,7 @@
 #include "inet/common/IPacketControlInfo.h"
 #include "inet/common/ISocketControlInfo.h"
 #include "inet/common/IProtocolControlInfo.h"
-#include "inet/linklayer/contract/IMACProtocolControlInfo.h"
+#include "inet/common/IInterfaceControlInfo.h"
 
 namespace inet {
 
@@ -37,7 +37,7 @@ int MessageDispatcher::computeSocketId(cMessage *message)
 
 int MessageDispatcher::computeInterfaceId(cMessage *message)
 {
-    IMACProtocolControlInfo *controlInfo = dynamic_cast<IMACProtocolControlInfo *>(message->getControlInfo());
+    IInterfaceControlInfo *controlInfo = dynamic_cast<IInterfaceControlInfo *>(message->getControlInfo());
     return controlInfo != nullptr ? controlInfo->getInterfaceId() : -1;
 }
 
