@@ -30,6 +30,7 @@ import inet.networklayer.ipv4.ErrorHandling;
 import inet.networklayer.ipv4.ICMP;
 import inet.networklayer.ipv4.IPv4;
 import inet.networklayer.ipv4.IPv4RoutingTable;
+import inet.node.inet.NetworkLayerNodeBase;
 
 
 //
@@ -46,114 +47,24 @@ import inet.networklayer.ipv4.IPv4RoutingTable;
 //
 // @see MatrixCloudDelayer
 //
-module InternetCloud
+module InternetCloud extends NetworkLayerNodeBase
 {
     parameters:
-        @networkNode();
-        @labels(node,ethernet-node);
+        numLoInterfaces = 0;
+        numTunInterfaces = 0;
+        forwarding = true;
         @display("i=misc/cloud");
-        int numPcapRecorders = default(0); // no of PcapRecorders.
-        *.interfaceTableModule = default(absPath(".interfaceTable"));
-        *.routingTableModule = default(absPath(".routingTable"));
-    gates:
-        inout pppg[] @labels(PPPFrame-conn);
-    types:
-        module InternetCloudNetworkLayer
-        {
-            parameters:
-                @display("i=block/fork");
-                bool proxyARP = default(true);
-                string interfaceTableModule;
-                string routingTableModule;
-                *.interfaceTableModule = default(absPath(interfaceTableModule));
-                *.routingTableModule = default(absPath(routingTableModule));
-                *.arpModule = default(absPath(".arp"));
-                *.icmpModule = default(absPath(".icmp"));
-            gates:
-                input ifIn[] @labels(IPDatagram);
-                output ifOut[];
-            submodules:
-                configurator: IPv4NodeConfigurator;
-                ip: IPv4 {
-                    parameters:
-                        timeToLive = 32;
-                        multicastTimeToLive = 32;
-                        fragmentTimeout = 60s;
-                        useProxyARP = true;
-                        routingTableModule = "^.^.routingTable";
-                        @display("p=85,95;q=queue");
-                    gates:
-                        transportIn[1];
-                        transportOut[1];
-                        queueIn[sizeof(ifIn)];
-                        queueOut[sizeof(ifOut)];
-                }
-
-                delayer: <default("MatrixCloudDelayer")> like ICloudDelayer {
-                    @display("p=160,123");
-                }
-                arp: ARP {
-                    parameters:
-                        respondToProxyARP = proxyARP;
-                        routingTableModule = "^.^.routingTable";
-                        @display("p=163,206;q=pendingQueue");
-                }
-                icmp: ICMP {
-                    parameters:
-                        @display("p=160,33");
-                }
-                errorHandling: ErrorHandling {
-                    parameters:
-                        @display("p=239,33");
-                }
-            connections allowunconnected:
-                // transport Layer
-                ip.transportOut[0] --> icmp.localIn;
-                ip.transportIn[0] <-- icmp.sendOut;
-
-                icmp.errorOut --> errorHandling.in;
-
-                ip.arpOut --> arp.netwIn;
-                ip.arpIn <-- arp.netwOut;
-
-                for i=0..sizeof(ifIn)-1 {
-                    ip.queueIn[i] <-- { @display("m=s"); } <-- ifIn[i];
-                }
-                for i=0..sizeof(ifOut)-1 {
-                    ip.queueOut[i] --> { @display("m=s"); } --> ifOut[i];
-                }
-        }
     submodules:
-        interfaceTable: InterfaceTable {
-            parameters:
-                @display("p=60,131");
+        ipv4Delayer: <default("MatrixCloudDelayer")> like ICloudDelayer if hasIpv4 {
+            networkProtocolModule = absPath("^.ipv4.ip");
+            @display("p=400,365");
         }
-        routingTable: IPv4RoutingTable {
-            parameters:
-                forwarding = true;
-                routerId = "auto";
-                @display("p=60,196");
+        ipv6Delayer: <default("MatrixCloudDelayer")> like ICloudDelayer if hasIpv6 {
+            networkProtocolModule = absPath("^.ipv6.ipv6");
+            @display("p=500,365");
         }
-        pcapRecorder[numPcapRecorders]: PcapRecorder {
-            @display("p=291,60");
-        }
-        networkLayer: InternetCloudNetworkLayer {
-            parameters:
-                @display("p=267,157;q=queue");
-            gates:
-                ifIn[sizeof(pppg)+sizeof(ethg)];
-                ifOut[sizeof(pppg)+sizeof(ethg)];
-        }
-        ppp[sizeof(pppg)]: <default("PPPInterface")> like IWiredNic {
-            parameters:
-                @display("p=125,257,row,110;q=l2queue");
-        }
-    connections allowunconnected:
-        // connections to network outside
-        for i=0..sizeof(pppg)-1 {
-            pppg[i] <--> ppp[i].phys;
-            ppp[i].upperLayerOut --> networkLayer.ifIn[i];
-            ppp[i].upperLayerIn <-- networkLayer.ifOut[i];
+        gnDelayer: <default("MatrixCloudDelayer")> like ICloudDelayer if hasGn {
+            networkProtocolModule = absPath("^.gn.gnp");
+            @display("p=600,365");
         }
 }
-
