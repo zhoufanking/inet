@@ -18,11 +18,11 @@
 package inet.applications.tunapp;
 
 import inet.applications.contract.IApp;
-import inet.applications.contract.ITunApp;
 
-simple TunnelApp like IApp, ITunApp
+simple TunnelApp like IApp
 {
     parameters:
+        string interfaceTableModule;
         string tunInterface;
         string destAddress = default("");
         int destPort = default(-1);
@@ -31,6 +31,4 @@ simple TunnelApp like IApp, ITunApp
     gates:
         input socketIn;
         output socketOut;
-        input tunIn;
-        output tunOut;
 }

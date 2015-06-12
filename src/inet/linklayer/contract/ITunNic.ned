@@ -19,7 +19,4 @@ package inet.linklayer.contract;
 
 moduleinterface ITunNic extends INic
 {
-    gates:
-        input appIn;    // from application
-        output appOut;  // to application
 }
