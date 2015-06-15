@@ -27,9 +27,9 @@ namespace inet {
 class INET_API TunnelApp : public ApplicationBase
 {
 protected:
-    const char *tunInterface = nullptr;
-    const char *destAddress = nullptr;
-    int destPort = -1;
+    const char *interface = nullptr;
+    const char *destinationAddress = nullptr;
+    int destinationPort = -1;
     int localPort = -1;
 
     UDPSocket serverSocket;
