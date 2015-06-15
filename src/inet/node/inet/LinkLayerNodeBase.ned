@@ -29,7 +29,7 @@ module LinkLayerNodeBase extends NodeBase
 {
     parameters:
         bool hasPcapRecorder = default(false);
-        int numLos = default(1);
+        int numLoInterfaces = default(1);
         int numExtInterfaces = default(0);
         int numRadios = default(0);               // the number of radios in the router. by default no wireless
         int numTunInterfaces = default(0);
@@ -52,7 +52,7 @@ module LinkLayerNodeBase extends NodeBase
             parameters:
                 @display("p=100,550;is=s");
         }
-        lo[numLos]: LoopbackInterface {
+        lo[numLoInterfaces]: LoopbackInterface {
             parameters:
                 @display("p=300,700,row,50;");
         }

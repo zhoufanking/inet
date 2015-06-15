@@ -66,7 +66,7 @@ module NetworkLayerNodeBase extends LinkLayerNodeBase
         gn.ifIn <-- nl.upperLayerOut++ if hasGn;
         gn.ifOut --> nl.upperLayerIn++ if hasGn;
 
-        for i=0..numLos-1 {
+        for i=0..numLoInterfaces-1 {
             nl.lowerLayerOut++ --> lo[i].upperLayerIn;
             lo[i].upperLayerOut --> nl.lowerLayerIn++;
         }
