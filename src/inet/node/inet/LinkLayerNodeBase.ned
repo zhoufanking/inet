@@ -25,12 +25,17 @@ import inet.linklayer.contract.IWirelessNic;
 import inet.linklayer.loopback.LoopbackInterface;
 import inet.networklayer.common.InterfaceTable;
 
+//
+// This module contains the link layer infrastructure for network nodes.
+//
+// See derived modules: ~StandardHost, ~WirelessHost, ~AdhocHost, ~Router, etc.
+//
 module LinkLayerNodeBase extends NodeBase
 {
     parameters:
         bool hasPcapRecorder = default(false);
         int numLoInterfaces = default(1);
-        int numWlanInterfaces = default(0);               // the number of radios in the router. by default no wireless
+        int numWlanInterfaces = default(0);
         int numExtInterfaces = default(0);
         int numTunInterfaces = default(0);
         mobilityType = default(numWlanInterfaces > 0 ? "StationaryMobility" : "");

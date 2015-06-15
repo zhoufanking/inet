@@ -22,6 +22,11 @@ import inet.transportlayer.contract.ISCTP;
 import inet.transportlayer.contract.ITCP;
 import inet.transportlayer.contract.IUDP;
 
+//
+// This module contains the transport layer infrastructure for network nodes.
+//
+// See derived modules: ~StandardHost, ~WirelessHost, ~AdhocHost, ~Router, etc.
+//
 module TransportLayerNodeBase extends NetworkLayerNodeBase
 {
     parameters:

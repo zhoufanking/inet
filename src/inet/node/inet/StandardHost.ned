@@ -37,7 +37,7 @@ package inet.node.inet;
 module StandardHost extends ApplicationLayerNodeBase
 {
     parameters:
-        forwarding = default(false);  // disable routing by default
+        forwarding = default(false);
         networkLayer.proxyARP = default(false);
         @display("i=device/pc2");
 }
