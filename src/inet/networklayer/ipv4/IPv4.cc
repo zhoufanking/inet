@@ -104,7 +104,7 @@ void IPv4::initialize(int stage)
 void IPv4::handleRegisterProtocol(const Protocol& protocol, cGate *gate)
 {
     Enter_Method("handleRegisterProtocol");
-    mapping.addProtocolMapping(protocol.getId(), gate->getIndex());
+    mapping.addProtocolMapping(ProtocolGroup::ipprotocol.getProtocolNumber(&protocol), gate->getIndex());
 }
 
 void IPv4::updateDisplayString()
@@ -598,16 +598,16 @@ void IPv4::reassembleAndDeliverFinish(IPv4Datagram *datagram, const InterfaceEnt
         send(packet, "preRoutingOut");    //FIXME There is no "preRoutingOut" gate in the IPv4 module.
     }
     else {
-        cGate *outGate = gate("transportOut");
-        if (outGate->isPathOK()) {
-            send(packet, outGate);
+        if (mapping.findOutputGateForProtocol(protocol) < 0) {
+            EV_ERROR << "Transport protocol ID=" << protocol << " not connected, discarding packet\n";
+            int inputInterfaceId = getSourceInterfaceFrom(datagram)->getInterfaceId();
+            icmp->sendErrorMessage(datagram, inputInterfaceId, ICMP_DESTINATION_UNREACHABLE, ICMP_DU_PROTOCOL_UNREACHABLE);
+        }
+        else {
+            send(packet, "transportOut");
             numLocalDeliver++;
             return;
         }
-
-        EV_ERROR << "Transport protocol ID=" << protocol << " not connected, discarding packet\n";
-        int inputInterfaceId = getSourceInterfaceFrom(datagram)->getInterfaceId();
-        icmp->sendErrorMessage(datagram, inputInterfaceId, ICMP_DESTINATION_UNREACHABLE, ICMP_DU_PROTOCOL_UNREACHABLE);
     }
 }
 
