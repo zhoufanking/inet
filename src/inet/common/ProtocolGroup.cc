@@ -23,6 +23,8 @@ ProtocolGroup::ProtocolGroup(const char *name, std::map<int, const Protocol *> p
     name(name),
     protocolNumberToProtocol(protocolNumberToProtocol)
 {
+    for (auto it : protocolNumberToProtocol)
+        protocolToProtocolNumber[it.second] = it.first;
 }
 
 const Protocol *ProtocolGroup::findProtocol(int protocolNumber) const
