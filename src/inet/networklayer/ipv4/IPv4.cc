@@ -573,13 +573,14 @@ void IPv4::reassembleAndDeliver(IPv4Datagram *datagram, const InterfaceEntry *fr
 
 void IPv4::reassembleAndDeliverFinish(IPv4Datagram *datagram, const InterfaceEntry *fromIE)
 {
-    // decapsulate and send on appropriate output gate
+    // decapsulate
     int protocol = datagram->getTransportProtocol();
     cPacket *packet = decapsulate(datagram, fromIE);
     // deliver to sockets
     IPv4ControlInfo *controlInfo = check_and_cast<IPv4ControlInfo *>(packet->getControlInfo());
     auto lowerBound = protoclIdToSocketDescriptors.lower_bound(protocol);
     auto upperBound = protoclIdToSocketDescriptors.upper_bound(protocol);
+    bool hasSocket = lowerBound != upperBound;
     for (auto it = lowerBound; it != upperBound; it++) {
         IPv4ControlInfo *controlInfoCopy = controlInfo->dup();
         controlInfoCopy->setSocketId(it->second->socketId);
@@ -587,21 +588,14 @@ void IPv4::reassembleAndDeliverFinish(IPv4Datagram *datagram, const InterfaceEnt
         packetCopy->setControlInfo(controlInfoCopy);
         send(packetCopy, "transportOut");
     }
-    if (protocol == IP_PROT_IP) {
-        // tunnelled IP packets are handled separately
-        send(packet, "preRoutingOut");    //FIXME There is no "preRoutingOut" gate in the IPv4 module.
+    if (mapping.findOutputGateForProtocol(protocol) >= 0) {
+        send(packet, "transportOut");
+        numLocalDeliver++;
     }
-    else {
-        if (mapping.findOutputGateForProtocol(protocol) < 0) {
-            EV_ERROR << "Transport protocol ID=" << protocol << " not connected, discarding packet\n";
-            int inputInterfaceId = getSourceInterfaceFrom(datagram)->getInterfaceId();
-            icmp->sendErrorMessage(datagram, inputInterfaceId, ICMP_DESTINATION_UNREACHABLE, ICMP_DU_PROTOCOL_UNREACHABLE);
-        }
-        else {
-            send(packet, "transportOut");
-            numLocalDeliver++;
-            return;
-        }
+    else if (!hasSocket) {
+        EV_ERROR << "Transport protocol ID=" << protocol << " not connected, discarding packet\n";
+        int inputInterfaceId = getSourceInterfaceFrom(datagram)->getInterfaceId();
+        icmp->sendErrorMessage(datagram, inputInterfaceId, ICMP_DESTINATION_UNREACHABLE, ICMP_DU_PROTOCOL_UNREACHABLE);
     }
 }
 
