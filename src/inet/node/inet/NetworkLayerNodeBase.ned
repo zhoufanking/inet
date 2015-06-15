@@ -22,6 +22,11 @@ import inet.networklayer.generic.GenericNetworkLayer;
 import inet.networklayer.ipv4.IPv4NetworkLayer;
 import inet.networklayer.ipv6.IPv6NetworkLayer;
 
+//
+// This module contains the network layer infrastructure for network nodes.
+//
+// See derived modules: ~StandardHost, ~WirelessHost, ~AdhocHost, ~Router, etc.
+//
 module NetworkLayerNodeBase extends LinkLayerNodeBase
 {
     parameters:

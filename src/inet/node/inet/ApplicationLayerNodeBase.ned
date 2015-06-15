@@ -20,6 +20,11 @@ package inet.node.inet;
 import inet.applications.contract.IApp;
 import inet.common.MessageDispatcher;
 
+//
+// This module contains the application layer infrastructure for network nodes.
+//
+// See derived modules: ~StandardHost, ~WirelessHost, ~AdhocHost, ~Router, etc.
+//
 module ApplicationLayerNodeBase extends TransportLayerNodeBase
 {
     parameters:

@@ -23,13 +23,10 @@ import inet.power.contract.IEnergyGenerator;
 import inet.power.contract.IEnergyStorage;
 
 //
-// Contains the common lower layers (linklayer and networklayer)
-// of Router, StandardHost, WirelessHost etc.
+// This module contains the most basic infrastructure for network nodes that is
+// not strictly communication protocol related.
 //
-// NOTE:
-//    - forwarding is turned on by default.
-//    - use this model only as a base type. In simulations use ~Router,
-//      ~StandardHost, ~WirelessHost and ~AdhocHost
+// See derived modules: ~StandardHost, ~WirelessHost, ~AdhocHost, ~Router, etc.
 //
 module NodeBase like INetworkNode
 {
