@@ -23,9 +23,9 @@ simple TunnelApp like IApp
 {
     parameters:
         string interfaceTableModule;
-        string tunInterface;
-        string destAddress = default("");
-        int destPort = default(-1);
+        string interface;
+        string destinationAddress = default("");
+        int destinationPort = default(-1);
         int localPort = default(-1);
         @display("i=block/app");
     gates:

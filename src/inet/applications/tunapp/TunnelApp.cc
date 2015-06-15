@@ -38,9 +38,9 @@ void TunnelApp::initialize(int stage)
 {
     ApplicationBase::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
-        tunInterface = par("tunInterface");
-        destAddress = par("destAddress");
-        destPort = par("destPort");
+        interface = par("interface");
+        destinationAddress = par("destinationAddress");
+        destinationPort = par("destinationPort");
         localPort = par("localPort");
     }
     else if (stage == INITSTAGE_APPLICATION_LAYER) {
@@ -48,12 +48,12 @@ void TunnelApp::initialize(int stage)
         if (localPort != -1)
             serverSocket.bind(localPort);
         clientSocket.setOutputGate(gate("socketOut"));
-        if (destPort != -1)
-            clientSocket.connect(L3AddressResolver().resolve(destAddress), destPort);
+        if (destinationPort != -1)
+            clientSocket.connect(L3AddressResolver().resolve(destinationAddress), destinationPort);
         IInterfaceTable *interfaceTable = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
-        InterfaceEntry *interfaceEntry = interfaceTable->getInterfaceByName(tunInterface);
+        InterfaceEntry *interfaceEntry = interfaceTable->getInterfaceByName(interface);
         if (interfaceEntry == nullptr)
-            throw cRuntimeError("TUN interface not found: %s", tunInterface);
+            throw cRuntimeError("TUN interface not found: %s", interface);
         tunSocket.setOutputGate(gate("socketOut"));
         tunSocket.open(interfaceEntry->getInterfaceId());
     }
