@@ -24,6 +24,7 @@ simple TunnelApp like IApp
     parameters:
         string interfaceTableModule;
         string interface;
+        string protocol @enum("udp", "ipv4") = default("udp");
         string destinationAddress = default("");
         int destinationPort = default(-1);
         int localPort = default(-1);
