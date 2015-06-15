@@ -176,6 +176,7 @@ class TCPOpenCommand extends TCPCommand
 //
 class TCPAcceptCommand extends TCPCommand
 {
+    int originalSocketId = -1;
 }
 
 

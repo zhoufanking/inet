@@ -110,6 +110,14 @@ void TCPConnection::process_OPEN_PASSIVE(TCPEventCode& event, TCPCommand *tcpCom
 
 void TCPConnection::process_ACCEPT(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg)
 {
+    TCPAcceptCommand *acceptCommand = check_and_cast<TCPAcceptCommand *>(tcpCommand);
+
+    if (forkedConnId != acceptCommand->getOriginalSocketId())
+        throw cRuntimeError("ACCEPT: Invalid original socket ID");
+    forkedConnId = -1;
+    sendEstabIndicationToApp();
+    sendAvailableDataToApp();
+    delete acceptCommand;
     delete msg;
 }
 
@@ -165,6 +173,8 @@ void TCPConnection::process_SEND(TCPEventCode& event, TCPCommand *tcpCommand, cM
 
 void TCPConnection::process_READ_REQUEST(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg)
 {
+    if (forkedConnId != -1)
+        throw cRuntimeError("READ without ACCEPT");
     delete msg;
     cMessage *dataMsg;
     while ((dataMsg = receiveQueue->extractBytesUpTo(state->rcv_nxt)) != NULL)

@@ -152,11 +152,12 @@ void TCPSocket::listen(bool fork)
     sockstate = LISTENING;
 }
 
-void TCPSocket::accept(int socketId)
+void TCPSocket::accept(int socketId, int oldSocketId)
 {
     cMessage *msg = new cMessage("ACCEPT", TCP_C_ACCEPT);
     TCPAcceptCommand *acceptCmd = new TCPAcceptCommand();
     acceptCmd->setSocketId(socketId);
+    acceptCmd->setOriginalSocketId(oldSocketId);
     msg->setControlInfo(acceptCmd);
     sendToTCP(msg);
 }
@@ -291,7 +292,7 @@ void TCPSocket::processMessage(cMessage *msg)
 
         case TCP_I_AVAILABLE:
             availableInfo = check_and_cast<TCPAvailableInfo *>(msg->getControlInfo());
-            accept(availableInfo->getNewSocketId());
+            accept(availableInfo->getNewSocketId(), availableInfo->getSocketId());
             delete msg;
 
             if (cb)

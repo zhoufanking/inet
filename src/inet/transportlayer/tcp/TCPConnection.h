@@ -318,6 +318,7 @@ class INET_API TCPConnection
   public:
     // connection identification by apps: connId
     int connId = -1;    // identifies connection within the app
+    int forkedConnId = -1;    // identifies forked connection within the app (listener socket ID)
 
     // socket pair
     L3Address localAddr;
@@ -538,10 +539,13 @@ class INET_API TCPConnection
     virtual void sendIndicationToApp(int code, const int id = 0);
 
     /** Utility: sends TCP_I_AVAILABLE indication with TCPAvailableInfo to application */
-    virtual void sendAvailableIndicationToApp(int listenConnId);
+    virtual void sendAvailableIndicationToApp();
 
     /** Utility: sends TCP_I_ESTABLISHED indication with TCPConnectInfo to application */
     virtual void sendEstabIndicationToApp();
+
+    /** Utility: sends data or data notification to application */
+    virtual void sendAvailableDataToApp();
 
   public:
     /** Utility: prints local/remote addr/port and app gate index/connId */

@@ -448,8 +448,9 @@ void TCP::addForkedConnection(TCPConnection *conn, TCPConnection *newConn, L3Add
     AppConnKey key;
     key.connId = conn->connId;
     tcpAppConnMap.erase(key);
+    conn->forkedConnId = conn->connId;
     key.connId = conn->connId = getEnvir()->getUniqueNumber();
-    tcpAppConnMap[key] = conn;
+    tcpAppConnMap[key] = conn;  //FIXME ez nem kell, csak az accept utan?
 
     // ...and newConn will live on with the old connId
     key.connId = newConn->connId;

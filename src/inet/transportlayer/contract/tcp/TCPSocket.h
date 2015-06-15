@@ -299,7 +299,7 @@ class INET_API TCPSocket
     /**
      * TODO
      */
-    void accept(int socketId);
+    void accept(int socketId, int originalSocketId);
 
     /**
      * Active OPEN to the given remote socket.
