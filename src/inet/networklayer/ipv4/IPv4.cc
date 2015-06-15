@@ -275,27 +275,6 @@ void IPv4::preroutingFinish(IPv4Datagram *datagram, const InterfaceEntry *fromIE
     }
 }
 
-void IPv4::handleIncomingICMP(ICMPMessage *packet)
-{
-    switch (packet->getType()) {
-        case ICMP_REDIRECT:    // TODO implement redirect handling
-        case ICMP_DESTINATION_UNREACHABLE:
-        case ICMP_TIME_EXCEEDED:
-        case ICMP_PARAMETER_PROBLEM: {
-            // ICMP errors are delivered to the appropriate higher layer protocol
-            send(packet, "transportOut");
-            break;
-        }
-
-        default: {
-            // all others are delivered to ICMP: ICMP_ECHO_REQUEST, ICMP_ECHO_REPLY,
-            // ICMP_TIMESTAMP_REQUEST, ICMP_TIMESTAMP_REPLY, etc.
-            send(packet, "transportOut");
-            break;
-        }
-    }
-}
-
 void IPv4::handlePacketFromHL(cPacket *packet)
 {
     EV_INFO << "Received " << packet << " from upper layer.\n";
@@ -614,12 +593,7 @@ void IPv4::reassembleAndDeliverFinish(IPv4Datagram *datagram, const InterfaceEnt
         packetCopy->setControlInfo(controlInfoCopy);
         send(packetCopy, "transportOut");
     }
-    if (protocol == IP_PROT_ICMP) {
-        // incoming ICMP packets are handled specially
-        handleIncomingICMP(check_and_cast<ICMPMessage *>(packet));
-        numLocalDeliver++;
-    }
-    else if (protocol == IP_PROT_IP) {
+    if (protocol == IP_PROT_IP) {
         // tunnelled IP packets are handled separately
         send(packet, "preRoutingOut");    //FIXME There is no "preRoutingOut" gate in the IPv4 module.
     }
