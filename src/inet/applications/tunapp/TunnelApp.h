@@ -19,6 +19,7 @@
 #define __INET_TUNNELAPP_H
 
 #include "inet/linklayer/tun/TunSocket.h"
+#include "inet/networklayer/common/IPSocket.h"
 #include "inet/transportlayer/contract/udp/UDPSocket.h"
 #include "inet/applications/base/ApplicationBase.h"
 
@@ -27,11 +28,13 @@ namespace inet {
 class INET_API TunnelApp : public ApplicationBase
 {
 protected:
+    const Protocol *protocol = nullptr;
     const char *interface = nullptr;
     const char *destinationAddress = nullptr;
     int destinationPort = -1;
     int localPort = -1;
 
+    IPSocket ipSocket;
     UDPSocket serverSocket;
     UDPSocket clientSocket;
     TunSocket tunSocket;

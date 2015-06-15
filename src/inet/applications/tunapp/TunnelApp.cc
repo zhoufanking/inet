@@ -18,6 +18,7 @@
 #include "inet/common/ModuleAccess.h"
 #include "inet/linklayer/tun/TunControlInfo_m.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
+#include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "inet/transportlayer/contract/udp/UDPControlInfo.h"
 #include "inet/applications/tunapp/TunnelApp.h"
@@ -39,17 +40,27 @@ void TunnelApp::initialize(int stage)
     ApplicationBase::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
         interface = par("interface");
+        const char *protocolName = par("protocol");
+        protocol = Protocol::getProtocol(protocolName);
         destinationAddress = par("destinationAddress");
-        destinationPort = par("destinationPort");
-        localPort = par("localPort");
+        if (protocol == &Protocol::udp) {
+            destinationPort = par("destinationPort");
+            localPort = par("localPort");
+        }
     }
     else if (stage == INITSTAGE_APPLICATION_LAYER) {
-        serverSocket.setOutputGate(gate("socketOut"));
-        if (localPort != -1)
-            serverSocket.bind(localPort);
-        clientSocket.setOutputGate(gate("socketOut"));
-        if (destinationPort != -1)
-            clientSocket.connect(L3AddressResolver().resolve(destinationAddress), destinationPort);
+        if (protocol == &Protocol::ipv4) {
+            ipSocket.setOutputGate(gate("socketOut"));
+            ipSocket.bind(IP_PROT_IP);
+        }
+        if (protocol == &Protocol::udp) {
+            serverSocket.setOutputGate(gate("socketOut"));
+            if (localPort != -1)
+                serverSocket.bind(localPort);
+            clientSocket.setOutputGate(gate("socketOut"));
+            if (destinationPort != -1)
+                clientSocket.connect(L3AddressResolver().resolve(destinationAddress), destinationPort);
+        }
         IInterfaceTable *interfaceTable = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
         InterfaceEntry *interfaceEntry = interfaceTable->getInterfaceByName(interface);
         if (interfaceEntry == nullptr)
@@ -63,13 +74,27 @@ void TunnelApp::handleMessageWhenUp(cMessage *message)
 {
     if (message->arrivedOn("socketIn")) {
         cObject *controlInfo = message->getControlInfo();
-        if (dynamic_cast<UDPControlInfo *>(controlInfo)) {
+        if (dynamic_cast<IPv4ControlInfo *>(controlInfo)) {
+            delete message->removeControlInfo();
+            tunSocket.send(PK(message));
+        }
+        else if (dynamic_cast<UDPControlInfo *>(controlInfo)) {
             delete message->removeControlInfo();
             tunSocket.send(PK(message));
         }
         else if (dynamic_cast<TunControlInfo *>(controlInfo)) {
             delete message->removeControlInfo();
-            clientSocket.send(PK(message));
+            if (protocol == &Protocol::ipv4) {
+                IPv4ControlInfo *controlInfo = new IPv4ControlInfo();
+                controlInfo->setDestinationAddress(L3AddressResolver().resolve(destinationAddress));
+                controlInfo->setTransportProtocol(IP_PROT_IP);
+                message->setControlInfo(controlInfo);
+                ipSocket.send(PK(message));
+            }
+            else if (protocol == &Protocol::udp)
+                clientSocket.send(PK(message));
+            else
+                throw cRuntimeError("Unknown protocol: %s", protocol->getName());;
         }
         else
             throw cRuntimeError("Unknown message: %s", message->getName());
