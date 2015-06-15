@@ -22,6 +22,7 @@
 #include <omnetpp.h>
 
 namespace omnetpp { }  // so "using namespace omnetpp" in INETDefs.h doesn't cause error for OMNeT++ 4.x
+using namespace omnetpp;
 
 namespace inet {
 

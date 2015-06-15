@@ -24,9 +24,9 @@
 #include <platdep/sockets.h>
 #include "inet/common/INETDefs.h"
 
-#if OMNETPP_VERSION < 0x500
+#if OMNETPP_VERSION < 0x500 || OMNETPP_BUILDNUM <= 1000
 #include <platdep/timeutil.h>
-#else // OMNETPP_VERSION < 0x500
+#else // OMNETPP_VERSION < 0x500 || OMNETPP_BUILDNUM <= 1000
 #include <omnetpp/platdep/timeutil.h>
 #endif // OMNETPP_VERSION < 0x500
 
