@@ -27,6 +27,7 @@ class INET_API Protocol
   protected:
     static int nextId;
     static std::map<int, const Protocol *> idToProtocol;
+    static std::map<std::string, const Protocol *> nameToProtocol;
 
   protected:
     const int id;
@@ -40,6 +41,9 @@ class INET_API Protocol
 
     static const Protocol *findProtocol(int id);
     static const Protocol *getProtocol(int id);
+
+    static const Protocol *findProtocol(const char *name);
+    static const Protocol *getProtocol(const char *name);
 
   public:
     // in alphanumeric order

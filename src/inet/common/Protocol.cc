@@ -23,12 +23,14 @@ namespace inet {
 
 int Protocol::nextId = 0;
 std::map<int, const Protocol *> Protocol::idToProtocol;
+std::map<std::string, const Protocol *> Protocol::nameToProtocol;
 
 Protocol::Protocol(const char *name) :
     id(nextId++),
     name(name)
 {
     idToProtocol[id] = this;
+    nameToProtocol[name] = this;
 }
 
 const Protocol *Protocol::findProtocol(int id)
@@ -44,6 +46,21 @@ const Protocol *Protocol::getProtocol(int id)
         return protocol;
     else
         throw cRuntimeError("Unknown protocol id: %d" , id);
+}
+
+const Protocol *Protocol::findProtocol(const char *name)
+{
+    auto it = nameToProtocol.find(name);
+    return it != nameToProtocol.end() ? it->second : nullptr;
+}
+
+const Protocol *Protocol::getProtocol(const char *name)
+{
+    const Protocol *protocol = findProtocol(name);
+    if (protocol != nullptr)
+        return protocol;
+    else
+        throw cRuntimeError("Unknown protocol: %s" , name);
 }
 
 const Protocol Protocol::arp("arp");
