@@ -54,7 +54,7 @@ class INET_API EtherEncap : public cSimpleModule, public IInterfaceRegistrationL
     virtual void updateDisplayString();
 
   public:
-    virtual void handleRegisterInterface(const InterfaceEntry &interface, cGate *gate);
+    virtual void handleRegisterInterface(const InterfaceEntry &interface, cGate *gate) override;
 };
 
 } // namespace inet

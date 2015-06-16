@@ -48,7 +48,7 @@ class INET_API NetworkProtocolBase : public LayeredProtocolBase, public IProtoco
     virtual bool isNodeShutdownStage(int stage) override { return stage == NodeShutdownOperation::STAGE_NETWORK_LAYER; }
 
   public:
-    virtual void handleRegisterProtocol(const Protocol& protocol, cGate *gate);
+    virtual void handleRegisterProtocol(const Protocol& protocol, cGate *gate) override;
 };
 
 } // namespace inet
