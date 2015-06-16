@@ -98,11 +98,11 @@ class INET_API TCP_NSC_Connection
     void do_SEND();
 
   public:
-    int connIdM;
-    int appGateIndexM;
+    int connIdM = -1;
+    int forkedConnId = -1;    // identifies forked connection within the app (listener socket ID)
     SockPair inetSockPairM;
     SockPair nscSockPairM;
-    INetStreamSocket *pNscSocketM;
+    INetStreamSocket *pNscSocketM = nullptr;
 
     bool sentEstablishedM;
     bool onCloseM;
@@ -112,9 +112,9 @@ class INET_API TCP_NSC_Connection
     // TCP Windows Size
     int tcpWinSizeM;
 
-    TCP_NSC *tcpNscM;
-    TCP_NSC_ReceiveQueue *receiveQueueM;
-    TCP_NSC_SendQueue *sendQueueM;
+    TCP_NSC *tcpNscM = nullptr;
+    TCP_NSC_ReceiveQueue *receiveQueueM = nullptr;
+    TCP_NSC_SendQueue *sendQueueM = nullptr;
 };
 
 } // namespace tcp
