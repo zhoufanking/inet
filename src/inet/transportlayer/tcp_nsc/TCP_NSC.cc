@@ -27,6 +27,7 @@
 #include "inet/networklayer/icmpv6/ICMPv6Message_m.h"
 #endif // ifdef WITH_IPv6
 
+#include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/networklayer/contract/IL3AddressType.h"
 #include "inet/networklayer/contract/INetworkProtocolControlInfo.h"
 #include "inet/networklayer/contract/ipv6/IPv6ControlInfo.h"
@@ -272,7 +273,7 @@ void TCP_NSC::sendEstablishedMsg(TCP_NSC_Connection& connP)
     cMessage *msg = new cMessage("TCP_I_ESTABLISHED");
     msg->setKind(TCP_I_ESTABLISHED);
     TCPConnectInfo *tcpConnectInfo = new TCPConnectInfo();
-    tcpConnectInfo->setConnId(connP.connIdM);
+    tcpConnectInfo->setSocketId(connP.connIdM);
     tcpConnectInfo->setLocalAddr(connP.inetSockPairM.localM.ipAddrM);
     tcpConnectInfo->setRemoteAddr(connP.inetSockPairM.remoteM.ipAddrM);
     tcpConnectInfo->setLocalPort(connP.inetSockPairM.localM.portM);
@@ -522,7 +523,7 @@ void TCP_NSC::sendDataToApp(TCP_NSC_Connection& c)
 
     while (nullptr != (dataMsg = c.receiveQueueM->extractBytesUpTo())) {
         TCPConnectInfo *tcpConnectInfo = new TCPConnectInfo();
-        tcpConnectInfo->setConnId(c.connIdM);
+        tcpConnectInfo->setSocketId(c.connIdM);
         tcpConnectInfo->setLocalAddr(c.inetSockPairM.localM.ipAddrM);
         tcpConnectInfo->setRemoteAddr(c.inetSockPairM.remoteM.ipAddrM);
         tcpConnectInfo->setLocalPort(c.inetSockPairM.localM.portM);
@@ -571,7 +572,7 @@ void TCP_NSC::sendErrorNotificationToApp(TCP_NSC_Connection& c, int err)
         cMessage *msg = new cMessage(name);
         msg->setKind(code);
         TCPCommand *ind = new TCPCommand();
-                    ind->setConnId(c.connIdM);
+                    ind->setSocketId(c.connIdM);
         msg->setControlInfo(ind);
                     send(msg, "appOut", c.appGateIndexM);
     }
@@ -610,7 +611,7 @@ TCP_NSC_ReceiveQueue *TCP_NSC::createReceiveQueue(TCPDataTransferMode transferMo
 void TCP_NSC::handleAppMessage(cMessage *msgP)
 {
     TCPCommand *controlInfo = check_and_cast<TCPCommand *>(msgP->getControlInfo());
-    int connId = controlInfo->getConnId();
+    int connId = controlInfo->getSocketId();
 
     TCP_NSC_Connection *conn = findAppConn(connId);
 
