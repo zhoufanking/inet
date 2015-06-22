@@ -162,10 +162,12 @@ class INET_API GenericNetworkProtocol : public QueueBase, public INetfilter, pub
     virtual void reinjectQueuedDatagram(const INetworkDatagram *datagram) override;
 
   protected:
+    virtual int numInitStages() const override { return NUM_INIT_STAGES; }
+
     /**
      * Initialization
      */
-    virtual void initialize() override;
+    virtual void initialize(int stage) override;
 
     /**
      * Processing of generic datagrams. Called when a datagram reaches the front

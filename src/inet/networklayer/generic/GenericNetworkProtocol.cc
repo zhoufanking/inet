@@ -50,21 +50,27 @@ GenericNetworkProtocol::~GenericNetworkProtocol()
     queuedDatagramsForHooks.clear();
 }
 
-void GenericNetworkProtocol::initialize()
+void GenericNetworkProtocol::initialize(int stage)
 {
-    QueueBase::initialize();
+    if (stage == INITSTAGE_LOCAL) {
+        QueueBase::initialize();
 
-    interfaceTable = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
-    routingTable = getModuleFromPar<GenericRoutingTable>(par("routingTableModule"), this);
-    arp = getModuleFromPar<IARP>(par("arpModule"), this);
+        interfaceTable = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
+        routingTable = getModuleFromPar<GenericRoutingTable>(par("routingTableModule"), this);
+        arp = getModuleFromPar<IARP>(par("arpModule"), this);
 
-    defaultHopLimit = par("hopLimit");
-    numLocalDeliver = numDropped = numUnroutable = numForwarded = 0;
+        defaultHopLimit = par("hopLimit");
+        numLocalDeliver = numDropped = numUnroutable = numForwarded = 0;
 
-    WATCH(numLocalDeliver);
-    WATCH(numDropped);
-    WATCH(numUnroutable);
-    WATCH(numForwarded);
+        WATCH(numLocalDeliver);
+        WATCH(numDropped);
+        WATCH(numUnroutable);
+        WATCH(numForwarded);
+    }
+    else if (stage == INITSTAGE_NETWORK_LAYER) {
+        registerProtocol(Protocol::igp, gate("transportOut"));
+        registerProtocol(Protocol::igp, gate("queueOut"));
+    }
 }
 
 void GenericNetworkProtocol::handleRegisterProtocol(const Protocol& protocol, cGate *gate)
