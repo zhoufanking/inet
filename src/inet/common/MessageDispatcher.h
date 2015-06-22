@@ -42,6 +42,7 @@ class INET_API MessageDispatcher : public cSimpleModule, public IProtocolRegistr
         std::map<int, int> protocolIdToLowerLayerGateIndex;
 
     protected:
+        virtual void initialize() override;
         virtual void handleMessage(cMessage *message) override;
         virtual void handleUpperLayerPacket(cMessage *message);
         virtual void handleLowerLayerPacket(cMessage *message);
