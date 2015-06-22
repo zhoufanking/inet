@@ -17,6 +17,7 @@
 
 package inet.networklayer.generic;
 
+import inet.common.MessageDispatcher;
 import inet.networklayer.arp.generic.GenericARP;
 import inet.networklayer.common.EchoProtocol;
 import inet.networklayer.contract.INetworkLayer;
@@ -56,16 +57,23 @@ module GenericNetworkLayer like INetworkLayer
             parameters:
                 @display("p=300,150");
         }
+        dp: MessageDispatcher {
+            parameters:
+                @display("b=300,5,,,,1;p=400,200");
+        }
         arp: GenericARP {
             parameters:
                 @display("p=300,200;q=pendingQueue");
         }
     connections allowunconnected:
-        gnp.transportOut++ --> { @display("m=n"); } --> transportOut;
-        gnp.transportIn++ <-- { @display("m=n"); } <-- transportIn;
+        dp.upperLayerOut++ --> { @display("m=n"); } --> transportOut;
+        dp.upperLayerIn++ <-- { @display("m=n"); } <-- transportIn;
 
-        gnp.transportOut++ --> echo.localIn;
-        gnp.transportIn++ <-- echo.sendOut;
+        gnp.transportOut --> dp.lowerLayerIn++;
+        gnp.transportIn <-- dp.lowerLayerOut++;
+
+        dp.upperLayerOut++ --> echo.localIn;
+        dp.upperLayerIn++ <-- echo.sendOut;
 
         gnp.arpOut --> arp.netwIn;
         gnp.arpIn <-- arp.netwOut;
