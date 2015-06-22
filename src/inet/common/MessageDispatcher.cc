@@ -29,6 +29,15 @@ MessageDispatcher::MessageDispatcher()
 {
 }
 
+
+void MessageDispatcher::initialize()
+{
+    WATCH_MAP(socketIdToUpperLayerGateIndex);
+    WATCH_MAP(interfaceIdToLowerLayerGateIndex);
+    WATCH_MAP(protocolIdToUpperLayerGateIndex);
+    WATCH_MAP(protocolIdToLowerLayerGateIndex);
+}
+
 int MessageDispatcher::computeSocketId(cMessage *message)
 {
     ISocketControlInfo *controlInfo = dynamic_cast<ISocketControlInfo *>(message->getControlInfo());
