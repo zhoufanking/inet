@@ -1130,9 +1130,8 @@ INetfilter::IHook::Result IPv4::datagramLocalOutHook(INetworkDatagram *datagram,
 
 void IPv4::sendOnTransportOutGateByProtocolId(cPacket *packet, int protocolId)
 {
-    int gateindex = mapping.getOutputGateForProtocol(protocolId);
-    cGate *outGate = gate("transportOut", gateindex);
-    send(packet, outGate);
+    //int gateindex = mapping.getOutputGateForProtocol(protocolId);
+    send(packet, "transportOut");
 }
 
 void IPv4::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj)
