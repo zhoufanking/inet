@@ -59,20 +59,20 @@ module Router extends ApplicationLayerNodeBase
         rip.routingTableModule = default(absPath("."+_firstNL+".routingTable"));
 
     submodules:
-        bgp: <"BGPRouting"> like IBGPRouting if hasBGP {
+        bgp: <default("BGPRouting")> like IBGPRouting if hasBGP {
             parameters:
                 ospfRoutingModule = default(hasOSPF ? "^.ospf" : "");
                 @display("p=400,100");
         }
-        rip: <"RIPRouting"> like IApp if hasRIP {
+        rip: <default("RIPRouting")> like IApp if hasRIP {
             parameters:
                 @display("p=300,100");
         }
-        ospf: <"OSPFRouting"> like IIPRouting if hasOSPF {
+        ospf: <default("OSPFRouting")> like IIPRouting if hasOSPF {
             parameters:
                 @display("p=700,300");
         }
-        pim: <"PIMRouting"> like IPIMRouting if hasPIM {
+        pim: <default("PIMRouting")> like IPIMRouting if hasPIM {
             parameters:
                 @display("p=800,300");
         }
