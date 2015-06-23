@@ -45,10 +45,6 @@ module NodeBase like INetworkNode
             parameters:
                 @display("p=100,50;is=s");
         }
-        mobility: <mobilityType> like IMobility if mobilityType != "" {
-            parameters:
-                @display("p=100,150;is=s");
-        }
         energyStorage: <energyStorageType> like IEnergyStorage if energyStorageType != "" {
             parameters:
                 @display("p=100,250;i=block/plug;is=s");
@@ -56,6 +52,11 @@ module NodeBase like INetworkNode
         energyGenerator: <energyGeneratorType> like IEnergyGenerator if energyGeneratorType != "" {
             parameters:
                 @display("p=100,350;i=block/plug;is=s");
+        }
+        // TODO: move just after status (changes fingerprints due to random number generation in initialize)
+        mobility: <mobilityType> like IMobility if mobilityType != "" {
+            parameters:
+                @display("p=100,150;is=s");
         }
 }
 
