@@ -67,6 +67,7 @@ PingApp::PingApp()
 PingApp::~PingApp()
 {
     cancelAndDelete(timer);
+    delete l3Socket;
 }
 
 void PingApp::initialize(int stage)
@@ -107,8 +108,6 @@ void PingApp::initialize(int stage)
 
         // references
         timer = new cMessage("sendPing", PING_FIRST_ADDR);
-        socket.setOutputGate(gate("socketOut"));
-        socket.bind(IP_PROT_ICMP);
     }
     else if (stage == INITSTAGE_APPLICATION_LAYER) {
         // startup
@@ -164,6 +163,25 @@ void PingApp::handleMessage(cMessage *msg)
             destAddr = destAddresses[destAddrIdx];
             EV_INFO << "Starting up: dest=" << destAddr << "  src=" << srcAddr << "seqNo=" << sendSeqNo << endl;
             ASSERT(!destAddr.isUnspecified());
+            int l3ProtocolId = destAddr.getAddressType()->getL3Protocol().getId();
+
+            if (!l3Socket || l3Socket->getControlInfoProtocolId() != l3ProtocolId) {
+                if (l3Socket) {
+                    l3Socket->close();
+                    delete l3Socket;
+                }
+                l3Socket = new L3Socket(l3ProtocolId, gate("socketOut"));
+                int icmp;
+                switch (destAddr.getType()) {
+                    case L3Address::IPv4: icmp = IP_PROT_ICMP; break;
+                    case L3Address::IPv6: icmp = IP_PROT_IPv6_ICMP; break;
+                    case L3Address::MODULEID:
+                    case L3Address::MODULEPATH:
+                        //TODO
+                    default: throw cRuntimeError("unknown address type: %d", (int)destAddr.getType());
+                }
+                l3Socket->bind(icmp);
+            }
             msg->setKind(PING_SEND);
         }
 
@@ -304,7 +322,7 @@ void PingApp::sendPingRequest()
     request->encapsulate(msg);
     request->setControlInfo(dynamic_cast<cObject *>(controlInfo));
 
-    socket.send(request);
+    l3Socket->send(request);
 }
 
 void PingApp::processPingResponse(PingPayload *msg)

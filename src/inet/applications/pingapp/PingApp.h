@@ -22,7 +22,7 @@
 #include "inet/common/INETDefs.h"
 
 #include "inet/networklayer/common/L3Address.h"
-#include "inet/networklayer/common/IPSocket.h"
+#include "inet/networklayer/contract/L3Socket.h"
 #include "inet/common/lifecycle/ILifecycle.h"
 #include "inet/common/lifecycle/LifecycleOperation.h"
 #include "inet/common/lifecycle/NodeStatus.h"
@@ -59,7 +59,7 @@ class INET_API PingApp : public cSimpleModule, public ILifecycle
     bool continuous = false;
 
     // state
-    IPSocket socket;
+    L3Socket *l3Socket = nullptr;
     int pid = 0;    // to determine which hosts are associated with the responses
     cMessage *timer = nullptr;    // to schedule the next Ping request
     NodeStatus *nodeStatus = nullptr;    // lifecycle

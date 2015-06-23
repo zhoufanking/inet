@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2013 Andras Varga
+// Copyright (C) 2015 OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -15,25 +15,34 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef __INET_IPSOCKET_H
-#define __INET_IPSOCKET_H
+#ifndef __INET_L3SOCKET_H
+#define __INET_L3SOCKET_H
 
 #include "inet/common/INETDefs.h"
 
 namespace inet {
 
-class IPSocket
+class L3Socket
 {
   protected:
-    int socketId;
-    cGate *gateToIP;
+    bool bound = false;
+    int controlInfoProtocolId = -1;
+    int socketId = -1;
+    cGate *gateToIP = nullptr;
 
   protected:
     void sendToIP(cMessage *message);
 
   public:
-    IPSocket(cGate *gateToIP = nullptr);
-    virtual ~IPSocket() {}
+    L3Socket(int controlInfoProtocolId = -1, cGate *gateToIP = nullptr);
+    virtual ~L3Socket() {}
+
+    /**
+     * Sets controlInfoProtocolId, for example setControlInfoProtocolId(Protocol::ipv4.getId())
+     */
+    void setControlInfoProtocolId(int controlInfoProtocolId);
+
+    int getControlInfoProtocolId() const { return controlInfoProtocolId;}
 
     /**
      * Returns the internal socket Id.
@@ -65,5 +74,5 @@ class IPSocket
 
 } // namespace inet
 
-#endif // ifndef __INET_IPSOCKET_H
+#endif // ifndef __INET_IPv4SOCKET_H
 

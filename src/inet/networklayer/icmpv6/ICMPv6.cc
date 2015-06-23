@@ -23,7 +23,6 @@
 #include "inet/networklayer/ipv6/IPv6InterfaceData.h"
 
 #include "inet/networklayer/icmpv6/ICMPv6Message_m.h"
-#include "inet/networklayer/common/IPSocket.h"
 #include "inet/networklayer/contract/ipv6/IPv6ControlInfo.h"
 #include "inet/networklayer/ipv6/IPv6Datagram.h"
 

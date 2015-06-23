@@ -26,18 +26,19 @@ cplusplus {{
 
 namespace inet;
 
-class IPSocketCommand
+class L3SocketCommand
 {
     @implements(ISocketControlInfo, IProtocolControlInfo);
     int controlInfoProtocolId = Protocol::ipv4.getId();
     int socketId;
 }
 
-class IPSocketBindCommand extends IPSocketCommand
+class L3SocketBindCommand extends L3SocketCommand
 {
     int protoclId;
 }
 
-class IPSocketCloseCommand extends IPSocketCommand
+class L3SocketCloseCommand extends L3SocketCommand
 {
 }
+

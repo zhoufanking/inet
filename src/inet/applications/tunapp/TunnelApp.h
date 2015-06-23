@@ -19,7 +19,7 @@
 #define __INET_TUNNELAPP_H
 
 #include "inet/linklayer/tun/TunSocket.h"
-#include "inet/networklayer/common/IPSocket.h"
+#include "inet/networklayer/contract/L3Socket.h"
 #include "inet/transportlayer/contract/udp/UDPSocket.h"
 #include "inet/applications/base/ApplicationBase.h"
 
@@ -34,7 +34,7 @@ protected:
     int destinationPort = -1;
     int localPort = -1;
 
-    IPSocket ipSocket;
+    L3Socket ipSocket;
     UDPSocket serverSocket;
     UDPSocket clientSocket;
     TunSocket tunSocket;

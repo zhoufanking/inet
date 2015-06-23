@@ -50,6 +50,7 @@ void TunnelApp::initialize(int stage)
     }
     else if (stage == INITSTAGE_APPLICATION_LAYER) {
         if (protocol == &Protocol::ipv4) {
+            ipSocket.setControlInfoProtocolId(Protocol::ipv4.getId());
             ipSocket.setOutputGate(gate("socketOut"));
             ipSocket.bind(IP_PROT_IP);
         }
