@@ -43,6 +43,7 @@ class INET_API IPv4AddressType : public IL3AddressType
     virtual L3Address getLinkLocalRIPRoutersMulticastAddress() const override { return ALL_RIP_ROUTERS_MCAST; }
     virtual INetworkProtocolControlInfo *createNetworkProtocolControlInfo() const override { return new IPv4ControlInfo(); }
     virtual L3Address getLinkLocalAddress(const InterfaceEntry *ie) const override { return IPv4Address::UNSPECIFIED_ADDRESS; }
+    virtual const Protocol& getL3Protocol() const override { return Protocol::ipv4; }
 };
 
 } // namespace inet

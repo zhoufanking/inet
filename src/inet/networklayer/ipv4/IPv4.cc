@@ -22,7 +22,7 @@
 #include "inet/networklayer/ipv4/IPv4.h"
 
 #include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
-#include "inet/networklayer/common/IPSocketCommand_m.h"
+#include "inet/networklayer/contract/L3SocketCommand_m.h"
 #include "inet/networklayer/arp/ipv4/ARPPacket_m.h"
 #include "inet/networklayer/contract/IARP.h"
 #include "inet/networklayer/ipv4/ICMPMessage_m.h"
@@ -125,15 +125,15 @@ void IPv4::updateDisplayString()
 
 void IPv4::handleMessage(cMessage *msg)
 {
-    if (dynamic_cast<IPSocketBindCommand *>(msg->getControlInfo())) {
-        IPSocketBindCommand *command = dynamic_cast<IPSocketBindCommand *>(msg->getControlInfo());
+    if (L3SocketBindCommand *command = dynamic_cast<L3SocketBindCommand *>(msg->getControlInfo())) {
+        ASSERT(command->getControlInfoProtocolId() == Protocol::ipv4.getId());
         SocketDescriptor *descriptor = new SocketDescriptor(command->getSocketId(), command->getProtoclId());
         socketIdToSocketDescriptor[command->getSocketId()] = descriptor;
         protocolIdToSocketDescriptors.insert(std::pair<int, SocketDescriptor *>(command->getProtoclId(), descriptor));
         delete msg;
     }
-    else if (dynamic_cast<IPSocketCloseCommand *>(msg->getControlInfo())) {
-        IPSocketCloseCommand *command = dynamic_cast<IPSocketCloseCommand *>(msg->getControlInfo());
+    else if (L3SocketCloseCommand *command = dynamic_cast<L3SocketCloseCommand *>(msg->getControlInfo())) {
+        ASSERT(command->getControlInfoProtocolId() == Protocol::ipv4.getId());
         auto it = socketIdToSocketDescriptor.find(command->getSocketId());
         if (it != socketIdToSocketDescriptor.end()) {
             int protocol = it->second->protocolId;

@@ -15,42 +15,56 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "inet/networklayer/common/IPSocket.h"
-#include "inet/networklayer/common/IPSocketCommand_m.h"
+#include "inet/networklayer/contract/L3Socket.h"
+#include "inet/networklayer/contract/L3SocketCommand_m.h"
 
 namespace inet {
 
-IPSocket::IPSocket(cGate *gateToIP) :
+L3Socket::L3Socket(int controlInfoProtocolId, cGate *gateToIP) :
+    controlInfoProtocolId(controlInfoProtocolId),
     socketId(getEnvir()->getUniqueNumber()),
     gateToIP(gateToIP)
 {
 }
 
-void IPSocket::sendToIP(cMessage *message)
+void L3Socket::setControlInfoProtocolId(int _controlInfoProtocolId)
+{
+    ASSERT(!bound);
+    controlInfoProtocolId = _controlInfoProtocolId;
+}
+
+void L3Socket::sendToIP(cMessage *message)
 {
     if (!gateToIP)
-        throw cRuntimeError("IPSocket: setOutputGate() must be invoked before the socket can be used");
+        throw cRuntimeError("L3Socket: setOutputGate() must be invoked before the socket can be used");
     check_and_cast<cSimpleModule *>(gateToIP->getOwnerModule())->send(message, gateToIP);
 }
 
-void IPSocket::bind(int protocolId)
+void L3Socket::bind(int protocolId)
 {
-    IPSocketBindCommand *command = new IPSocketBindCommand();
+    ASSERT(!bound);
+    ASSERT(controlInfoProtocolId != -1);
+    L3SocketBindCommand *command = new L3SocketBindCommand();
+    command->setControlInfoProtocolId(controlInfoProtocolId);
     command->setSocketId(socketId);
     command->setProtoclId(protocolId);
     cMessage *bind = new cMessage("bind");
     bind->setControlInfo(command);
     sendToIP(bind);
+    bound = true;
 }
 
-void IPSocket::send(cPacket *msg)
+void L3Socket::send(cPacket *msg)
 {
     sendToIP(msg);
 }
 
-void IPSocket::close()
+void L3Socket::close()
 {
-    IPSocketCloseCommand *command = new IPSocketCloseCommand();
+    ASSERT(bound);
+    ASSERT(controlInfoProtocolId != -1);
+    L3SocketCloseCommand *command = new L3SocketCloseCommand();
+    command->setControlInfoProtocolId(controlInfoProtocolId);
     command->setSocketId(socketId);
     cMessage *close = new cMessage("close");
     close->setControlInfo(command);
