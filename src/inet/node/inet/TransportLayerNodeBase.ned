@@ -71,11 +71,17 @@ module TransportLayerNodeBase extends NetworkLayerNodeBase
         tn.lowerLayerOut++ --> ipv4.transportIn if hasIpv4;
         tn.lowerLayerIn++ <-- ipv4.transportOut if hasIpv4;
 
+        tn.lowerLayerOut++ --> ipv4.icmpIn if hasIpv4;
+        tn.lowerLayerIn++ <-- ipv4.icmpOut if hasIpv4;
+
         tn.lowerLayerOut++ --> ipv4.igmpIn if hasIpv4;
         tn.lowerLayerIn++ <-- ipv4.igmpOut if hasIpv4;
 
         tn.lowerLayerOut++ --> ipv6.transportIn if hasIpv6;
         tn.lowerLayerIn++ <-- ipv6.transportOut if hasIpv6;
+
+        tn.lowerLayerOut++ --> ipv6.icmpIn if hasIpv6;
+        tn.lowerLayerIn++ <-- ipv6.icmpOut if hasIpv6;
 
         tn.lowerLayerOut++ --> gn.transportIn if hasGn;
         tn.lowerLayerIn++ <-- gn.transportOut if hasGn;

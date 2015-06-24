@@ -54,6 +54,8 @@ module IPv6NetworkLayer like INetworkLayer
         output ifOut @labels(INetworkDatagram);
         input transportIn @labels(IPv4ControlInfo/down);
         output transportOut @labels(IPv4ControlInfo/up);
+        input icmpIn;
+        output icmpOut;
 
     submodules:
         routingTable: IPv6RoutingTable {
@@ -93,6 +95,8 @@ module IPv6NetworkLayer like INetworkLayer
     connections allowunconnected:  // FIXME remove 'nocheck'!
         dp.upperLayerOut++ --> { @display("m=n"); } --> transportOut;
         dp.upperLayerIn++ <-- { @display("m=n"); } <-- transportIn;
+        icmpv6.transportIn <-- icmpIn;
+        icmpv6.transportOut --> icmpOut;
 
         // IPv6 to IPv6 Tunneling
         iptunneling.upperLayerIn <-- ipv6.upperTunnelingOut;
