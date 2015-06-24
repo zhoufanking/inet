@@ -55,6 +55,8 @@ module IPv4NetworkLayer like INetworkLayer
         output igmpOut;
         input arpIn;
         output arpOut;
+        input icmpIn;
+        output icmpOut;
 
     submodules:
         configurator: IPv4NodeConfigurator {
@@ -108,5 +110,8 @@ module IPv4NetworkLayer like INetworkLayer
 
         ip.queueIn <-- { @display("m=s"); } <-- ifIn;
         ip.queueOut --> { @display("m=s"); } --> ifOut;
+
+        icmp.transportIn <-- { @display("m=n"); } <-- icmpIn;
+        icmp.transportOut --> { @display("m=n"); } --> icmpOut;
 }
 
