@@ -20,6 +20,7 @@
 
 #include "inet/common/IProtocolControlInfo.h"
 #include "inet/common/ISocketControlInfo.h"
+#include "inet/common/ProtocolGroup.h"
 #include "inet/networklayer/common/L3Address.h"
 #include "inet/networklayer/common/SimpleNetworkProtocolControlInfo_m.h"
 #include "inet/networklayer/contract/INetworkProtocolControlInfo.h"
@@ -39,9 +40,9 @@ class INET_API SimpleNetworkProtocolControlInfo : public SimpleNetworkProtocolCo
     virtual SimpleNetworkProtocolControlInfo *dup() const override { return new SimpleNetworkProtocolControlInfo(*this); }
 
     virtual int getControlInfoProtocolId() const override { return -1; }
-    virtual int getPacketProtocolId() const override { return -1; }
+    virtual int getPacketProtocolId() const override { return ProtocolGroup::ipprotocol.getProtocol(getProtocol())->getId(); }
 
-    virtual int getSocketId() const override { return SimpleNetworkProtocolControlInfo_Base::getProtocol(); }
+    virtual int getSocketId() const override { return SimpleNetworkProtocolControlInfo_Base::getSocketId(); }
     virtual void setSocketId(int socketId) override { SimpleNetworkProtocolControlInfo_Base::setSocketId(socketId); }
     virtual short getTransportProtocol() const override { return SimpleNetworkProtocolControlInfo_Base::getProtocol(); }
     virtual void setTransportProtocol(short protocol) override { SimpleNetworkProtocolControlInfo_Base::setProtocol(protocol); }
