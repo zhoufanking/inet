@@ -39,7 +39,7 @@ const Protocol *ProtocolGroup::getProtocol(int protocolNumber) const
     if (protocol != nullptr)
         return protocol;
     else
-        throw cRuntimeError("Unknown protocol number: %d", protocolNumber);
+        throw cRuntimeError("Unknown protocol: number = %d", protocolNumber);
 }
 
 int ProtocolGroup::findProtocolNumber(const Protocol *protocol) const
@@ -54,7 +54,7 @@ int ProtocolGroup::getProtocolNumber(const Protocol *protocol) const
     if (protocolNumber != -1)
         return protocolNumber;
     else
-        throw cRuntimeError("Unknown protocol name: %s", protocol->getName());
+        throw cRuntimeError("Unknown protocol: id = %d, name = %s", protocol->getId(), protocol->getName());
 }
 
 // excerpt from http://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml
