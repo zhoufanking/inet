@@ -32,12 +32,12 @@ enum ICMPType
     ICMP_DESTINATION_UNREACHABLE = 3;
     ICMP_SOURCEQUENCH = 4;               // packet lost, slow down
     ICMP_REDIRECT = 5;
-    ICMP_ECHO_REQUEST = 8;
     ICMP_ROUTER_ADVERTISEMENT = 9;    // router advertisement
     ICMP_ROUTER_SOLICITATION = 10;    // router solicitation
     ICMP_TIME_EXCEEDED = 11;
     ICMP_PARAMETER_PROBLEM = 12;
 
+    ICMP_ECHO_REQUEST = 8;
     ICMP_ECHO_REPLY = 0;
     ICMP_TIMESTAMP_REQUEST = 13;
     ICMP_TIMESTAMP_REPLY = 14;

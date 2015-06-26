@@ -28,10 +28,10 @@
 namespace inet {
 
 class IInterfaceTable;
+class INetworkProtocolControlInfo;
 class IPv4ControlInfo;
 class IPv6ControlInfo;
-class ICMP;
-class ICMPv6;
+class IcmpErrorControlInfo;
 class UDPPacket;
 class InterfaceEntry;
 
@@ -102,8 +102,6 @@ class INET_API UDP : public cSimpleModule, public ILifecycle
     // other state vars
     ushort lastEphemeralPort = EPHEMERAL_PORTRANGE_START;
     IInterfaceTable *ift = nullptr;
-    ICMP *icmp = nullptr;
-    ICMPv6 *icmpv6 = nullptr;
 
     // statistics
     int numSent = 0;
@@ -155,14 +153,14 @@ class INET_API UDP : public cSimpleModule, public ILifecycle
     virtual SockDesc *findFirstSocketByLocalAddress(const L3Address& localAddr, ushort localPort);
     virtual void sendUp(cPacket *payload, SockDesc *sd, const L3Address& srcAddr, ushort srcPort, const L3Address& destAddr, ushort destPort, int interfaceId, int ttl, unsigned char tos);
     virtual void sendDown(cPacket *appData, const L3Address& srcAddr, ushort srcPort, const L3Address& destAddr, ushort destPort, int interfaceId, bool multicastLoop, int ttl, unsigned char tos);
-    virtual void processUndeliverablePacket(UDPPacket *udpPacket, cObject *ctrl);
+    virtual void processUndeliverablePacket(UDPPacket *udpPacket, INetworkProtocolControlInfo *ctrl);
     virtual void sendUpErrorIndication(SockDesc *sd, const L3Address& localAddr, ushort localPort, const L3Address& remoteAddr, ushort remotePort);
 
     // process an ICMP error packet
-    virtual void processICMPError(cPacket *icmpErrorMsg);    // TODO use ICMPMessage
+    virtual void processICMPError(UDPPacket *icmpErrorMsg, IcmpErrorControlInfo *ctrl);    // TODO use ICMPMessage
 
     // process UDP packets coming from IP
-    virtual void processUDPPacket(UDPPacket *udpPacket);
+    virtual void processUDPPacket(UDPPacket *udpPacket, INetworkProtocolControlInfo *nwCtrl);
 
     // process packets from application
     virtual void processPacketFromApp(cPacket *appData);
