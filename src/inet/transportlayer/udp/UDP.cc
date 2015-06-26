@@ -21,12 +21,13 @@
 #include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/transportlayer/udp/UDP.h"
 #include "inet/transportlayer/udp/UDPPacket.h"
+#include "inet/networklayer/contract/IcmpErrorControlInfo.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
-#include "inet/networklayer/common/InterfaceEntry.h"
 #include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
 #include "inet/networklayer/contract/ipv6/IPv6ControlInfo.h"
 #include "inet/networklayer/contract/generic/GenericNetworkProtocolControlInfo.h"
 #include "inet/networklayer/contract/IL3AddressType.h"
+#include "inet/networklayer/common/InterfaceEntry.h"
 #include "inet/common/ModuleAccess.h"
 
 #ifdef WITH_IPv4
@@ -123,8 +124,6 @@ void UDP::initialize(int stage)
 
         lastEphemeralPort = EPHEMERAL_PORTRANGE_START;
         ift = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
-        icmp = nullptr;
-        icmpv6 = nullptr;
 
         numSent = 0;
         numPassedUp = 0;
@@ -152,17 +151,25 @@ void UDP::handleMessage(cMessage *msg)
 
     // received from IP layer
     if (msg->arrivedOn("ipIn")) {
-        if (dynamic_cast<UDPPacket *>(msg) != nullptr)
-            processUDPPacket((UDPPacket *)msg);
+        UDPPacket *pk = check_and_cast<UDPPacket *>(msg);
+        cObject *ctrl = pk->removeControlInfo();
+        if (!ctrl)
+            throw cRuntimeError("Control info is missing");
+        if (IcmpErrorControlInfo *errCtrl = dynamic_cast<IcmpErrorControlInfo *>(ctrl))
+            processICMPError(pk, errCtrl); // assume it's an ICMP error
+        else if (INetworkProtocolControlInfo *nwCtrl = dynamic_cast<INetworkProtocolControlInfo *>(ctrl))
+            processUDPPacket(pk, nwCtrl);
         else
-            processICMPError(PK(msg)); // assume it's an ICMP error
+            throw cRuntimeError("Unaccepted control info type: '%s'", ctrl->getClassName());
     }
-    else {    // received from application layer
+    else if (msg->arrivedOn("appIn")) {    // received from application layer
         if (msg->getKind() == UDP_C_DATA)
             processPacketFromApp(PK(msg));
         else
             processCommandFromApp(msg);
     }
+    else
+        throw cRuntimeError("Unknown incoming gate: '%s'", msg->getArrivalGate()->getFullName());
 
     if (hasGUI())
         updateDisplayString();
@@ -307,9 +314,10 @@ void UDP::processPacketFromApp(cPacket *appData)
     delete ctrl;    // cannot be deleted earlier, due to destAddr
 }
 
-void UDP::processUDPPacket(UDPPacket *udpPacket)
+void UDP::processUDPPacket(UDPPacket *udpPacket, INetworkProtocolControlInfo *ctrl)
 {
     emit(rcvdPkSignal, udpPacket);
+    cObject *octrl = check_and_cast<cObject *>(ctrl);
 
     // simulate checksum: discard packet if it has bit error
     EV_INFO << "Packet " << udpPacket->getName() << " received from network, dest port " << udpPacket->getDestinationPort() << "\n";
@@ -319,6 +327,7 @@ void UDP::processUDPPacket(UDPPacket *udpPacket)
         emit(droppedPkBadChecksumSignal, udpPacket);
         numDroppedBadChecksum++;
         delete udpPacket;
+        delete octrl;
 
         return;
     }
@@ -332,44 +341,27 @@ void UDP::processUDPPacket(UDPPacket *udpPacket)
     int ttl;
     unsigned char tos;
 
-    cObject *ctrl = udpPacket->removeControlInfo();
-    if (dynamic_cast<IPv4ControlInfo *>(ctrl) != nullptr) {
-        IPv4ControlInfo *ctrl4 = (IPv4ControlInfo *)ctrl;
-        srcAddr = ctrl4->getSrcAddr();
-        destAddr = ctrl4->getDestAddr();
-        interfaceId = ctrl4->getInterfaceId();
-        ttl = ctrl4->getTimeToLive();
+    srcAddr = ctrl->getSourceAddress();
+    destAddr = ctrl->getDestinationAddress();
+    interfaceId = ctrl->getInterfaceId();
+    ttl = ctrl->getHopLimit();
+    isMulticast = destAddr.isMulticast();
+    if (IPv4ControlInfo *ctrl4 = dynamic_cast<IPv4ControlInfo *>(ctrl)) {
         tos = ctrl4->getTypeOfService();
-        isMulticast = ctrl4->getDestAddr().isMulticast();
         isBroadcast = ctrl4->getDestAddr().isLimitedBroadcastAddress();    // note: we cannot recognize other broadcast addresses (where the host part is all-ones), because here we don't know the netmask
     }
-    else if (dynamic_cast<IPv6ControlInfo *>(ctrl) != nullptr) {
-        IPv6ControlInfo *ctrl6 = (IPv6ControlInfo *)ctrl;
-        srcAddr = ctrl6->getSrcAddr();
-        destAddr = ctrl6->getDestAddr();
-        interfaceId = ctrl6->getInterfaceId();
-        ttl = ctrl6->getHopLimit();
+    else if (IPv6ControlInfo *ctrl6 = dynamic_cast<IPv6ControlInfo *>(ctrl)) {
         tos = ctrl6->getTrafficClass();
-        isMulticast = ctrl6->getDestAddr().isMulticast();
         isBroadcast = false;    // IPv6 has no broadcast, just various multicasts
     }
-    else if (dynamic_cast<GenericNetworkProtocolControlInfo *>(ctrl) != nullptr) {
-        GenericNetworkProtocolControlInfo *ctrlGeneric = (GenericNetworkProtocolControlInfo *)ctrl;
-        srcAddr = ctrlGeneric->getSourceAddress();
-        destAddr = ctrlGeneric->getDestinationAddress();
-        interfaceId = ctrlGeneric->getInterfaceId();
+    else if (GenericNetworkProtocolControlInfo *ctrlGeneric = dynamic_cast<GenericNetworkProtocolControlInfo *>(ctrl)) {
         ttl = ctrlGeneric->getHopLimit();
         tos = 0;    // TODO: ctrlGeneric->getTrafficClass();
-        isMulticast = ctrlGeneric->getDestinationAddress().isMulticast();
-        isBroadcast = false;    // IPv6 has no broadcast, just various multicasts
-    }
-    else if (ctrl == nullptr) {
-        throw cRuntimeError("(%s)%s arrived from lower layer without control info",
-                udpPacket->getClassName(), udpPacket->getName());
+        isBroadcast = false;
     }
     else {
         throw cRuntimeError("(%s)%s arrived from lower layer with unrecognized control info %s",
-                udpPacket->getClassName(), udpPacket->getName(), ctrl->getClassName());
+                udpPacket->getClassName(), udpPacket->getName(), octrl->getClassName());
     }
 
     if (!isMulticast && !isBroadcast) {
@@ -384,7 +376,7 @@ void UDP::processUDPPacket(UDPPacket *udpPacket)
             cPacket *payload = udpPacket->decapsulate();
             sendUp(payload, sd, srcAddr, srcPort, destAddr, destPort, interfaceId, ttl, tos);
             delete udpPacket;
-            delete ctrl;
+            delete octrl;
         }
     }
     else {
@@ -407,55 +399,20 @@ void UDP::processUDPPacket(UDPPacket *udpPacket)
     }
 }
 
-void UDP::processICMPError(cPacket *pk)
+void UDP::processICMPError(UDPPacket *packet, IcmpErrorControlInfo *ctrl)
 {
     // extract details from the error message, then try to notify socket that sent bogus packet
-    int type, code;
-    L3Address localAddr, remoteAddr;
-    ushort localPort, remotePort;
+    L3Address srcAddr = ctrl->getSourceAddress();
+    ushort srcPort = packet->getSourcePort();
+    L3Address destAddr = ctrl->getDestinationAddress();
+    ushort destPort = packet->getDestinationPort();
 
-#ifdef WITH_IPv4
-    if (dynamic_cast<ICMPMessage *>(pk)) {
-        ICMPMessage *icmpMsg = (ICMPMessage *)pk;
-        type = icmpMsg->getType();
-        code = icmpMsg->getCode();
-        // Note: we must NOT use decapsulate() because payload in ICMP is conceptually truncated
-        IPv4Datagram *datagram = check_and_cast<IPv4Datagram *>(icmpMsg->getEncapsulatedPacket());
-        UDPPacket *packet = check_and_cast<UDPPacket *>(datagram->getEncapsulatedPacket());
-        localAddr = datagram->getSrcAddress();
-        remoteAddr = datagram->getDestAddress();
-        localPort = packet->getSourcePort();
-        remotePort = packet->getDestinationPort();
-        delete icmpMsg;
-    }
-    else
-#endif // ifdef WITH_IPv4
-#ifdef WITH_IPv6
-    if (dynamic_cast<ICMPv6Message *>(pk)) {
-        ICMPv6Message *icmpMsg = (ICMPv6Message *)pk;
-        type = icmpMsg->getType();
-        code = -1;    // FIXME this is dependent on getType()...
-        // Note: we must NOT use decapsulate() because payload in ICMP is conceptually truncated
-        IPv6Datagram *datagram = check_and_cast<IPv6Datagram *>(icmpMsg->getEncapsulatedPacket());
-        UDPPacket *packet = check_and_cast<UDPPacket *>(datagram->getEncapsulatedPacket());
-        localAddr = datagram->getSrcAddress();
-        remoteAddr = datagram->getDestAddress();
-        localPort = packet->getSourcePort();
-        remotePort = packet->getDestinationPort();
-        delete icmpMsg;
-    }
-    else
-#endif // ifdef WITH_IPv6
-    {
-        throw cRuntimeError("Unrecognized packet (%s)%s: not an ICMP error message", pk->getClassName(), pk->getName());
-    }
-
-    EV_WARN << "ICMP error received: type=" << type << " code=" << code
-            << " about packet " << localAddr << ":" << localPort << " > "
-            << remoteAddr << ":" << remotePort << "\n";
+    EV_WARN << "ICMP error received: errorCode=" << ctrl->getErrorCode()
+            << " about packet " << srcAddr << ":" << srcPort << " > "
+            << destAddr << ":" << destPort << "\n";
 
     // identify socket and report error to it
-    SockDesc *sd = findSocketForUnicastPacket(localAddr, localPort, remoteAddr, remotePort);
+    SockDesc *sd = findSocketForUnicastPacket(srcAddr, srcPort, destAddr, destPort);
     if (!sd) {
         EV_WARN << "No socket on that local port, ignoring ICMP error\n";
         return;
@@ -463,49 +420,25 @@ void UDP::processICMPError(cPacket *pk)
 
     // send UDP_I_ERROR to socket
     EV_DETAIL << "Source socket is sockId=" << sd->sockId << ", notifying.\n";
-    sendUpErrorIndication(sd, localAddr, localPort, remoteAddr, remotePort);
+    sendUpErrorIndication(sd, srcAddr, srcPort, destAddr, destPort);
 }
 
-void UDP::processUndeliverablePacket(UDPPacket *udpPacket, cObject *ctrl)
+void UDP::processUndeliverablePacket(UDPPacket *udpPacket, INetworkProtocolControlInfo *ctrl)
 {
     emit(droppedPkWrongPortSignal, udpPacket);
     numDroppedWrongPort++;
 
     // send back ICMP PORT_UNREACHABLE
-    if (dynamic_cast<IPv4ControlInfo *>(ctrl) != nullptr) {
-#ifdef WITH_IPv4
-        IPv4ControlInfo *ctrl4 = (IPv4ControlInfo *)ctrl;
-        if (!icmp)
-            icmp = getModuleFromPar<ICMP>(par("icmpModule"), this);
-        icmp->sendErrorMessage(udpPacket, ctrl4, ICMP_DESTINATION_UNREACHABLE, ICMP_DU_PORT_UNREACHABLE);
-#else // ifdef WITH_IPv4
-        delete udpPacket;
-        delete ctrl;
-#endif // ifdef WITH_IPv4
-    }
-    else if (dynamic_cast<IPv6ControlInfo *>(ctrl) != nullptr) {
-#ifdef WITH_IPv6
-        IPv6ControlInfo *ctrl6 = (IPv6ControlInfo *)ctrl;
-        if (!icmpv6)
-            icmpv6 = getModuleFromPar<ICMPv6>(par("icmpv6Module"), this);
-        icmpv6->sendErrorMessage(udpPacket, ctrl6, ICMPv6_DESTINATION_UNREACHABLE, PORT_UNREACHABLE);
-#else // ifdef WITH_IPv6
-        delete udpPacket;
-        delete ctrl;
-#endif // ifdef WITH_IPv6
-    }
-    else if (dynamic_cast<GenericNetworkProtocolControlInfo *>(ctrl) != nullptr) {
-        delete udpPacket;
-        delete ctrl;
-    }
-    else if (ctrl == nullptr) {
-        throw cRuntimeError("(%s)%s arrived from lower layer without control info",
-                udpPacket->getClassName(), udpPacket->getName());
-    }
-    else {
-        throw cRuntimeError("(%s)%s arrived from lower layer with unrecognized control info %s",
-                udpPacket->getClassName(), udpPacket->getName(), ctrl->getClassName());
-    }
+    IcmpErrorControlInfo *icmpCtrl = new IcmpErrorControlInfo();
+    icmpCtrl->setTransportProtocol(ctrl->getTransportProtocol());
+    icmpCtrl->setInterfaceId(ctrl->getInterfaceId());
+    icmpCtrl->setErrorCode(ICMPERROR_PORT_UNREACHABLE);
+    icmpCtrl->setSourceAddress(ctrl->getSourceAddress());
+    icmpCtrl->setDestinationAddress(ctrl->getDestinationAddress());
+    icmpCtrl->setNetworkProtocolControlInfo(ctrl);
+
+    udpPacket->setControlInfo(icmpCtrl);
+    send(udpPacket, "ipOut");
 }
 
 void UDP::bind(int sockId, int gateIndex, const L3Address& localAddr, int localPort)
@@ -1123,24 +1056,18 @@ bool UDP::handleOperationStage(LifecycleOperation *operation, int stage, IDoneCa
 
     if (dynamic_cast<NodeStartOperation *>(operation)) {
         if ((NodeStartOperation::Stage)stage == NodeStartOperation::STAGE_TRANSPORT_LAYER) {
-            icmp = nullptr;
-            icmpv6 = nullptr;
             isOperational = true;
         }
     }
     else if (dynamic_cast<NodeShutdownOperation *>(operation)) {
         if ((NodeShutdownOperation::Stage)stage == NodeShutdownOperation::STAGE_TRANSPORT_LAYER) {
             clearAllSockets();
-            icmp = nullptr;
-            icmpv6 = nullptr;
             isOperational = false;
         }
     }
     else if (dynamic_cast<NodeCrashOperation *>(operation)) {
         if ((NodeCrashOperation::Stage)stage == NodeCrashOperation::STAGE_CRASH) {
             clearAllSockets();
-            icmp = nullptr;
-            icmpv6 = nullptr;
             isOperational = false;
         }
     }

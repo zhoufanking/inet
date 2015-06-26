@@ -22,9 +22,9 @@
 //  Cleanup and rewrite: Andras Varga, 2004
 
 #include "inet/common/INETDefs.h"
-#include "inet/networklayer/ipv4/IIPv4RoutingTable.h"
 
 #include "inet/networklayer/ipv4/ICMPMessage.h"
+#include "inet/networklayer/ipv4/IIPv4RoutingTable.h"
 
 namespace inet {
 
@@ -38,6 +38,7 @@ class INET_API ICMP : public cSimpleModule
 {
   protected:
     virtual void processICMPMessage(ICMPMessage *);
+    virtual void processUpperMessage(cMessage *msg);
     virtual void errorOut(ICMPMessage *);
     virtual void processEchoRequest(ICMPMessage *);
     virtual void sendToIP(ICMPMessage *, const IPv4Address& dest);
