@@ -438,6 +438,9 @@ void UDP::processUndeliverablePacket(UDPPacket *udpPacket, INetworkProtocolContr
     icmpCtrl->setNetworkProtocolControlInfo(ctrl);
 
     udpPacket->setControlInfo(icmpCtrl);
+    char buff[80];
+    snprintf(buff, sizeof(buff), "Port %d unreachable", udpPacket->getDestinationPort());
+    udpPacket->setName(buff);
     send(udpPacket, "ipOut");
 }
 
