@@ -116,7 +116,7 @@ void IPv6::handleMessage(cMessage *msg)
         ASSERT(command->getControlInfoProtocolId() == Protocol::ipv6.getId());
         SocketDescriptor *descriptor = new SocketDescriptor(command->getSocketId(), command->getProtoclId());
         socketIdToSocketDescriptor[command->getSocketId()] = descriptor;
-        protoclIdToSocketDescriptors.insert(std::pair<int, SocketDescriptor *>(command->getProtoclId(), descriptor));
+        protocolIdToSocketDescriptors.insert(std::pair<int, SocketDescriptor *>(command->getProtoclId(), descriptor));
         delete msg;
     }
     else if (L3SocketCloseCommand *command = dynamic_cast<L3SocketCloseCommand *>(msg->getControlInfo())) {
@@ -124,11 +124,11 @@ void IPv6::handleMessage(cMessage *msg)
         auto it = socketIdToSocketDescriptor.find(command->getSocketId());
         if (it != socketIdToSocketDescriptor.end()) {
             int protocol = it->second->protocolId;
-            auto lowerBound = protoclIdToSocketDescriptors.lower_bound(protocol);
-            auto upperBound = protoclIdToSocketDescriptors.upper_bound(protocol);
+            auto lowerBound = protocolIdToSocketDescriptors.lower_bound(protocol);
+            auto upperBound = protocolIdToSocketDescriptors.upper_bound(protocol);
             for (auto jt = lowerBound; jt != upperBound; jt++) {
                 if (it->second == jt->second) {
-                    protoclIdToSocketDescriptors.erase(jt);
+                    protocolIdToSocketDescriptors.erase(jt);
                     break;
                 }
             }

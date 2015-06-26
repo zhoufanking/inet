@@ -82,7 +82,7 @@ class INET_API IPv6 : public QueueBase, public ILifecycle, public INetfilter, pu
     simtime_t lastCheckTime;    // when fragbuf was last checked for state fragments
     ProtocolMapping mapping;    // where to send packets after decapsulation
     std::map<int, SocketDescriptor *> socketIdToSocketDescriptor;
-    std::multimap<int, SocketDescriptor *> protoclIdToSocketDescriptors;
+    std::multimap<int, SocketDescriptor *> protocolIdToSocketDescriptors;
 
     // statistics
     int numMulticast = 0;

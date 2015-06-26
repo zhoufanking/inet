@@ -92,7 +92,7 @@ class INET_API IPv4 : public QueueBase, public INetfilter, public ILifecycle, pu
     simtime_t lastCheckTime;    // when fragbuf was last checked for state fragments
     ProtocolMapping mapping;    // where to send packets after decapsulation
     std::map<int, SocketDescriptor *> socketIdToSocketDescriptor;
-    std::multimap<int, SocketDescriptor *> protoclIdToSocketDescriptors;
+    std::multimap<int, SocketDescriptor *> protocolIdToSocketDescriptors;
 
     // ARP related
     PendingPackets pendingPackets;    // map indexed with IPv4Address for outbound packets waiting for ARP resolution

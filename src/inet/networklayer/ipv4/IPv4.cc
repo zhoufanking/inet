@@ -129,7 +129,7 @@ void IPv4::handleMessage(cMessage *msg)
         IPSocketBindCommand *command = dynamic_cast<IPSocketBindCommand *>(msg->getControlInfo());
         SocketDescriptor *descriptor = new SocketDescriptor(command->getSocketId(), command->getProtoclId());
         socketIdToSocketDescriptor[command->getSocketId()] = descriptor;
-        protoclIdToSocketDescriptors.insert(std::pair<int, SocketDescriptor *>(command->getProtoclId(), descriptor));
+        protocolIdToSocketDescriptors.insert(std::pair<int, SocketDescriptor *>(command->getProtoclId(), descriptor));
         delete msg;
     }
     else if (dynamic_cast<IPSocketCloseCommand *>(msg->getControlInfo())) {
@@ -137,11 +137,11 @@ void IPv4::handleMessage(cMessage *msg)
         auto it = socketIdToSocketDescriptor.find(command->getSocketId());
         if (it != socketIdToSocketDescriptor.end()) {
             int protocol = it->second->protocolId;
-            auto lowerBound = protoclIdToSocketDescriptors.lower_bound(protocol);
-            auto upperBound = protoclIdToSocketDescriptors.upper_bound(protocol);
+            auto lowerBound = protocolIdToSocketDescriptors.lower_bound(protocol);
+            auto upperBound = protocolIdToSocketDescriptors.upper_bound(protocol);
             for (auto jt = lowerBound; jt != upperBound; jt++) {
                 if (it->second == jt->second) {
-                    protoclIdToSocketDescriptors.erase(jt);
+                    protocolIdToSocketDescriptors.erase(jt);
                     break;
                 }
             }
@@ -578,8 +578,8 @@ void IPv4::reassembleAndDeliverFinish(IPv4Datagram *datagram, const InterfaceEnt
     cPacket *packet = decapsulate(datagram, fromIE);
     // deliver to sockets
     IPv4ControlInfo *controlInfo = check_and_cast<IPv4ControlInfo *>(packet->getControlInfo());
-    auto lowerBound = protoclIdToSocketDescriptors.lower_bound(protocol);
-    auto upperBound = protoclIdToSocketDescriptors.upper_bound(protocol);
+    auto lowerBound = protocolIdToSocketDescriptors.lower_bound(protocol);
+    auto upperBound = protocolIdToSocketDescriptors.upper_bound(protocol);
     bool hasSocket = lowerBound != upperBound;
     for (auto it = lowerBound; it != upperBound; it++) {
         IPv4ControlInfo *controlInfoCopy = controlInfo->dup();
