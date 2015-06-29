@@ -421,6 +421,8 @@ void UDP::processICMPError(UDPPacket *packet, IcmpErrorControlInfo *ctrl)
     // send UDP_I_ERROR to socket
     EV_DETAIL << "Source socket is sockId=" << sd->sockId << ", notifying.\n";
     sendUpErrorIndication(sd, srcAddr, srcPort, destAddr, destPort);
+    delete packet;
+    delete ctrl;
 }
 
 void UDP::processUndeliverablePacket(UDPPacket *udpPacket, INetworkProtocolControlInfo *ctrl)
