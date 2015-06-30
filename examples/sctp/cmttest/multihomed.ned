@@ -32,6 +32,7 @@ network multihomed
         sctp_client: StandardHost {
             parameters:
                 forwarding = false;
+                hasSctp = true;
                 *.configurator.networkConfiguratorModule = "";
                 @display("p=61,142;i=device/laptop");
             gates:
@@ -40,6 +41,7 @@ network multihomed
         sctp_server: StandardHost {
             parameters:
                 forwarding = false;
+                hasSctp = true;
                 *.configurator.networkConfiguratorModule = "";
                 @display("p=426,135;i=device/server2");
             gates:
