@@ -37,6 +37,7 @@ simple Ieee80211MgmtSTASimplified like IIeee80211Mgmt
         string accessPointAddress; // MAC address of associate AP
         string interfaceTableModule;   // The path to the InterfaceTable module
         string macModule;               // The path to the MAC module
+        int frameCapacity = default(100);
         @display("i=block/cogwheel");
     gates:
         input upperLayerIn;
