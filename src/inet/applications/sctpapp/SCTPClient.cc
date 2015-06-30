@@ -116,7 +116,7 @@ void SCTPClient::initialize(int stage)
             socket.bindx(addresses, port);
 
         socket.setCallbackObject(this);
-        socket.setOutputGate(gate("sctpOut"));
+        socket.setOutputGate(gate("socketOut"));
         setStatusString("waiting");
 
         simtime_t stopTime = par("stopTime");
