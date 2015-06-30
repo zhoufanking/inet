@@ -83,7 +83,7 @@ void MessageDispatcher::handleMessage(cMessage *message)
             handleLowerLayerCommand(message);
     }
     else
-        throw cRuntimeError("Unknown message: %s", message->getName());
+        throw cRuntimeError("Unknown message: %s(%s)", message->getName(), message->getClassName());
 }
 
 void MessageDispatcher::handleUpperLayerPacket(cMessage *message)
@@ -105,7 +105,7 @@ void MessageDispatcher::handleUpperLayerPacket(cMessage *message)
             throw cRuntimeError("Unknown protocol: id = %d, name = %s", protocolId, findProtocolName(protocolId));
     }
     else
-        throw cRuntimeError("Unknown packet: %s", message->getName());
+        throw cRuntimeError("Unknown packet: %s(%s)", message->getName(), message->getClassName());
 }
 
 void MessageDispatcher::handleLowerLayerPacket(cMessage *message)
@@ -127,7 +127,7 @@ void MessageDispatcher::handleLowerLayerPacket(cMessage *message)
             throw cRuntimeError("Unknown protocol: id = %d, name = %s", protocolId, findProtocolName(protocolId));
     }
     else
-        throw cRuntimeError("Unknown packet: %s", message->getName());
+        throw cRuntimeError("Unknown packet: %s(%s)", message->getName(), message->getClassName());
 }
 
 void MessageDispatcher::handleUpperLayerCommand(cMessage *message)
@@ -152,7 +152,7 @@ void MessageDispatcher::handleUpperLayerCommand(cMessage *message)
             throw cRuntimeError("Unknown protocol: id = %d, name = %s", protocolId, findProtocolName(protocolId));
     }
     else
-        throw cRuntimeError("Unknown message: %s", message->getName());
+        throw cRuntimeError("Unknown message: %s(%s)", message->getName(), message->getClassName());
 }
 
 void MessageDispatcher::handleLowerLayerCommand(cMessage *message)
@@ -174,7 +174,7 @@ void MessageDispatcher::handleLowerLayerCommand(cMessage *message)
             throw cRuntimeError("Unknown protocol: id = %d", protocolId);
     }
     else
-        throw cRuntimeError("Unknown message: %s", message->getName());
+        throw cRuntimeError("Unknown message: %s(%s)", message->getName(), message->getClassName());
 }
 
 void MessageDispatcher::handleRegisterProtocol(const Protocol& protocol, cGate *protocolGate)
