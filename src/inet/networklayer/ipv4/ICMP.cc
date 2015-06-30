@@ -246,14 +246,25 @@ void ICMP::processICMPMessage(ICMPMessage *icmpmsg)
             IPv4Datagram *bogusL3Packet = check_and_cast<IPv4Datagram *>(icmpmsg->getEncapsulatedPacket());
             cPacket *bogusTransportPacket = bogusL3Packet->decapsulate();
             if (bogusTransportPacket) {
-                IcmpErrorControlInfo *ctrl = new IcmpErrorControlInfo();
-                ctrl->setTransportProtocol(bogusL3Packet->getTransportProtocol());
-                ctrl->setSourceAddress(bogusL3Packet->getSourceAddress());
-                ctrl->setDestinationAddress(bogusL3Packet->getDestinationAddress());
-                ctrl->setErrorCode(icmpToErrorCode(icmpmsg->getType(), icmpmsg->getCode()));
-                bogusTransportPacket->setControlInfo(ctrl);
-                bogusTransportPacket->setName(icmpmsg->getName());
-                send(bogusTransportPacket, "transportOut");
+                int transportProtocol = bogusL3Packet->getTransportProtocol();
+                if (transportProtocol == IP_PROT_ICMP) {
+                    EV_DETAIL << "ICMP error response for ICMP packet, packet dropped\n";
+                    delete bogusTransportPacket;
+                }
+                else if (transportProtocols.find(transportProtocol) == transportProtocols.end()) {
+                    EV_WARN << "Transport protocol " << transportProtocol << " not registered, packet dropped\n";
+                    delete bogusTransportPacket;
+                }
+                else {
+                    IcmpErrorControlInfo *ctrl = new IcmpErrorControlInfo();
+                    ctrl->setTransportProtocol(bogusL3Packet->getTransportProtocol());
+                    ctrl->setSourceAddress(bogusL3Packet->getSourceAddress());
+                    ctrl->setDestinationAddress(bogusL3Packet->getDestinationAddress());
+                    ctrl->setErrorCode(icmpToErrorCode(icmpmsg->getType(), icmpmsg->getCode()));
+                    bogusTransportPacket->setControlInfo(ctrl);
+                    bogusTransportPacket->setName(icmpmsg->getName());
+                    send(bogusTransportPacket, "transportOut");
+                }
             }
             delete icmpmsg;
             break;
@@ -319,6 +330,14 @@ void ICMP::sendToIP(ICMPMessage *msg)
     // assumes IPv4ControlInfo is already attached
     EV_INFO << "Sending " << msg << " to lower layer.\n";
     send(msg, "ipOut");
+}
+
+void ICMP::handleRegisterProtocol(const Protocol& protocol, cGate *gate)
+{
+    Enter_Method("handleRegisterProtocol");
+    if (!strcmp("transportIn", gate->getBaseName())) {
+        transportProtocols.insert(ProtocolGroup::ipprotocol.getProtocolNumber(&protocol));
+    }
 }
 
 } // namespace inet
