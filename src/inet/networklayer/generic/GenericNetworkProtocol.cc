@@ -18,13 +18,14 @@
 
 #include "inet/networklayer/generic/GenericNetworkProtocol.h"
 
-#include "inet/networklayer/generic/GenericDatagram.h"
+#include "inet/common/ModuleAccess.h"
+#include "inet/linklayer/common/Ieee802Ctrl.h"
+#include "inet/networklayer/contract/L3SocketCommand_m.h"
 #include "inet/networklayer/contract/generic/GenericNetworkProtocolControlInfo.h"
+#include "inet/networklayer/generic/GenericDatagram.h"
 #include "inet/networklayer/generic/GenericNetworkProtocolInterfaceData.h"
 #include "inet/networklayer/generic/GenericRoute.h"
 #include "inet/networklayer/generic/GenericRoutingTable.h"
-#include "inet/common/ModuleAccess.h"
-#include "inet/linklayer/common/Ieee802Ctrl.h"
 
 namespace inet {
 
@@ -68,8 +69,8 @@ void GenericNetworkProtocol::initialize(int stage)
         WATCH(numForwarded);
     }
     else if (stage == INITSTAGE_NETWORK_LAYER) {
-        registerProtocol(Protocol::igp, gate("transportOut"));
-        registerProtocol(Protocol::igp, gate("queueOut"));
+        registerProtocol(Protocol::gnp, gate("transportOut"));
+        registerProtocol(Protocol::gnp, gate("queueOut"));
     }
 }
 
@@ -91,6 +92,37 @@ void GenericNetworkProtocol::updateDisplayString()
     if (numUnroutable > 0)
         sprintf(buf + strlen(buf), "UNROUTABLE:%d ", numUnroutable);
     getDisplayString().setTagArg("t", 0, buf);
+}
+
+void GenericNetworkProtocol::handleMessage(cMessage *msg)
+{
+    if (L3SocketBindCommand *command = dynamic_cast<L3SocketBindCommand *>(msg->getControlInfo())) {
+        ASSERT(command->getControlInfoProtocolId() == Protocol::gnp.getId());
+        SocketDescriptor *descriptor = new SocketDescriptor(command->getSocketId(), command->getProtoclId());
+        socketIdToSocketDescriptor[command->getSocketId()] = descriptor;
+        protocolIdToSocketDescriptors.insert(std::pair<int, SocketDescriptor *>(command->getProtoclId(), descriptor));
+        delete msg;
+    }
+    else if (L3SocketCloseCommand *command = dynamic_cast<L3SocketCloseCommand *>(msg->getControlInfo())) {
+        ASSERT(command->getControlInfoProtocolId() == Protocol::gnp.getId());
+        auto it = socketIdToSocketDescriptor.find(command->getSocketId());
+        if (it != socketIdToSocketDescriptor.end()) {
+            int protocol = it->second->protocolId;
+            auto lowerBound = protocolIdToSocketDescriptors.lower_bound(protocol);
+            auto upperBound = protocolIdToSocketDescriptors.upper_bound(protocol);
+            for (auto jt = lowerBound; jt != upperBound; jt++) {
+                if (it->second == jt->second) {
+                    protocolIdToSocketDescriptors.erase(jt);
+                    break;
+                }
+            }
+            delete it->second;
+            socketIdToSocketDescriptor.erase(it);
+        }
+        delete msg;
+    }
+    else
+        QueueBase::handleMessage(msg);
 }
 
 void GenericNetworkProtocol::endService(cPacket *pk)
@@ -415,21 +447,34 @@ GenericDatagram *GenericNetworkProtocol::encapsulate(cPacket *transportPacket, c
 
 void GenericNetworkProtocol::sendDatagramToHL(GenericDatagram *datagram)
 {
+    // deliver to sockets
     int protocol = datagram->getTransportProtocol();
-    int gateIndex = mapping.findOutputGateForProtocol(protocol);
-    // check if the transportOut port are connected, otherwise discard the packet
-    if (gateIndex >= 0) {
-        cGate *outGate = gate("transportOut", gateIndex);
-        if (outGate->isPathOK()) {
-            // decapsulate and send on appropriate output gate
-            cPacket *packet = decapsulate(datagram);
-            delete datagram;
-            send(packet, "transportOut", gateIndex);
-            return;
-        }
-    }
+    GenericNetworkProtocolControlInfo *controlInfo = check_and_cast<GenericNetworkProtocolControlInfo *>(datagram->getControlInfo());
+    auto lowerBound = protocolIdToSocketDescriptors.lower_bound(protocol);
+    auto upperBound = protocolIdToSocketDescriptors.upper_bound(protocol);
+    bool hasSocket = lowerBound != upperBound;
+    cPacket *packet = decapsulate(datagram);
 
-    //TODO send an ICMP error: protocol unreachable
+    for (auto it = lowerBound; it != upperBound; it++) {
+        GenericNetworkProtocolControlInfo *controlInfoCopy = controlInfo->dup();
+        controlInfoCopy->setSocketId(it->second->socketId);
+        cPacket *packetCopy = packet->dup();
+        packetCopy->setControlInfo(controlInfoCopy);
+        send(packetCopy, "transportOut");
+    }
+    if (mapping.findOutputGateForProtocol(protocol) >= 0) {
+        send(packet, "transportOut");
+        numLocalDeliver++;
+    }
+    else if (!hasSocket) {
+        EV_ERROR << "Transport protocol ID=" << protocol << " not connected, discarding packet\n";
+        //TODO send an ICMP error: protocol unreachable
+        // IMACProtocolControlInfo *controlInfo = dynamic_cast<IMACProtocolControlInfo *>(PK(datagram)->getControlInfo());
+        // int inputInterfaceId = controlInfo != nullptr ? controlInfo->getInterfaceId() : -1;
+        // sendToIcmp(datagram, inputInterfaceId, ICMP_DESTINATION_UNREACHABLE, ICMP_DU_PROTOCOL_UNREACHABLE);
+    }
+    else
+        delete packet;
     delete datagram;
 }
 
