@@ -46,12 +46,6 @@ void EtherEncap::initialize()
     WATCH(totalPauseSent);
 }
 
-void EtherEncap::handleRegisterInterface(const InterfaceEntry &interface, cGate *)
-{
-    Enter_Method("handleRegisterInterface");
-    inet::registerInterface(interface, gate("upperLayerOut"));
-}
-
 void EtherEncap::handleMessage(cMessage *msg)
 {
     if (msg->arrivedOn("lowerLayerIn")) {

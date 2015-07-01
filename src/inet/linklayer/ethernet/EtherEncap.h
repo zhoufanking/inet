@@ -29,7 +29,7 @@ class EtherFrame;
 /**
  * Performs Ethernet II encapsulation/decapsulation. More info in the NED file.
  */
-class INET_API EtherEncap : public cSimpleModule, public IInterfaceRegistrationListener
+class INET_API EtherEncap : public cSimpleModule
 {
   protected:
     int seqNum;
@@ -52,9 +52,6 @@ class INET_API EtherEncap : public cSimpleModule, public IInterfaceRegistrationL
     virtual void handleSendPause(cMessage *msg);
 
     virtual void updateDisplayString();
-
-  public:
-    virtual void handleRegisterInterface(const InterfaceEntry &interface, cGate *gate) override;
 };
 
 } // namespace inet

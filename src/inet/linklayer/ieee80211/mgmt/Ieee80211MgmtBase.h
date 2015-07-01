@@ -35,7 +35,7 @@ namespace ieee80211 {
  *
  * @author Andras Varga
  */
-class INET_API Ieee80211MgmtBase : public cSimpleModule, public ILifecycle, public IInterfaceRegistrationListener
+class INET_API Ieee80211MgmtBase : public cSimpleModule, public ILifecycle
 {
   protected:
     // configuration
@@ -106,7 +106,6 @@ class INET_API Ieee80211MgmtBase : public cSimpleModule, public ILifecycle, publ
 
   public:
     virtual bool handleOperationStage(LifecycleOperation *operation, int stage, IDoneCallback *doneCallback) override;
-    virtual void handleRegisterInterface(const InterfaceEntry &interface, cGate *gate) override;
     //@}
 };
 
