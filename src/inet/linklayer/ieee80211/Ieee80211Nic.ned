@@ -35,6 +35,7 @@ import inet.physicallayer.contract.packetlevel.IRadio;
 module Ieee80211Nic like IWirelessNic
 {
     parameters:
+        @nic;
         string interfaceTableModule;
         string energySourceModule = default("");
         string mgmtType = default("Ieee80211MgmtSTA"); // name of the management module type (implements IIeee80211Mgmt)

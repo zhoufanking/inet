@@ -22,6 +22,7 @@ import inet.linklayer.contract.ITunNic;
 simple TunInterface like ITunNic
 {
     parameters:
+        @nic;
         string interfaceTableModule;    // The path to the InterfaceTable module
         @display("i=block/tunnel");
 
