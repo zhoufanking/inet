@@ -389,8 +389,10 @@ void IGMPv2::initialize(int stage)
         cModule *host = getContainingNode(this);
         host->subscribe(NF_INTERFACE_CREATED, this);
     }
-    else if (stage == INITSTAGE_NETWORK_LAYER_2)
+    else if (stage == INITSTAGE_NETWORK_LAYER_2) {
         registerProtocol(Protocol::igmpv2, gate("ipOut"));
+        registerProtocol(Protocol::igmpv2, gate("routerOut"));
+    }
 }
 
 IGMPv2::~IGMPv2()
