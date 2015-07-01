@@ -42,7 +42,7 @@ class INET_API ModuleIdAddressType : public IL3AddressType
     virtual L3Address getLinkLocalRIPRoutersMulticastAddress() const override { return ModuleIdAddress(-9); }    // TODO: constant
     virtual INetworkProtocolControlInfo *createNetworkProtocolControlInfo() const override { return new GenericNetworkProtocolControlInfo(); }
     virtual L3Address getLinkLocalAddress(const InterfaceEntry *ie) const override { return ModuleIdAddress(); }    // TODO constant
-    virtual const Protocol& getL3Protocol() const override { return Protocol::igp; }
+    virtual const Protocol& getL3Protocol() const override { return Protocol::gnp; }
 };
 
 } // namespace inet
