@@ -91,6 +91,7 @@ std::string InterfaceEntry::info() const
         out << "  on:-";
     else
         out << "  on:nwLayer.ifOut[" << getNetworkLayerGateIndex() << "]";
+    out << " ID:" << getInterfaceId();
     out << "  MTU:" << getMTU();
     if (!isUp())
         out << " DOWN";
@@ -116,6 +117,10 @@ std::string InterfaceEntry::info() const
     if (ipv6data)
         out << " " << ipv6data->info();
 #endif // ifdef WITH_IPv6
+#ifdef WITH_GENERIC
+    if (genericNetworkProtocolData)
+        out << " " << genericNetworkProtocolData->info();
+#endif // ifdef WITH_GENERIC
     if (isisdata)
         out << " " << ((InterfaceProtocolData *)isisdata)->info(); // Khmm...
     if (trilldata)
@@ -133,6 +138,7 @@ std::string InterfaceEntry::detailedInfo() const
         out << "  on:-";
     else
         out << "  on:nwLayer.ifOut[" << getNetworkLayerGateIndex() << "]";
+    out << " ID:" << getInterfaceId();
     out << "MTU: " << getMTU() << " \t";
     if (!isUp())
         out << "DOWN ";
