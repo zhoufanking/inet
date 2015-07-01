@@ -44,10 +44,13 @@ void MACProtocolBase::registerInterface()
 {
     ASSERT(interfaceEntry == nullptr);
     IInterfaceTable *interfaceTable = findModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
+    cModule *nicModule = findContainingNicModule(this);
+    if (!nicModule)
+        nicModule = this;
     if (interfaceTable) {
         interfaceEntry = createInterfaceEntry();
         interfaceTable->addInterface(interfaceEntry);
-        inet::registerInterface(*interfaceEntry, gate("upperLayerOut"));
+        inet::registerInterface(*interfaceEntry, nicModule->gate("upperLayerOut"));
     }
 }
 

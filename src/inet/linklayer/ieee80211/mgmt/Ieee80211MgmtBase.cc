@@ -253,12 +253,6 @@ bool Ieee80211MgmtBase::handleOperationStage(LifecycleOperation *operation, int 
     return true;
 }
 
-void Ieee80211MgmtBase::handleRegisterInterface(const InterfaceEntry &interface, cGate *)
-{
-    Enter_Method("handleRegisterInterface");
-    registerInterface(interface, gate("upperLayerOut"));
-}
-
 void Ieee80211MgmtBase::start()
 {
     isOperational = true;
