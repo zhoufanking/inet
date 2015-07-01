@@ -80,6 +80,7 @@ const Protocol Protocol::igmpv3("igmpv3");
 const Protocol Protocol::igp("igp");
 const Protocol Protocol::ipv4("ipv4");
 const Protocol Protocol::ipv6("ipv6");
+const Protocol Protocol::gnp("gnp");            // INET specific Generic Network Protocol
 const Protocol Protocol::manet("manet");
 const Protocol Protocol::ospf("ospf");
 const Protocol Protocol::pim("pim");
