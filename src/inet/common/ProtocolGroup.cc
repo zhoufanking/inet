@@ -82,6 +82,8 @@ const ProtocolGroup ProtocolGroup::ipprotocol("ipprotocol", {
     { 103, &Protocol::pim },
     { 132, &Protocol::sctp},
     { 138, &Protocol::manet },
+
+    { 253, &Protocol::gnp },    // INET specific: Generic Network Protocol
 });
 
 } // namespace inet
