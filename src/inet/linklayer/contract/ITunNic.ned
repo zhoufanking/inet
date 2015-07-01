@@ -19,4 +19,6 @@ package inet.linklayer.contract;
 
 moduleinterface ITunNic extends INic
 {
+    parameters:
+        @nic;
 }
