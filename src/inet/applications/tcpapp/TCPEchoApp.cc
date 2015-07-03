@@ -98,7 +98,11 @@ void TCPEchoApp::handleMessage(cMessage *msg)
         else
             scheduleAt(simTime() + delay, msg); // send after a delay
     }
+    else if (msg->getKind() == TCP_I_CLOSED) {
+        delete msg;     //FIXME Hack: need correct socket usage: creating new socket when accept a new connection, choose socket for incoming packet, etc.
+    }
     else if (msg->getKind() == TCP_I_DATA || msg->getKind() == TCP_I_URGENT_DATA) {
+        // ASSERT(socket.belongsToSocket(msg)); //TODO open socket id is different from the socket id in the data packet, see above (accepting sockets)
         cPacket *pkt = check_and_cast<cPacket *>(msg);
         emit(rcvdPkSignal, pkt);
         bytesRcvd += pkt->getByteLength();
