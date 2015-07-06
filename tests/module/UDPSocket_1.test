@@ -25,7 +25,7 @@ Define_Module(TestApp);
 void TestApp::activity()
 {
   UDPSocket s;
-  s.setOutputGate(gate("udpOut"));
+  s.setOutputGate(gate("socketOut"));
   s.setMulticastLoop(false);
   s.connect(L3Address("10.0.0.1"), 1000);
   s.bind(100);
@@ -35,13 +35,13 @@ void TestApp::activity()
 }
 
 %file: TestApp.ned
-import inet.applications.contract.IUDPApp;
+import inet.applications.contract.IApp;
 
-simple TestApp like IUDPApp
+simple TestApp like IApp
 {
     gates:
-        input udpIn;
-        output udpOut;
+        input socketIn;
+        output socketOut;
 }
 
 %inifile: omnetpp.ini
@@ -50,17 +50,17 @@ ned-path = .;../../../../src;../../lib
 network = SimpleTestNetwork
 cmdenv-express-mode = false
 cmdenv-message-trace = true
-**.client.numUdpApps = 1
-**.client.udpApp[0].typename = "TestApp"
+**.client.numApps = 1
+**.client.app[0].typename = "TestApp"
 
 %contains-regex: stdout
-SENT:   src=SimpleTestNetwork\.client\.udpApp\[0\] \(id=\d+\)  dest=SimpleTestNetwork\.client\.udp \(id=\d+\)   control info: \(inet::UDPSetMulticastLoopCommand\)
+SENT:   src=SimpleTestNetwork\.client\.app\[0\] \(id=\d+\)  dest=SimpleTestNetwork\.client\.udp \(id=\d+\)   control info: \(inet::UDPSetMulticastLoopCommand\)
 .*
-SENT:   src=SimpleTestNetwork\.client\.udpApp\[0\] \(id=\d+\)  dest=SimpleTestNetwork\.client\.udp \(id=\d+\)   control info: \(inet::UDPConnectCommand\)
+SENT:   src=SimpleTestNetwork\.client\.app\[0\] \(id=\d+\)  dest=SimpleTestNetwork\.client\.udp \(id=\d+\)   control info: \(inet::UDPConnectCommand\)
 .*
-SENT:   src=SimpleTestNetwork\.client\.udpApp\[0\] \(id=\d+\)  dest=SimpleTestNetwork\.client\.udp \(id=\d+\)   control info: \(inet::UDPBindCommand\)
+SENT:   src=SimpleTestNetwork\.client\.app\[0\] \(id=\d+\)  dest=SimpleTestNetwork\.client\.udp \(id=\d+\)   control info: \(inet::UDPBindCommand\)
 .*
-SENT:   src=SimpleTestNetwork\.client\.udpApp\[0\] \(id=\d+\)  dest=SimpleTestNetwork\.client\.udp \(id=\d+\)   control info: \(inet::UDPConnectCommand\)
+SENT:   src=SimpleTestNetwork\.client\.app\[0\] \(id=\d+\)  dest=SimpleTestNetwork\.client\.udp \(id=\d+\)   control info: \(inet::UDPConnectCommand\)
 
 %contains-regex: stdout
 Socket created: sockId=2 appGateIndex=0 localPort=1025

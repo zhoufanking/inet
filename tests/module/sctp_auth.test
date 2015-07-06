@@ -21,11 +21,8 @@ ned-path = .;../../../../src;../../lib
 **.testTimeout = 0
 
 # udp app (off)
-**.numUdpApps = 0
-**.udpType = ""
 
-**.numTcpApps = 0
-**.tcpType = "TCP"
+# tcp app (off)
 
 # sctp apps
 **.sctp_client.numSctpApps = 1
