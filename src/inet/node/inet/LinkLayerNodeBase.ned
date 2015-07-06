@@ -30,16 +30,16 @@ module LinkLayerNodeBase extends NodeBase
     parameters:
         bool hasPcapRecorder = default(false);
         int numLoInterfaces = default(1);
+        int numWlanInterfaces = default(0);               // the number of radios in the router. by default no wireless
         int numExtInterfaces = default(0);
-        int numRadios = default(0);               // the number of radios in the router. by default no wireless
         int numTunInterfaces = default(0);
-        mobilityType = default(numRadios > 0 ? "StationaryMobility" : "");
+        mobilityType = default(numWlanInterfaces > 0 ? "StationaryMobility" : "");
         *.interfaceTableModule = default(absPath(".interfaceTable"));
         @figure[linkLayer](type=rectangle; pos=250,600; size=600,200; fillColor=#0000ff; cornerRadius=12; fillOpacity=0.1);
         @figure[linkLayer.title](type=text; pos=740,610; text="link layer");
 
     gates:
-        input radioIn[numRadios] @directIn;
+        input radioIn[numWlanInterfaces] @directIn;
         inout pppg[] @labels(PPPFrame-conn);
         inout ethg[] @labels(EtherFrame-conn);
 
@@ -64,7 +64,7 @@ module LinkLayerNodeBase extends NodeBase
             parameters:
                 @display("p=500,700,row,50;q=txQueue");
         }
-        wlan[numRadios]: <default("Ieee80211Nic")> like IWirelessNic {
+        wlan[numWlanInterfaces]: <default("Ieee80211Nic")> like IWirelessNic {
             parameters:
                 @display("p=600,700,row,50;q=queue");
         }
