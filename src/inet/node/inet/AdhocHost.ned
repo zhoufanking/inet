@@ -40,10 +40,10 @@ module AdhocHost extends WirelessHost
         wlan[*].mgmtType = default("Ieee80211MgmtAdhoc");  // use adhoc management
         string routingProtocol @enum("AODVUU","DYMOUM","DYMO","DSRUU","OLSR","OLSR_ETX","DSDV_2","Batman") = default("");  // used mobile routing protocol. see: inet.networklayer.manetrouting
         forwarding = default(true);
-        manetrouting.routingTableModule = default("^."+_firstNL+".routingTable");
-        manetrouting.networkProtocolModule = default("^."+_firstNL+".ip");
-        manetrouting.icmpModule = default("^."+_firstNL+".icmp");
-        manetrouting.arpModule = default("^."+_firstNL+".arp");
+        manetrouting.arpModule = default("^." + (hasIpv4 ? "ipv4.arp" : hasIpv6 ? "" : hasGn ? "gn.arp" : ""));
+        manetrouting.icmpModule = default("^." + (hasIpv4 ? "ipv4.icmp" : hasIpv6 ? "ipv6.icmpv6" : hasGn ? "" : ""));
+        manetrouting.networkProtocolModule = default("^." + (hasIpv4 ? "ipv4.ip" : hasIpv6 ? "ipv6.ipv6" : hasGn ? "gn.gnp" : ""));
+        manetrouting.routingTableModule = default("^." + (hasIpv4 ? "ipv4.routingTable" : hasIpv6 ? "ipv6.routingTable" : hasGn ? "gn.routingTable" : ""));
 
     submodules:
         manetrouting: <routingProtocol> like IManetRouting if routingProtocol != "" {
