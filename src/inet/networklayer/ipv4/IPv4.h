@@ -274,7 +274,7 @@ class INET_API IPv4 : public QueueBase, public INetfilter, public ILifecycle, pu
     /**
      * unregisters a Hook to be executed during datagram processing
      */
-    virtual void unregisterHook(int priority, IHook *hook) override;
+    virtual void unregisterHook(IHook *hook) override;
 
     /**
      * drop a previously queued datagram
