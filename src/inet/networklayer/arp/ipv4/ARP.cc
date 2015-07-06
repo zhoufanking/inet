@@ -17,6 +17,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/networklayer/arp/ipv4/ARP.h"
 
 #include "inet/networklayer/arp/ipv4/ARPPacket_m.h"
@@ -80,8 +81,8 @@ void ARP::initialize(int stage)
     else if (stage == INITSTAGE_NETWORK_LAYER_3) {    // IP addresses should be available
         ift = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
         rt = getModuleFromPar<IIPv4RoutingTable>(par("routingTableModule"), this);
-
         isUp = isNodeUp();
+        registerProtocol(Protocol::arp, gate("ifOut"));
     }
 }
 

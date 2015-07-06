@@ -27,7 +27,6 @@
 #include "inet/networklayer/ipv4/ICMPMessage_m.h"
 #include "inet/linklayer/common/Ieee802Ctrl.h"
 #include "inet/networklayer/ipv4/IIPv4RoutingTable.h"
-#include "inet/networklayer/common/IPSocket.h"
 #include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
 #include "inet/networklayer/ipv4/IPv4Datagram.h"
 #include "inet/networklayer/ipv4/IPv4InterfaceData.h"
@@ -99,6 +98,8 @@ void IPv4::initialize(int stage)
     }
     else if (stage == INITSTAGE_NETWORK_LAYER) {
         isUp = isNodeUp();
+        registerProtocol(Protocol::ipv4, gate("transportOut"));
+        registerProtocol(Protocol::ipv4, gate("queueOut"));
     }
 }
 
