@@ -15,9 +15,9 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "inet/common/IProtocolRegistrationListener.h"
 #include <string.h>
 #include "inet/networklayer/common/EchoProtocol.h"
-#include "inet/networklayer/common/IPSocket.h"
 #include "inet/networklayer/contract/INetworkProtocolControlInfo.h"
 #include "inet/applications/pingapp/PingPayload_m.h"
 
@@ -28,11 +28,8 @@ Define_Module(EchoProtocol);
 void EchoProtocol::initialize(int stage)
 {
     cSimpleModule::initialize(stage);
-
-    if (stage == INITSTAGE_NETWORK_LAYER_2) {
-        IPSocket socket(gate("sendOut"));
-        socket.registerProtocol(IP_PROT_ICMP);
-    }
+    if (stage == INITSTAGE_NETWORK_LAYER_2)
+        registerProtocol(Protocol::icmpv4, gate("sendOut"));
 }
 
 void EchoProtocol::handleMessage(cMessage *msg)
