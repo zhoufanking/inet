@@ -37,6 +37,12 @@ class INET_API INetfilter
      */
     class INET_API IHook
     {
+      protected:
+        INetfilter *registrar = nullptr;
+
+        void unregisteredFrom(INetfilter *nf) { ASSERT(nf == registrar); registrar = nullptr; }
+        void registeredTo(INetfilter *nf) { ASSERT(registrar == nullptr); registrar = nf; }
+
       public:
         enum Type {
             PREROUTING,
@@ -53,7 +59,8 @@ class INET_API INetfilter
             STOLEN  ///< doesn't allow datagram to pass to next hook, but won't be deleted
         };
 
-        virtual ~IHook() {};
+        virtual ~IHook() { if (registrar) registrar->unregisterHook(this); };
+        bool isRegistered() { return registrar != nullptr; }
 
         /**
          * This is the first hook called by the network protocol before it routes
@@ -88,9 +95,15 @@ class INET_API INetfilter
          * is ignored when the outputInterfaceEntry is a nullptr. After this is done
          */
         virtual Result datagramLocalOutHook(INetworkDatagram *datagram, const InterfaceEntry *& outputInterfaceEntry, L3Address& nextHopAddress) = 0;
+
+        friend class INetfilter;
     };
 
     virtual ~INetfilter() {}
+
+    void hookUnregistered(INetfilter::IHook *hook) { hook->unregisteredFrom(this); }
+    void hookRegistered(INetfilter::IHook *hook) { hook->registeredTo(this); }
+
 
     /**
      * Adds the provided hook to the list of registered hooks that will be called
@@ -101,7 +114,7 @@ class INET_API INetfilter
     /**
      * Removes the provided hook from the list of registered hooks.
      */
-    virtual void unregisterHook(int priority, IHook *hook) = 0;
+    virtual void unregisterHook(IHook *hook) = 0;
 
     /**
      * Requests the network layer to drop the datagram, because it's no longer

@@ -553,12 +553,13 @@ void GenericNetworkProtocol::registerHook(int priority, IHook *hook)
     hooks.insert(std::pair<int, IHook *>(priority, hook));
 }
 
-void GenericNetworkProtocol::unregisterHook(int priority, IHook *hook)
+void GenericNetworkProtocol::unregisterHook(IHook *hook)
 {
     Enter_Method("unregisterHook()");
     for (auto iter = hooks.begin(); iter != hooks.end(); iter++) {
-        if ((iter->first == priority) && (iter->second == hook)) {
+        if (iter->second == hook) {
             hooks.erase(iter);
+            hookUnregistered(hook);
             return;
         }
     }

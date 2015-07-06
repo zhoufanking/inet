@@ -125,7 +125,8 @@ INetfilter::IHook::Result NetfilterInfoHook::datagramLocalOutHook(INetworkDatagr
 
 void NetfilterInfoHook::finish()
 {
-    netfilter->unregisterHook(0, this);
+    if (isRegistered())
+        netfilter->unregisterHook(this);
 }
 
 } // namespace inet

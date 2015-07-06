@@ -961,12 +961,13 @@ void IPv6::registerHook(int priority, INetfilter::IHook *hook)
     hooks.insert(std::pair<int, INetfilter::IHook *>(priority, hook));
 }
 
-void IPv6::unregisterHook(int priority, INetfilter::IHook *hook)
+void IPv6::unregisterHook(INetfilter::IHook *hook)
 {
     Enter_Method("unregisterHook()");
     for (auto iter = hooks.begin(); iter != hooks.end(); iter++) {
-        if ((iter->first == priority) && (iter->second == hook)) {
+        if (iter->second == hook) {
             hooks.erase(iter);
+            hookUnregistered(hook);
             return;
         }
     }
