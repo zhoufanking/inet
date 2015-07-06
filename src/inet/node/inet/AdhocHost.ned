@@ -41,6 +41,7 @@ module AdhocHost extends WirelessHost
         string routingProtocol @enum("AODVUU","DYMOUM","DYMO","DSRUU","OLSR","OLSR_ETX","DSDV_2","Batman") = default("");  // used mobile routing protocol. see: inet.networklayer.manetrouting
         forwarding = default(true);
         manetrouting.routingTableModule = default("^."+_firstNL+".routingTable");
+        manetrouting.networkProtocolModule = default("^."+_firstNL+".ip");
         manetrouting.icmpModule = default("^."+_firstNL+".icmp");
         manetrouting.arpModule = default("^."+_firstNL+".arp");
 
