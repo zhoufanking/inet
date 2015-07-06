@@ -37,6 +37,10 @@ module AdhocHost extends WirelessHost
         @display("i=device/cellphone");
         wlan[*].mgmtType = default("Ieee80211MgmtAdhoc");  // use adhoc management
         forwarding = default(true);
+        manetrouting.routingTableModule = default("^."+_firstNL+".routingTable");
+        manetrouting.icmpModule = default("^."+_firstNL+".icmp");
+        manetrouting.arpModule = default("^."+_firstNL+".arp");
+
     submodules:
         manetrouting: <routingProtocol> like IManetRouting if routingProtocol != "" {
             @display("p=700,300");
