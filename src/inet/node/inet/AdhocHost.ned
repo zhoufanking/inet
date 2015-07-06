@@ -38,6 +38,7 @@ module AdhocHost extends WirelessHost
         wlan[*].mgmtType = default("Ieee80211MgmtAdhoc");  // use adhoc management
         forwarding = default(true);
         manetrouting.routingTableModule = default("^."+_firstNL+".routingTable");
+        manetrouting.networkProtocolModule = default("^."+_firstNL+".ip");
         manetrouting.icmpModule = default("^."+_firstNL+".icmp");
         manetrouting.arpModule = default("^."+_firstNL+".arp");
 
