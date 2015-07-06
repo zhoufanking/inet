@@ -37,7 +37,7 @@ import inet.node.ipv6.StandardHost6;
 //
 module WirelessHost6 extends StandardHost6
 {
-    numRadios = 1;
+    numWlanInterfaces = 1;
     networkLayer.xMIPv6Support = true;
     networkLayer.mipv6support.isMobileNode = true; //is Mobile Node
     networkLayer.mipv6support.isHomeAgent = false; //is Home Agent
