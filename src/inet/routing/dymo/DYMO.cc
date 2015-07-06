@@ -140,7 +140,7 @@ void DYMO::initialize(int stage)
         }
     }
     else if (stage == INITSTAGE_ROUTING_PROTOCOLS) {
-        registerProtocol(Protocol::dymo, gate("ipOut"));
+        registerProtocol(Protocol::manet, gate("ipOut"));
         host->subscribe(NF_LINK_BREAK, this);
         addressType = getSelfAddress().getAddressType();
         networkProtocol->registerHook(0, this);
