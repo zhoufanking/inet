@@ -62,6 +62,8 @@ enum SCTPErrorCode
 //
 packet SCTPCommand
 {
+    @implements(ITransportProtocolControlInfo, IProtocolControlInfo, ISocketControlInfo);
+    int controlInfoProtocolId = Protocol::sctp.getId();
     int socketId = -1;   // identifies the socket within the application
     int sid = -1;
     int numMsgs = 1;
