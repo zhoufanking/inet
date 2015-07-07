@@ -33,7 +33,7 @@ void TestApp::activity()
 %file: TestApp.ned
 import inet.applications.contract.IApp;
 
-simple TestApp like IUDPApp
+simple TestApp like IApp
 {
     gates:
         input socketIn;
