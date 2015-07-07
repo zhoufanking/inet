@@ -40,6 +40,7 @@ simple HttpServerDirect like IHttpDirectApp
         string siteDefinition = default("");                // The site script file. Blank to disable.
         double activationTime @unit(s) = default(0s);       // The initial activation delay. Zero to disable.
         double linkSpeed @unit(bps) = default(11Mbps);      // Used to model transmission delays.
+        string httpControllerModule = default("httpController"); // the absolute path to the http browser controller, @see HttpController
         xml config;                                         // The XML configuration file for random sites
     gates:
         input httpIn @directIn;
