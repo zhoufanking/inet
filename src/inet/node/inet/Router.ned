@@ -78,8 +78,8 @@ module Router extends ApplicationLayerNodeBase
         ospf.ipOut --> tn.upperLayerIn++ if hasOSPF;
         ospf.ipIn <-- tn.upperLayerOut++ if hasOSPF;
 
-        bgp.tcpOut --> at.upperLayerIn++ if hasBGP;
-        bgp.tcpIn <-- at.upperLayerOut++ if hasBGP;
+        bgp.socketOut --> at.upperLayerIn++ if hasBGP;
+        bgp.socketIn <-- at.upperLayerOut++ if hasBGP;
 
         rip.socketOut --> at.upperLayerIn++ if hasRIP;
         rip.socketIn <-- at.upperLayerOut++ if hasRIP;

@@ -47,8 +47,8 @@ module BGPRouterSimple extends ApplicationLayerNodeBase
                 @display("i=block/downarrow_s;p=397,124");
         }
     connections allowunconnected:
-        bgp.tcpOut --> { @display("m=s"); } --> snifferOut.in;
-        bgp.tcpIn <-- { @display("m=s"); } <-- snifferIn.out;
+        bgp.socketOut --> { @display("m=s"); } --> snifferOut.in;
+        bgp.socketIn <-- { @display("m=s"); } <-- snifferIn.out;
 
         snifferOut.out --> { @display("m=s"); } --> at.upperLayerIn++;
         snifferIn.in <-- { @display("m=s"); } <-- at.upperLayerOut++;
