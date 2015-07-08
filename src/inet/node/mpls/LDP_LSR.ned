@@ -11,19 +11,11 @@
 //
 package inet.node.mpls;
 
-import inet.common.lifecycle.NodeStatus;
-import inet.linklayer.contract.IWiredNic;
-import inet.linklayer.loopback.LoopbackInterface;
-import inet.networklayer.common.InterfaceTable;
-import inet.networklayer.ipv4.IPv4NetworkLayer;
-import inet.networklayer.ipv4.IPv4RoutingTable;
+import inet.common.MessageDispatcher;
 import inet.networklayer.ldp.LDP;
 import inet.networklayer.mpls.LIBTable;
-import inet.networklayer.mpls.MPLS;
 import inet.networklayer.ted.LinkStateRouting;
 import inet.networklayer.ted.TED;
-import inet.transportlayer.contract.ITCP;
-import inet.transportlayer.contract.IUDP;
 
 
 //
@@ -31,116 +23,64 @@ import inet.transportlayer.contract.IUDP;
 //
 // LDP Capable Routers are the main building blocks for an LDP MPLS network.
 //
-module LDP_LSR
+module LDP_LSR extends MplsTransportLayerNodeBase
 {
     parameters:
         @networkNode();
         @labels(node);
         @display("i=abstract/router");
-        bool hasStatus = default(false);
         double holdTime @unit("s") = default(15s);
         double helloInterval @unit("s") = default(5s);
         string peers;
         string routerId = default("auto");
-        string tcpType = default(firstAvailable("TCP","TCP_lwIP","TCP_NSC"));  // tcp implementation (e.g. ~TCP, ~TCP_lwIP, ~TCP_NSC) or ~TCPSpoof
         *.interfaceTableModule = default(absPath(".interfaceTable"));
-        *.routingTableModule = default(absPath(".routingTable"));
         *.tedModule = default(absPath(".ted"));
         *.libTableModule = default(absPath(".libTable"));
-    gates:
-        inout pppg[] @labels(PPPFrame-conn);
+        mpls.classifierModule = "^.ldp";
     submodules:
-        status: NodeStatus if hasStatus {
-            @display("p=73,45");
-        }
-        interfaceTable: InterfaceTable {
-            parameters:
-                @display("p=73,176;is=s");
-        }
-        routingTable: IPv4RoutingTable {
-            parameters:
-                forwarding = true;
-                routerId = routerId;
-                @display("p=70,240");
-        }
         ldp: LDP {
             parameters:
                 holdTime = holdTime;
                 helloInterval = helloInterval;
-                @display("p=222,67");
+                @display("p=680,100");
+        }
+        at: MessageDispatcher {
+            parameters:
+                @display("b=580,5,,,,1;p=550,200");
         }
         ted: TED {
             parameters:
-                @display("p=340,244");
+                @display("p=786,269");
         }
         linkStateRouting: LinkStateRouting {
             parameters:
                 peers = peers;
-                @display("p=360,150");
-        }
-        tcp: <tcpType> like ITCP {
-            parameters:
-                @display("p=177,145");
-        }
-        udp: <default(firstAvailable("UDP"))> like IUDP {
-            parameters:
-                @display("p=267,145");
-        }
-        networkLayer: IPv4NetworkLayer {
-            parameters:
-                @display("p=224,223");
-            gates:
-                ifIn[sizeof(pppg)+1];
-                ifOut[sizeof(pppg)+1];
-        }
-        lo0: LoopbackInterface {
-            @display("p=50,388");
-        }
-        ppp[sizeof(pppg)]: <default("PPPInterface")> like IWiredNic {
-            parameters:
-                @display("p=131,388,row,90;q=l2queue");
-        }
-        mpls: MPLS {
-            parameters:
-                //peers = peers,
-                classifierModule = "^.ldp";
-                @display("p=224,302");
-            gates:
-                netwIn[sizeof(pppg)+1];
-                netwOut[sizeof(pppg)+1];
-                ifIn[sizeof(pppg)+1];
-                ifOut[sizeof(pppg)+1];
+                @display("p=691,300");
         }
         libTable: LIBTable {
             parameters:
-                @display("p=340,305");
+                @display("p=786,330");
         }
     connections allowunconnected:
-        linkStateRouting.ipOut --> networkLayer.transportIn++;
-        linkStateRouting.ipIn <-- networkLayer.transportOut++;
+        linkStateRouting.ipOut --> tn.upperLayerIn++;
+        linkStateRouting.ipIn <-- tn.upperLayerOut++;
 
-        ldp.tcpIn <-- tcp.appOut;
-        ldp.tcpOut --> tcp.appIn;
+        ldp.tcpIn <-- at.upperLayerOut++;
+        ldp.tcpOut --> at.upperLayerIn++;
 
-        ldp.udpOut --> udp.appIn;
-        ldp.udpIn <-- udp.appOut;
+        ldp.udpIn <-- at.upperLayerOut++;
+        ldp.udpOut --> at.upperLayerIn++;
 
-        udp.ipOut --> networkLayer.transportIn++;
-        udp.ipIn <-- networkLayer.transportOut++;
+        at.lowerLayerOut++ --> udp.appIn if hasUdp;
+        at.lowerLayerIn++ <-- udp.appOut if hasUdp;
 
-        tcp.ipOut --> networkLayer.transportIn++;
-        tcp.ipIn <-- networkLayer.transportOut++;
+        at.lowerLayerOut++ --> tcp.appIn if hasTcp;
+        at.lowerLayerIn++ <-- tcp.appOut if hasTcp;
 
-        lo0.upperLayerOut --> networkLayer.ifIn[0];
-        networkLayer.ifOut[0] --> lo0.upperLayerIn;
+        at.lowerLayerOut++ --> sctp.appIn if hasSctp;
+        at.lowerLayerIn++ <-- sctp.appOut if hasSctp;
 
-        for i=0..sizeof(pppg)-1 {
-            pppg[i] <--> ppp[i].phys;
-
-            ppp[i].upperLayerOut --> mpls.ifIn[i+1];
-            ppp[i].upperLayerIn <-- mpls.ifOut[i+1];
-
-            mpls.netwOut[i+1] --> networkLayer.ifIn[i+1];
-            mpls.netwIn[i+1] <-- networkLayer.ifOut[i+1];
-        }
+        at.lowerLayerOut++ --> tn.upperLayerIn++;
+        at.lowerLayerIn++ <-- tn.upperLayerOut++;
 }
+
