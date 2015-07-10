@@ -1,14 +1,17 @@
 #!/bin/sh
 
-# add these lines in omnetpp.ini
+# This script compares the fingerprint evolution of two simulation runs.
+# It takes two eventlog files and outputs a diff file that can be used to
+# find the first event where the fingerprints don't match.
+#
+# Configure the simulation by adding the following lines to the ini file:
 #
 # record-eventlog = true
-# cmdenv-log-format = "f %g [%l] "
 # fingerprint = 0000-0000
 
-grep -e "^-" -e "^E #" $1 | awk '{print $2 " " $3}' | awk '!x[$0]++' > $1.tmp
-grep -e "^-" -e "^E #" $2 | awk '{print $2 " " $3}' | awk '!x[$0]++' > $2.tmp
+grep "E #" $1 | awk '{printf("# %s f %08x\n", $3, $13);}' > $1.tmp
+grep "E #" $2 | awk '{printf("# %s f %08x\n", $3, $13);}' > $2.tmp
 diff -U 1 $1.tmp $2.tmp > diffingerprints.diff
-head -n 4 diffingerprints.diff | tail -n 1
 rm $1.tmp
 rm $2.tmp
+head -n 10 diffingerprints.diff
