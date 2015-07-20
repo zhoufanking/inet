@@ -35,7 +35,6 @@ module NetworkLayerNodeBase extends LinkLayerNodeBase
         bool hasGn = default(false);
         bool forwarding = default(false);
         bool multicastForwarding = default(false);
-        string _firstNL = hasIpv4 ? "ipv4" : hasIpv6 ? "ipv6" : hasGn ? "gn" : "";
         *.forwarding = forwarding;
         *.multicastForwarding = multicastForwarding;
         @figure[networkLayer](type=rectangle; pos=250,400; size=600,200; fillColor=#00ff00; cornerRadius=12; fillOpacity=0.1);
