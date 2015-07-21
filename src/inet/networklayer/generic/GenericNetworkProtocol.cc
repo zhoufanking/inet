@@ -449,11 +449,11 @@ void GenericNetworkProtocol::sendDatagramToHL(GenericDatagram *datagram)
 {
     // deliver to sockets
     int protocol = datagram->getTransportProtocol();
-    GenericNetworkProtocolControlInfo *controlInfo = check_and_cast<GenericNetworkProtocolControlInfo *>(datagram->getControlInfo());
     auto lowerBound = protocolIdToSocketDescriptors.lower_bound(protocol);
     auto upperBound = protocolIdToSocketDescriptors.upper_bound(protocol);
     bool hasSocket = lowerBound != upperBound;
     cPacket *packet = decapsulate(datagram);
+    GenericNetworkProtocolControlInfo *controlInfo = check_and_cast<GenericNetworkProtocolControlInfo *>(packet->getControlInfo());
 
     for (auto it = lowerBound; it != upperBound; it++) {
         GenericNetworkProtocolControlInfo *controlInfoCopy = controlInfo->dup();
