@@ -193,6 +193,7 @@ void TelnetApp::socketClosed(int connId, void *ptr)
     TCPAppBase::socketClosed(connId, ptr);
 
     // start another session after a delay
+    cancelEvent(timeoutMsg);
     timeoutMsg->setKind(MSGKIND_CONNECT);
     checkedScheduleAt(simTime() + (simtime_t)par("idleInterval"), timeoutMsg);
 }
@@ -202,6 +203,7 @@ void TelnetApp::socketFailure(int connId, void *ptr, int code)
     TCPAppBase::socketFailure(connId, ptr, code);
 
     // reconnect after a delay
+    cancelEvent(timeoutMsg);
     timeoutMsg->setKind(MSGKIND_CONNECT);
     checkedScheduleAt(simTime() + (simtime_t)par("reconnectInterval"), timeoutMsg);
 }
