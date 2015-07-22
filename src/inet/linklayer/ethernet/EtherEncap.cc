@@ -142,7 +142,8 @@ void EtherEncap::processFrameFromMAC(EtherFrame *frame)
     etherctrl->setDest(frame->getDest());
     IInterfaceTable *interfaceTable = findModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
     InterfaceEntry *myIface = interfaceTable != nullptr ? interfaceTable->getInterfaceByName(utils::stripnonalnum(findModuleUnderContainingNode(this)->getFullName()).c_str()) : nullptr;
-    etherctrl->setInterfaceId(myIface->getInterfaceId());
+    if (myIface)
+        etherctrl->setInterfaceId(myIface->getInterfaceId());
     if (dynamic_cast<EthernetIIFrame *>(frame) != nullptr)
         etherctrl->setEtherType(((EthernetIIFrame *)frame)->getEtherType());
     else if (dynamic_cast<EtherFrameWithSNAP *>(frame) != nullptr)
