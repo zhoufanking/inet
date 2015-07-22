@@ -57,6 +57,8 @@ void OrdinalBasedDuplicator::handleMessage(cMessage *msg)
         if (numPackets == duplicatesVector[0]) {
             EV << "DuplicatesGenerator: Duplicating packet number " << numPackets << " " << msg << endl;
             cMessage *dupmsg = msg->dup();
+            if (cObject *ctrl = msg->getControlInfo())
+                dupmsg->setControlInfo(ctrl->dup());
             emit(duplPkSignal, dupmsg);
             emit(sentPkSignal, dupmsg);
             send(dupmsg, "out");
