@@ -35,8 +35,8 @@ module NetworkLayerNodeBase extends LinkLayerNodeBase
         bool hasGn = default(false);
         bool forwarding = default(false);
         bool multicastForwarding = default(false);
-        *.forwarding = forwarding;
-        *.multicastForwarding = multicastForwarding;
+        *.forwarding = default(forwarding);
+        *.multicastForwarding = default(multicastForwarding);
         @figure[networkLayer](type=rectangle; pos=250,400; size=600,200; fillColor=#00ff00; cornerRadius=12; fillOpacity=0.1);
         @figure[networkLayer.title](type=text; pos=740,410; text="network layer");
 
