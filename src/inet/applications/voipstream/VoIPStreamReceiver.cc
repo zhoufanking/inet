@@ -238,7 +238,7 @@ void VoIPStreamReceiver::decodePacket(VoIPStreamPacket *vp)
         curConn.writeLostSamples(lostSamples);
         curConn.lastPacketFinish += lostSamples * (1.0 / curConn.sampleRate);
         if (fingerprint)
-            fingerprint->addData((char *)&lostSamples, sizeof(lostSamples));
+            fingerprint->addExtraData(lostSamples);
     }
     emit(delaySignal, curConn.lastPacketFinish - vp->getCreationTime());
     curConn.seqNo = newSeqNo;
@@ -248,7 +248,7 @@ void VoIPStreamReceiver::decodePacket(VoIPStreamPacket *vp)
     vp->getBytes().copyDataToBuffer(buff, len);
     curConn.writeAudioFrame(buff, len);
     if (fingerprint)
-        fingerprint->addData((const char *)buff, len);
+        fingerprint->addExtraData((const char *)buff, len);
 }
 
 void VoIPStreamReceiver::finish()
