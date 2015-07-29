@@ -10,6 +10,6 @@ while ($sor = <STDIN>)
 
 while ($sor = <STDIN>)
 {
-    $sor =~ s/\.mac \t/ \t/g;
+#    $sor =~ s/\.mac \t/ \t/g;
     print $sor;
 }
