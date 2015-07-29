@@ -69,7 +69,7 @@ module Router extends NodeBase
                 ospfRoutingModule = default(hasOSPF ? "^.ospf" : "");
                 @display("p=214,80;i=block/network");
         }
-        tcp: <tcpType> like ITCP if hasBGP && tcpType != "" {
+        tcp: <tcpType> like ITCP if tcpType != "" {
             parameters:
                 @display("p=214,180;i=block/transport");
         }
@@ -77,7 +77,7 @@ module Router extends NodeBase
             parameters:
                 @display("p=404,80");
         }
-        udp: <udpType> like IUDP if hasRIP {
+        udp: <udpType> like IUDP {
             @display("p=404,180");
         }
         pim: <"PIMRouting"> like IPIMRouting if hasPIM {
@@ -93,7 +93,9 @@ module Router extends NodeBase
         if hasBGP {
             bgp.tcpOut --> tcp.appIn++;
             bgp.tcpIn <-- tcp.appOut++;
+        }
 
+        if tcpType != "" {
             tcp.ipOut --> networkLayer.transportIn++;
             tcp.ipIn <-- networkLayer.transportOut++;
         }
@@ -101,10 +103,10 @@ module Router extends NodeBase
         if hasRIP {
             rip.udpOut --> udp.appIn++;
             rip.udpIn <-- udp.appOut++;
-
-            udp.ipOut --> networkLayer.transportIn++;
-            udp.ipIn <-- networkLayer.transportOut++;
         }
+
+        udp.ipOut --> networkLayer.transportIn++;
+        udp.ipIn <-- networkLayer.transportOut++;
 
         if hasPIM {
             pim.networkLayerOut --> networkLayer.transportIn++;

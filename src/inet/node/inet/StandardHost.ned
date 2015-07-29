@@ -52,8 +52,8 @@ module StandardHost extends NodeBase
         int numUdpApps = default(0);  // no of UDP apps. Specify the app types in INI file with udpApp[0..1].typename="UDPVideoStreamCli" syntax
         int numSctpApps = default(0); // no of SCTP apps. Specify the app types in INI file with sctpApp[0..1].typename="SCTPServer" syntax
         int numPingApps = default(0);  // no of PING apps. Specify the app types in INI file with pingApp[0..1].typename="PingApp" syntax
-        bool hasTcp = default(numTcpApps > 0);
-        bool hasUdp = default(numUdpApps > 0);
+        bool hasTcp = default(true);
+        bool hasUdp = default(true);
         bool hasSctp = default(numSctpApps > 0);
         bool hasTun = default(numTunInterfaces > 0);
         string tcpType = default(firstAvailableOrEmpty("TCP", "TCP_lwIP", "TCP_NSC"));  // tcp implementation (e.g. ~TCP, ~TCP_lwIP, ~TCP_NSC) or ~TCPSpoof
