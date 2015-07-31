@@ -391,8 +391,8 @@ void IGMPv2::initialize(int stage)
         host->subscribe(NF_INTERFACE_CREATED, this);
     }
     else if (stage == INITSTAGE_NETWORK_LAYER_2) {
-        registerProtocol(Protocol::igmpv2, gate("ipOut"));
-        registerProtocol(Protocol::igmpv2, gate("routerOut"));
+        registerProtocol(Protocol::igmp, gate("ipOut"));
+        registerProtocol(Protocol::igmp, gate("routerOut"));
     }
 }
 

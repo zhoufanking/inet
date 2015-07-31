@@ -68,7 +68,7 @@ const ProtocolGroup ProtocolGroup::ethertype("ethertype", {
 // excerpt from http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
 const ProtocolGroup ProtocolGroup::ipprotocol("ipprotocol", {
     { 1, &Protocol::icmpv4 },
-    { 2, &Protocol::igmpv2 },
+    { 2, &Protocol::igmp },
     { 4, &Protocol::ipv4 },
     { 6, &Protocol::tcp },
     { 8, &Protocol::egp },
