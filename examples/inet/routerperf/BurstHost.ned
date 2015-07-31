@@ -30,6 +30,10 @@ module BurstHost extends TransportLayerNodeBase
         @networkNode();
         @display("i=device/pc3");
         string trafGenType;
+        hasUdp = false;
+        hasTcp = false;
+        hasSctp = false;
+        @figure[submodules];
     submodules:
         trafGen: <trafGenType> like IIPvXTrafficGenerator {
             parameters:
