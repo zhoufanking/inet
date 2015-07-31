@@ -16,13 +16,15 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "inet/applications/generic/IPvXTrafSink.h"
+
+#include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/ProtocolGroup.h"
-#include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/common/lifecycle/NodeOperations.h"
+#include "inet/common/lifecycle/NodeStatus.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "inet/networklayer/contract/INetworkProtocolControlInfo.h"
-#include "inet/applications/generic/IPvXTrafGen.h"
 
 namespace inet {
 
