@@ -244,8 +244,10 @@
 /examples/ipv6/ipv6bulk/,            -f omnetpp.ini -c inet_inet -r 0,              50s,             de62-def5
 /examples/ipv6/ipv6nclients/,        -f omnetpp.ini -c ETH -r 0,                    50s,             0ee7-d57f
 /examples/ipv6/ipv6nclients/,        -f omnetpp.ini -c PPP -r 0,                    50s,             7b85-4bc6
-/examples/ipv6/nclients/,            -f omnetpp.ini -c ETH -r 0,                    1000s,           b0bb-7999
-/examples/ipv6/nclients/,            -f omnetpp.ini -c PPP -r 0,                    1000s,           0b51-a44a
+/examples/ipv6/nclients/,            -f omnetpp.ini -c ETH_TCP -r 0,                1000s,           b0bb-7999
+/examples/ipv6/nclients/,            -f omnetpp.ini -c PPP_TCP -r 0,                1000s,           0b51-a44a
+/examples/ipv6/nclients/,            -f omnetpp.ini -c ETH_PING -r 0,               1000s,           b0bb-7999
+/examples/ipv6/nclients/,            -f omnetpp.ini -c PPP_PING -r 0,               1000s,           0b51-a44a
 /examples/ipv6/nclients/,            -f omnetpp.ini -c PPP_SCTP -r 0,               100s,            fcce-1180
 
 ### /examples/manetrouting/* : see manet.csv
