@@ -19,11 +19,11 @@
 #include "inet/applications/generic/IPvXTrafGen.h"
 #include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/common/ModuleAccess.h"
+#include "inet/common/ProtocolGroup.h"
 #include "inet/common/lifecycle/NodeOperations.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "inet/networklayer/contract/IL3AddressType.h"
 #include "inet/networklayer/contract/INetworkProtocolControlInfo.h"
-#include "inet/common/ProtocolGroup.h"
 
 namespace inet {
 
