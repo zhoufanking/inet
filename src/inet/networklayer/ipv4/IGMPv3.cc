@@ -431,7 +431,7 @@ void IGMPv3::initialize(int stage)
         WATCH(numGroupAndSourceSpecificQueriesRecv);
         WATCH(numReportsSent);
         WATCH(numReportsRecv);
-        registerProtocol(Protocol::igmpv3, gate("ipOut"));
+        registerProtocol(Protocol::igmp, gate("ipOut"));
     }
     else if (stage == INITSTAGE_NETWORK_LAYER) {
         for (int i = 0; i < (int)ift->getNumInterfaces(); ++i) {
