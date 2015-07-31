@@ -38,11 +38,11 @@ void IPvXTrafSink::initialize(int stage)
 
     if (stage == INITSTAGE_LOCAL) {
         numReceived = 0;
-        int protocol = par("protocol");
-        registerProtocol(*ProtocolGroup::ipprotocol.getProtocol(protocol), gate("ipOut"));
         WATCH(numReceived);
     }
     else if (stage == INITSTAGE_APPLICATION_LAYER) {
+        int protocol = par("protocol");
+        registerProtocol(*ProtocolGroup::ipprotocol.getProtocol(protocol), gate("ipOut"));
         NodeStatus *nodeStatus = dynamic_cast<NodeStatus *>(findContainingNode(this)->getSubmodule("status"));
         isOperational = (!nodeStatus) || nodeStatus->getState() == NodeStatus::UP;
     }
