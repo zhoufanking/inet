@@ -138,10 +138,10 @@ void GenericNetworkProtocol::endService(cPacket *pk)
         updateDisplayString();
 }
 
-const InterfaceEntry *GenericNetworkProtocol::getSourceInterfaceFrom(cPacket *msg)
+const InterfaceEntry *GenericNetworkProtocol::getSourceInterfaceFrom(cPacket *packet)
 {
-    cGate *g = msg->getArrivalGate();
-    return g ? interfaceTable->getInterfaceByNetworkLayerGateIndex(g->getIndex()) : nullptr;
+    IMACProtocolControlInfo *controlInfo = dynamic_cast<IMACProtocolControlInfo *>(packet->getControlInfo());
+    return controlInfo != nullptr ? interfaceTable->getInterfaceById(controlInfo->getInterfaceId()) : nullptr;
 }
 
 void GenericNetworkProtocol::handlePacketFromNetwork(GenericDatagram *datagram)
@@ -150,13 +150,12 @@ void GenericNetworkProtocol::handlePacketFromNetwork(GenericDatagram *datagram)
         //TODO discard
     }
 
-    delete datagram->removeControlInfo();
-
     // hop counter decrement; FIXME but not if it will be locally delivered
     datagram->setHopLimit(datagram->getHopLimit() - 1);
 
     L3Address nextHop;
     const InterfaceEntry *inIE = getSourceInterfaceFrom(datagram);
+
     const InterfaceEntry *destIE = nullptr;
     if (datagramPreRoutingHook(datagram, inIE, destIE, nextHop) != IHook::ACCEPT)
         return;
@@ -472,6 +471,7 @@ void GenericNetworkProtocol::sendDatagramToHL(GenericDatagram *datagram)
         // IMACProtocolControlInfo *controlInfo = dynamic_cast<IMACProtocolControlInfo *>(PK(datagram)->getControlInfo());
         // int inputInterfaceId = controlInfo != nullptr ? controlInfo->getInterfaceId() : -1;
         // sendToIcmp(datagram, inputInterfaceId, ICMP_DESTINATION_UNREACHABLE, ICMP_DU_PROTOCOL_UNREACHABLE);
+        delete packet;
     }
     else
         delete packet;
@@ -480,6 +480,8 @@ void GenericNetworkProtocol::sendDatagramToHL(GenericDatagram *datagram)
 
 void GenericNetworkProtocol::sendDatagramToOutput(GenericDatagram *datagram, const InterfaceEntry *ie, L3Address nextHop)
 {
+    delete datagram->removeControlInfo();
+
     if (datagram->getByteLength() > ie->getMTU())
         throw cRuntimeError("datagram too large"); //TODO refine
 
