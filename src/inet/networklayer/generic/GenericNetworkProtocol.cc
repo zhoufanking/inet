@@ -77,7 +77,7 @@ void GenericNetworkProtocol::initialize(int stage)
 void GenericNetworkProtocol::handleRegisterProtocol(const Protocol& protocol, cGate *gate)
 {
     Enter_Method("handleRegisterProtocol");
-    mapping.addProtocolMapping(protocol.getId(), gate->getIndex());
+    mapping.addProtocolMapping(ProtocolGroup::ipprotocol.getProtocolNumber(&protocol), gate->getIndex());
 }
 
 void GenericNetworkProtocol::updateDisplayString()
