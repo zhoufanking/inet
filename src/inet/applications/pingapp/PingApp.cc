@@ -183,7 +183,7 @@ void PingApp::handleMessage(cMessage *msg)
                     case L3Address::IPv4: icmp = IP_PROT_ICMP; break;
                     case L3Address::IPv6: icmp = IP_PROT_IPv6_ICMP; break;
                     case L3Address::MODULEID:
-                    case L3Address::MODULEPATH: icmp = IP_PROT_ICMP; break;
+                    case L3Address::MODULEPATH: icmp = IP_PROT_IPv6_ICMP; break;
                         //TODO
                     default: throw cRuntimeError("unknown address type: %d(%s)", (int)destAddr.getType(), L3Address::getTypeName(destAddr.getType()));
                 }
