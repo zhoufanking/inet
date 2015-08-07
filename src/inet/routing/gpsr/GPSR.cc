@@ -90,7 +90,10 @@ void GPSR::initialize(int stage)
         positionByteLength = par("positionByteLength");
     }
     else if (stage == INITSTAGE_ROUTING_PROTOCOLS) {
-        registerProtocol(Protocol::manet, gate("ipOut"));
+        socket.setOutputGate(gate("ipOut"));
+        int protocolId = routingTable->getRouterIdAsGeneric().getAddressType()->getL3Protocol().getId();
+        socket.setControlInfoProtocolId(protocolId);
+        socket.bind(IP_PROT_MANET);
 
         globalPositionTable.clear();
         host->subscribe(NF_LINK_BREAK, this);
