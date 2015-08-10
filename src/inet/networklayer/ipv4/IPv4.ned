@@ -95,10 +95,10 @@ simple IPv4
         bool forceBroadcast = default(false);
         bool useProxyARP = default(true);
         @display("i=block/routing");
-        @signal[NF_IPv4_NEW_MULTICAST](type=IPv4Datagram);
-        @signal[NF_IPv4_DATA_ON_NONRPF](type=IPv4Datagram);
-        @signal[NF_IPv4_DATA_ON_RPF](type=IPv4Datagram);
-        @signal[NF_IPv4_MDATA_REGISTER](type=IPv4Datagram);
+        @signal[NF_IPv4_NEW_MULTICAST](type=IPv4DataNotificationData);
+        @signal[NF_IPv4_DATA_ON_NONRPF](type=IPv4DataNotificationData);
+        @signal[NF_IPv4_DATA_ON_RPF](type=IPv4DataNotificationData);
+        @signal[NF_IPv4_MDATA_REGISTER](type=IPv4DataNotificationData);
     gates:
         input transportIn @labels(IPv4ControlInfo/down,TCPSegment,UDPPacket);
         output transportOut @labels(IPv4ControlInfo/up,TCPSegment,UDPPacket);
