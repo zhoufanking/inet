@@ -23,6 +23,7 @@
 #include "inet/common/INETDefs.h"
 
 #include "inet/networklayer/ipv4/IPv4Route.h"
+#include "inet/networklayer/ipv4/IPv4DataNotificationData.h"
 #include "inet/routing/pim/modes/PIMBase.h"
 
 namespace inet {
@@ -304,7 +305,7 @@ class INET_API PIMSM : public PIMBase, protected cListener
     // helpers
     bool IamRP(IPv4Address rpAddr) { return rt->isLocalAddress(rpAddr); }
     bool IamDR(InterfaceEntry *ie);
-    PIMInterface *getIncomingInterface(IPv4Datagram *datagram);
+    PIMInterface *getIncomingInterface(IPv4DataNotificationData *notificationData);
     bool deleteMulticastRoute(Route *route);
     void clearRoutes();
     void cancelAndDeleteTimer(cMessage *& timer);

@@ -1037,14 +1037,16 @@ void PIMDM::processAssertTimer(cMessage *timer)
 void PIMDM::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj DETAILS_ARG)
 {
     Enter_Method_Silent();
-    printNotificationBanner(signalID, obj);
+    printNotificationBanner(signalID, details);
+    IPv4DataNotificationData* notificationData;
     IPv4Datagram *datagram;
     PIMInterface *pimInterface;
 
     // new multicast data appears in router
     if (signalID == NF_IPv4_NEW_MULTICAST) {
-        datagram = check_and_cast<IPv4Datagram *>(obj);
-        pimInterface = getIncomingInterface(datagram);
+        notificationData = check_and_cast<IPv4DataNotificationData *>(details);
+        datagram = notificationData->datagram;
+        pimInterface = getIncomingInterface(notificationData);
         if (pimInterface && pimInterface->getMode() == PIMInterface::DenseMode)
             unroutableMulticastPacketArrived(datagram->getSrcAddress(), datagram->getDestAddress(), datagram->getTimeToLive());
     }
@@ -1064,15 +1066,17 @@ void PIMDM::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj
     }
     // data come to non-RPF interface
     else if (signalID == NF_IPv4_DATA_ON_NONRPF) {
-        datagram = check_and_cast<IPv4Datagram *>(obj);
-        pimInterface = getIncomingInterface(datagram);
+        notificationData = check_and_cast<IPv4DataNotificationData *>(details);
+        datagram = notificationData->datagram;
+        pimInterface = getIncomingInterface(notificationData);
         if (pimInterface && pimInterface->getMode() == PIMInterface::DenseMode)
             multicastPacketArrivedOnNonRpfInterface(datagram->getDestAddress(), datagram->getSrcAddress(), pimInterface->getInterfaceId());
     }
     // data come to RPF interface
     else if (signalID == NF_IPv4_DATA_ON_RPF) {
-        datagram = check_and_cast<IPv4Datagram *>(obj);
-        pimInterface = getIncomingInterface(datagram);
+        notificationData = check_and_cast<IPv4DataNotificationData *>(details);
+        datagram = notificationData->datagram;
+        pimInterface = getIncomingInterface(notificationData);
         if (pimInterface && pimInterface->getMode() == PIMInterface::DenseMode)
             multicastPacketArrivedOnRpfInterface(pimInterface->getInterfaceId(),
                     datagram->getDestAddress(), datagram->getSrcAddress(), datagram->getTimeToLive());
@@ -1668,14 +1672,10 @@ void PIMDM::cancelAndDeleteTimer(cMessage *& timer)
     timer = nullptr;
 }
 
-PIMInterface *PIMDM::getIncomingInterface(IPv4Datagram *datagram)
+PIMInterface *PIMDM::getIncomingInterface(IPv4DataNotificationData *notificationData)
 {
-    cGate *g = datagram->getArrivalGate();
-    if (g) {
-        InterfaceEntry *ie = ift->getInterfaceByNetworkLayerGateIndex(g->getIndex());
-        if (ie)
-            return pimIft->getInterfaceById(ie->getInterfaceId());
-    }
+    if (notificationData->fromIE)
+        return pimIft->getInterfaceById(notificationData->fromIE->getInterfaceId());
     return nullptr;
 }
 

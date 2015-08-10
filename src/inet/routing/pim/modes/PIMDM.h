@@ -22,14 +22,15 @@
 
 #include "inet/common/INETDefs.h"
 
-#include "inet/routing/pim/PIMPacket_m.h"
 #include "inet/common/NotifierConsts.h"
-#include "inet/routing/pim/tables/PIMNeighborTable.h"
-#include "inet/routing/pim/tables/PIMInterfaceTable.h"
 #include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
+#include "inet/networklayer/ipv4/IPv4DataNotificationData.h"
 #include "inet/networklayer/ipv4/IPv4InterfaceData.h"
 #include "inet/networklayer/ipv4/IPv4Route.h"
+#include "inet/routing/pim/PIMPacket_m.h"
 #include "inet/routing/pim/modes/PIMBase.h"
+#include "inet/routing/pim/tables/PIMNeighborTable.h"
+#include "inet/routing/pim/tables/PIMInterfaceTable.h"
 
 namespace inet {
 
@@ -232,7 +233,7 @@ class INET_API PIMDM : public PIMBase, protected cListener
     // helpers
     void restartTimer(cMessage *timer, double interval);
     void cancelAndDeleteTimer(cMessage *& timer);
-    PIMInterface *getIncomingInterface(IPv4Datagram *datagram);
+    PIMInterface *getIncomingInterface(IPv4DataNotificationData *notificationData);
     IPv4MulticastRoute *findIPv4MulticastRoute(IPv4Address group, IPv4Address source);
     Route *findRoute(IPv4Address source, IPv4Address group);
     void deleteRoute(IPv4Address source, IPv4Address group);

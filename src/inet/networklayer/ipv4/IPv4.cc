@@ -21,20 +21,21 @@
 
 #include "inet/networklayer/ipv4/IPv4.h"
 
-#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
-#include "inet/networklayer/contract/L3SocketCommand_m.h"
-#include "inet/networklayer/arp/ipv4/ARPPacket_m.h"
-#include "inet/networklayer/contract/IARP.h"
-#include "inet/networklayer/ipv4/ICMPMessage_m.h"
-#include "inet/linklayer/common/Ieee802Ctrl.h"
-#include "inet/networklayer/ipv4/IIPv4RoutingTable.h"
-#include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
-#include "inet/networklayer/ipv4/IPv4Datagram.h"
-#include "inet/networklayer/ipv4/IPv4InterfaceData.h"
+#include "inet/common/ModuleAccess.h"
 #include "inet/common/lifecycle/NodeOperations.h"
 #include "inet/common/lifecycle/NodeStatus.h"
+#include "inet/linklayer/common/Ieee802Ctrl.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
+#include "inet/networklayer/arp/ipv4/ARPPacket_m.h"
+#include "inet/networklayer/contract/IARP.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
-#include "inet/common/ModuleAccess.h"
+#include "inet/networklayer/contract/L3SocketCommand_m.h"
+#include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
+#include "inet/networklayer/ipv4/ICMPMessage_m.h"
+#include "inet/networklayer/ipv4/IIPv4RoutingTable.h"
+#include "inet/networklayer/ipv4/IPv4Datagram.h"
+#include "inet/networklayer/ipv4/IPv4DataNotificationData.h"
+#include "inet/networklayer/ipv4/IPv4InterfaceData.h"
 
 namespace inet {
 
@@ -477,6 +478,7 @@ void IPv4::forwardMulticastPacket(IPv4Datagram *datagram, const InterfaceEntry *
     const IPv4Address& destAddr = datagram->getDestAddress();
     ASSERT(destAddr.isMulticast());
     ASSERT(!destAddr.isLinkLocalMulticast());
+    IPv4DataNotificationData notificationData(datagram, fromIE);
 
     EV_INFO << "Forwarding multicast datagram `" << datagram->getName() << "' with dest=" << destAddr << "\n";
 
@@ -485,7 +487,7 @@ void IPv4::forwardMulticastPacket(IPv4Datagram *datagram, const InterfaceEntry *
     const IPv4MulticastRoute *route = rt->findBestMatchingMulticastRoute(srcAddr, destAddr);
     if (!route) {
         EV_WARN << "Multicast route does not exist, try to add.\n";
-        emit(NF_IPv4_NEW_MULTICAST, datagram);
+        emit(NF_IPv4_NEW_MULTICAST, &notificationData);
 
         // read new record
         route = rt->findBestMatchingMulticastRoute(srcAddr, destAddr);
@@ -500,7 +502,7 @@ void IPv4::forwardMulticastPacket(IPv4Datagram *datagram, const InterfaceEntry *
 
     if (route->getInInterface() && fromIE != route->getInInterface()->getInterface()) {
         EV_ERROR << "Did not arrive on input interface, packet dropped.\n";
-        emit(NF_IPv4_DATA_ON_NONRPF, datagram);
+        emit(NF_IPv4_DATA_ON_NONRPF, &notificationData);
         numDropped++;
         delete datagram;
     }
@@ -511,7 +513,7 @@ void IPv4::forwardMulticastPacket(IPv4Datagram *datagram, const InterfaceEntry *
         delete datagram;
     }
     else {
-        emit(NF_IPv4_DATA_ON_RPF, datagram);    // forwarding hook
+        emit(NF_IPv4_DATA_ON_RPF, &notificationData);    // forwarding hook
 
         numForwarded++;
         // copy original datagram for multiple destinations
@@ -531,7 +533,7 @@ void IPv4::forwardMulticastPacket(IPv4Datagram *datagram, const InterfaceEntry *
             }
         }
 
-        emit(NF_IPv4_MDATA_REGISTER, datagram);    // postRouting hook
+        emit(NF_IPv4_MDATA_REGISTER, &notificationData);    // postRouting hook
 
         // only copies sent, delete original datagram
         delete datagram;
@@ -573,32 +575,36 @@ void IPv4::reassembleAndDeliver(IPv4Datagram *datagram, const InterfaceEntry *fr
 
 void IPv4::reassembleAndDeliverFinish(IPv4Datagram *datagram, const InterfaceEntry *fromIE)
 {
-    // decapsulate
     int protocol = datagram->getTransportProtocol();
-    cPacket *packet = decapsulate(datagram, fromIE);
-    // deliver to sockets
-    IPv4ControlInfo *controlInfo = check_and_cast<IPv4ControlInfo *>(packet->getControlInfo());
     auto lowerBound = protocolIdToSocketDescriptors.lower_bound(protocol);
     auto upperBound = protocolIdToSocketDescriptors.upper_bound(protocol);
     bool hasSocket = lowerBound != upperBound;
-    for (auto it = lowerBound; it != upperBound; it++) {
-        IPv4ControlInfo *controlInfoCopy = controlInfo->dup();
-        controlInfoCopy->setSocketId(it->second->socketId);
-        cPacket *packetCopy = packet->dup();
-        packetCopy->setControlInfo(controlInfoCopy);
-        send(packetCopy, "transportOut");
+    bool hasProtocol = mapping.findOutputGateForProtocol(protocol) >= 0;
+    if (hasSocket || hasProtocol) {
+        // decapsulate
+        cPacket *packet = decapsulate(datagram, fromIE);
+        IPv4ControlInfo *controlInfo = check_and_cast<IPv4ControlInfo *>(packet->getControlInfo());
+
+        // deliver to sockets
+        for (auto it = lowerBound; it != upperBound; it++) {
+            IPv4ControlInfo *controlInfoCopy = controlInfo->dup();
+            controlInfoCopy->setSocketId(it->second->socketId);
+            cPacket *packetCopy = packet->dup();
+            packetCopy->setControlInfo(controlInfoCopy);
+            send(packetCopy, "transportOut");
+        }
+        if (hasProtocol) {
+            send(packet, "transportOut");
+            numLocalDeliver++;
+        }
+        else
+            delete packet;
     }
-    if (mapping.findOutputGateForProtocol(protocol) >= 0) {
-        send(packet, "transportOut");
-        numLocalDeliver++;
-    }
-    else if (!hasSocket) {
+    else {
         EV_ERROR << "Transport protocol ID=" << protocol << " not connected, discarding packet\n";
-        int inputInterfaceId = getSourceInterfaceFrom(datagram)->getInterfaceId();
+        int inputInterfaceId = fromIE ? fromIE->getInterfaceId() : -1;
         icmp->sendErrorMessage(datagram, inputInterfaceId, ICMP_DESTINATION_UNREACHABLE, ICMP_DU_PROTOCOL_UNREACHABLE);
     }
-    else
-        delete packet;
 }
 
 cPacket *IPv4::decapsulate(IPv4Datagram *datagram, const InterfaceEntry *fromIE)
