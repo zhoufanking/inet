@@ -34,7 +34,7 @@ void TCPSrvHostApp::initialize(int stage)
         const char *localAddress = par("localAddress");
         int localPort = par("localPort");
 
-        serverSocket.setOutputGate(gate("tcpOut"));
+        serverSocket.setOutputGate(gate("socketOut"));
         serverSocket.readDataTransferModePar(*this);
         serverSocket.bind(localAddress[0] ? L3Address(localAddress) : L3Address(), localPort);
         serverSocket.listen();
@@ -49,9 +49,6 @@ void TCPSrvHostApp::initialize(int stage)
 
 void TCPSrvHostApp::updateDisplay()
 {
-    if (!hasGUI())
-        return;
-
     char buf[32];
     sprintf(buf, "%d threads", socketMap.size());
     getDisplayString().setTagArg("t", 0, buf);
@@ -61,6 +58,8 @@ void TCPSrvHostApp::handleMessage(cMessage *msg)
 {
     if (msg->isSelfMessage()) {
         TCPServerThreadBase *thread = (TCPServerThreadBase *)msg->getContextPointer();
+        if (threadSet.find(thread) == threadSet.end())
+            throw cRuntimeError("Invalid thread pointer in the timer (msg->contextPointer is invalid)");
         thread->timerExpired(msg);
     }
     else {
@@ -69,7 +68,7 @@ void TCPSrvHostApp::handleMessage(cMessage *msg)
         if (!socket) {
             // new connection -- create new socket object and server process
             socket = new TCPSocket(msg);
-            socket->setOutputGate(gate("tcpOut"));
+            socket->setOutputGate(gate("socketOut"));
 
             const char *serverThreadClass = par("serverThreadClass");
             TCPServerThreadBase *proc =
@@ -79,12 +78,13 @@ void TCPSrvHostApp::handleMessage(cMessage *msg)
             proc->init(this, socket);
 
             socketMap.addSocket(socket);
-
-            updateDisplay();
+            threadSet.insert(proc);
         }
 
         socket->processMessage(msg);
     }
+    if (hasGUI())
+        updateDisplay();
 }
 
 void TCPSrvHostApp::finish()
@@ -95,11 +95,13 @@ void TCPSrvHostApp::removeThread(TCPServerThreadBase *thread)
 {
     // remove socket
     socketMap.removeSocket(thread->getSocket());
+    threadSet.erase(thread);
 
     // remove thread object
     delete thread;
 
-    updateDisplay();
+    if (hasGUI())
+        updateDisplay();
 }
 
 } // namespace inet
