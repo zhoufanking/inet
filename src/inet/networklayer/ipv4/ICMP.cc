@@ -36,6 +36,8 @@ namespace inet {
 Define_Module(ICMP);
 
 namespace {
+
+//TODO add other constants, verify
 IcmpErrorControlInfoErrorCodes icmpToErrorCode(int type, int code)
 {
     switch (type) {
@@ -45,7 +47,7 @@ IcmpErrorControlInfoErrorCodes icmpToErrorCode(int type, int code)
                 case ICMP_DU_HOST_UNREACHABLE: return ICMPERROR_HOST_UNREACHABLE;
                 case ICMP_DU_PROTOCOL_UNREACHABLE: return ICMPERROR_PROTOCOL_UNREACHABLE;
                 case ICMP_DU_PORT_UNREACHABLE: return ICMPERROR_PORT_UNREACHABLE;
-                case ICMP_DU_FRAGMENTATION_NEEDED: return ICMPERROR_DEST_UNREACHABLE;
+                case ICMP_DU_FRAGMENTATION_NEEDED: return ICMPERROR_FRAGMENTATION_NEEDED;
                 case ICMP_DU_SOURCE_ROUTE_FAILED: return ICMPERROR_DEST_UNREACHABLE;
                 case ICMP_DU_DESTINATION_NETWORK_UNKNOWN: return ICMPERROR_DEST_UNREACHABLE;
                 case ICMP_DU_DESTINATION_HOST_UNKNOWN: return ICMPERROR_DEST_UNREACHABLE;
@@ -58,12 +60,14 @@ IcmpErrorControlInfoErrorCodes icmpToErrorCode(int type, int code)
                 case ICMP_DU_HOST_PRECEDENCE_VIOLATION: return ICMPERROR_DEST_UNREACHABLE;
                 case ICMP_DU_PRECEDENCE_CUTOFF_IN_EFFECT: return ICMPERROR_DEST_UNREACHABLE;
                 case ICMP_AODV_QUEUE_FULL: return ICMPERROR_DEST_UNREACHABLE;
-                default: throw cRuntimeError("Unknown icmp destination unreachable code: %d", code);
+                default: throw cRuntimeError("Unknown ICMP destination unreachable code: %d", code);
             }
-        default: throw cRuntimeError("Unknown icmp type: %d", type);
+        case ICMP_TIME_EXCEEDED: return ICMPERROR_TIME_EXCEEDED;
+        default: throw cRuntimeError("Unknown ICMP type: %d", type);
     }
 }
 
+//TODO add other constants, verify
 void convertErrorCodeToTypeAndCode(int errorCode, ICMPType& type, ICMPCode& code)
 {
     switch (errorCode) {
@@ -71,6 +75,8 @@ void convertErrorCodeToTypeAndCode(int errorCode, ICMPType& type, ICMPCode& code
         case ICMPERROR_HOST_UNREACHABLE: type = ICMP_DESTINATION_UNREACHABLE; code = ICMP_DU_HOST_UNREACHABLE; break;
         case ICMPERROR_PROTOCOL_UNREACHABLE: type = ICMP_DESTINATION_UNREACHABLE; code = ICMP_DU_PROTOCOL_UNREACHABLE; break;
         case ICMPERROR_PORT_UNREACHABLE: type = ICMP_DESTINATION_UNREACHABLE; code = ICMP_DU_PORT_UNREACHABLE; break;
+        case ICMPERROR_FRAGMENTATION_NEEDED: type = ICMP_DESTINATION_UNREACHABLE; code = ICMP_DU_FRAGMENTATION_NEEDED; break;
+        case ICMPERROR_TIME_EXCEEDED: type = ICMP_TIME_EXCEEDED; code = 0; break;
         default: throw cRuntimeError("Unknown IcmpErrorControlInfoErrorCodes value: %d", errorCode); break;
     }
 }
