@@ -611,12 +611,27 @@ void IPv6::localDeliver(IPv6Datagram *datagram, const InterfaceEntry *fromIE)
     // decapsulate and send on appropriate output gate
     int protocol = datagram->getTransportProtocol();
     cPacket *packet = decapsulate(datagram, fromIE);
+    auto lowerBound = protocolIdToSocketDescriptors.lower_bound(protocol);
+    auto upperBound = protocolIdToSocketDescriptors.upper_bound(protocol);
+    bool hasSocket = lowerBound != upperBound;
 
+    if (hasSocket) {
+        IPv6ControlInfo *controlInfo = check_and_cast<IPv6ControlInfo *>(packet->getControlInfo());
+        // deliver to sockets
+        for (auto it = lowerBound; it != upperBound; it++) {
+            IPv6ControlInfo *controlInfoCopy = controlInfo->dup();
+            controlInfoCopy->setSocketId(it->second->socketId);
+            cPacket *packetCopy = packet->dup();
+            packetCopy->setControlInfo(controlInfoCopy);
+            send(packetCopy, "transportOut");
+        }
+    }
 
     if (protocol == IP_PROT_IPv6_ICMP && dynamic_cast<IPv6NDMessage *>(packet)) {
         EV_INFO << "Neigbour Discovery packet: passing it to ND module\n";
         send(packet, "ndOut");
         packet = nullptr;
+        // other ICMP packets send up on the transportOut gate
     }
 #ifdef WITH_xMIPv6
     else if (protocol == IP_PROT_IPv6EXT_MOB && dynamic_cast<MobilityHeader *>(packet)) {
@@ -639,10 +654,6 @@ void IPv6::localDeliver(IPv6Datagram *datagram, const InterfaceEntry *fromIE)
         }
     }
 #endif /* WITH_xMIPv6 */
-    else if (protocol == IP_PROT_IPv6_ICMP) {
-        handleReceivedICMP(check_and_cast<ICMPv6Message *>(packet));
-        packet = nullptr;
-    }    //Added by WEI to forward ICMPv6 msgs to ICMPv6 module.
     else if (protocol == IP_PROT_IP || protocol == IP_PROT_IPv6) {
         EV_INFO << "Tunnelled IP datagram\n";
         send(packet, "upperTunnelingOut");
@@ -658,10 +669,17 @@ void IPv6::localDeliver(IPv6Datagram *datagram, const InterfaceEntry *fromIE)
                 //TODO: Indication of forward progress
                 send(packet, outGate);
                 packet = nullptr;
-                return;
             }
         }
+    }
 
+    if (hasSocket && packet != nullptr) {
+        //copy of packet already delivered to socket, should delete it
+        delete packet;
+        packet = nullptr;
+    }
+
+    if (packet) {
         // TODO send ICMP Destination Unreacheable error
         EV_INFO << "Transport layer gate not connected - dropping packet!\n";
         IPv6ControlInfo *ctrlInfo = check_and_cast<IPv6ControlInfo *>(packet->removeControlInfo());
@@ -673,24 +691,8 @@ void IPv6::localDeliver(IPv6Datagram *datagram, const InterfaceEntry *fromIE)
 
 void IPv6::handleReceivedICMP(ICMPv6Message *msg)
 {
-    int type = msg->getType();
-    if (type < 128) {
-        // ICMP errors are delivered to the appropriate higher layer protocols
-        EV_INFO << "ICMPv6 packet: passing it to higher layer\n";
-        IPv6Datagram *bogusPacket = check_and_cast<IPv6Datagram *>(msg->getEncapsulatedPacket());
-        int protocol = bogusPacket->getTransportProtocol();
-        int gateindex = mapping.getOutputGateForProtocol(protocol);
-        send(msg, "transportOut");
-    }
-    else {
-        // all others are delivered to ICMP:
-        // ICMPv6_ECHO_REQUEST, ICMPv6_ECHO_REPLY, ICMPv6_MLD_QUERY, ICMPv6_MLD_REPORT,
-        // ICMPv6_MLD_DONE, ICMPv6_ROUTER_SOL, ICMPv6_ROUTER_AD, ICMPv6_NEIGHBOUR_SOL,
-        // ICMPv6_NEIGHBOUR_AD, ICMPv6_MLDv2_REPORT
-        EV_INFO << "ICMPv6 packet: passing it to ICMPv6 module\n";
-        int gateindex = mapping.getOutputGateForProtocol(IP_PROT_IPv6_ICMP);
-        send(msg, "transportOut");
-    }
+    EV_INFO << "ICMPv6 packet: passing it to ICMPv6 module\n";
+    send(msg, "transportOut");
 }
 
 cPacket *IPv6::decapsulate(IPv6Datagram *datagram, const InterfaceEntry *fromIE)
@@ -732,7 +734,6 @@ IPv6Datagram *IPv6::encapsulate(cPacket *transportPacket, IPv6ControlInfo *contr
         // if interface parameter does not match existing interface, do not send datagram
         if (rt->getInterfaceByAddress(src) == nullptr) {
             delete datagram;
-            delete controlInfo;
 #ifndef WITH_xMIPv6
             throw cRuntimeError("Wrong source address %s in (%s)%s: no interface with such address",
                     src.str().c_str(), transportPacket->getClassName(), transportPacket->getFullName());

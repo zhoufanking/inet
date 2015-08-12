@@ -35,7 +35,6 @@ simple ICMPv6
         output transportOut;
         input ipv6In;
         output ipv6Out;
-        output errorOut;  // for errors
 }
 
 
