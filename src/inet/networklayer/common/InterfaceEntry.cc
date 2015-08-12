@@ -87,10 +87,6 @@ std::string InterfaceEntry::info() const
 {
     std::stringstream out;
     out << (getName()[0] ? getName() : "*");
-    if (getNetworkLayerGateIndex() == -1)
-        out << "  on:-";
-    else
-        out << "  on:nwLayer.ifOut[" << getNetworkLayerGateIndex() << "]";
     out << " ID:" << getInterfaceId();
     out << "  MTU:" << getMTU();
     if (!isUp())
@@ -134,10 +130,6 @@ std::string InterfaceEntry::detailedInfo() const
 {
     std::stringstream out;
     out << "name:" << (getName()[0] ? getName() : "*");
-    if (getNetworkLayerGateIndex() == -1)
-        out << "  on:-";
-    else
-        out << "  on:nwLayer.ifOut[" << getNetworkLayerGateIndex() << "]";
     out << " ID:" << getInterfaceId();
     out << "MTU: " << getMTU() << " \t";
     if (!isUp())
