@@ -21,8 +21,9 @@
 
 #include "inet/common/INETDefs.h"
 
-#include "inet/networklayer/icmpv6/ICMPv6Message_m.h"
+#include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/common/lifecycle/ILifecycle.h"
+#include "inet/networklayer/icmpv6/ICMPv6Message_m.h"
 
 namespace inet {
 
@@ -35,7 +36,7 @@ class PingPayload;
 /**
  * ICMPv6 implementation.
  */
-class INET_API ICMPv6 : public cSimpleModule, public ILifecycle
+class INET_API ICMPv6 : public cSimpleModule, public ILifecycle, public IProtocolRegistrationListener
 {
   public:
     /**
@@ -84,6 +85,9 @@ class INET_API ICMPv6 : public cSimpleModule, public ILifecycle
      *  could be for ICMP ping requests or ICMPv6 messages that require processing.
      */
     virtual void handleMessage(cMessage *msg) override;
+    virtual void processUpperMessage(cMessage *msg);
+    virtual void processICMPv6ErrorMessage(ICMPv6Message *);
+    virtual void processICMPv6InfoMessage(ICMPv6Message *);
     virtual void processICMPv6Message(ICMPv6Message *);
 
     virtual bool handleOperationStage(LifecycleOperation *operation, int stage, IDoneCallback *doneCallback) override;
@@ -94,26 +98,15 @@ class INET_API ICMPv6 : public cSimpleModule, public ILifecycle
     virtual void processEchoRequest(ICMPv6EchoRequestMsg *);
 
     /**
-     *  Forward the ping reply to the "pingOut" of this module.
-     */
-    virtual void processEchoReply(ICMPv6EchoReplyMsg *);
-
-    /**
-     *  Ping a machine. The information needed to do this is in the cMessage
-     *  parameter.  TODO where in cMessage? document!!!
-     */
-    virtual void sendEchoRequest(PingPayload *);
-
-    /**
      * Validate the received IPv6 datagram before responding with error message.
      */
     virtual bool validateDatagramPromptingError(IPv6Datagram *datagram);
 
-    virtual void errorOut(ICMPv6Message *);
+    /// implements IProtocolRegistrationListener interface
+    virtual void handleRegisterProtocol(const Protocol& protocol, cGate *gate) override;
 
   protected:
-    typedef std::map<long, int> PingMap;
-    PingMap pingMap;
+    std::set<int> transportProtocols;    // where to send up packets
 };
 
 } // namespace inet

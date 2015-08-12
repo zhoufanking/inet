@@ -104,7 +104,7 @@ enum ICMPv6_PARAMETER_PROB
 packet ICMPv6Message
 {
     int type @enum(ICMPv6Type);
-        //int code; //TODO: this should be specific to different ICMP types.
+    int code;
 }
 
 //
@@ -113,23 +113,23 @@ packet ICMPv6Message
 //
 packet ICMPv6DestUnreachableMsg extends ICMPv6Message
 {
-    int code @enum(ICMPv6DEST_UN);
+    // code @enum(ICMPv6DEST_UN);
 }
 
 packet ICMPv6PacketTooBigMsg extends ICMPv6Message
 {
-    int code; //Set to 0 by sender and ignored by receiver.
+    code = 0; //Set to 0 by sender and ignored by receiver.
     int MTU; //MTU of next-hop link
 }
 
 packet ICMPv6TimeExceededMsg extends ICMPv6Message
 {
-    int code @enum(ICMPv6_TIME_EX);
+    // code @enum(ICMPv6_TIME_EX);
 }
 
 packet ICMPv6ParamProblemMsg extends ICMPv6Message
 {
-    int code @enum(ICMPv6_PARAMETER_PROB);
+    // code @enum(ICMPv6_PARAMETER_PROB);
 }
 
 //
@@ -138,10 +138,10 @@ packet ICMPv6ParamProblemMsg extends ICMPv6Message
 //
 packet ICMPv6EchoRequestMsg extends ICMPv6Message
 {
-    int code; //set to 0.
+    code = 0;
     int identifier; // identifier to aid in matching Echo replies. May be Zero
     int seqNumber; // sequence number to aid in matching Echo replies. May be Zero
-        //Data is attached through encapsulation. See ICMPv6.cc
+    //Data is attached through encapsulation. See ICMPv6.cc
 }
 
 //
@@ -149,7 +149,8 @@ packet ICMPv6EchoRequestMsg extends ICMPv6Message
 //
 packet ICMPv6EchoReplyMsg extends ICMPv6Message
 {
-    int code; //set to 0.
+    code = 0;
     int identifier; // identifier to aid in matching Echo replies. May be Zero
     int seqNumber; // sequence number to aid in matching Echo replies. May be Zero
+    //Data is attached through encapsulation. See ICMPv6.cc
 }

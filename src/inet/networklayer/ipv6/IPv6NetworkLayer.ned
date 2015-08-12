@@ -75,10 +75,6 @@ module IPv6NetworkLayer like INetworkLayer
             parameters:
                 @display("p=500,100");
         }
-        ipv6ErrorHandling: IPv6ErrorHandling {
-            parameters:
-                @display("p=619,100");
-        }
         neighbourDiscovery: IPv6NeighbourDiscovery {
             parameters:
                 @display("p=500,300");
@@ -110,9 +106,6 @@ module IPv6NetworkLayer like INetworkLayer
 
         dp.lowerLayerOut++ --> ipv6.transportIn;
         dp.lowerLayerIn++ <-- ipv6.transportOut;
-
-        // ICMPv6 to IPv6ErrorHandling
-        icmpv6.errorOut --> ipv6ErrorHandling.in;
 
         // IPv6 to Neighbour Discovery
         ipv6.ndOut --> neighbourDiscovery.ipv6In;

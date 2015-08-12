@@ -16,26 +16,63 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/common/INETDefs.h"
 
-#include "inet/networklayer/icmpv6/ICMPv6.h"
-#include "inet/networklayer/ipv6/IPv6InterfaceData.h"
-
-#include "inet/networklayer/icmpv6/ICMPv6Message_m.h"
-#include "inet/networklayer/contract/ipv6/IPv6ControlInfo.h"
-#include "inet/networklayer/ipv6/IPv6Datagram.h"
-
-#include "inet/networklayer/contract/IInterfaceTable.h"
-
+#include "inet/applications/pingapp/PingPayload_m.h"
+#include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/lifecycle/NodeStatus.h"
-
-#include "inet/applications/pingapp/PingPayload_m.h"
+#include "inet/networklayer/contract/IcmpErrorControlInfo.h"
+#include "inet/networklayer/contract/IInterfaceTable.h"
+#include "inet/networklayer/contract/ipv6/IPv6ControlInfo.h"
+#include "inet/networklayer/icmpv6/ICMPv6.h"
+#include "inet/networklayer/icmpv6/ICMPv6Message_m.h"
+#include "inet/networklayer/ipv6/IPv6Datagram.h"
+#include "inet/networklayer/ipv6/IPv6InterfaceData.h"
 
 namespace inet {
 
 Define_Module(ICMPv6);
+
+namespace {
+
+//TODO add other constants, verify
+IcmpErrorControlInfoErrorCodes icmpv6ToErrorCode(ICMPv6Type type, int code)
+{
+    switch (type) {
+        case ICMPv6_DESTINATION_UNREACHABLE:
+            switch (code) {
+                case NO_ROUTE_TO_DEST: return ICMPERROR_DEST_UNREACHABLE;
+                case ADDRESS_UNREACHABLE: return ICMPERROR_HOST_UNREACHABLE;
+                case COMM_WITH_DEST_PROHIBITED: return ICMPERROR_PROTOCOL_UNREACHABLE;
+                case PORT_UNREACHABLE: return ICMPERROR_PORT_UNREACHABLE;
+                default: break;
+            }
+            throw cRuntimeError("Unknown ICMPv6 destination unreachable code: %d", code);
+        case ICMPv6_PACKET_TOO_BIG: return ICMPERROR_FRAGMENTATION_NEEDED;
+        case ICMPv6_PARAMETER_PROBLEM: return ICMPERROR_PARAMETER_PROBLEM;
+        case ICMPv6_TIME_EXCEEDED: return ICMPERROR_TIME_EXCEEDED;
+        default: break;
+    }
+    throw cRuntimeError("Unknown ICMPv6 type: %d, code: %d", type, code);
+}
+
+//TODO add other constants, verify
+void convertErrorCodeToIcmpv6TypeAndCode(int errorCode, ICMPv6Type& type, int& code)
+{
+    switch (errorCode) {
+        case ICMPERROR_DEST_UNREACHABLE: type = ICMPv6_DESTINATION_UNREACHABLE; code = NO_ROUTE_TO_DEST; break;
+        case ICMPERROR_HOST_UNREACHABLE: type = ICMPv6_DESTINATION_UNREACHABLE; code = ADDRESS_UNREACHABLE; break;
+        case ICMPERROR_PROTOCOL_UNREACHABLE: type = ICMPv6_DESTINATION_UNREACHABLE; code = COMM_WITH_DEST_PROHIBITED; break;
+        case ICMPERROR_PORT_UNREACHABLE: type = ICMPv6_DESTINATION_UNREACHABLE; code = PORT_UNREACHABLE; break;
+        case ICMPERROR_FRAGMENTATION_NEEDED: type = ICMPv6_PACKET_TOO_BIG; code = 0; break;
+        case ICMPERROR_PARAMETER_PROBLEM: type = ICMPv6_PARAMETER_PROBLEM; code = 0; break;
+        case ICMPERROR_TIME_EXCEEDED: type = ICMPv6_TIME_EXCEEDED; code = 0; break;
+        default: throw cRuntimeError("Unknown IcmpErrorControlInfoErrorCodes value: %d", errorCode); break;
+    }
+}
+
+} // namespace
 
 void ICMPv6::initialize(int stage)
 {
@@ -57,49 +94,87 @@ void ICMPv6::handleMessage(cMessage *msg)
 {
     ASSERT(!msg->isSelfMessage());    // no timers in ICMPv6
 
+    cGate *arrivalGate = msg->getArrivalGate();
+
     // process arriving ICMP message
-    if (msg->getArrivalGate()->isName("ipv6In")) {
+    if (arrivalGate->isName("ipv6In")) {
         EV_INFO << "Processing ICMPv6 message.\n";
         processICMPv6Message(check_and_cast<ICMPv6Message *>(msg));
         return;
     }
-
     // request from application
-    if (msg->getArrivalGate()->isName("pingIn")) {
-        sendEchoRequest(check_and_cast<PingPayload *>(msg));
+    else if (arrivalGate->isName("transportIn")) {
+        processUpperMessage(msg);
         return;
     }
+    else
+        throw cRuntimeError("unknown gate: '%s'", arrivalGate->getName());
+}
+
+void ICMPv6::processUpperMessage(cMessage *msg)
+{
+    IcmpErrorControlInfo *icmpCtrl = check_and_cast<IcmpErrorControlInfo *>(msg->removeControlInfo());
+    IPv6ControlInfo *ctrl = check_and_cast<IPv6ControlInfo *>(icmpCtrl->getNetworkProtocolControlInfo());
+    icmpCtrl->setNetworkProtocolControlInfo(nullptr);
+    ICMPv6Type type;
+    int code;
+    convertErrorCodeToIcmpv6TypeAndCode(icmpCtrl->getErrorCode(), type, code);
+    sendErrorMessage(PK(msg), ctrl, type, code);
+    delete icmpCtrl;
+}
+
+void ICMPv6::processICMPv6ErrorMessage(ICMPv6Message *icmpv6msg)
+{
+    // ICMPv6 errors are delivered to the appropriate higher layer protocol
+    IPv6Datagram *bogusL3Packet = check_and_cast<IPv6Datagram *>(icmpv6msg->getEncapsulatedPacket());
+    cPacket *bogusTransportPacket = bogusL3Packet->decapsulate();
+    if (bogusTransportPacket) {
+        int transportProtocol = bogusL3Packet->getTransportProtocol();
+        if (transportProtocol == IP_PROT_IPv6_ICMP) {
+            EV_DETAIL << "ICMPv6 error response for ICMPv6 packet, packet dropped\n";
+            delete bogusTransportPacket;
+        }
+        else if (transportProtocols.find(transportProtocol) == transportProtocols.end()) {
+            EV_WARN << "Transport protocol " << transportProtocol << " not registered, packet dropped\n";
+            delete bogusTransportPacket;
+        }
+        else {
+            IcmpErrorControlInfo *ctrl = new IcmpErrorControlInfo();
+            ctrl->setTransportProtocol(bogusL3Packet->getTransportProtocol());
+            ctrl->setSourceAddress(bogusL3Packet->getSourceAddress());
+            ctrl->setDestinationAddress(bogusL3Packet->getDestinationAddress());
+            ctrl->setErrorCode(icmpv6ToErrorCode((ICMPv6Type)icmpv6msg->getType(), icmpv6msg->getCode()));
+            bogusTransportPacket->setControlInfo(ctrl);
+            bogusTransportPacket->setName(icmpv6msg->getName());
+            send(bogusTransportPacket, "transportOut");
+        }
+    }
+    delete icmpv6msg;
+}
+
+void ICMPv6::processICMPv6InfoMessage(ICMPv6Message *icmpv6msg)
+{
+    switch (icmpv6msg->getType()) {
+        case ICMPv6_ECHO_REQUEST:
+            EV_INFO << "ICMPv6 Echo Request Message Received." << endl;
+            processEchoRequest(check_and_cast<ICMPv6EchoRequestMsg *>(icmpv6msg));
+            break;
+        case ICMPv6_ECHO_REPLY:
+            // Echo reply processed in PingApp
+            delete icmpv6msg;
+            break;
+
+        default:
+            throw cRuntimeError("Unknown ICMPv6 type %d in %s(%s)", icmpv6msg->getType(), icmpv6msg->getName(), icmpv6msg->getClassName());
+   }
 }
 
 void ICMPv6::processICMPv6Message(ICMPv6Message *icmpv6msg)
 {
-    ASSERT(dynamic_cast<ICMPv6Message *>(icmpv6msg));
-    if (dynamic_cast<ICMPv6DestUnreachableMsg *>(icmpv6msg)) {
-        EV_INFO << "ICMPv6 Destination Unreachable Message Received." << endl;
-        errorOut(icmpv6msg);
-    }
-    else if (dynamic_cast<ICMPv6PacketTooBigMsg *>(icmpv6msg)) {
-        EV_INFO << "ICMPv6 Packet Too Big Message Received." << endl;
-        errorOut(icmpv6msg);
-    }
-    else if (dynamic_cast<ICMPv6TimeExceededMsg *>(icmpv6msg)) {
-        EV_INFO << "ICMPv6 Time Exceeded Message Received." << endl;
-        errorOut(icmpv6msg);
-    }
-    else if (dynamic_cast<ICMPv6ParamProblemMsg *>(icmpv6msg)) {
-        EV_INFO << "ICMPv6 Parameter Problem Message Received." << endl;
-        errorOut(icmpv6msg);
-    }
-    else if (dynamic_cast<ICMPv6EchoRequestMsg *>(icmpv6msg)) {
-        EV_INFO << "ICMPv6 Echo Request Message Received." << endl;
-        processEchoRequest((ICMPv6EchoRequestMsg *)icmpv6msg);
-    }
-    else if (dynamic_cast<ICMPv6EchoReplyMsg *>(icmpv6msg)) {
-        EV_INFO << "ICMPv6 Echo Reply Message Received." << endl;
-        processEchoReply((ICMPv6EchoReplyMsg *)icmpv6msg);
-    }
+    if (icmpv6msg->getType() <= 127 )
+        processICMPv6ErrorMessage(icmpv6msg);
     else
-        throw cRuntimeError("Unknown message type received: (%s)%s.\n", icmpv6msg->getClassName(),icmpv6msg->getName());
+        processICMPv6InfoMessage(icmpv6msg);
 }
 
 /*
@@ -151,37 +226,6 @@ void ICMPv6::processEchoRequest(ICMPv6EchoRequestMsg *request)
 
     delete request;
     sendToIP(reply);
-}
-
-void ICMPv6::processEchoReply(ICMPv6EchoReplyMsg *reply)
-{
-    IPv6ControlInfo *ctrl = check_and_cast<IPv6ControlInfo *>(reply->removeControlInfo());
-    PingPayload *payload = check_and_cast<PingPayload *>(reply->decapsulate());
-    payload->setControlInfo(ctrl);
-    delete reply;
-    long originatorId = payload->getOriginatorId();
-    auto i = pingMap.find(originatorId);
-    if (i != pingMap.end())
-        send(payload, "pingOut", i->second);
-    else {
-        EV_WARN << "Received ECHO REPLY has an unknown originator ID: " << originatorId << ", packet dropped." << endl;
-        delete payload;
-    }
-}
-
-void ICMPv6::sendEchoRequest(PingPayload *msg)
-{
-    cGate *arrivalGate = msg->getArrivalGate();
-    int i = arrivalGate->getIndex();
-    pingMap[msg->getOriginatorId()] = i;
-
-    IPv6ControlInfo *ctrl = check_and_cast<IPv6ControlInfo *>(msg->removeControlInfo());
-    ctrl->setProtocol(IP_PROT_IPv6_ICMP);
-    ICMPv6EchoRequestMsg *request = new ICMPv6EchoRequestMsg(msg->getName());
-    request->setType(ICMPv6_ECHO_REQUEST);
-    request->encapsulate(msg);
-    request->setControlInfo(ctrl);
-    sendToIP(request);
 }
 
 void ICMPv6::sendErrorMessage(IPv6Datagram *origDatagram, ICMPv6Type type, int code)
@@ -323,15 +367,18 @@ bool ICMPv6::validateDatagramPromptingError(IPv6Datagram *origDatagram)
     return true;
 }
 
-void ICMPv6::errorOut(ICMPv6Message *icmpv6msg)
-{
-    send(icmpv6msg, "errorOut");
-}
-
 bool ICMPv6::handleOperationStage(LifecycleOperation *operation, int stage, IDoneCallback *doneCallback)
 {
     //pingMap.clear();
     throw cRuntimeError("Lifecycle operation support not implemented");
+}
+
+void ICMPv6::handleRegisterProtocol(const Protocol& protocol, cGate *gate)
+{
+    Enter_Method("handleRegisterProtocol");
+    if (!strcmp("transportIn", gate->getBaseName())) {
+        transportProtocols.insert(ProtocolGroup::ipprotocol.getProtocolNumber(&protocol));
+    }
 }
 
 } // namespace inet

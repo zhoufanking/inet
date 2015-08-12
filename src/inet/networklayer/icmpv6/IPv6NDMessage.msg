@@ -92,7 +92,7 @@ class MIPv6HAInformation
 packet IPv6NDMessage extends ICMPv6Message
 {
     //customize=true;
-    int code = 0;
+    code = 0;
 }
 
 //
