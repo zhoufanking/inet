@@ -16,14 +16,15 @@
 //
 
 
-package inet.linklayer.ieee80211;
+package inet_old.linklayer.ieee80211;
 
-import inet.base.IHook;
-import inet.linklayer.ieee80211.radio.Ieee80211Radio;
-import inet.linklayer.ieee80211.mgmt.Ieee80211AgentSTA;
-import inet.linklayer.ieee80211.mgmt.IIeee80211Mgmt;
-import inet.linklayer.ieee80211.mac.Ieee80211Mac;
-import inet.linklayer.IWirelessNic;
+import inet.common.IHook;
+import inet_old.linklayer.IWirelessNic;
+import inet_old.linklayer.ieee80211.mac.Ieee80211Mac;
+import inet_old.linklayer.ieee80211.mgmt.IIeee80211Mgmt;
+import inet_old.linklayer.ieee80211.mgmt.Ieee80211AgentSTA;
+import inet_old.linklayer.ieee80211.radio.Ieee80211Radio;
+
 
 //
 // This NIC implements an 802.11 network interface card.
@@ -50,7 +51,6 @@ module Ieee80211Nic like IWirelessNic
     submodules:
         outputHook[numOutputHooks]: <default("Nop")> like IHook if numOutputHooks>0;
         inputHook[numInputHooks]: <default("Nop")> like IHook if numInputHooks>0;
-        
         // optional agent module (can be either 0 or 1 sized vector)
         agent: Ieee80211AgentSTA if _agentNeeded {
             parameters:

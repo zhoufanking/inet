@@ -17,9 +17,9 @@
 //
 
 
-package inet.linklayer.ieee80211.radio;
+package inet_old.linklayer.ieee80211.radio;
 
-import inet.linklayer.radio.Radio;
+import inet_old.linklayer.radio.Radio;
 
 
 //
@@ -37,6 +37,7 @@ simple Ieee80211Radio extends Radio
 {
     parameters:
         @display("i=block/wrxtx");
-        radioModel = "Ieee80211RadioModel";  // specify the radio model responsible for modulation, error correction and frame length calculation
+        radioModel = "inet::Ieee80211RadioModel";  // specify the radio model responsible for modulation, error correction and frame length calculation
         double snirThreshold @unit("dB") = default(4dB); // if signal-noise ratio is below this threshold, frame is considered noise (in dB)
+        string NotificationBoardModule = default("^.^.notificationBoard");	//FIXME remove it and use signals
 }

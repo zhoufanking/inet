@@ -18,7 +18,7 @@
 // **************************************************************************/
 
 
-package inet.world;
+package inet_old.world;
 
 //
 // ~ChannelControl has exactly one instance in every network model that
@@ -50,7 +50,7 @@ simple ChannelControl
         double alpha = default(2); // path loss coefficient
         double carrierFrequency @unit("Hz") = default(2.4GHz); // carrier frequency of the channel (in Hz)
         int numChannels = default(1); // number of radio channels (frequencies)
-        string propagationModel = default("FreeSpaceModel") @enum("FreeSpaceModel","TwoRayGroundModel","RiceModel","RayleighModel","NakagamiModel","LogNormalShadowingModel");
+        string propagationModel  = "inet::FreeSpaceModel";
         @display("i=misc/sun");
         @labels(node);
 }

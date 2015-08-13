@@ -16,7 +16,7 @@
 //
 
 
-package inet.linklayer.ieee80211.mac;
+package inet_old.linklayer.ieee80211.mac;
 
 //
 // Implementation of the 802.11b MAC protocol. This module is intended
@@ -66,6 +66,8 @@ simple Ieee80211Mac
         int cwMinData = default(-1); // contention window for normal data frames, -1 means default
         int cwMinBroadcast = default(-1); // contention window for broadcast messages, -1 means default
         int mtu = default(1500);
+        string NotificationBoardModule = default("^.^.notificationBoard");	//FIXME remove it and use signals
+        string interfaceTableModule = default(""); //default("^.^.interfaceTable");	//FIXME remove the default value
         @display("i=block/layer");
         @statistic[state](title="State"; record=vector; interpolationmode=sample-hold); // ENUM!!
         @statistic[radioState](title="Radio state"; record=vector; interpolationmode=sample-hold); // ENUM!!

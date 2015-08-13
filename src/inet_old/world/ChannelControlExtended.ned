@@ -18,7 +18,7 @@
 // * part of:     framework implementation developed by tkn
 // **************************************************************************/
 
-package inet.world;
+package inet_old.world;
 
 //
 // ChannelControlExtended has exactly one instance in every network model that
@@ -40,7 +40,7 @@ simple ChannelControlExtended
         double carrierFrequency @unit("Hz") = default(2.4GHz); // carrier frequency of the channel (in Hz)
         double percentage = default(0.1);
         int numChannels = default(1); // number of radio channels (frequencies)
-        string propagationModel = default("FreeSpaceModel") @enum("FreeSpaceModel","TwoRayGroundModel","RiceModel","RayleighModel","NakagamiModel","LogNormalShadowingModel");
+        string propagationModel = "inet::FreeSpaceModel";
         @display("i=misc/cloud");
         @labels(node);
 }

@@ -16,7 +16,7 @@
 //
 
 
-package inet.linklayer.ieee80211.mgmt;
+package inet_old.linklayer.ieee80211.mgmt;
 
 //
 // 802.11 management module used for ad-hoc mode.
