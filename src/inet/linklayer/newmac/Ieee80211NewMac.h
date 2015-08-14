@@ -91,12 +91,6 @@ class INET_API Ieee80211NewMac : public WirelessMacBase, public INotifiable
     int maxQueueSize;
 
     /**
-     * The minimum length of MPDU to use RTS/CTS mechanism. 0 means always, extremely
-     * large value means never. See spec 9.2.6 and 361.
-     */
-    int rtsThreshold;
-
-    /**
      * Maximum number of transmissions for a message.
      * This includes the initial transmission and all subsequent retransmissions.
      * Thus a value 0 is invalid and a value 1 means no retransmissions.
@@ -310,8 +304,6 @@ class INET_API Ieee80211NewMac : public WirelessMacBase, public INotifiable
     virtual void scheduleBroadcastTimeoutPeriod(Ieee80211DataOrMgmtFrame *frame);
     virtual void cancelTimeoutPeriod();
 
-    virtual void scheduleCTSTimeoutPeriod();
-
     /** @brief Schedule network allocation period according to 9.2.5.4. */
     virtual void scheduleReservePeriod(Ieee80211Frame *frame);
 
@@ -331,9 +323,6 @@ class INET_API Ieee80211NewMac : public WirelessMacBase, public INotifiable
     //@{
     virtual void sendACKFrameOnEndSIFS();
     virtual void sendACKFrame(Ieee80211DataOrMgmtFrame *frame);
-    virtual void sendRTSFrame(Ieee80211DataOrMgmtFrame *frameToSend);
-    virtual void sendCTSFrameOnEndSIFS();
-    virtual void sendCTSFrame(Ieee80211RTSFrame *rtsFrame);
     virtual void sendDataFrameOnEndSIFS(Ieee80211DataOrMgmtFrame *frameToSend);
     virtual void sendDataFrame(Ieee80211DataOrMgmtFrame *frameToSend);
     virtual void sendBroadcastFrame(Ieee80211DataOrMgmtFrame *frameToSend);
@@ -346,8 +335,6 @@ class INET_API Ieee80211NewMac : public WirelessMacBase, public INotifiable
     //@{
     virtual Ieee80211DataOrMgmtFrame *buildDataFrame(Ieee80211DataOrMgmtFrame *frameToSend);
     virtual Ieee80211ACKFrame *buildACKFrame(Ieee80211DataOrMgmtFrame *frameToACK);
-    virtual Ieee80211RTSFrame *buildRTSFrame(Ieee80211DataOrMgmtFrame *frameToSend);
-    virtual Ieee80211CTSFrame *buildCTSFrame(Ieee80211RTSFrame *rtsFrame);
     virtual Ieee80211DataOrMgmtFrame *buildBroadcastFrame(Ieee80211DataOrMgmtFrame *frameToSend);
     //@}
 
