@@ -18,6 +18,8 @@
 package inet.node.ipv6;
 
 import inet.node.inet.NodeBase;
+import inet.transportlayer.contract.ITCP;
+import inet.transportlayer.contract.IUDP;
 
 
 //
@@ -28,11 +30,31 @@ import inet.node.inet.NodeBase;
 module Router6 extends NodeBase
 {
     parameters:
+        string tcpType = default(firstAvailableOrEmpty("TCP", "TCP_lwIP", "TCP_NSC"));  // tcp implementation (e.g. ~TCP, ~TCP_lwIP, ~TCP_NSC) or ~TCPSpoof
+        string udpType = default("UDP");
         @display("i=abstract/router");
         forwarding = true;
         xml routes = default(xml("<routingTable/>"));
         networkLayerType = "IPv6NetworkLayer";
         routingTableType = "IPv6RoutingTable";
         routingTable.routes = routes;
+
+    submodules:
+        tcp: <tcpType> like ITCP if tcpType != "" {
+            parameters:
+                @display("p=214,180;i=block/transport");
+        }
+        udp: <udpType> like IUDP {
+            @display("p=404,180");
+        }
+
+    connections allowunconnected:
+        if tcpType != "" {
+            tcp.ipOut --> networkLayer.transportIn++;
+            tcp.ipIn <-- networkLayer.transportOut++;
+        }
+
+        udp.ipOut --> networkLayer.transportIn++;
+        udp.ipIn <-- networkLayer.transportOut++;
 }
 

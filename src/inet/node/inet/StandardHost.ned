@@ -62,6 +62,17 @@ module StandardHost extends NodeBase
         forwarding = default(false);  // disable routing by default
         networkLayer.proxyARP = default(false);
     submodules:
+        tcp: <tcpType> like ITCP if hasTcp {
+            parameters:
+                @display("p=147,141");
+        }
+        udp: <udpType> like IUDP if hasUdp {
+            parameters:
+                @display("p=329,141");
+        }
+        sctp: <sctpType> like ISCTP if hasSctp {
+            @display("p=527,141");
+        }
         tunApp[numTunInterfaces]: <> like ITunApp {
             parameters:
                 @display("p=280,40");
@@ -70,24 +81,13 @@ module StandardHost extends NodeBase
             parameters:
                 @display("p=147,54,row,60");
         }
-        tcp: <tcpType> like ITCP if hasTcp {
-            parameters:
-                @display("p=147,141");
-        }
         udpApp[numUdpApps]: <> like IUDPApp {
             parameters:
                 @display("p=329,54,row,60");
         }
-        udp: <udpType> like IUDP if hasUdp {
-            parameters:
-                @display("p=329,141");
-        }
         sctpApp[numSctpApps]: <> like ISCTPApp {
             parameters:
                 @display("p=527,54,row,60");
-        }
-        sctp: <sctpType> like ISCTP if hasSctp {
-            @display("p=527,141");
         }
         pingApp[numPingApps]: <default("PingApp")> like IPingApp {
             parameters:

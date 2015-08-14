@@ -85,16 +85,6 @@ module NodeBase like INetworkNode
             parameters:
                 @display("p=53,200");
         }
-        // network layer
-        networkLayer: <networkLayerType> like INetworkLayer {
-            parameters:
-                @display("p=329,287;q=queue");
-        }
-        // routing table
-        routingTable: <routingTableType> like IRoutingTable if routingTableType != "" {
-            parameters:
-                @display("p=53,250;is=s");
-        }
         // linklayer
         interfaceTable: InterfaceTable {
             parameters:
@@ -106,17 +96,17 @@ module NodeBase like INetworkNode
         lo0: LoopbackInterface {
             @display("p=78,406");
         }
-        wlan[numRadios]: <default("Ieee80211Nic")> like IWirelessNic {
+        ppp[sizeof(pppg)]: <default("PPPInterface")> like IWiredNic {
             parameters:
-                @display("p=216,406,row,60;q=queue");
+                @display("p=558,406,row,60;q=txQueue");
         }
         eth[sizeof(ethg)]: <default("EthernetInterface")> like IWiredNic {
             parameters:
                 @display("p=368,406,row,60;q=txQueue");
         }
-        ppp[sizeof(pppg)]: <default("PPPInterface")> like IWiredNic {
+        wlan[numRadios]: <default("Ieee80211Nic")> like IWirelessNic {
             parameters:
-                @display("p=558,406,row,60;q=txQueue");
+                @display("p=216,406,row,60;q=queue");
         }
         ext[numExtInterfaces]: <default("ExtInterface")> like IExternalNic {
             parameters:
@@ -125,6 +115,16 @@ module NodeBase like INetworkNode
         tun[numTunInterfaces]: <default("TunInterface")> like ITunNic {
             parameters:
                 @display("p=213,406,row,10;q=txQueue;i=block/ifcard");
+        }
+        // network layer
+        networkLayer: <networkLayerType> like INetworkLayer {
+            parameters:
+                @display("p=329,287;q=queue");
+        }
+        // routing table
+        routingTable: <routingTableType> like IRoutingTable if routingTableType != "" {
+            parameters:
+                @display("p=53,250;is=s");
         }
 
     connections allowunconnected:
