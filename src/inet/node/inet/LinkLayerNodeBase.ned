@@ -49,13 +49,13 @@ module LinkLayerNodeBase extends NodeBase
         inout ethg[] @labels(EtherFrame-conn);
 
     submodules:
-        pcapRecorder: PcapRecorder if hasPcapRecorder {
-            parameters:
-                @display("p=100,450,r,10;is=s");
-        }
         interfaceTable: InterfaceTable {
             parameters:
                 @display("p=100,550;is=s");
+        }
+        pcapRecorder: PcapRecorder if hasPcapRecorder {
+            parameters:
+                @display("p=100,450,r,10;is=s");
         }
         lo[numLoInterfaces]: LoopbackInterface {
             parameters:
