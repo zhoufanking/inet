@@ -140,7 +140,11 @@ void DYMO::initialize(int stage)
         }
     }
     else if (stage == INITSTAGE_ROUTING_PROTOCOLS) {
-        registerProtocol(Protocol::manet, gate("ipOut"));
+        socket.setOutputGate(gate("ipOut"));
+        int protocolId = routingTable->getRouterIdAsGeneric().getAddressType()->getL3Protocol().getId();
+        socket.setControlInfoProtocolId(protocolId);
+        socket.bind(IP_PROT_MANET);
+
         host->subscribe(NF_LINK_BREAK, this);
         addressType = getSelfAddress().getAddressType();
         networkProtocol->registerHook(0, this);
