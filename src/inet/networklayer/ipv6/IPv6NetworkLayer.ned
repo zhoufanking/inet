@@ -58,10 +58,6 @@ module IPv6NetworkLayer like INetworkLayer
         output icmpOut;
 
     submodules:
-        routingTable: IPv6RoutingTable {
-            parameters:
-                @display("p=100,50;is=s");
-        }
         dp: MessageDispatcher {
             parameters:
                 @display("b=300,5,,,,1;p=400,200");
@@ -86,6 +82,10 @@ module IPv6NetworkLayer like INetworkLayer
         mipv6support: <default("xMIPv6Support")> like IxMIPv6Support if xMIPv6Support {
             parameters:
                 @display("p=282,232");
+        }
+        routingTable: IPv6RoutingTable {
+            parameters:
+                @display("p=100,50;is=s");
         }
 
     connections allowunconnected:  // FIXME remove 'nocheck'!
