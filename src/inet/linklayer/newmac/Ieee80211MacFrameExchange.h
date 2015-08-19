@@ -125,6 +125,44 @@ class Ieee80211SendRtsCtsFrameExchangeXXX : public Ieee80211FSMBasedFrameExchang
         ~Ieee80211SendRtsCtsFrameExchangeXXX() { delete rtsFrame; if (ctsTimer) delete cancelEvent(ctsTimer); }
 };
 
+/* IMPLEMENTATION DRAFT
+
+class Ieee80211StepBasedFrameExchange : public Ieee80211FrameExchange
+{
+    protected:
+        int step = 0;
+        enum Action { TRANSMIT_IMMEDIATE_FRAME, TRANSMIT_CONTENTION_FRAME, TRANSMIT_ACKED_CONTENTION_FRAME, EXPECT_REPLY };
+
+    protected:
+        virtual bool doStep(int step) = 0;  // true: frame exchange done
+        virtual bool processReply(int step, Ieee80211Frame *frame) = 0; // true: frame accepted as reply
+
+        void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs);
+        void transmitContentionFrame(Ieee80211DataOrMgmtFrame *frame, int maxRetryCount, simtime_t ifs, int cw);
+        void transmitAckedContentionFrame(Ieee80211DataOrMgmtFrame *frame, int maxRetryCount, simtime_t ifs, int cwMin, int cwMax, simtime_t timeout);
+        void expectReply(simtime_t timeout);
+
+    public:
+        Ieee80211StepBasedFrameExchange(Ieee80211NewMac *mac, IFinishedCallback *callback) : Ieee80211FrameExchange(mac, callback) { }
+        virtual void start();
+        virtual void lowerFrameReceived(Ieee80211Frame *frame);
+        virtual void transmissionFinished();
+        virtual void handleMessage(cMessage *timer);
+};
+
+class Ieee80211SendDataWithRtsCtsFrameExchange : public Ieee80211StepBasedFrameExchange
+{
+    protected:
+        Ieee80211DataOrMgmtFrame *dataFrame;
+    protected:
+        virtual bool doStep(int step);
+        virtual bool processReply(int step, Ieee80211Frame *frame);
+    public:
+        Ieee80211SendDataWithRtsCtsFrameExchange(Ieee80211NewMac *mac, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame) : Ieee80211FrameExchange(mac, callback), dataFrame(dataFrame) { }
+};
+
+IMPLEMENTATION DRAFT */
+
 
 } /* namespace inet */
 

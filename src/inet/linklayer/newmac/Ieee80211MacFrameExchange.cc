@@ -227,5 +227,115 @@ bool Ieee80211SendRtsCtsFrameExchangeXXX::isCts(Ieee80211Frame* frame)
     return dynamic_cast<Ieee80211CTSFrame *>(frame) != nullptr;
 }
 
+//------------------------------
+
+/* IMPLEMENTATION DRAFT
+
+void Ieee80211StepBasedFrameExchange::transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs)
+{
+    ASSERT(action == NONE); // only one action allowed per step
+    action = TRANSMIT_IMMEDIATE_FRAME;
+    getMac()->transmitImmediateFrame(frame, ifs);
+}
+
+void Ieee80211StepBasedFrameExchange::transmitContentionFrame(Ieee80211DataOrMgmtFrame *frame, int maxRetryCount, simtime_t ifs, int cw)
+{
+    ASSERT(action == NONE); // only one action allowed per step
+    action = TRANSMIT_CONTENTION_FRAME;
+    getTransmission()->transmitContentionFrame(frame, ifs, cw);
+}
+
+void Ieee80211StepBasedFrameExchange::transmitAckedContentionFrame(Ieee80211DataOrMgmtFrame *frame, int maxRetryCount, simtime_t ifs, int cwMin, int cwMax, simtime_t timeout)
+{
+    ASSERT(action == NONE); // only one action allowed per step
+    action = TRANSMIT_ACKED_CONTENTION_FRAME;
+    getTransmission()->transmitContentionFrame(frame, ifs, cwMin, cwMax);
+}
+
+void Ieee80211StepBasedFrameExchange::expectReply(simtime_t timeout)
+{
+    ASSERT(action == NONE); // only one action allowed per step
+    action = EXPECT_REPLY;
+    scheduleAt(simTime()+timeout, timer);
+}
+
+void Ieee80211StepBasedFrameExchange::start()
+{
+    step = 0;
+    isLastStep = doStep(step);
+}
+
+void Ieee80211StepBasedFrameExchange::nextStep()
+{
+    if (isLastStep)
+        reportSuccess();
+    else {
+        step++;
+        isLastStep = doStep(step);
+    }
+}
+
+void Ieee80211StepBasedFrameExchange::lowerFrameReceived(Ieee80211Frame *frame)
+{
+    switch(action) {
+        case TRANSMIT_IMMEDIATE_FRAME: ASSERT(false); break; //unexpected
+        case TRANSMIT_CONTENTION_FRAME: break; // TODO let someone else process it
+        case TRANSMIT_ACKED_CONTENTION_FRAME:
+            if (not yet in WAITACK)
+                letUpperProcessIt(); //XXX
+            else if (isReply(step, frame))
+                nextStep();
+            else
+                letUpperProcessIt()? or reportFailure()?
+        default: ASSERT(false); //unexpected
+    }
+}
+
+void Ieee80211StepBasedFrameExchange::transmissionFinished()
+{
+    switch(action) {
+        case TRANSMIT_IMMEDIATE_FRAME: nextStep(); break;
+        case TRANSMIT_CONTENTION_FRAME: nextStep(); break;
+        case TRANSMIT_ACKED_CONTENTION_FRAME: scheduleAt(simTime()+timeout, timer); break;  //TODO plus state=WAITACK
+        default: ASSERT(false); //unexpected
+    }
+}
+
+void Ieee80211StepBasedFrameExchange::handleMessage(cMessage *timer)
+{
+    switch(action) {
+        case TRANSMIT_ACKED_CONTENTION_FRAME: reportFailure(); break;
+        case EXPECT_REPLY: reportFailure();  break;
+        default: ASSERT(false); //unexpected
+    }
+}
+
+
+//---
+
+bool Ieee80211SendDataWithRtsCtsFrameExchange::doStep(int step)
+{
+    switch (step) {
+        case 0: transmitAckedContentionFrame(buildRtsFrame(dataFrame), 10, getDIFS(), 3, 511, getCtsTimeout()); return false;
+        case 1: transmitImmediateFrame(dataFrame, getSIFS()); return false;
+        case 2: expectReply(getAckTimeout()); return false;
+        default: return true; // done
+    }
+}
+
+bool Ieee80211SendDataWithRtsCtsFrameExchange::processReply(int step, Ieee80211Frame *frame)
+{
+    switch (step) {
+        case 0: return isFrameCtsFor(frame, dataFrame->getSourceAddress());
+        case 2: return isFrameAckFor(frame, dataFrame->getSourceAddress());
+        default: return false;
+    }
+}
+
+IMPLEMENTATION DRAFT */
+
+
 } /* namespace inet */
+
+
 
