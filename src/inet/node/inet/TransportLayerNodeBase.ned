@@ -41,13 +41,13 @@ module TransportLayerNodeBase extends NetworkLayerNodeBase
         @figure[transportLayer.title](type=text; pos=740,210; text="transport layer");
 
     submodules:
-        udp: <udpType> like IUDP if hasUdp {
-            parameters:
-                @display("p=400,300");
-        }
         tcp: <tcpType> like ITCP if hasTcp {
             parameters:
                 @display("p=500,300");
+        }
+        udp: <udpType> like IUDP if hasUdp {
+            parameters:
+                @display("p=400,300");
         }
         sctp: <sctpType> like ISCTP if hasSctp {
             parameters:
