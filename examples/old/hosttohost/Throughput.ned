@@ -47,7 +47,7 @@ module ThroughputClient
                 registerSAP = false;
                 @display("b=40,24;p=180,60,col");
         }
-        wlan: Ieee80211Nic {
+        wlan: Ieee80211NewNic {
             parameters:
                 @display("p=112,134;q=queue");
                 mgmtType = "Ieee80211MgmtAdhoc";
