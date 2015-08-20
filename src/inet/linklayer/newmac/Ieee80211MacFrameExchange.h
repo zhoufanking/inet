@@ -16,7 +16,7 @@
 #ifndef IEEE80211MACFRAMEEXCHANGE_H_
 #define IEEE80211MACFRAMEEXCHANGE_H_
 
-#include <Ieee80211NewMac.h>
+#include "Ieee80211MacPlugin.h"
 
 namespace inet {
 
@@ -42,8 +42,8 @@ class Ieee80211FrameExchange : public Ieee80211MacPlugin
 
         virtual void start() = 0;
 
-        void lowerFrameReceived(Ieee80211Frame *frame) = 0;
-        void transmissionFinished() = 0;
+        virtual void lowerFrameReceived(Ieee80211Frame *frame) = 0;
+        virtual void transmissionFinished() = 0;
 };
 
 class Ieee80211FSMBasedFrameExchange : public Ieee80211FrameExchange
@@ -53,13 +53,13 @@ class Ieee80211FSMBasedFrameExchange : public Ieee80211FrameExchange
         enum EventType { EVENT_START, EVENT_FRAMEARRIVED, EVENT_TXFINISHED, EVENT_TIMER };
 
     protected:
-        void handleWithFSM(EventType eventType, cMessage *frameOrTimer);
+        virtual void handleWithFSM(EventType eventType, cMessage *frameOrTimer) = 0;
 
     public:
-        Ieee80211FSMBasedFrameExchange(Ieee80211NewMac *mac, IFinishedCallback *callback) : Ieee80211FrameExchange(mac, callback) {}
-        virtual void start() { handlewithFSM(EVENT_START); }
+        Ieee80211FSMBasedFrameExchange(Ieee80211NewMac *mac, IFinishedCallback *callback) : Ieee80211FrameExchange(mac, callback) { fsm.setName("Frame Exchange FSM"); }
+        virtual void start() { EV_INFO << "Starting " << getClassName() << std::endl; handleWithFSM(EVENT_START, nullptr); }
         virtual void lowerFrameReceived(Ieee80211Frame *frame) { handleWithFSM(EVENT_FRAMEARRIVED, frame); }
-        virtual void transmissionFinished() { handleWithFSM(EVENT_TXFINISHED); }
+        virtual void transmissionFinished() { handleWithFSM(EVENT_TXFINISHED, nullptr); }
         virtual void handleMessage(cMessage *timer) { handleWithFSM(EVENT_TIMER, timer); } //TODO make it handleTimer in MAC and MACPlugin too!
 };
 
@@ -86,12 +86,45 @@ class Ieee80211SendDataWithAckFrameExchange : public Ieee80211FSMBasedFrameExcha
         void retryDataFrame();
         void scheduleAckTimeout();
         void processFrame(Ieee80211Frame *receivedFrame);
+        bool isAck(Ieee80211Frame *frame);
 
     public:
         Ieee80211SendDataWithAckFrameExchange(Ieee80211NewMac *mac, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *frame, int maxRetryCount, simtime_t ifs, int cwMin, int cwMax) :
             Ieee80211FSMBasedFrameExchange(mac, callback), frame(frame), maxRetryCount(maxRetryCount), ifs(ifs), cwMin(cwMin), cwMax(cwMax) {}
         ~Ieee80211SendDataWithAckFrameExchange() { delete frame; if (ackTimer) delete cancelEvent(ackTimer); }
 };
+
+class Ieee80211SendRtsCtsFrameExchangeXXX : public Ieee80211FSMBasedFrameExchange
+{
+    protected:
+        Ieee80211RTSFrame *rtsFrame;
+        int maxRetryCount;
+        simtime_t ifs;
+        int cwMin;
+        int cwMax;
+
+        int cw = 0;
+        int retryCount = 0;
+        cMessage *ctsTimer = nullptr;
+
+        enum State { INIT, TRANSMITRTS, WAITCTS, SUCCESS, FAILURE };
+        State state = INIT;
+
+    protected:
+        void handleWithFSM(EventType event, cMessage *frameOrTimer);
+
+        void transmitRtsFrame();
+        void retryRtsFrame();
+        void scheduleCtsTimeout();
+        void processFrame(Ieee80211Frame *receivedFrame);
+        bool isCts(Ieee80211Frame *frame);
+
+    public:
+        Ieee80211SendRtsCtsFrameExchangeXXX(Ieee80211NewMac *mac, IFinishedCallback *callback, Ieee80211RTSFrame *rtsFrame, int maxRetryCount, simtime_t ifs, int cwMin, int cwMax) :
+            Ieee80211FSMBasedFrameExchange(mac, callback), rtsFrame(rtsFrame), maxRetryCount(maxRetryCount), ifs(ifs), cwMin(cwMin), cwMax(cwMax) {}
+        ~Ieee80211SendRtsCtsFrameExchangeXXX() { delete rtsFrame; if (ctsTimer) delete cancelEvent(ctsTimer); }
+};
+
 
 } /* namespace inet */
 
