@@ -19,6 +19,7 @@
 #include "Ieee80211MacPlugin.h"
 
 namespace inet {
+namespace ieee80211 {
 
 class Ieee80211FrameExchange : public Ieee80211MacPlugin
 {
@@ -163,7 +164,7 @@ class Ieee80211SendDataWithRtsCtsFrameExchange : public Ieee80211StepBasedFrameE
 
 IMPLEMENTATION DRAFT */
 
-
+}
 } /* namespace inet */
 
 #endif

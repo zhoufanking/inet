@@ -17,6 +17,7 @@
 #include "Ieee80211NewMac.h"
 
 namespace inet {
+namespace ieee80211 {
 
 void Ieee80211MacPlugin::scheduleAt(simtime_t t, cMessage* msg)
 {
@@ -35,6 +36,7 @@ Ieee80211MacPlugin::~Ieee80211MacPlugin()
 {
 }
 
+}
 
 } /* namespace inet */
 

@@ -18,6 +18,7 @@
 #include "Ieee80211UpperMac.h"
 
 namespace inet {
+namespace ieee80211 {
 
 Ieee80211AdvancedFrameExchange::Ieee80211AdvancedFrameExchange(Ieee80211NewMac* mac, IFinishedCallback* callback) :
         Ieee80211FrameExchange(mac, callback)
@@ -210,5 +211,6 @@ void Ieee80211SendRtsCtsDataAckFrameExchange::setCurrentStep(int step)
     }
 }
 
+}
 } /* namespace inet */
 
