@@ -24,7 +24,6 @@ Ieee80211AdvancedFrameExchange::Ieee80211AdvancedFrameExchange(Ieee80211NewMac* 
         Ieee80211FrameExchange(mac, callback)
 {
     timeout = new cMessage("Timeout");
-    waitTxComplete = new WaitTxCompleteStep("Waiting for transmission to complete");
     exchangeFinished = new ExchangeFinishedStep("Exchange finished");
 }
 
@@ -34,14 +33,6 @@ void Ieee80211AdvancedFrameExchange::transmit(FrameExchangeStep* step)
         mac->transmitImmediateFrame(step->getFrame(), step->getDeferDuration());
     else
         getTransmission()->transmitContentionFrame(step->getFrame(), step->getDeferDuration(), step->getCw());
-    FrameExchangeStepWithResponse *stepWithResponse = dynamic_cast<FrameExchangeStepWithResponse *>(step);
-    if (stepWithResponse)
-    {
-        if(!timeout->isScheduled())
-            scheduleAt(simTime() + stepWithResponse->getTimeout(), timeout);
-        else
-            reportFailure();
-    }
 }
 
 void Ieee80211AdvancedFrameExchange::doStep()
@@ -72,8 +63,19 @@ void Ieee80211AdvancedFrameExchange::lowerFrameReceived(Ieee80211Frame* frame)
 
 void Ieee80211AdvancedFrameExchange::transmissionFinished()
 {
-    if (dynamic_cast<WaitTxCompleteStep *>(currentStep))
+    WaitTxCompleteStep *txCompleteStep = dynamic_cast<WaitTxCompleteStep *>(currentStep);
+    if (txCompleteStep)
+    {
+        FrameExchangeStepWithResponse *stepWithResponse = dynamic_cast<FrameExchangeStepWithResponse *>(txCompleteStep->getWhat());
+        if (stepWithResponse)
+        {
+            if(!timeout->isScheduled())
+                scheduleAt(simTime() + stepWithResponse->getTimeout(), timeout);
+            else
+                reportFailure();
+        }
         setCurrentStep(++stepId);
+    }
     else
         reportFailure();
 }
@@ -103,6 +105,7 @@ Ieee80211SendRtsCtsFrameExchange::Ieee80211SendRtsCtsFrameExchange(Ieee80211NewM
         Ieee80211AdvancedFrameExchange(mac, callback)
 {
     rtsCtsExchange = new FrameExchangeStepWithResponse("RTS/CTS Exchange", buildRtsFrame(frameToSend), getUpperMac()->getDIFS(), 3, 511, false, computeCtsTimeout(), [=] (Ieee80211Frame *frame) { return isCtsFrame(frame); }, 10);
+    waitRtsTxComplete = new WaitTxCompleteStep("RTS", rtsCtsExchange);
 }
 
 void Ieee80211SendRtsCtsFrameExchange::setCurrentStep(int step)
@@ -113,7 +116,7 @@ void Ieee80211SendRtsCtsFrameExchange::setCurrentStep(int step)
             currentStep = rtsCtsExchange; // Transmit RTS
             break;
         case 1:
-            currentStep = waitTxComplete; // Wait for RTS tx complete
+            currentStep = waitRtsTxComplete; // Wait for RTS tx complete
             break;
         case 2:
             currentStep =  rtsCtsExchange; // Wait for CTS
@@ -143,6 +146,7 @@ Ieee80211SendDataAckFrameExchange::Ieee80211SendDataAckFrameExchange(Ieee80211Ne
         Ieee80211AdvancedFrameExchange(mac, callback)
 {
     dataAckExchange = new FrameExchangeStepWithResponse("DATA/ACK Exchange", frameToSend, getUpperMac()->getSIFS(), 3, 511, true, computeAckTimeout(frameToSend), [=] (Ieee80211Frame *frame) { return isAckFrame(frame); }, 10);
+    waitDataTxComplete = new WaitTxCompleteStep("DATA", dataAckExchange);
 }
 
 void Ieee80211SendDataAckFrameExchange::setCurrentStep(int step)
@@ -153,7 +157,7 @@ void Ieee80211SendDataAckFrameExchange::setCurrentStep(int step)
             currentStep = dataAckExchange; // Transmit DATA
             break;
         case 1:
-            currentStep = waitTxComplete; // Wait for DATA tx complete
+            currentStep = waitDataTxComplete; // Wait for DATA tx complete
             break;
         case 2:
             currentStep = dataAckExchange; // Wait for ACK
@@ -187,11 +191,11 @@ void Ieee80211SendRtsCtsDataAckFrameExchange::setCurrentStep(int step)
             break;
         case 1:
             EV_INFO << "Waiting for RTS tx to complete" << endl;
-            currentStep = waitTxComplete;
+            currentStep = waitRtsTxComplete;
             break;
         case 2:
             EV_INFO << "Waiting for CTS response" << endl;
-            currentStep =  rtsCtsExchange;
+            currentStep = rtsCtsExchange;
             break;
         case 3:
             EV_INFO << "Starting DATA/ACK exchange" << endl;
@@ -199,7 +203,7 @@ void Ieee80211SendRtsCtsDataAckFrameExchange::setCurrentStep(int step)
             break;
         case 4:
             EV_INFO << "Waiting for DATA tx to complete" << endl;
-            currentStep = waitTxComplete;
+            currentStep = waitDataTxComplete;
             break;
         case 5:
             EV_INFO << "Waiting for ACK response" << endl;

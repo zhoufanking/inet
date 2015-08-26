@@ -39,8 +39,11 @@ class IStep
 
 class WaitTxCompleteStep : public IStep
 {
+    protected:
+        IStep *what = nullptr;
     public:
-        WaitTxCompleteStep(const char *name) : IStep(name) {}
+        WaitTxCompleteStep(const char *name, IStep *what) : IStep(name), what(what) {}
+        IStep *getWhat() const { return what; }
 };
 
 class ExchangeFinishedStep : public IStep
@@ -92,7 +95,6 @@ class Ieee80211AdvancedFrameExchange : public Ieee80211FrameExchange
 {
     protected:
         ExchangeFinishedStep *exchangeFinished = nullptr;
-        WaitTxCompleteStep *waitTxComplete = nullptr;
 
         int stepId = 0;
         IStep *currentStep = nullptr;
@@ -116,6 +118,7 @@ class Ieee80211SendRtsCtsFrameExchange : virtual public Ieee80211AdvancedFrameEx
 {
     protected:
         FrameExchangeStepWithResponse *rtsCtsExchange = nullptr;
+        WaitTxCompleteStep *waitRtsTxComplete = nullptr;
 
     protected:
         simtime_t computeCtsTimeout();
@@ -133,6 +136,7 @@ class Ieee80211SendDataAckFrameExchange : virtual public Ieee80211AdvancedFrameE
 {
     protected:
         FrameExchangeStepWithResponse *dataAckExchange = nullptr;
+        WaitTxCompleteStep *waitDataTxComplete = nullptr;
 
     protected:
         simtime_t computeAckTimeout(Ieee80211DataOrMgmtFrame *frameToSend);
