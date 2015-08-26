@@ -32,12 +32,14 @@ class Ieee80211MacReception : public Ieee80211MacPlugin
     protected:
         cMessage *nav = nullptr;
         IRadio::ReceptionState receptionState = IRadio::RECEPTION_STATE_UNDEFINED;
+        IRadio::TransmissionState transmissionState = IRadio::TRANSMISSION_STATE_UNDEFINED;
 
     protected:
         void handleMessage(cMessage *msg);
 
     public:
         void receptionStateChanged(IRadio::ReceptionState newReceptionState);
+        void transmissionStateChanged(IRadio::TransmissionState transmissionState);
         /** @brief Tells if the medium is free according to the physical and virtual carrier sense algorithm. */
         virtual bool isMediumFree() const;
         void setNav(simtime_t navInterval);

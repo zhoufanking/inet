@@ -52,12 +52,17 @@ void Ieee80211MacReception::handleLowerFrame(Ieee80211Frame* frame)
 
 bool Ieee80211MacReception::isMediumFree() const
 {
-    return receptionState == IRadio::RECEPTION_STATE_IDLE && !nav->isScheduled();
+    return receptionState == IRadio::RECEPTION_STATE_IDLE && transmissionState != IRadio::TRANSMISSION_STATE_TRANSMITTING && !nav->isScheduled();
 }
 
 void Ieee80211MacReception::receptionStateChanged(IRadio::ReceptionState newReceptionState)
 {
     receptionState = newReceptionState;
+}
+
+void Ieee80211MacReception::transmissionStateChanged(IRadio::TransmissionState newTransmissionState)
+{
+    transmissionState = newTransmissionState;
 }
 
 void Ieee80211MacReception::setNav(simtime_t navInterval)
