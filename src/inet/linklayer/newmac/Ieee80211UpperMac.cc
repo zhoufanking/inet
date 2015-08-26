@@ -72,14 +72,9 @@ void Ieee80211UpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame* frame)
 
     if (frameExchange)
         transmissionQueue.push_back(frame);
-    else if (frame->getByteLength() >= mac->rtsThreshold)
-    {
-        frameExchange = new Ieee80211SendRtsCtsDataAckFrameExchange(mac, this, frame);
-        frameExchange->start();
-    }
     else
     {
-        frameExchange = new Ieee80211SendDataAckFrameExchange(mac, this, frame);
+        frameExchange = new Ieee80211SendDataWithAckFrameExchange(mac, this, frame, 10, getDIFS(), 4, 511);
         frameExchange->start();
     }
 }
@@ -213,10 +208,7 @@ void Ieee80211UpperMac::frameExchangeFinished(Ieee80211FrameExchange* what, bool
     {
         Ieee80211DataOrMgmtFrame *frame = check_and_cast<Ieee80211DataOrMgmtFrame *>(transmissionQueue.front());
         transmissionQueue.pop_front();
-        if (frame->getByteLength() >= mac->rtsThreshold)
-            frameExchange = new Ieee80211SendRtsCtsDataAckFrameExchange(mac, this, frame);
-        else
-            frameExchange = new Ieee80211SendDataAckFrameExchange(mac, this, frame);
+        frameExchange = new Ieee80211SendDataWithAckFrameExchange(mac, this, frame, 10, getDIFS(), 4, 511);
         frameExchange->start();
     }
 }
