@@ -171,13 +171,8 @@ double Ieee80211UpperMac::computeFrameDuration(Ieee80211Frame *msg) const
 
 double Ieee80211UpperMac::computeFrameDuration(int bits, double bitrate) const
 {
-    double duration;
     const IIeee80211Mode *modType = mac->modeSet->getMode(bps(bitrate));
-    if (PHY_HEADER_LENGTH < 0)
-        duration = SIMTIME_DBL(modType->getDuration(bits));
-    else
-        duration = SIMTIME_DBL(modType->getDataMode()->getDuration(bits)) + PHY_HEADER_LENGTH;
-
+    double duration = SIMTIME_DBL(modType->getDuration(bits));
     EV_DEBUG << " duration=" << duration * 1e6 << "us(" << bits << "bits " << bitrate / 1e6 << "Mbps)" << endl;
     return duration;
 }
