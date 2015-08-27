@@ -388,11 +388,11 @@ void TcpLwipConnection::sendUpData()
             int64_t len = dataMsg->getByteLength();
             // send Msg to Application layer:
             tcpLwipM.send(dataMsg, "appOut");
-            while (len > 0) {
-                unsigned int slen = len > 0xffff ? 0xffff : len;
-                tcpLwipM.getLwipTcpLayer()->tcp_recved(pcbM, slen);
-                len -= slen;
-            }
+//            while (len > 0) {
+//                unsigned int slen = len > 0xffff ? 0xffff : len;
+//                tcpLwipM.getLwipTcpLayer()->tcp_recved(pcbM, slen);
+//                len -= slen;
+//            }
         }
     }
 }

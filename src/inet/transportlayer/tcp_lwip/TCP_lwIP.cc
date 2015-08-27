@@ -319,7 +319,7 @@ err_t TCP_lwIP::tcp_event_recv(TcpLwipConnection& conn, struct pbuf *p, err_t er
         EV_DETAIL << this << ": tcp_event_recv(" << conn.connIdM << ", pbuf[" << p->len << ", "
                   << p->tot_len << "], " << (int)err << ")\n";
         conn.receiveQueueM->enqueueTcpLayerData(p->payload, p->tot_len);
-        //pLwipTcpLayerM->tcp_recved(conn.pcbM, p->tot_len);
+        pLwipTcpLayerM->tcp_recved(conn.pcbM, p->tot_len);
         pbuf_free(p);
     }
 
