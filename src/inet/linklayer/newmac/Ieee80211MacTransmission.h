@@ -60,9 +60,10 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
         void handleMessage(cMessage *msg);
 
     public:
-        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t deferDuration, int cw);
+        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, int cw); //TODO add eifs parameter!
         void mediumStateChanged(bool mediumFree);
         void transmissionStateChanged(IRadio::TransmissionState transmissionState);
+        void badFrameReceived(); //TODO on receiving a frame with wrong FCS, we need to switch from DIFS to EIFS (ie. from ifs parameter to eifs parameter)!
 
         Ieee80211MacTransmission(Ieee80211NewMac *mac);
 };
