@@ -154,7 +154,7 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
     //@}
 
     MACAddress getAddress() const { return address; }
-    void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t deferDuration);
+    void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs);  //TODO add ITransmissionCompleteCallback* as parameter!!!
 
   protected:
     /**

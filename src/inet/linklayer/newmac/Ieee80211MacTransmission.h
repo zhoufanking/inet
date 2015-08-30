@@ -24,6 +24,13 @@ namespace inet {
 
 namespace ieee80211 {
 
+class Ieee80211MacTransmission;
+
+class ITransmissionCompleteCallback {  //or ITransmissionListener?
+    public:
+       virtual void transmissionComplete(Ieee80211MacTransmission *tx) = 0; //tx=nullptr if frame was transmitted by MAC itself (immediate frame!), not a tx process
+};
+
 class Ieee80211MacTransmission : public Ieee80211MacPlugin
 {
     public:
@@ -60,7 +67,7 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
         void handleMessage(cMessage *msg);
 
     public:
-        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, int cw); //TODO add eifs parameter!
+        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, int cw); //TODO add eifs parameter! TODO also add ITransmissionCompleteCallback* as parameter!!!
         void mediumStateChanged(bool mediumFree);
         void transmissionStateChanged(IRadio::TransmissionState transmissionState);
         void badFrameReceived(); //TODO on receiving a frame with wrong FCS, we need to switch from DIFS to EIFS (ie. from ifs parameter to eifs parameter)!

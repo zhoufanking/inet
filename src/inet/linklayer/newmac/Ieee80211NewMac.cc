@@ -307,7 +307,7 @@ void Ieee80211NewMac::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t de
 void Ieee80211NewMac::transmissionStateChanged(IRadio::TransmissionState transmissionState)
 {
     if (immediateFrameTransmission && transmissionState == IRadio::TRANSMISSION_STATE_IDLE)
-        upperMac->transmissionFinished();
+        upperMac->transmissionFinished();  //TODO instead: callback->transmissionComplete(nullptr);
 }
 
 simtime_t Ieee80211NewMac::getSlotTime() const

@@ -95,7 +95,7 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
             FSMA_Event_Transition(TxFinished,
                                   event == MEDIUM_STATE_CHANGED && transmissionState == IRadio::TRANSMISSION_STATE_IDLE,
                                   IDLE,
-                                  mac->upperMac->transmissionFinished();
+                                  mac->upperMac->transmissionFinished();  //TODO instead: callback->transmissionComplete(this);
             );
         }
     }
