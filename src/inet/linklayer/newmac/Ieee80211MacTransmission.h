@@ -45,8 +45,9 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
 
     protected:
         Ieee80211Frame *frame = nullptr;
-        simtime_t deferDuration;
-        int backoffSlots;
+        simtime_t deferDuration = SIMTIME_ZERO;
+        simtime_t eifs = SIMTIME_ZERO;
+        int backoffSlots = 0;
         bool mediumFree = false;
         IRadio::TransmissionState transmissionState = IRadio::TRANSMISSION_STATE_UNDEFINED;
         cFSM fsm;
