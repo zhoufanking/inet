@@ -210,11 +210,6 @@ void Ieee80211NewMac::handleUpperPacket(cPacket *msg)
 
 void Ieee80211NewMac::handleLowerPacket(cPacket *msg)
 {
-    if (msg->hasBitError())
-    {
-        delete msg;
-        return;
-    }
     reception->handleLowerFrame(check_and_cast<Ieee80211Frame *>(msg));
 }
 
