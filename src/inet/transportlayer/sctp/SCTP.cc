@@ -49,7 +49,7 @@ void SCTP::printInfoAssocMap()
             assoc = i->second;
             key = i->first;
 
-            EV_DETAIL << "assocId: " << assoc->assocId << "  assoc: " << assoc << " src: " << key.localAddr << " dst: " << key.remoteAddr << " lPort: " << key.localPort << " rPort: " << key.remotePort << "\n";
+            EV_DETAIL << "assocId: " << assoc->assocId << "(" << assoc->forkedAssocId << ")  assoc: " << assoc << " src: " << key.localAddr << " dst: " << key.remoteAddr << " lPort: " << key.localPort << " rPort: " << key.remotePort << "\n";
         }
 
         EV_DETAIL << "\n";
@@ -743,6 +743,7 @@ void SCTP::addForkedAssociation(SCTPAssociation *assoc, SCTPAssociation *newAsso
     key.appGateIndex = assoc->appGateIndex;
     key.assocId = assoc->assocId;
     sctpAppAssocMap.erase(key);
+    assoc->forkedAssocId = assoc->assocId;
     key.assocId = assoc->assocId = SCTPSocket::getNewAssocId();
     sctpAppAssocMap[key] = assoc;
 

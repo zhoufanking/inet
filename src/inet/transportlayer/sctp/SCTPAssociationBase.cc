@@ -904,6 +904,9 @@ SCTPEventCode SCTPAssociation::preanalyseAppCommandEvent(int32 commandCode)
         case SCTP_C_OPEN_PASSIVE:
             return SCTP_E_OPEN_PASSIVE;
 
+        case SCTP_C_ACCEPT:
+            return SCTP_E_ACCEPT;
+
         case SCTP_C_SEND:
             return SCTP_E_SEND;
 
@@ -969,6 +972,10 @@ bool SCTPAssociation::processAppCommand(cMessage *msg)
 
         case SCTP_E_OPEN_PASSIVE:
             process_OPEN_PASSIVE(event, sctpCommand, msg);
+            break;
+
+        case SCTP_E_ACCEPT:
+            process_ACCEPT(event, sctpCommand, msg);
             break;
 
         case SCTP_E_SEND:
@@ -1587,7 +1594,11 @@ void SCTPAssociation::stateEntered(int32 status)
 
             pmStartPathManagement();
             state->sendQueueLimit = (uint32)sctpMain->par("sendQueueLimit");
-            sendEstabIndicationToApp();
+            if (forkedAssocId == -1)
+                sendEstabIndicationToApp();
+            else
+                sendAvailableIndicationToApp();
+
             if (sctpMain->hasPar("addIP")) {
                 const bool addIP = (bool)sctpMain->par("addIP");
                 EV_DETAIL << getFullPath() << ": addIP = " << addIP << " time = " << (double)sctpMain->par("addTime") << "\n";

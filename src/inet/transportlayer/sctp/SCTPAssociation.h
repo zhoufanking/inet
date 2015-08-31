@@ -71,6 +71,7 @@ enum SctpState {
 enum SCTPEventCode {
     SCTP_E_ASSOCIATE,
     SCTP_E_OPEN_PASSIVE,
+    SCTP_E_ACCEPT,
     SCTP_E_ABORT,
     SCTP_E_SHUTDOWN,
     SCTP_E_CLOSE,
@@ -846,6 +847,7 @@ class INET_API SCTPAssociation : public cObject
     // connection identification by apps: appgateIndex+assocId
     int32 appGateIndex;    // Application gate index
     int32 assocId;    // Identifies connection within the app
+    int forkedAssocId = -1;    // identifies forked connection within the app (listener socket ID)
     L3Address remoteAddr;    // Remote address from last message
     L3Address localAddr;    // Local address from last message
     uint16 localPort;    // Remote port from last message
@@ -1024,6 +1026,7 @@ class INET_API SCTPAssociation : public cObject
     //@{
     void process_ASSOCIATE(SCTPEventCode& event, SCTPCommand *sctpCommand, cMessage *msg);
     void process_OPEN_PASSIVE(SCTPEventCode& event, SCTPCommand *sctpCommand, cMessage *msg);
+    void process_ACCEPT(SCTPEventCode& event, SCTPCommand *sctpCommand, cMessage *msg);
     void process_SEND(SCTPEventCode& event, SCTPCommand *sctpCommand, cMessage *msg);
     void process_CLOSE(SCTPEventCode& event);
     void process_ABORT(SCTPEventCode& event);
@@ -1130,6 +1133,7 @@ class INET_API SCTPAssociation : public cObject
 
     /** Utility: sends SCTP_I_ESTABLISHED indication with SCTPConnectInfo to application */
     void sendEstabIndicationToApp();
+    void sendAvailableIndicationToApp();
     void pushUlp();
     void sendDataArrivedNotification(uint16 sid);
     void putInDeliveryQ(uint16 sid);

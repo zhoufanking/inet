@@ -131,6 +131,7 @@ const char *SCTPAssociation::eventName(const int32 event)
     const char *s = "unknown";
     switch (event) {
         CASE(SCTP_E_OPEN_PASSIVE);
+        CASE(SCTP_E_ACCEPT);
         CASE(SCTP_E_ASSOCIATE);
         CASE(SCTP_E_SHUTDOWN);
         CASE(SCTP_E_CLOSE);
@@ -175,6 +176,7 @@ const char *SCTPAssociation::indicationName(const int32 code)
     switch (code) {
         CASE(SCTP_I_DATA);
         CASE(SCTP_I_DATA_NOTIFICATION);
+        CASE(SCTP_I_AVAILABLE);
         CASE(SCTP_I_ESTABLISHED);
         CASE(SCTP_I_PEER_CLOSED);
         CASE(SCTP_I_CLOSED);
@@ -414,6 +416,24 @@ void SCTPAssociation::sendEstabIndicationToApp()
         snprintf(vectorName, sizeof(vectorName), "Stream %d Throughput", i);
         streamThroughputVectors[i] = new cOutVector(vectorName);
     }
+}
+
+void SCTPAssociation::sendAvailableIndicationToApp()
+{
+    EV_INFO << "Notifying app: " << indicationName(SCTP_I_AVAILABLE) << "\n";
+    cMessage *msg = new cMessage(indicationName(SCTP_I_AVAILABLE));
+    msg->setKind(SCTP_I_AVAILABLE);
+
+    SCTPAvailableInfo *ind = new SCTPAvailableInfo();
+    ind->setSocketId(forkedAssocId);
+    ind->setNewSocketId(assocId);
+    ind->setLocalAddr(localAddr);
+    ind->setRemoteAddr(remoteAddr);
+    ind->setLocalPort(localPort);
+    ind->setRemotePort(remotePort);
+
+    msg->setControlInfo(ind);
+    sendToApp(msg);
 }
 
 void SCTPAssociation::sendToApp(cMessage *msg)

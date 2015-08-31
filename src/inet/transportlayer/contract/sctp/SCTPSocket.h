@@ -47,6 +47,7 @@ class INET_API SCTPSocket
         virtual ~CallbackInterface() {}
         virtual void socketDataArrived(int assocId, void *yourPtr, cPacket *msg, bool urgent) = 0;
         virtual void socketDataNotificationArrived(int assocId, void *yourPtr, cPacket *msg) = 0;
+        virtual void socketAvailable(int connId, void *yourPtr) {}
         virtual void socketEstablished(int assocId, void *yourPtr, unsigned long int buffer) {}
         virtual void socketPeerClosed(int assocId, void *yourPtr) {}
         virtual void socketClosed(int assocId, void *yourPtr) {}
@@ -184,6 +185,11 @@ class INET_API SCTPSocket
      * See SCTPOpenCommand documentation (neddoc) for more info.
      */
     void listen(bool fork = true, bool streamReset = false, uint32 requests = 0, uint32 messagesToPush = 0);
+
+    /**
+     * TODO
+     */
+    void accept(int socketId, int originalSocketId);
 
     /**
      * Active OPEN to the given remote socket.

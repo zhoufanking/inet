@@ -218,6 +218,23 @@ void SCTPServer::handleMessage(cMessage *msg)
                 break;
             }
 
+            case SCTP_I_AVAILABLE: {
+
+                //FIXME verify socket status, add new socket to serverAssocStatMap, revise SCTP_I_ESTABLISHED code
+
+                SCTPAvailableInfo *connectInfo = check_and_cast<SCTPAvailableInfo *>(msg->removeControlInfo());
+                cMessage *cmsg = new cMessage("Accept");
+                SCTPAcceptCommand *cmd = new SCTPAcceptCommand("Accept");
+                cmsg->setKind(SCTP_C_ACCEPT);
+                cmd->setOriginalSocketId(connectInfo->getSocketId());
+                cmd->setSocketId(connectInfo->getNewSocketId());
+                cmsg->setControlInfo(cmd);
+                delete connectInfo;
+                delete msg;
+                sendOrSchedule(cmsg);
+                break;
+            }
+
             case SCTP_I_ESTABLISHED: {
                 count = 0;
                 SCTPConnectInfo *connectInfo = check_and_cast<SCTPConnectInfo *>(msg->removeControlInfo());
