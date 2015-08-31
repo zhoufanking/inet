@@ -35,15 +35,11 @@ void Ieee80211MacReception::handleMessage(cMessage* msg)
 void Ieee80211MacReception::handleLowerFrame(Ieee80211Frame* frame)
 {
     EV << "received message from lower layer: " << frame << endl;
-
     if (!frame)
         opp_error("message from physical layer (%s)%s is not a subclass of Ieee80211Frame",
               frame->getClassName(), frame->getName());
-
-//    EV << "Self address: " << address
-//       << ", receiver address: " << frame->getReceiverAddress()
-//       << ", received frame is for us: " << isForUs(frame) << endl;
-
+    if (!getUpperMac()->isForUs(frame))
+        setNav(frame->getDuration());
     Ieee80211TwoAddressFrame *twoAddressFrame = dynamic_cast<Ieee80211TwoAddressFrame *>(frame);
     ASSERT(!twoAddressFrame || twoAddressFrame->getTransmitterAddress() != mac->address);
     getUpperMac()->lowerFrameReceived(frame);
@@ -67,7 +63,16 @@ void Ieee80211MacReception::transmissionStateChanged(IRadio::TransmissionState n
 
 void Ieee80211MacReception::setNav(simtime_t navInterval)
 {
-    scheduleAt(navInterval, nav);
+    ASSERT(navInterval > 0);
+    if (nav->isScheduled())
+    {
+        simtime_t oldNav = nav->getArrivalTime() - simTime();
+        if (oldNav > navInterval)
+            return;
+        cancelEvent(nav);
+    }
+    EV_INFO << "Setting NAV to " << navInterval << std::endl;
+    scheduleAt(simTime() + navInterval, nav);
 }
 
 }
