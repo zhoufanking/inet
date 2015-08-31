@@ -519,7 +519,7 @@ bool SCTPAssociation::processInitArrived(SCTPInitChunk *initchunk, int32 srcPort
             assoc = cloneAssociation();
             EV_TRACE << "addForkedAssociation\n";
             sctpMain->addForkedAssociation(this, assoc, localAddr, remoteAddr, srcPort, destPort);
-
+            sendAvailableIndicationToApp();
             EV_INFO << "Connection forked: this connection got new assocId=" << assocId << ", "
                                                                                            "spinoff keeps LISTENing with assocId=" << assoc->assocId << "\n";
             snprintf(timerName, sizeof(timerName), "T2_SHUTDOWN of assoc %d", assocId);

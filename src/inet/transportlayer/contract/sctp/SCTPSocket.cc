@@ -177,6 +177,16 @@ void SCTPSocket::listen(bool fork, bool reset, uint32 requests, uint32 messagesT
     sockstate = LISTENING;
 }
 
+void SCTPSocket::accept(int socketId, int oldSocketId)
+{
+    cMessage *msg = new cMessage("Accept", SCTP_C_ACCEPT);
+    SCTPAcceptCommand *acceptCmd = new SCTPAcceptCommand();
+    acceptCmd->setSocketId(socketId);
+    acceptCmd->setOriginalSocketId(oldSocketId);
+    msg->setControlInfo(acceptCmd);
+    sendToSCTP(msg);
+}
+
 void SCTPSocket::connect(L3Address remoteAddress, int32 remotePort, bool streamReset, int32 prMethod, uint32 numRequests)
 {
     EV_INFO << "Socket connect. Assoc=" << assocId << ", sockstate=" << stateName(sockstate) << "\n";
@@ -378,6 +388,17 @@ void SCTPSocket::processMessage(cMessage *msg)
                 cb->sendRequestArrived();
             }
             break;
+
+        case SCTP_I_AVAILABLE: {
+            SCTPAvailableInfo *availableInfo = check_and_cast<SCTPAvailableInfo *>(msg->getControlInfo());
+            accept(availableInfo->getNewSocketId(), availableInfo->getSocketId());
+            delete msg;
+
+            if (cb)
+                cb->socketAvailable(assocId, yourPtr);
+
+            break;
+        }
 
         case SCTP_I_ESTABLISHED: {
             if (oneToOne)

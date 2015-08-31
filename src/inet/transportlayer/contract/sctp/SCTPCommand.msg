@@ -78,6 +78,14 @@ packet SCTPCommand
 }
 
 //
+// Control info to be used to accept an available connection.
+//
+class SCTPAcceptCommand extends SCTPCommand
+{
+    int originalSocketId = -1;
+}
+
+//
 // Currently not in use.
 //
 message SCTPErrorInfo extends SCTPCommand
@@ -156,6 +164,20 @@ message SCTPRcvInfo extends SCTPCommand
     uint32 cumTsn;
 }
 
+//
+// Sent with message kind SCTP_I_AVAILABLE, to let the app know
+// about the local and remote IP address and port.
+//
+// @see ~SctpCommandCode, ~SCTP
+//
+class SCTPAvailableInfo extends SCTPCommand
+{
+    L3Address localAddr;
+    L3Address remoteAddr;
+    int localPort;
+    int remotePort;
+    int newSocketId;
+}
 
 //
 // Sent with message kind SCTP_I_ESTABLISHED, to let the app know

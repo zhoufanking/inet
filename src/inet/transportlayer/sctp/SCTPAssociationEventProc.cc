@@ -112,6 +112,17 @@ void SCTPAssociation::process_OPEN_PASSIVE(SCTPEventCode& event, SCTPCommand *sc
     }
 }
 
+void SCTPAssociation::process_ACCEPT(SCTPEventCode& event, SCTPCommand *sctpCommand, cMessage *msg)
+{
+    SCTPAcceptCommand *acceptCommand = check_and_cast<SCTPAcceptCommand *>(sctpCommand);
+
+    if (forkedAssocId != acceptCommand->getOriginalSocketId())
+        throw cRuntimeError("ACCEPT: Invalid original socket ID");
+    forkedAssocId = -1;
+    sendEstabIndicationToApp();
+//FIXME TODO MISSING    sendAvailableDataToApp();
+}
+
 void SCTPAssociation::process_SEND(SCTPEventCode& event, SCTPCommand *sctpCommand, cMessage *msg)
 {
     SCTPSendInfo *sendCommand = check_and_cast<SCTPSendInfo *>(sctpCommand);
@@ -292,6 +303,8 @@ void SCTPAssociation::process_SEND(SCTPEventCode& event, SCTPCommand *sctpComman
 
 void SCTPAssociation::process_RECEIVE_REQUEST(SCTPEventCode& event, SCTPCommand *sctpCommand)
 {
+    if (forkedAssocId != -1)
+        throw cRuntimeError("READ without ACCEPT");
     SCTPSendInfo *sendCommand = check_and_cast<SCTPSendInfo *>(sctpCommand);
     if ((uint32)sendCommand->getSid() > inboundStreams || sendCommand->getSid() < 0) {
         EV_DEBUG << "Application tries to read from invalid stream id....\n";
