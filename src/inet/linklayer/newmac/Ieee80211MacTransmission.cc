@@ -179,6 +179,18 @@ void Ieee80211MacTransmission::logState()
     EV  << "state information: " << "state = " << fsm.getStateName() << ", backoffPeriod = " << backoffPeriod << endl;
 }
 
+Ieee80211MacTransmission::~Ieee80211MacTransmission()
+{
+    cancelEvent(endIFS);
+    cancelEvent(endBackoff);
+    cancelEvent(frameDuration);
+    cancelEvent(endEIFS);
+    delete endIFS;
+    delete endBackoff;
+    delete frameDuration;
+    delete endEIFS;
+}
+
 }
 
 } //namespace

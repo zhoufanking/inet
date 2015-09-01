@@ -76,6 +76,7 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
         void transmissionStateChanged(IRadio::TransmissionState transmissionState);
         void lowerFrameReceived(bool isFcsOk); //TODO on receiving a frame with wrong FCS, we need to switch from DIFS to EIFS (ie. from ifs parameter to eifs parameter)!
         Ieee80211MacTransmission(Ieee80211NewMac *mac);
+        ~Ieee80211MacTransmission();
 };
 
 }
