@@ -91,6 +91,7 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
                                   event == MEDIUM_STATE_CHANGED && !mediumFree,
                                   DEFER,
                                   updateBackoffPeriod();
+                                  cancelEvent(endBackoff);
             );
         }
         FSMA_State(TRANSMIT)
