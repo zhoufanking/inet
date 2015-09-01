@@ -24,7 +24,7 @@ namespace ieee80211 {
 
 bool Ieee80211MacReception::isFcsOk(Ieee80211Frame* frame) const
 {
-    return frame->hasBitError();
+    return !frame->hasBitError();
 }
 
 Ieee80211MacReception::Ieee80211MacReception(Ieee80211NewMac* mac) : Ieee80211MacPlugin(mac)
