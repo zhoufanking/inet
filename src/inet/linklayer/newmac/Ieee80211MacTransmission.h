@@ -49,30 +49,32 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
         simtime_t eifs = SIMTIME_ZERO;
         int backoffSlots = 0;
         bool mediumFree = false;
+        bool useEIFS = false;
         IRadio::TransmissionState transmissionState = IRadio::TRANSMISSION_STATE_UNDEFINED;
         cFSM fsm;
         /** End of the backoff period */
         cMessage *endBackoff = nullptr;
         /** End of the Data Inter-Frame Time period */
         cMessage *endIFS = nullptr;
+        cMessage *endEIFS = nullptr;
         /** Remaining backoff period in seconds */
-        simtime_t backoffPeriod;
+        simtime_t backoffPeriod = SIMTIME_ZERO;
         cMessage *frameDuration = nullptr;
 
     protected:
         void handleWithFSM(EventType event, cMessage *msg);
         void scheduleIFSPeriod(simtime_t deferDuration);
+        void scheduleEIFSPeriod(simtime_t deferDuration);
         void updateBackoffPeriod();
         void scheduleBackoffPeriod(int backoffPeriod);
         void logState();
         void handleMessage(cMessage *msg);
 
     public:
-        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, int cw); //TODO add eifs parameter! TODO also add ITransmissionCompleteCallback* as parameter!!!
+        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cw); //TODO add eifs parameter! TODO also add ITransmissionCompleteCallback* as parameter!!!
         void mediumStateChanged(bool mediumFree);
         void transmissionStateChanged(IRadio::TransmissionState transmissionState);
-        void badFrameReceived(); //TODO on receiving a frame with wrong FCS, we need to switch from DIFS to EIFS (ie. from ifs parameter to eifs parameter)!
-
+        void lowerFrameReceived(bool isFcsOk); //TODO on receiving a frame with wrong FCS, we need to switch from DIFS to EIFS (ie. from ifs parameter to eifs parameter)!
         Ieee80211MacTransmission(Ieee80211NewMac *mac);
 };
 

@@ -63,16 +63,20 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
         }
         FSMA_State(WAIT_IFS)
         {
-            FSMA_Enter(scheduleIFSPeriod(deferDuration));
+            FSMA_Enter(
+                    scheduleIFSPeriod(deferDuration);
+                    if (useEIFS)
+                        scheduleEIFSPeriod(eifs);
+            );
             FSMA_Event_Transition(Backoff,
-                                  event == TIMER && msg == endIFS,
+                                  event == TIMER && !endIFS->isScheduled() && !endEIFS->isScheduled(),
                                   BACKOFF,
                                   ;
             );
             FSMA_Event_Transition(Busy,
                                   event == MEDIUM_STATE_CHANGED && !mediumFree,
                                   DEFER,
-                                  ;
+                                  cancelEvent(endIFS);
             );
         }
         FSMA_State(BACKOFF)
@@ -104,7 +108,7 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
     // emit(stateSignal, fsm.getState()); TODO
 }
 
-void Ieee80211MacTransmission::transmitContentionFrame(Ieee80211Frame* frame, simtime_t deferDuration, int cw)
+void Ieee80211MacTransmission::transmitContentionFrame(Ieee80211Frame* frame, simtime_t deferDuration, simtime_t eifs, int cw)
 {
     ASSERT(fsm.getState() == IDLE);
     this->frame = frame;
@@ -130,6 +134,11 @@ void Ieee80211MacTransmission::handleMessage(cMessage *msg)
     handleWithFSM(TIMER, msg);
 }
 
+void Ieee80211MacTransmission::lowerFrameReceived(bool isFcsOk)
+{
+    useEIFS = !isFcsOk;
+}
+
 Ieee80211MacTransmission::Ieee80211MacTransmission(Ieee80211NewMac* mac) : Ieee80211MacPlugin(mac)
 {
     fsm.setName("Ieee80211NewMac State Machine");
@@ -137,12 +146,21 @@ Ieee80211MacTransmission::Ieee80211MacTransmission(Ieee80211NewMac* mac) : Ieee8
     endIFS = new cMessage("IFS");
     endBackoff = new cMessage("Backoff");
     frameDuration = new cMessage("FrameDuration");
+    endEIFS = new cMessage("EIFS");
 }
 
 void Ieee80211MacTransmission::scheduleIFSPeriod(simtime_t deferDuration)
 {
     scheduleAt(simTime() + deferDuration, endIFS);
 }
+
+void Ieee80211MacTransmission::scheduleEIFSPeriod(simtime_t deferDuration)
+{
+    cancelEvent(endEIFS);
+    scheduleAt(simTime() + deferDuration, endEIFS);
+    useEIFS = false;
+}
+
 
 void Ieee80211MacTransmission::updateBackoffPeriod()
 {
@@ -164,4 +182,3 @@ void Ieee80211MacTransmission::logState()
 }
 
 } //namespace
-
