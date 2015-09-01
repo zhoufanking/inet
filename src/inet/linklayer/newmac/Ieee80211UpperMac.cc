@@ -61,13 +61,13 @@ void Ieee80211UpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame* frame)
     if (frame->getByteLength() > fragmentationThreshold)
         opp_error("message from higher layer (%s)%s is too long for 802.11b, %d bytes (fragmentation is not supported yet)",
               frame->getClassName(), frame->getName(), (int)(frame->getByteLength()));
-    EV << "frame " << frame << " received from higher layer, receiver = " << frame->getReceiverAddress() << endl;
-
+    EV_INFO << "Frame " << frame << " received from higher layer, receiver = " << frame->getReceiverAddress() << endl;
     ASSERT(!frame->getReceiverAddress().isUnspecified());
 
     // fill in missing fields (receiver address, seq number), and insert into the queue
     frame->setTransmitterAddress(mac->getAddress());
     frame->setSequenceNumber(sequenceNumber);
+    setDataFrameDuration(frame);
     sequenceNumber = (sequenceNumber+1) % 4096;  //XXX seqNum must be checked upon reception of frames!
 
     if (frameExchange)
@@ -182,20 +182,16 @@ Ieee80211Frame *Ieee80211UpperMac::setBasicBitrate(Ieee80211Frame *frame)
 }
 
 
-Ieee80211DataOrMgmtFrame *Ieee80211UpperMac::setDataFrameDuration(Ieee80211DataOrMgmtFrame *frameToSend)
+void Ieee80211UpperMac::setDataFrameDuration(Ieee80211DataOrMgmtFrame *frame)
 {
-    Ieee80211DataOrMgmtFrame *frame = (Ieee80211DataOrMgmtFrame *)frameToSend->dup();
-
-    if (isBroadcast(frameToSend))
+    if (isBroadcast(frame))
         frame->setDuration(0);
-    else if (!frameToSend->getMoreFragments())
+    else if (!frame->getMoreFragments())
         frame->setDuration(getSIFS() + computeFrameDuration(LENGTH_ACK, mac->basicBitrate));
     else
         // FIXME: shouldn't we use the next frame to be sent?
         frame->setDuration(3 * getSIFS() + 2 * computeFrameDuration(LENGTH_ACK, mac->basicBitrate)
-                + computeFrameDuration(frameToSend));
-
-    return frame;
+                + computeFrameDuration(frame));
 }
 
 

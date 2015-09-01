@@ -56,7 +56,7 @@ class Ieee80211UpperMac : public Ieee80211MacPlugin, public Ieee80211FrameExchan
 
     protected:
         virtual Ieee80211Frame *setBasicBitrate(Ieee80211Frame *frame);
-        virtual Ieee80211DataOrMgmtFrame *setDataFrameDuration(Ieee80211DataOrMgmtFrame *frameToSend);
+        void setDataFrameDuration(Ieee80211DataOrMgmtFrame *frameToSend);
         virtual void frameExchangeFinished(Ieee80211FrameExchange *what, bool successful);
 
         Ieee80211CTSFrame *buildCtsFrame(Ieee80211RTSFrame *frame);
