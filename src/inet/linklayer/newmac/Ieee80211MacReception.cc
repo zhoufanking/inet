@@ -81,7 +81,7 @@ void Ieee80211MacReception::transmissionStateChanged(IRadio::TransmissionState n
 
 void Ieee80211MacReception::setNav(simtime_t navInterval)
 {
-    ASSERT(navInterval > 0);
+    ASSERT(navInterval >= 0);
     if (nav->isScheduled())
     {
         simtime_t oldNav = nav->getArrivalTime() - simTime();
@@ -89,8 +89,13 @@ void Ieee80211MacReception::setNav(simtime_t navInterval)
             return;
         cancelEvent(nav);
     }
-    EV_INFO << "Setting NAV to " << navInterval << std::endl;
-    scheduleAt(simTime() + navInterval, nav);
+    if (navInterval > 0)
+    {
+        EV_INFO << "Setting NAV to " << navInterval << std::endl;
+        scheduleAt(simTime() + navInterval, nav);
+    }
+    else
+        EV_INFO << "Frame duration field is 0" << std::endl; // e.g. Cf-End frame
 }
 
 Ieee80211MacReception::~Ieee80211MacReception()
