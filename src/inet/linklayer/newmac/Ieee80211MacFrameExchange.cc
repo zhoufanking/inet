@@ -16,6 +16,7 @@
 #include "Ieee80211MacFrameExchange.h"
 #include "inet/common/FSMA.h"
 #include "Ieee80211MacTransmission.h"
+#include "Ieee80211UpperMac.h"
 
 namespace inet {
 namespace ieee80211 {
@@ -100,7 +101,7 @@ void Ieee80211SendDataWithAckFrameExchange::transmitDataFrame()
 {
     cw = cwMin;
     retryCount = 0;
-    mac->transmission->transmitContentionFrame(frame, ifs, cw);
+    mac->transmission->transmitContentionFrame(frame, ifs, getUpperMac()->getEIFS(), cw); // FIXME: eifs
 }
 
 void Ieee80211SendDataWithAckFrameExchange::retryDataFrame()
@@ -109,7 +110,7 @@ void Ieee80211SendDataWithAckFrameExchange::retryDataFrame()
         cw = ((cw+1)<<1)-1;
     retryCount++;
     frame->setRetry(true);
-    mac->transmission->transmitContentionFrame(frame, ifs, cw);
+    mac->transmission->transmitContentionFrame(frame, ifs, getUpperMac()->getEIFS(), cw); // FIXME: eifs
 }
 
 void Ieee80211SendDataWithAckFrameExchange::scheduleAckTimeout()
@@ -199,7 +200,7 @@ void Ieee80211SendRtsCtsFrameExchangeXXX::transmitRtsFrame()
 {
     cw = cwMin;
     retryCount = 0;
-    mac->transmission->transmitContentionFrame(rtsFrame, ifs, cw);
+    mac->transmission->transmitContentionFrame(rtsFrame, ifs, getUpperMac()->getEIFS(), cw); // FIXME: eifs
 }
 
 void Ieee80211SendRtsCtsFrameExchangeXXX::retryRtsFrame()
@@ -207,7 +208,7 @@ void Ieee80211SendRtsCtsFrameExchangeXXX::retryRtsFrame()
     if (cw < cwMax)
         cw = ((cw+1)<<1)-1;
     retryCount++;
-    mac->transmission->transmitContentionFrame(rtsFrame, ifs, cw);
+    mac->transmission->transmitContentionFrame(rtsFrame, ifs, getUpperMac()->getEIFS(), cw); // FIXME: eifs
 }
 
 void Ieee80211SendRtsCtsFrameExchangeXXX::scheduleCtsTimeout()
