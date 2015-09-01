@@ -67,8 +67,6 @@ class Ieee80211UpperMac : public Ieee80211MacPlugin, public Ieee80211FrameExchan
         void sendAck(Ieee80211DataOrMgmtFrame *frame);
         void sendCts(Ieee80211RTSFrame *frame);
 
-        /** @brief Returns true if message destination address is ours */
-        virtual bool isForUs(Ieee80211Frame *msg) const;
         /** @brief Returns true if message is a broadcast message */
         virtual bool isBroadcast(Ieee80211Frame *msg) const;
 
@@ -81,6 +79,8 @@ class Ieee80211UpperMac : public Ieee80211MacPlugin, public Ieee80211FrameExchan
         virtual simtime_t getEIFS() const; // TODO
         virtual simtime_t getPIFS() const; // TODO
         virtual simtime_t getRIFS() const; // TODO
+        /** @brief Returns true if message destination address is ours */
+        virtual bool isForUs(Ieee80211Frame *msg) const; // TODO
 
         void upperFrameReceived(Ieee80211DataOrMgmtFrame *frame);
         void lowerFrameReceived(Ieee80211Frame *frame);
