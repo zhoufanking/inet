@@ -22,14 +22,16 @@
 #include "Ieee80211MacFrameExchange.h"
 #include "Ieee80211MacAdvancedFrameExchange.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
+#include "Ieee80211MacTransmission.h"
 
 namespace inet {
 
 namespace ieee80211 {
 
 class Ieee80211NewMac;
+class ITransmissionCompleteCallback;
 
-class Ieee80211UpperMac : public Ieee80211MacPlugin, public Ieee80211FrameExchange::IFinishedCallback
+class Ieee80211UpperMac : public Ieee80211MacPlugin, public Ieee80211FrameExchange::IFinishedCallback, public ITransmissionCompleteCallback
 {
     public:
         typedef std::list<Ieee80211DataOrMgmtFrame*> Ieee80211DataOrMgmtFrameList;
@@ -84,7 +86,7 @@ class Ieee80211UpperMac : public Ieee80211MacPlugin, public Ieee80211FrameExchan
 
         void upperFrameReceived(Ieee80211DataOrMgmtFrame *frame);
         void lowerFrameReceived(Ieee80211Frame *frame);
-        void transmissionFinished(); // callback for MAC
+        void transmissionComplete(Ieee80211MacTransmission *tx); // callback for MAC
 
         Ieee80211UpperMac(Ieee80211NewMac *mac);
         ~Ieee80211UpperMac();

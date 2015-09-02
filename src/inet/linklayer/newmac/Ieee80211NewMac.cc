@@ -298,16 +298,17 @@ void Ieee80211NewMac::sendDownPendingRadioConfigMsg()
     }
 }
 
-void Ieee80211NewMac::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t deferDuration)
+void Ieee80211NewMac::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t deferDuration, ITransmissionCompleteCallback *transmissionCompleteCallback)
 {
     scheduleAt(simTime() + deferDuration, endImmediateIFS);
     immediateFrame = frame;
+    this->transmissionCompleteCallback = transmissionCompleteCallback;
 }
 
 void Ieee80211NewMac::transmissionStateChanged(IRadio::TransmissionState transmissionState)
 {
     if (immediateFrameTransmission && transmissionState == IRadio::TRANSMISSION_STATE_IDLE)
-        upperMac->transmissionFinished();  //TODO instead: callback->transmissionComplete(nullptr);
+        transmissionCompleteCallback->transmissionComplete(nullptr);
 }
 
 simtime_t Ieee80211NewMac::getSlotTime() const

@@ -45,6 +45,7 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
 
     protected:
         Ieee80211Frame *frame = nullptr;
+        ITransmissionCompleteCallback *transmissionCompleteCallback = nullptr;
         simtime_t deferDuration = SIMTIME_ZERO;
         simtime_t eifs = SIMTIME_ZERO;
         int backoffSlots = 0;
@@ -71,7 +72,7 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
         void handleMessage(cMessage *msg);
 
     public:
-        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cw); //TODO add eifs parameter! TODO also add ITransmissionCompleteCallback* as parameter!!!
+        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cw, ITransmissionCompleteCallback *transmissionCompleteCallback);
         void mediumStateChanged(bool mediumFree);
         void transmissionStateChanged(IRadio::TransmissionState transmissionState);
         void lowerFrameReceived(bool isFcsOk); //TODO on receiving a frame with wrong FCS, we need to switch from DIFS to EIFS (ie. from ifs parameter to eifs parameter)!

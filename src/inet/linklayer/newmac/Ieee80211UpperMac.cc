@@ -131,13 +131,13 @@ Ieee80211DataOrMgmtFrame *Ieee80211UpperMac::buildBroadcastFrame(Ieee80211DataOr
 void Ieee80211UpperMac::sendAck(Ieee80211DataOrMgmtFrame* frame)
 {
     Ieee80211ACKFrame *ackFrame = buildACKFrame(frame);
-    mac->transmitImmediateFrame(ackFrame, getSIFS());
+    mac->transmitImmediateFrame(ackFrame, getSIFS(), this);
 }
 
 void Ieee80211UpperMac::sendCts(Ieee80211RTSFrame* frame)
 {
     Ieee80211CTSFrame *ctsFrame = buildCtsFrame(frame);
-    mac->transmitImmediateFrame(ctsFrame, getSIFS());
+    mac->transmitImmediateFrame(ctsFrame, getSIFS(), this);
 }
 
 Ieee80211CTSFrame* Ieee80211UpperMac::buildCtsFrame(Ieee80211RTSFrame* rtsFrame)
@@ -209,10 +209,14 @@ void Ieee80211UpperMac::frameExchangeFinished(Ieee80211FrameExchange* what, bool
     }
 }
 
-void Ieee80211UpperMac::transmissionFinished()
+void Ieee80211UpperMac::transmissionComplete(Ieee80211MacTransmission *tx)
 {
-   if (frameExchange) // TODO:
+   if (tx)
+   {
+       // TODO: Select the corresponding frame exchange to notify it
        frameExchange->transmissionFinished();
+   }
+   else ; // Finished immediate frame tx
 }
 
 simtime_t Ieee80211UpperMac::getSIFS() const

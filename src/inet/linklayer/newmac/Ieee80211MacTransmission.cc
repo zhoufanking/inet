@@ -35,7 +35,6 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
         return;
     logState();
 //    emit(stateSignal, fsm.getState()); TODO
-
     FSMA_Switch(fsm)
     {
         FSMA_State(IDLE)
@@ -100,7 +99,7 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
             FSMA_Event_Transition(TxFinished,
                                   event == MEDIUM_STATE_CHANGED && transmissionState == IRadio::TRANSMISSION_STATE_IDLE,
                                   IDLE,
-                                  mac->upperMac->transmissionFinished();  //TODO instead: callback->transmissionComplete(this);
+                                  transmissionCompleteCallback->transmissionComplete(this);
             );
         }
     }
@@ -109,11 +108,12 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
     // emit(stateSignal, fsm.getState()); TODO
 }
 
-void Ieee80211MacTransmission::transmitContentionFrame(Ieee80211Frame* frame, simtime_t deferDuration, simtime_t eifs, int cw)
+void Ieee80211MacTransmission::transmitContentionFrame(Ieee80211Frame* frame, simtime_t deferDuration, simtime_t eifs, int cw, ITransmissionCompleteCallback *transmissionCompleteCallback)
 {
     ASSERT(fsm.getState() == IDLE);
     this->frame = frame;
     this->deferDuration = deferDuration;
+    this->transmissionCompleteCallback = transmissionCompleteCallback;
     backoffSlots = intrand(cw + 1);
     handleWithFSM(START_TRANSMISSION, frame);
 }
