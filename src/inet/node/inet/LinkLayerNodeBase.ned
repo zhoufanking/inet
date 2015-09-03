@@ -51,6 +51,8 @@ module LinkLayerNodeBase extends NodeBase
     submodules:
         interfaceTable: InterfaceTable {
             parameters:
+                nicPosXMin = 250;
+                nicPosXMax = 850;
                 @display("p=100,550;is=s");
         }
         pcapRecorder: PcapRecorder if hasPcapRecorder {
