@@ -79,7 +79,7 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
         //TODO also add a switchToReception() method? because switching takes time, so we dont automatically switch to tx after completing a transmission! (as we may want to transmit immediate frames afterwards)
         void mediumStateChanged(bool mediumFree);
         void transmissionStateChanged(IRadio::TransmissionState transmissionState);
-        void lowerFrameReceived(bool isFcsOk); //TODO on receiving a frame with wrong FCS, we need to switch from DIFS to EIFS (ie. from ifs parameter to eifs parameter)!
+        void lowerFrameReceived(bool isFcsOk);
         Ieee80211MacTransmission(Ieee80211NewMac *mac);
         ~Ieee80211MacTransmission();
 };
