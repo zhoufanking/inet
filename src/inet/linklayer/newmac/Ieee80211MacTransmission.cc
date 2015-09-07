@@ -40,8 +40,13 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
         FSMA_State(IDLE)
         {
             FSMA_Enter(mac->sendDownPendingRadioConfigMsg());
-            FSMA_Event_Transition(Data-Ready,
-                                  event == START_TRANSMISSION && mediumFree,
+            FSMA_Event_Transition(Ready-To-Transmit,
+                                  event == START_TRANSMISSION && mediumFree && !isIFSNecessary(),
+                                  TRANSMIT,
+                                  ;
+            );
+            FSMA_Event_Transition(Need-IFS-Before-Transmit,
+                                  event == START_TRANSMISSION && mediumFree && isIFSNecessary(),
                                   WAIT_IFS,
                                   ;
             );
@@ -62,7 +67,7 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
         }
         FSMA_State(WAIT_IFS)
         {
-            FSMA_Enter(waitIFS(simTime() - channelBecameFree));
+            FSMA_Enter(scheduleIFS());
             FSMA_Event_Transition(Backoff,
                                   event == TIMER && !endIFS->isScheduled() && !endEIFS->isScheduled(),
                                   BACKOFF,
@@ -158,12 +163,14 @@ void Ieee80211MacTransmission::scheduleEIFSPeriod(simtime_t duration)
     scheduleAt(simTime() + duration, endEIFS);
 }
 
-void Ieee80211MacTransmission::waitIFS(simtime_t elapsedFreeChannelTime)
+void Ieee80211MacTransmission::scheduleIFS()
 {
     ASSERT(mediumFree);
-    scheduleIFSPeriod(elapsedFreeChannelTime < deferDuration ? deferDuration - elapsedFreeChannelTime : 0);
-    if (useEIFS)
-        scheduleEIFSPeriod(elapsedFreeChannelTime < eifs ? eifs - elapsedFreeChannelTime : 0);
+    simtime_t elapsedFreeChannelTime = simTime() - channelBecameFree;
+    if (deferDuration > elapsedFreeChannelTime)
+        scheduleIFSPeriod(deferDuration - elapsedFreeChannelTime);
+    if (useEIFS && eifs > elapsedFreeChannelTime)
+        scheduleEIFSPeriod(eifs - elapsedFreeChannelTime);
     useEIFS = false;
 }
 
@@ -183,6 +190,12 @@ void Ieee80211MacTransmission::scheduleBackoffPeriod(int backoffSlots)
 void Ieee80211MacTransmission::logState()
 {
     EV  << "state information: " << "state = " << fsm.getStateName() << ", backoffPeriod = " << backoffPeriod << endl;
+}
+
+bool Ieee80211MacTransmission::isIFSNecessary()
+{
+    simtime_t elapsedFreeChannelTime = simTime() - channelBecameFree;
+    return elapsedFreeChannelTime < deferDuration || (useEIFS && elapsedFreeChannelTime < eifs);
 }
 
 Ieee80211MacTransmission::~Ieee80211MacTransmission()

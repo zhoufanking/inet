@@ -66,13 +66,14 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
 
     protected:
         void handleWithFSM(EventType event, cMessage *msg);
-        void waitIFS(simtime_t elapsedFreeChannelTime);
+        void scheduleIFS();
         void scheduleIFSPeriod(simtime_t deferDuration);
         void scheduleEIFSPeriod(simtime_t deferDuration);
         void updateBackoffPeriod();
         void scheduleBackoffPeriod(int backoffPeriod);
         void logState();
         void handleMessage(cMessage *msg);
+        bool isIFSNecessary();
 
     public:
         void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cw, ITransmissionCompleteCallback *transmissionCompleteCallback); //TODO ifs, eifs, cwMin, cwMax should become parameters of Transmit; and add a retryLastContentionFrame() call!
