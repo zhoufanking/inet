@@ -196,7 +196,7 @@ void Ieee80211MacTransmission::logState()
 void Ieee80211MacTransmission::retryLastContentionFrame() // TODO
 {
     ASSERT(fsm.getState() == IDLE);
-    EV_INFO << "Retry last contention frame" << std::endl;
+    EV_INFO << "Retry last contention frame" << std::endl;  //FIXME double contention window!!!!
     backoffSlots = intrand(cw + 1);
     handleWithFSM(START_TRANSMISSION, frame);
 }
