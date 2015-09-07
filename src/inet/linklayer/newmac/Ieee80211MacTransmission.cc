@@ -62,11 +62,7 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
         }
         FSMA_State(WAIT_IFS)
         {
-            FSMA_Enter(
-                    scheduleIFSPeriod(deferDuration);
-                    if (useEIFS)
-                        scheduleEIFSPeriod(eifs);
-            );
+            FSMA_Enter(waitIFS(simTime() - channelBecameFree));
             FSMA_Event_Transition(Backoff,
                                   event == TIMER && !endIFS->isScheduled() && !endEIFS->isScheduled(),
                                   BACKOFF,
@@ -121,6 +117,7 @@ void Ieee80211MacTransmission::transmitContentionFrame(Ieee80211Frame* frame, si
 void Ieee80211MacTransmission::mediumStateChanged(bool mediumFree)
 {
     this->mediumFree = mediumFree;
+    channelBecameFree = simTime();
     handleWithFSM(MEDIUM_STATE_CHANGED, nullptr);
 }
 
@@ -155,10 +152,18 @@ void Ieee80211MacTransmission::scheduleIFSPeriod(simtime_t deferDuration)
     scheduleAt(simTime() + deferDuration, endIFS);
 }
 
-void Ieee80211MacTransmission::scheduleEIFSPeriod(simtime_t deferDuration)
+void Ieee80211MacTransmission::scheduleEIFSPeriod(simtime_t duration)
 {
     cancelEvent(endEIFS);
-    scheduleAt(simTime() + deferDuration, endEIFS);
+    scheduleAt(simTime() + duration, endEIFS);
+}
+
+void Ieee80211MacTransmission::waitIFS(simtime_t elapsedFreeChannelTime)
+{
+    ASSERT(mediumFree);
+    scheduleIFSPeriod(elapsedFreeChannelTime < deferDuration ? deferDuration - elapsedFreeChannelTime : 0);
+    if (useEIFS)
+        scheduleEIFSPeriod(elapsedFreeChannelTime < eifs ? eifs - elapsedFreeChannelTime : 0);
     useEIFS = false;
 }
 
@@ -195,3 +200,4 @@ Ieee80211MacTransmission::~Ieee80211MacTransmission()
 }
 
 } //namespace
+

@@ -45,11 +45,11 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
         enum EventType { LOWER_FRAME, MEDIUM_STATE_CHANGED, TIMER, START_TRANSMISSION };
 
     protected:
-        //TODO: simtime_t channelBecameFree; -- IFS should count from this time!
         Ieee80211Frame *frame = nullptr;
         ITransmissionCompleteCallback *transmissionCompleteCallback = nullptr;
         simtime_t deferDuration = SIMTIME_ZERO;
         simtime_t eifs = SIMTIME_ZERO;
+        simtime_t channelBecameFree = SIMTIME_ZERO;
         int backoffSlots = 0;
         bool mediumFree = false;
         bool useEIFS = false;
@@ -66,6 +66,7 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
 
     protected:
         void handleWithFSM(EventType event, cMessage *msg);
+        void waitIFS(simtime_t elapsedFreeChannelTime);
         void scheduleIFSPeriod(simtime_t deferDuration);
         void scheduleEIFSPeriod(simtime_t deferDuration);
         void updateBackoffPeriod();
