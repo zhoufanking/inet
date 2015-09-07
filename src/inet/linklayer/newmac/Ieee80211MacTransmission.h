@@ -53,6 +53,7 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
         int backoffSlots = 0;
         bool mediumFree = false;
         bool useEIFS = false;
+        int cw = 0;
         IRadio::TransmissionState transmissionState = IRadio::TRANSMISSION_STATE_UNDEFINED;
         cFSM fsm;
         /** End of the backoff period */
@@ -76,7 +77,8 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
         bool isIFSNecessary();
 
     public:
-        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cw, ITransmissionCompleteCallback *transmissionCompleteCallback); //TODO ifs, eifs, cwMin, cwMax should become parameters of Transmit; and add a retryLastContentionFrame() call!
+        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cw, ITransmissionCompleteCallback *transmissionCompleteCallback); //TODO ifs, eifs, cwMin, cwMax should become parameters of Transmit
+        void retryLastContentionFrame();
         //TODO also add a switchToReception() method? because switching takes time, so we dont automatically switch to tx after completing a transmission! (as we may want to transmit immediate frames afterwards)
         void mediumStateChanged(bool mediumFree);
         void transmissionStateChanged(IRadio::TransmissionState transmissionState);

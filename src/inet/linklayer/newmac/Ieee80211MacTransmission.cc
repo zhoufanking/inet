@@ -115,6 +115,7 @@ void Ieee80211MacTransmission::transmitContentionFrame(Ieee80211Frame* frame, si
     this->frame = frame;
     this->deferDuration = deferDuration;
     this->transmissionCompleteCallback = transmissionCompleteCallback;
+    this->cw = cw;
     backoffSlots = intrand(cw + 1);
     handleWithFSM(START_TRANSMISSION, frame);
 }
@@ -190,6 +191,14 @@ void Ieee80211MacTransmission::scheduleBackoffPeriod(int backoffSlots)
 void Ieee80211MacTransmission::logState()
 {
     EV  << "state information: " << "state = " << fsm.getStateName() << ", backoffPeriod = " << backoffPeriod << endl;
+}
+
+void Ieee80211MacTransmission::retryLastContentionFrame() // TODO
+{
+    ASSERT(fsm.getState() == IDLE);
+    EV_INFO << "Retry last contention frame" << std::endl;
+    backoffSlots = intrand(cw + 1);
+    handleWithFSM(START_TRANSMISSION, frame);
 }
 
 bool Ieee80211MacTransmission::isIFSNecessary()
