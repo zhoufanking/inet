@@ -57,12 +57,15 @@ int ProtocolGroup::getProtocolNumber(const Protocol *protocol) const
         throw cRuntimeError("Unknown protocol: id = %d, name = %s", protocol->getId(), protocol->getName());
 }
 
+
+//FIXME use constants instead of numbers
+
 // excerpt from http://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml
 const ProtocolGroup ProtocolGroup::ethertype("ethertype", {
     { 0x0800, &Protocol::ipv4 },
     { 0x0806, &Protocol::arp},
     { 0x86DD, &Protocol::ipv6 },
-    { 0x86FF, &Protocol::gnp },
+    { 0x86FF, &Protocol::gnp },         // ETHERTYPE_INET_GENERIC
 });
 
 // excerpt from http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
