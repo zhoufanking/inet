@@ -8,10 +8,10 @@
 
 #include <cassert>
 
-#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
-#include "inet/networklayer/common/SimpleNetworkProtocolControlInfo.h"
-#include "inet/networklayer/contract/IL3AddressType.h"
 #include "inet/linklayer/common/MACAddress.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
+#include "inet/networklayer/contract/generic/GenericNetworkProtocolControlInfo.h"
+#include "inet/networklayer/contract/IL3AddressType.h"
 
 namespace inet {
 
@@ -330,15 +330,15 @@ void ProbabilisticBroadcast::insertNewMessage(ProbabilisticBroadcastDatagram *pk
     }
 }
 
-cPacket *ProbabilisticBroadcast::decapsMsg(ProbabilisticBroadcastDatagram *msg)
+cPacket *ProbabilisticBroadcast::decapsMsg(ProbabilisticBroadcastDatagram *datagram)
 {
-    cPacket *m = msg->decapsulate();
-    SimpleNetworkProtocolControlInfo *const controlInfo = new SimpleNetworkProtocolControlInfo();
-    controlInfo->setSourceAddress(msg->getSrcAddr());
-    controlInfo->setProtocol(msg->getTransportProtocol());
-    m->setControlInfo(controlInfo);
-    delete msg;
-    return m;
+    GenericNetworkProtocolControlInfo *const controlInfo = new GenericNetworkProtocolControlInfo();
+    controlInfo->setSourceAddress(datagram->getSrcAddr());
+    controlInfo->setProtocol(datagram->getTransportProtocol());
+    cPacket *transportPacket = datagram->decapsulate();
+    transportPacket->setControlInfo(controlInfo);
+    delete datagram;
+    return transportPacket;
 }
 
 /**
@@ -348,6 +348,7 @@ cObject *ProbabilisticBroadcast::setDownControlInfo(cMessage *const pMsg, const 
 {
     SimpleLinkLayerControlInfo *const cCtrlInfo = new SimpleLinkLayerControlInfo();
     cCtrlInfo->setDest(pDestAddr);
+    cCtrlInfo->setProtocol(ETHERTYPE_INET_GENERIC);
     pMsg->setControlInfo(cCtrlInfo);
     return cCtrlInfo;
 }

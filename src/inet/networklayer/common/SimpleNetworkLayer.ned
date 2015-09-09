@@ -17,8 +17,10 @@
 
 package inet.networklayer.common;
 
+import inet.common.MessageDispatcher;
 import inet.networklayer.contract.INetworkLayer;
 import inet.networklayer.contract.INetworkProtocol;
+
 
 //
 // This module provides a simple network layer.
@@ -29,7 +31,7 @@ module SimpleNetworkLayer like INetworkLayer
         string interfaceTableModule;
         string networkProtocolType;
         *.interfaceTableModule = default(absPath(interfaceTableModule));
-        @display("i=block/fork");
+        @display("i=block/fork;bgb=575,267");
 
     gates:
         input ifIn @labels(INetworkDatagram);
@@ -40,20 +42,27 @@ module SimpleNetworkLayer like INetworkLayer
     submodules:
         np: <networkProtocolType> like INetworkProtocol {
             parameters:
-                @display("p=85,95;q=queue");
+                @display("p=392,190;q=queue");
+        }
+        dp: MessageDispatcher {
+            parameters:
+                @display("b=300,5,,,,1;p=392,123");
         }
         echo: EchoProtocol {
             parameters:
-                @display("p=160,63");
+                @display("p=311,60");
         }
 
     connections allowunconnected:
-        np.upperLayerOut++ --> { @display("m=n"); } --> transportOut;
-        np.upperLayerIn++ <-- { @display("m=n"); } <-- transportIn;
+        dp.upperLayerOut++ --> { @display("m=n"); } --> transportOut;
+        dp.upperLayerIn++ <-- { @display("m=n"); } <-- transportIn;
 
-        np.upperLayerOut++ --> echo.localIn;
-        np.upperLayerIn++ <-- echo.sendOut;
+        np.transportOut --> dp.lowerLayerIn++;
+        np.transportIn <-- dp.lowerLayerOut++;
 
-        ifIn --> { @display("m=s"); } --> np.lowerLayerIn++;
-        np.lowerLayerOut++ --> { @display("m=s"); } --> ifOut;
+        dp.upperLayerOut++ --> echo.localIn;
+        dp.upperLayerIn++ <-- echo.sendOut;
+
+        ifIn --> { @display("m=s"); } --> np.queueIn;
+        np.queueOut --> { @display("m=s"); } --> ifOut;
 }

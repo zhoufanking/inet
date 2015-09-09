@@ -18,9 +18,10 @@
 package inet.node.inet;
 
 import inet.common.MessageDispatcher;
-import inet.networklayer.generic.GenericNetworkLayer;
+import inet.networklayer.contract.INetworkLayer;
 import inet.networklayer.ipv4.IPv4NetworkLayer;
 import inet.networklayer.ipv6.IPv6NetworkLayer;
+
 
 //
 // This module contains the network layer infrastructure for network nodes.
@@ -49,7 +50,7 @@ module NetworkLayerNodeBase extends LinkLayerNodeBase
             parameters:
                 @display("p=500,500;q=queue");
         }
-        gn: GenericNetworkLayer if hasGn {
+        gn: <default("GenericNetworkLayer")> like INetworkLayer if hasGn {
             parameters:
                 @display("p=600,500;q=queue");
         }
