@@ -17,6 +17,7 @@
 
 package inet.networklayer.wiseroute;
 
+import inet.common.MessageDispatcher;
 import inet.networklayer.arp.generic.GenericARP;
 import inet.networklayer.common.EchoProtocol;
 import inet.networklayer.contract.INetworkLayer;
@@ -30,7 +31,7 @@ module WiseRouteNetworkLayer like INetworkLayer
     parameters:
         string interfaceTableModule;
         *.interfaceTableModule = default(absPath(interfaceTableModule));
-        @display("i=block/fork");
+        @display("i=block/fork;bgb=382,240");
 
     gates:
         input ifIn @labels(INetworkDatagram);
@@ -40,25 +41,32 @@ module WiseRouteNetworkLayer like INetworkLayer
 
     submodules:
         arp: GenericARP {
-            @display("p=50,50");
+            @display("p=129,169");
         }
         np: WiseRoute {
             parameters:
                 arpModule = "^.arp";
-                @display("p=85,95;q=queue");
+                @display("p=223,177;q=queue");
+        }
+        dp: MessageDispatcher {
+            parameters:
+                @display("b=300,5,,,,1;p=223,100");
         }
         echo: EchoProtocol {
             parameters:
-                @display("p=160,63");
+                @display("p=129,42");
         }
 
     connections allowunconnected:
-        np.upperLayerIn++ <-- { @display("m=n"); } <-- transportIn;
-        np.upperLayerOut++ --> { @display("m=n"); } --> transportOut;
+        dp.upperLayerIn++ <-- { @display("m=n"); } <-- transportIn;
+        dp.upperLayerOut++ --> { @display("m=n"); } --> transportOut;
 
-        np.upperLayerOut++ --> echo.localIn;
-        np.upperLayerIn++ <-- echo.sendOut;
+        dp.upperLayerOut++ --> echo.localIn;
+        dp.upperLayerIn++ <-- echo.sendOut;
 
-        ifIn --> { @display("m=s"); } --> np.lowerLayerIn++;
-        np.lowerLayerOut++ --> { @display("m=s"); } --> ifOut;
+        np.transportOut --> dp.lowerLayerIn++;
+        np.transportIn <-- dp.lowerLayerOut++;
+
+        ifIn --> { @display("m=s"); } --> np.queueIn;
+        np.queueOut --> { @display("m=s"); } --> ifOut;
 }
