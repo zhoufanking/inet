@@ -102,27 +102,22 @@ void EtherEncap::processPacketFromHigherLayer(cPacket *msg)
     EV_DETAIL << "Encapsulating higher layer packet `" << msg->getName() << "' for MAC\n";
 
     IMACProtocolControlInfo *controlInfo = check_and_cast<IMACProtocolControlInfo *>(msg->removeControlInfo());
-    Ieee802Ctrl *etherctrl = dynamic_cast<Ieee802Ctrl *>(controlInfo);
     EtherFrame *frame = nullptr;
 
     if (useSNAP) {
         EtherFrameWithSNAP *snapFrame = new EtherFrameWithSNAP(msg->getName());
-
         snapFrame->setSrc(controlInfo->getSourceAddress());    // if blank, will be filled in by MAC
         snapFrame->setDest(controlInfo->getDestinationAddress());
         snapFrame->setOrgCode(0);
-        if (etherctrl)
-            snapFrame->setLocalcode(etherctrl->getEtherType());
+        snapFrame->setLocalcode(controlInfo->getNetworkProtocol());
         snapFrame->setByteLength(ETHER_MAC_FRAME_BYTES + ETHER_LLC_HEADER_LENGTH + ETHER_SNAP_HEADER_LENGTH);
         frame = snapFrame;
     }
     else {
         EthernetIIFrame *eth2Frame = new EthernetIIFrame(msg->getName());
-
         eth2Frame->setSrc(controlInfo->getSourceAddress());    // if blank, will be filled in by MAC
         eth2Frame->setDest(controlInfo->getDestinationAddress());
-        if (etherctrl)
-            eth2Frame->setEtherType(etherctrl->getEtherType());
+        eth2Frame->setEtherType(controlInfo->getNetworkProtocol());
         eth2Frame->setByteLength(ETHER_MAC_FRAME_BYTES);
         frame = eth2Frame;
     }
