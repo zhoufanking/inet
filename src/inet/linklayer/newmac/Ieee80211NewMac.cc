@@ -73,8 +73,6 @@ void Ieee80211NewMac::initialize(int stage)
         upperMac = new Ieee80211UpperMac(this);
         reception = new Ieee80211MacReception(this);
         transmission = new Ieee80211MacTransmission(this);
-        endImmediateIFS = new cMessage("Immediate IFS");
-        immediateFrameDuration = new cMessage("Immediate Frame Duration");
 
         // initialize parameters
         double bitrate = par("bitrate");
@@ -187,12 +185,8 @@ void Ieee80211NewMac::handleSelfMessage(cMessage *msg)
     EV << "received self message: " << msg << endl;
     if (msg->getContextPointer() != nullptr)
         ((Ieee80211MacPlugin *)msg->getContextPointer())->handleMessage(msg);
-    else if (msg == endImmediateIFS)
-    {
-        immediateFrameTransmission = true;
-        configureRadioMode(IRadio::RADIO_MODE_TRANSMITTER);
-        sendDown(immediateFrame);
-    }
+    else
+        ASSERT(false);
 }
 
 void Ieee80211NewMac::handleUpperPacket(cPacket *msg)
@@ -274,33 +268,19 @@ void Ieee80211NewMac::configureRadioMode(IRadio::RadioMode radioMode)
     }
 }
 
-void Ieee80211NewMac::sendDataFrame(Ieee80211Frame *frameToSend)
+void Ieee80211NewMac::sendFrame(Ieee80211Frame *frame)
 {
-    EV << "sending Data frame\n";
+    EV << "sending frame\n";
     configureRadioMode(IRadio::RADIO_MODE_TRANSMITTER);
-    sendDown(frameToSend->dup());
+    sendDown(frame);
 }
 
 void Ieee80211NewMac::sendDownPendingRadioConfigMsg()
 {
-    if (pendingRadioConfigMsg != NULL)
-    {
+    if (pendingRadioConfigMsg != NULL) {
         sendDown(pendingRadioConfigMsg);
         pendingRadioConfigMsg = NULL;
     }
-}
-
-void Ieee80211NewMac::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t deferDuration, ITransmissionCompleteCallback *transmissionCompleteCallback)
-{
-    scheduleAt(simTime() + deferDuration, endImmediateIFS);
-    immediateFrame = frame;
-    this->transmissionCompleteCallback = transmissionCompleteCallback;
-}
-
-void Ieee80211NewMac::transmissionStateChanged(IRadio::TransmissionState transmissionState)
-{
-    if (immediateFrameTransmission && transmissionState == IRadio::TRANSMISSION_STATE_IDLE)
-        transmissionCompleteCallback->transmissionComplete(nullptr);
 }
 
 // FIXME

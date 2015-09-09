@@ -142,7 +142,7 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
         }
         FSMA_State(TRANSMIT)
         {
-            FSMA_Enter(mac->sendDataFrame(frame));
+            FSMA_Enter(mac->sendFrame(frame->dup()));
             FSMA_Event_Transition(TxFinished,
                                   event == MEDIUM_STATE_CHANGED && transmissionState == IRadio::TRANSMISSION_STATE_IDLE,
                                   IDLE,

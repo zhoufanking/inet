@@ -88,12 +88,6 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
 
   protected:
     IRadio *radio = nullptr;
-    cMessage *endImmediateIFS = nullptr;
-    cMessage *immediateFrameDuration = nullptr;
-    Ieee80211Frame *immediateFrame = nullptr;
-    ITransmissionCompleteCallback *transmissionCompleteCallback = nullptr;
-    IRadio::TransmissionState transmissionState = IRadio::TRANSMISSION_STATE_UNDEFINED;
-    bool immediateFrameTransmission = false;
 
   protected:
     /** @name Statistics */
@@ -118,8 +112,6 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
     Ieee80211NewMac();
     virtual ~Ieee80211NewMac();
     //@}
-
-    void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ITransmissionCompleteCallback *transmissionCompleteCallback);
 
   protected:
     /**
@@ -156,7 +148,7 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
 
   public:
 
-    virtual void sendDataFrame(Ieee80211Frame *frameToSend);
+    virtual void sendFrame(Ieee80211Frame *frameToSend);
    /** @brief Send down the change channel message to the physical layer if there is any. */
     virtual void sendDownPendingRadioConfigMsg();
     //@}
