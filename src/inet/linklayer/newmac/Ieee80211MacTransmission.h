@@ -26,17 +26,22 @@ namespace ieee80211 {
 
 class Ieee80211MacTransmission;
 
-class IIeee80211Tx {
-    public:
-        class ICallback {
-            public:
-               virtual void transmissionComplete(IIeee80211Tx *tx) = 0; // tx=nullptr if frame was transmitted by MAC itself (immediate frame!), not a tx process
-        };
+//class IIeee80211Tx {
+//    public:
+//        class ICallback {
+//            public:
+//               virtual void transmissionComplete(IIeee80211Tx *tx) = 0; // tx=nullptr if frame was transmitted by MAC itself (immediate frame!), not a tx process
+//        };
+//
+//        virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, int retryCount, ITransmissionCompleteCallback *transmissionCompleteCallback) = 0;
+//        virtual void mediumStateChanged(bool mediumFree) = 0;
+//        virtual void transmissionStateChanged(IRadio::TransmissionState transmissionState) = 0;
+//        virtual void lowerFrameReceived(bool isFcsOk) = 0;
+//};
 
-        virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, int retryCount, ITransmissionCompleteCallback *transmissionCompleteCallback) = 0;
-        virtual void mediumStateChanged(bool mediumFree) = 0;
-        virtual void transmissionStateChanged(IRadio::TransmissionState transmissionState) = 0;
-        virtual void lowerFrameReceived(bool isFcsOk) = 0;
+class ITransmissionCompleteCallback {
+    public:
+       virtual void transmissionComplete(Ieee80211MacTransmission *tx) = 0; // tx=nullptr if frame was transmitted by MAC itself (immediate frame!), not a tx process
 };
 
 

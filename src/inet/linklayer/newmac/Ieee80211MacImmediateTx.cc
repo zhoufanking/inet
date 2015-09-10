@@ -13,7 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include "Ieee80211MacTransmission.h"
+#include "Ieee80211MacImmediateTx.h"
 #include "Ieee80211NewMac.h"
 #include "Ieee80211UpperMac.h"
 
@@ -21,7 +21,7 @@ namespace inet {
 
 namespace ieee80211 {
 
-Ieee80211MacImmediateTx::Ieee80211MacImmediateTx(Ieee80211NewMax* mac)
+Ieee80211MacImmediateTx::Ieee80211MacImmediateTx(Ieee80211NewMac *mac) : Ieee80211MacPlugin(mac)
 {
     endImmediateIFS = new cMessage("Immediate IFS");
     immediateFrameDuration = new cMessage("Immediate Frame Duration");

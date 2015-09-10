@@ -67,6 +67,7 @@ class Ieee80211MacReception;
 class Ieee80211MacTransmission;
 class ITransmissionCompleteCallback;
 class IIeee80211MacContext;
+class Ieee80211MacImmediateTx;
 
 class INET_API Ieee80211NewMac : public MACProtocolBase
 {
@@ -75,6 +76,7 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
     Ieee80211UpperMac *upperMac = nullptr;
     Ieee80211MacReception *reception = nullptr;
     Ieee80211MacTransmission *transmission = nullptr;
+    Ieee80211MacImmediateTx *immediateTx = nullptr;
 
     IIeee80211MacContext *context = nullptr;  // owned here
 
@@ -88,6 +90,7 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
 
   protected:
     IRadio *radio = nullptr;
+    IRadio::TransmissionState transmissionState = IRadio::TransmissionState::TRANSMISSION_STATE_UNDEFINED;
 
   protected:
     /** @name Statistics */

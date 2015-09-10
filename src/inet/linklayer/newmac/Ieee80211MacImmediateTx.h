@@ -36,13 +36,15 @@ class Ieee80211MacImmediateTx : public Ieee80211MacPlugin
         IRadio::TransmissionState transmissionState = IRadio::TRANSMISSION_STATE_UNDEFINED;
         bool immediateFrameTransmission = false;
 
+    protected:
+        virtual void handleMessage(cMessage *msg);
+
     public:
         Ieee80211MacImmediateTx(Ieee80211NewMac *mac);
         ~Ieee80211MacImmediateTx();
 
         virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ITransmissionCompleteCallback *transmissionCompleteCallback);
         virtual void transmissionStateChanged(IRadio::TransmissionState transmissionState);
-        virtual void handleMessage(cMessage *msg);
 };
 
 }

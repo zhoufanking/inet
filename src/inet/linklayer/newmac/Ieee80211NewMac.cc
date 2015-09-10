@@ -24,6 +24,7 @@
 #include "Ieee80211UpperMac.h"
 #include "Ieee80211MacReception.h"
 #include "Ieee80211MacTransmission.h"
+#include "Ieee80211MacImmediateTx.h"
 #include "inet/common/INETUtils.h"
 #include "inet/common/ModuleAccess.h"
 
@@ -73,6 +74,7 @@ void Ieee80211NewMac::initialize(int stage)
         upperMac = new Ieee80211UpperMac(this);
         reception = new Ieee80211MacReception(this);
         transmission = new Ieee80211MacTransmission(this);
+        immediateTx = new Ieee80211MacImmediateTx(this);
 
         // initialize parameters
         double bitrate = par("bitrate");
@@ -249,6 +251,7 @@ void Ieee80211NewMac::receiveSignal(cComponent *source, simsignal_t signalID, lo
     {
         IRadio::TransmissionState newRadioTransmissionState = (IRadio::TransmissionState)value;
         transmission->transmissionStateChanged(newRadioTransmissionState);
+        immediateTx->transmissionStateChanged(newRadioTransmissionState);
         reception->transmissionStateChanged(newRadioTransmissionState);
         transmission->mediumStateChanged(reception->isMediumFree());
         if (transmissionState == IRadio::TRANSMISSION_STATE_TRANSMITTING && newRadioTransmissionState == IRadio::TRANSMISSION_STATE_IDLE)
