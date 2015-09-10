@@ -27,6 +27,10 @@ Ieee80211MacImmediateTx::Ieee80211MacImmediateTx(Ieee80211NewMac *mac) : Ieee802
     immediateFrameDuration = new cMessage("Immediate Frame Duration");
 }
 
+Ieee80211MacImmediateTx::~Ieee80211MacImmediateTx()
+{
+}
+
 void Ieee80211MacImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t deferDuration, ITransmissionCompleteCallback *transmissionCompleteCallback)
 {
     //TODO assert !ongoing
