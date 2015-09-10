@@ -28,6 +28,12 @@ class Ieee80211Mode;
 
 namespace ieee80211 {
 
+class Ieee80211Frame;
+class Ieee80211DataOrMgmtFrame;
+class Ieee80211ACKFrame;
+class Ieee80211RTSFrame;
+class Ieee80211CTSFrame;
+
 class IIeee80211MacContext
 {
     public:

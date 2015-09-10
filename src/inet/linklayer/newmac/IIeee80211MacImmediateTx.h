@@ -13,26 +13,31 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
+#ifndef __MAC_IIEEE80211MACIMMEDIATETX_H_
+#define __MAC_IIEEE80211MACIMMEDIATETX_H_
+
 #include "Ieee80211MacPlugin.h"
-#include "Ieee80211NewMac.h"
+#include "inet/common/FSMA.h"
+#include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 
 namespace inet {
+
 namespace ieee80211 {
 
-void Ieee80211MacPlugin::scheduleAt(simtime_t t, cMessage* msg)
+class IIeee80211MacImmediateTx
 {
-    msg->setContextPointer(this);
-    mac->scheduleAt(t, msg);
+    public:
+        class ICallback {
+            public:
+               virtual void immediateTransmissionComplete() = 0;
+        };
+
+        virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ICallback *completionCallback) = 0;
+        virtual void transmissionFinished() = 0;
+};
+
 }
 
-cMessage* Ieee80211MacPlugin::cancelEvent(cMessage* msg)
-{
-    ASSERT(msg->getContextPointer() == this);
-    mac->cancelEvent(msg);
-    return msg;
-}
+} //namespace
 
-}
-
-} /* namespace inet */
-
+#endif

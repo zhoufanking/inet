@@ -14,7 +14,7 @@
 // 
 
 #include "Ieee80211MacReception.h"
-#include "Ieee80211MacTransmission.h"
+#include "IIeee80211MacTx.h"
 #include "Ieee80211NewMac.h"
 #include "Ieee80211UpperMac.h"
 #include "Ieee80211MacContext.h"
@@ -30,13 +30,12 @@ bool Ieee80211MacReception::isFcsOk(Ieee80211Frame* frame) const
 
 Ieee80211MacReception::Ieee80211MacReception(Ieee80211NewMac* mac) : Ieee80211MacPlugin(mac)
 {
-    nav = new cMessage("NAV");
+    nendNavTimer = new cMessage("NAV");
 }
-
 
 void Ieee80211MacReception::handleMessage(cMessage* msg)
 {
-    if (msg == nav)
+    if (msg == nendNavTimer)
         EV_INFO << "The radio channel has become free according to the NAV" << std::endl;
     else
         throw cRuntimeError("Unexpected self message");
@@ -67,7 +66,7 @@ void Ieee80211MacReception::handleLowerFrame(Ieee80211Frame* frame)
 
 bool Ieee80211MacReception::isMediumFree() const
 {
-    return receptionState == IRadio::RECEPTION_STATE_IDLE && transmissionState != IRadio::TRANSMISSION_STATE_TRANSMITTING && !nav->isScheduled();
+    return receptionState == IRadio::RECEPTION_STATE_IDLE && transmissionState != IRadio::TRANSMISSION_STATE_TRANSMITTING && !nendNavTimer->isScheduled();
 }
 
 void Ieee80211MacReception::receptionStateChanged(IRadio::ReceptionState newReceptionState)
@@ -83,17 +82,17 @@ void Ieee80211MacReception::transmissionStateChanged(IRadio::TransmissionState n
 void Ieee80211MacReception::setNav(simtime_t navInterval)
 {
     ASSERT(navInterval >= 0);
-    if (nav->isScheduled())
+    if (nendNavTimer->isScheduled())
     {
-        simtime_t oldNav = nav->getArrivalTime() - simTime();
+        simtime_t oldNav = nendNavTimer->getArrivalTime() - simTime();
         if (oldNav > navInterval)
             return;
-        cancelEvent(nav);
+        cancelEvent(nendNavTimer);
     }
     if (navInterval > 0)
     {
         EV_INFO << "Setting NAV to " << navInterval << std::endl;
-        scheduleAt(simTime() + navInterval, nav);
+        scheduleAt(simTime() + navInterval, nendNavTimer);
     }
     else
         EV_INFO << "Frame duration field is 0" << std::endl; // e.g. Cf-End frame
@@ -101,8 +100,8 @@ void Ieee80211MacReception::setNav(simtime_t navInterval)
 
 Ieee80211MacReception::~Ieee80211MacReception()
 {
-    cancelEvent(nav);
-    delete nav;
+    cancelEvent(nendNavTimer);
+    delete nendNavTimer;
 }
 
 }

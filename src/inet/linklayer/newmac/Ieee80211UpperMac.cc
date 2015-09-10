@@ -15,7 +15,9 @@
 
 #include "Ieee80211UpperMac.h"
 #include "Ieee80211NewMac.h"
-#include "Ieee80211MacImmediateTx.h"
+#include "IIeee80211MacTx.h"
+#include "IIeee80211MacImmediateTx.h"
+#include "Ieee80211MacContext.h"
 #include "inet/common/ModuleAccess.h"
 #include "Ieee80211FrameExchanges.h"
 
@@ -139,7 +141,7 @@ void Ieee80211UpperMac::sendCts(Ieee80211RTSFrame* frame)
 }
 
 
-void Ieee80211UpperMac::frameExchangeFinished(Ieee80211FrameExchange* what, bool successful)
+void Ieee80211UpperMac::frameExchangeFinished(IIeee80211FrameExchange* what, bool successful)
 {
     EV_INFO << "Frame exchange finished" << std::endl;
     delete frameExchange;
@@ -153,14 +155,15 @@ void Ieee80211UpperMac::frameExchangeFinished(Ieee80211FrameExchange* what, bool
     }
 }
 
-void Ieee80211UpperMac::transmissionComplete(Ieee80211MacTransmission *tx)
+void Ieee80211UpperMac::transmissionComplete(IIeee80211MacTx *tx)
 {
-   if (tx)
-   {
-       // TODO: Select the corresponding frame exchange to notify it
-       frameExchange->transmissionFinished();
-   }
-   else ; // Finished immediate frame tx
+    // TODO: Select the corresponding frame exchange to notify it
+    frameExchange->transmissionFinished();
+}
+
+void Ieee80211UpperMac::immediateTransmissionComplete()
+{
+    // Finished immediate frame tx
 }
 
 }

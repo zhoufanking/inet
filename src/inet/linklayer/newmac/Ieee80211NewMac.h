@@ -28,17 +28,14 @@
 #include "inet/common/queue/IPassiveQueue.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Consts.h"
 #include "inet/linklayer/base/MACProtocolBase.h"
-#include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
-#include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h"
-#include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
+#include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h" //TODO not needed here
+#include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h" //TODO not needed here
 
 namespace inet {
 
 namespace ieee80211 {
 
 using namespace physicallayer;
-
-class IIeee80211MacContext;
 
 /**
  * IEEE 802.11b Media Access Control Layer.
@@ -62,12 +59,12 @@ class IIeee80211MacContext;
  * @ingroup macLayer
  */
 
-class Ieee80211UpperMac;
-class Ieee80211MacReception;
-class Ieee80211MacTransmission;
-class ITransmissionCompleteCallback;
 class IIeee80211MacContext;
-class Ieee80211MacImmediateTx;
+class IIeee80211MacTx;
+class IIeee80211MacImmediateTx;
+class Ieee80211MacReception;
+class Ieee80211UpperMac;
+class Ieee80211Frame;
 
 class INET_API Ieee80211NewMac : public MACProtocolBase
 {
@@ -75,8 +72,8 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
 
     Ieee80211UpperMac *upperMac = nullptr;
     Ieee80211MacReception *reception = nullptr;
-    Ieee80211MacTransmission *transmission = nullptr;
-    Ieee80211MacImmediateTx *immediateTx = nullptr;
+    IIeee80211MacTx *tx = nullptr;
+    IIeee80211MacImmediateTx *immediateTx = nullptr;
 
     IIeee80211MacContext *context = nullptr;  // owned here
 
@@ -159,7 +156,7 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
     virtual simtime_t getSlotTime() const;
     Ieee80211UpperMac *getUpperMac() const { return upperMac; }
     Ieee80211MacReception *getReception() const { return reception; }
-    Ieee80211MacTransmission *getTransmission() const { return transmission; }
+    IIeee80211MacTx *getTransmission() const { return tx; }
 };
 
 } // namespace ieee80211

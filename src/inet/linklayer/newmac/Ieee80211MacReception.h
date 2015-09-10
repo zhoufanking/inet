@@ -31,7 +31,7 @@ class IIeee80211MacContext;
 class Ieee80211MacReception : public Ieee80211MacPlugin
 {
     protected:
-        cMessage *nav = nullptr;
+        cMessage *nendNavTimer = nullptr;
         IRadio::ReceptionState receptionState = IRadio::RECEPTION_STATE_UNDEFINED;
         IRadio::TransmissionState transmissionState = IRadio::TRANSMISSION_STATE_UNDEFINED;
         IIeee80211MacContext *context; //TODO initialize!

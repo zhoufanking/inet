@@ -25,7 +25,8 @@ namespace ieee80211 {
 class Ieee80211NewMac;
 class Ieee80211UpperMac;
 class Ieee80211MacReception;
-class Ieee80211MacTransmission;
+class Ieee80211MacTx;
+class Ieee80211MacImmediateTx;
 
 class Ieee80211MacPlugin : public cObject
 {
@@ -33,15 +34,18 @@ class Ieee80211MacPlugin : public cObject
         Ieee80211NewMac *mac = nullptr;
 
     public:
+        Ieee80211MacPlugin(Ieee80211NewMac *mac) : mac(mac) {}
+        virtual ~Ieee80211MacPlugin() {}
+
         virtual void handleMessage(cMessage *msg) = 0;
         virtual void scheduleAt(simtime_t t, cMessage *msg);
         virtual cMessage* cancelEvent(cMessage *msg);
-        Ieee80211UpperMac *getUpperMac() { return mac->getUpperMac(); }
-        Ieee80211MacReception *getReception() { return mac->getReception(); }
-        Ieee80211MacTransmission *getTransmission() { return mac->getTransmission(); }
 
-        Ieee80211MacPlugin(Ieee80211NewMac *mac) : mac(mac) {};
-        virtual ~Ieee80211MacPlugin();
+        //TODO remove these
+        Ieee80211UpperMac *getUpperMac() { return mac->upperMac; }
+        Ieee80211MacReception *getReception() { return mac->reception; }
+        IIeee80211MacTx *getTransmission() { return mac->tx; }
+        IIeee80211MacImmediateTx *getImmediateTransmission() { return mac->immediateTx; }
 };
 
 }
