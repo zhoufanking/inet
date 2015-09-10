@@ -24,17 +24,20 @@ namespace inet {
 
 namespace ieee80211 {
 
-class Ieee80211MacTransmission;
+//TODO use
+class IIeee80211MacImmediateTx {
+    virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ITransmissionCompleteCallback *transmissionCompleteCallback) = 0;
+    virtual void transmissionFinished() = 0;
+
+};
 
 class Ieee80211MacImmediateTx : public Ieee80211MacPlugin
 {
     protected:
-        cMessage *endImmediateIFS = nullptr;
-        cMessage *immediateFrameDuration = nullptr;
-        Ieee80211Frame *immediateFrame = nullptr;
+        Ieee80211Frame *frame = nullptr;
+        cMessage *endIfsTimer = nullptr;
+        bool transmitting = false;
         ITransmissionCompleteCallback *transmissionCompleteCallback = nullptr;
-        IRadio::TransmissionState transmissionState = IRadio::TRANSMISSION_STATE_UNDEFINED;
-        bool immediateFrameTransmission = false;
 
     protected:
         virtual void handleMessage(cMessage *msg);
@@ -44,7 +47,7 @@ class Ieee80211MacImmediateTx : public Ieee80211MacPlugin
         ~Ieee80211MacImmediateTx();
 
         virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ITransmissionCompleteCallback *transmissionCompleteCallback);
-        virtual void transmissionStateChanged(IRadio::TransmissionState transmissionState);
+        virtual void transmissionFinished();
 };
 
 }

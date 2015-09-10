@@ -249,14 +249,18 @@ void Ieee80211NewMac::receiveSignal(cComponent *source, simsignal_t signalID, lo
     }
     else if (signalID == IRadio::transmissionStateChangedSignal)
     {
-        IRadio::TransmissionState newRadioTransmissionState = (IRadio::TransmissionState)value;
-        transmission->transmissionStateChanged(newRadioTransmissionState);
-        immediateTx->transmissionStateChanged(newRadioTransmissionState);
-        reception->transmissionStateChanged(newRadioTransmissionState);
-        transmission->mediumStateChanged(reception->isMediumFree());
-        if (transmissionState == IRadio::TRANSMISSION_STATE_TRANSMITTING && newRadioTransmissionState == IRadio::TRANSMISSION_STATE_IDLE)
+        auto oldTransmissionState = transmissionState;
+        transmissionState = (IRadio::TransmissionState)value;
+
+        bool transmissionFinished = (oldTransmissionState == IRadio::TRANSMISSION_STATE_TRANSMITTING && transmissionState == IRadio::TRANSMISSION_STATE_IDLE);
+
+        if (transmissionFinished) {
+            immediateTx->transmissionFinished();
+            transmission->transmissionFinished();
             configureRadioMode(IRadio::RADIO_MODE_RECEIVER);
-        transmissionState = newRadioTransmissionState;
+        }
+        reception->transmissionStateChanged(transmissionState);
+        transmission->mediumStateChanged(reception->isMediumFree());
     }
 }
 

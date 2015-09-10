@@ -23,33 +23,37 @@ namespace ieee80211 {
 
 Ieee80211MacImmediateTx::Ieee80211MacImmediateTx(Ieee80211NewMac *mac) : Ieee80211MacPlugin(mac)
 {
-    endImmediateIFS = new cMessage("Immediate IFS");
-    immediateFrameDuration = new cMessage("Immediate Frame Duration");
+    endIfsTimer = new cMessage("Immediate IFS");
 }
 
 Ieee80211MacImmediateTx::~Ieee80211MacImmediateTx()
 {
+    //TODO cancelAndDelete(endIfsTimer);
+    delete frame;
 }
 
-void Ieee80211MacImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t deferDuration, ITransmissionCompleteCallback *transmissionCompleteCallback)
+void Ieee80211MacImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t ifs, ITransmissionCompleteCallback *transmissionCompleteCallback)
 {
-    //TODO assert !ongoing
-    scheduleAt(simTime() + deferDuration, endImmediateIFS);
-    immediateFrame = frame;
+    ASSERT(!endIfsTimer->isScheduled() && !transmitting); // we are idle
+    scheduleAt(simTime() + ifs, endIfsTimer);
+    this->frame = frame;
     this->transmissionCompleteCallback = transmissionCompleteCallback;
 }
 
-void Ieee80211MacImmediateTx::transmissionStateChanged(IRadio::TransmissionState transmissionState)
+void Ieee80211MacImmediateTx::transmissionFinished()
 {
-    if (immediateFrameTransmission && transmissionState == IRadio::TRANSMISSION_STATE_IDLE)
+    if (transmitting) {
         transmissionCompleteCallback->transmissionComplete(nullptr);
+        transmitting = false;
+        frame = nullptr;
+    }
 }
 
 void Ieee80211MacImmediateTx::handleMessage(cMessage *msg)
 {
-    if (msg == endImmediateIFS) {
-        immediateFrameTransmission = true;
-        mac->sendFrame(immediateFrame);
+    if (msg == endIfsTimer) {
+        transmitting = true;
+        mac->sendFrame(frame);
     }
     else
         ASSERT(false);

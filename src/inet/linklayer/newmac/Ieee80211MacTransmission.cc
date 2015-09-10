@@ -64,7 +64,7 @@ void Ieee80211MacTransmission::transmitContentionFrame(Ieee80211Frame* frame, si
 
     int cw = computeCW(cwMin, cwMax, retryCount);
     backoffSlots = intrand(cw + 1);
-    handleWithFSM(START_TRANSMISSION, frame);
+    handleWithFSM(START, frame);
 }
 
 int Ieee80211MacTransmission::computeCW(int cwMin, int cwMax, int retryCount)
@@ -87,17 +87,17 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
         {
             FSMA_Enter(mac->sendDownPendingRadioConfigMsg());
             FSMA_Event_Transition(Ready-To-Transmit,
-                                  event == START_TRANSMISSION && mediumFree && !isIFSNecessary(),
+                                  event == START && mediumFree && !isIFSNecessary(),
                                   TRANSMIT,
                                   ;
             );
             FSMA_Event_Transition(Need-IFS-Before-Transmit,
-                                  event == START_TRANSMISSION && mediumFree && isIFSNecessary(),
+                                  event == START && mediumFree && isIFSNecessary(),
                                   WAIT_IFS,
                                   ;
             );
             FSMA_Event_Transition(Busy,
-                                  event == START_TRANSMISSION && !mediumFree,
+                                  event == START && !mediumFree,
                                   DEFER,
                                   ;
             );
@@ -142,9 +142,9 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
         }
         FSMA_State(TRANSMIT)
         {
-            FSMA_Enter(mac->sendFrame(frame->dup()));
+            FSMA_Enter(mac->sendFrame(frame->dup()));  //FIXME why is the dup() here!!!
             FSMA_Event_Transition(TxFinished,
-                                  event == MEDIUM_STATE_CHANGED && transmissionState == IRadio::TRANSMISSION_STATE_IDLE,
+                                  event == TRANSMISSION_FINISHED,
                                   IDLE,
                                   transmissionCompleteCallback->transmissionComplete(this);
             );
@@ -158,14 +158,13 @@ void Ieee80211MacTransmission::handleWithFSM(EventType event, cMessage *msg)
 void Ieee80211MacTransmission::mediumStateChanged(bool mediumFree)
 {
     this->mediumFree = mediumFree;
-    channelBecameFree = simTime();
+    channelLastBusyTime = simTime();
     handleWithFSM(MEDIUM_STATE_CHANGED, nullptr);
 }
 
-void Ieee80211MacTransmission::transmissionStateChanged(IRadio::TransmissionState transmissionState)
+void Ieee80211MacTransmission::transmissionFinished()
 {
-    this->transmissionState = transmissionState;
-    handleWithFSM(MEDIUM_STATE_CHANGED, nullptr);
+    handleWithFSM(TRANSMISSION_FINISHED, nullptr);
 }
 
 void Ieee80211MacTransmission::handleMessage(cMessage *msg)
@@ -192,7 +191,7 @@ void Ieee80211MacTransmission::scheduleEIFSPeriod(simtime_t duration)
 void Ieee80211MacTransmission::scheduleIFS()
 {
     ASSERT(mediumFree);
-    simtime_t elapsedFreeChannelTime = simTime() - channelBecameFree;
+    simtime_t elapsedFreeChannelTime = simTime() - channelLastBusyTime;
     if (ifs > elapsedFreeChannelTime)
         scheduleIFSPeriod(ifs - elapsedFreeChannelTime);
     if (useEIFS && eifs > elapsedFreeChannelTime)
@@ -220,7 +219,7 @@ void Ieee80211MacTransmission::logState()
 
 bool Ieee80211MacTransmission::isIFSNecessary()
 {
-    simtime_t elapsedFreeChannelTime = simTime() - channelBecameFree;
+    simtime_t elapsedFreeChannelTime = simTime() - channelLastBusyTime;
     return elapsedFreeChannelTime < ifs || (useEIFS && elapsedFreeChannelTime < eifs);
 }
 

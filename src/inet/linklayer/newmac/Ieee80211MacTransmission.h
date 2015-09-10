@@ -46,6 +46,7 @@ class ITransmissionCompleteCallback {
 
 
 //TODO EDCA internal collisions should trigger retry (exp.backoff) in the lower pri tx process(es)
+//TODO fsm is wrong wrt channelLastBusyTime (not all cases handled)
 class Ieee80211MacTransmission : public Ieee80211MacPlugin
 {
     public:
@@ -56,7 +57,7 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
             WAIT_IFS,
             TRANSMIT
         };
-        enum EventType { LOWER_FRAME, MEDIUM_STATE_CHANGED, TIMER, START_TRANSMISSION };
+        enum EventType { START, MEDIUM_STATE_CHANGED, TRANSMISSION_FINISHED, TIMER, FRAME_ARRIVED };
 
     protected:
         // current transmission's parameters
@@ -68,7 +69,7 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
         int retryCount = 0;
         ITransmissionCompleteCallback *transmissionCompleteCallback = nullptr;
 
-        simtime_t channelBecameFree = SIMTIME_ZERO;
+        simtime_t channelLastBusyTime = SIMTIME_ZERO;
         int backoffSlots = 0;
         bool mediumFree = false;
         bool useEIFS = false;
@@ -101,7 +102,7 @@ class Ieee80211MacTransmission : public Ieee80211MacPlugin
 
         //TODO also add a switchToReception() method? because switching takes time, so we dont automatically switch to tx after completing a transmission! (as we may want to transmit immediate frames afterwards)
         void mediumStateChanged(bool mediumFree);
-        void transmissionStateChanged(IRadio::TransmissionState transmissionState);
+        void transmissionFinished();
         void lowerFrameReceived(bool isFcsOk);
 };
 
