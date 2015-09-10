@@ -16,7 +16,7 @@
 #include "Ieee80211FrameExchanges.h"
 #include "inet/common/FSMA.h"
 #include "Ieee80211UpperMac.h"
-#include "Ieee80211MacContext.h"
+#include "IIeee80211MacContext.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 
 namespace inet {

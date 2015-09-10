@@ -17,7 +17,7 @@
 #include "Ieee80211NewMac.h"
 #include "IIeee80211MacTx.h"
 #include "IIeee80211MacImmediateTx.h"
-#include "Ieee80211MacContext.h"
+#include "IIeee80211MacContext.h"
 #include "inet/common/ModuleAccess.h"
 #include "Ieee80211FrameExchanges.h"
 

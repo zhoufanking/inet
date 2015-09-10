@@ -14,7 +14,7 @@
 //
 
 #include "Ieee80211FrameExchange.h"
-#include "Ieee80211MacContext.h"
+#include "IIeee80211MacContext.h"
 #include "Ieee80211UpperMac.h"
 #include "IIeee80211MacTx.h"
 #include "IIeee80211MacImmediateTx.h"
