@@ -55,7 +55,7 @@ import inet.linklayer.contract.IMACProtocol;
 // listen interval which is related to power management, capability information
 // which is related to PCF and other non-modelled features).
 //
-simple Ieee80211NewMac extends MACProtocolBase like IMACProtocol
+module Ieee80211NewMac extends MACProtocolBase like IMACProtocol
 {
     parameters:
         string address = default("auto"); // MAC address as hex string (12 hex digits), or
@@ -75,4 +75,9 @@ simple Ieee80211NewMac extends MACProtocolBase like IMACProtocol
         @statistic[state](title="State"; record=vector; interpolationmode=sample-hold); // ENUM!!
         @statistic[radioState](title="Radio state"; record=vector; interpolationmode=sample-hold); // ENUM!!
         @class(Ieee80211NewMac);
+
+    submodules:
+        upperMac: <default("Ieee80211UpperMac")> like IIeee80211UpperMac;
+        tx: <default("Ieee80211Tx")> like IIeee80211Tx;
+        rx: <default("Ieee80211Rx")> like IIeee80211Rx;
 }
