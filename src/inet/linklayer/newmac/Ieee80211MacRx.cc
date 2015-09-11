@@ -70,12 +70,12 @@ bool Ieee80211MacRx::isMediumFree() const
 
 void Ieee80211MacRx::receptionStateChanged(IRadio::ReceptionState newReceptionState)
 {
-    receptionState = newReceptionState;
+    receptionState = newReceptionState;  //TODO notification of Tx ????????
 }
 
 void Ieee80211MacRx::transmissionStateChanged(IRadio::TransmissionState newTransmissionState)
 {
-    transmissionState = newTransmissionState;
+    transmissionState = newTransmissionState; //TODO notification of Tx ????????
 }
 
 void Ieee80211MacRx::setNav(simtime_t navInterval)
