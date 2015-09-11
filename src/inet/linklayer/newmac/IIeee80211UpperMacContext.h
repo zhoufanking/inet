@@ -18,8 +18,7 @@
 
 #include "inet/common/INETDefs.h"
 #include "inet/linklayer/common/MACAddress.h"
-#include "IIeee80211MacContentionTx.h"
-#include "IIeee80211MacImmediateTx.h"
+#include "IIeee80211MacTx.h"
 
 namespace inet {
 
@@ -70,8 +69,8 @@ class IIeee80211UpperMacContext
         virtual bool isCts(Ieee80211Frame *frame) const = 0;
         virtual bool isAck(Ieee80211Frame *frame) const = 0;
 
-        virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, IIeee80211MacContentionTx::ICallback *completionCallback) const = 0;
-        virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, IIeee80211MacImmediateTx::ICallback *completionCallback) const = 0;
+        virtual void transmitContentionFrame(int txIndex, Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, IIeee80211MacTx::ICallback *completionCallback) const = 0;
+        virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, IIeee80211MacTx::ICallback *completionCallback) const = 0;
 };
 
 }

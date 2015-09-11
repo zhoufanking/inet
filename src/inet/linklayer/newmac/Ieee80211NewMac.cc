@@ -24,8 +24,7 @@
 #include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
 #include "Ieee80211UpperMac.h"
 #include "Ieee80211MacRx.h"
-#include "Ieee80211MacContentionTx.h"
-#include "Ieee80211MacImmediateTx.h"
+#include "Ieee80211MacTx.h"
 #include "Ieee80211UpperMacContext.h"
 #include "inet/common/INETUtils.h"
 #include "inet/common/ModuleAccess.h"
@@ -75,8 +74,7 @@ void Ieee80211NewMac::initialize(int stage)
 
         upperMac = new Ieee80211UpperMac(this);
         reception = new Ieee80211MacRx(this);
-        tx = new Ieee80211MacContentionTx(this);
-        immediateTx = new Ieee80211MacImmediateTx(this);
+        tx = new Ieee80211MacTx(this, 1);
 
         // initialize parameters
         double bitrate = par("bitrate");
@@ -103,7 +101,7 @@ void Ieee80211NewMac::initialize(int stage)
         else
             address.setAddress(addressString);
 
-        context = new Ieee80211UpperMacContext(address, dataFrameMode, basicFrameMode, controlFrameMode, shortRetryLimit, rtsThreshold, tx, immediateTx);
+        context = new Ieee80211UpperMacContext(address, dataFrameMode, basicFrameMode, controlFrameMode, shortRetryLimit, rtsThreshold, tx);
 
         upperMac->setContext(context);
         reception->setAddress(address);
@@ -257,9 +255,8 @@ void Ieee80211NewMac::receiveSignal(cComponent *source, simsignal_t signalID, lo
         bool transmissionFinished = (oldTransmissionState == IRadio::TRANSMISSION_STATE_TRANSMITTING && transmissionState == IRadio::TRANSMISSION_STATE_IDLE);
 
         if (transmissionFinished) {
-            immediateTx->radioTransmissionFinished();
             tx->radioTransmissionFinished();
-            configureRadioMode(IRadio::RADIO_MODE_RECEIVER);
+            configureRadioMode(IRadio::RADIO_MODE_RECEIVER);  //FIXME this is in a very wrong place!!! should be done explicitly from UpperMac!
         }
         reception->transmissionStateChanged(transmissionState);
         tx->mediumStateChanged(reception->isMediumFree());

@@ -16,22 +16,20 @@
 #ifndef __MAC_IIEEE80211MACCONTENTIONTX_H_
 #define __MAC_IIEEE80211MACCONTENTIONTX_H_
 
-#include "Ieee80211MacPlugin.h"
-#include "inet/common/FSMA.h"
-#include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
+#include "inet/common/INETDefs.h"
+#include "IIeee80211MacTx.h"
 
 namespace inet {
 
 namespace ieee80211 {
 
+class Ieee80211Frame;
+
 class IIeee80211MacContentionTx
 {
     public:
-        class ICallback {
-            public:
-               virtual void transmissionComplete(IIeee80211MacContentionTx *tx) = 0; // tx=nullptr if frame was transmitted by MAC itself (immediate frame!), not a tx process
-        };
-
+        typedef IIeee80211MacTx::ICallback ICallback;
+        virtual ~IIeee80211MacContentionTx() {}
         virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ICallback *completionCallback) = 0;
         virtual void mediumStateChanged(bool mediumFree) = 0;
         virtual void radioTransmissionFinished() = 0;

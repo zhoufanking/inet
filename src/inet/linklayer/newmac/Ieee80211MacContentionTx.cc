@@ -148,7 +148,7 @@ void Ieee80211MacContentionTx::handleWithFSM(EventType event, cMessage *msg)
             FSMA_Event_Transition(TxFinished,
                                   event == TRANSMISSION_FINISHED,
                                   IDLE,
-                                  completionCallback->transmissionComplete(this);
+                                  completionCallback->transmissionComplete(txIndex);
             );
         }
     }

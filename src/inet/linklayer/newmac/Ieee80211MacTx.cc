@@ -28,7 +28,7 @@ Ieee80211MacTx::Ieee80211MacTx(Ieee80211NewMac *mac, int numContentionTx) :
     for (int i = 0; i < MAX_NUM_CONTENTIONTX; i++)
         contentionTx[i] = nullptr;
     for (int i = 0; i < numContentionTx; i++)
-        contentionTx[i] = new Ieee80211MacContentionTx(mac); //TODO factory method
+        contentionTx[i] = new Ieee80211MacContentionTx(mac, i); //TODO factory method
     immediateTx = new Ieee80211MacImmediateTx(mac); //TODO factory method
 }
 

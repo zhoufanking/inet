@@ -28,8 +28,7 @@ class Ieee80211Mode;
 
 namespace ieee80211 {
 
-class IIeee80211MacContentionTx;
-class IIeee80211MacImmediateTx;
+class IIeee80211MacTx;
 
 class INET_API Ieee80211UpperMacContext : public IIeee80211UpperMacContext
 {
@@ -41,14 +40,12 @@ class INET_API Ieee80211UpperMacContext : public IIeee80211UpperMacContext
         const IIeee80211Mode *controlFrameMode = nullptr;
         int shortRetryLimit;
         int rtsThreshold;
-        IIeee80211MacContentionTx *tx;
-        IIeee80211MacImmediateTx *immediateTx;
+        IIeee80211MacTx *tx;
 
     public:
         Ieee80211UpperMacContext(const MACAddress& address, const IIeee80211Mode *dataFrameMode,
                 const IIeee80211Mode *basicFrameMode, const IIeee80211Mode *controlFrameMode,
-                int shortRetryLimit, int rtsThreshold,
-                IIeee80211MacContentionTx *tx, IIeee80211MacImmediateTx *immediateTx);
+                int shortRetryLimit, int rtsThreshold, IIeee80211MacTx *tx);
         virtual ~Ieee80211UpperMacContext() {}
 
         virtual const MACAddress& getAddress() const override;
@@ -84,8 +81,8 @@ class INET_API Ieee80211UpperMacContext : public IIeee80211UpperMacContext
         virtual bool isCts(Ieee80211Frame *frame) const override;
         virtual bool isAck(Ieee80211Frame *frame) const override;
 
-        virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, IIeee80211MacContentionTx::ICallback *completionCallback) const override;
-        virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, IIeee80211MacImmediateTx::ICallback *completionCallback) const override;
+        virtual void transmitContentionFrame(int txIndex, Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, IIeee80211MacTx::ICallback *completionCallback) const override;
+        virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, IIeee80211MacTx::ICallback *completionCallback) const override;
 };
 
 }

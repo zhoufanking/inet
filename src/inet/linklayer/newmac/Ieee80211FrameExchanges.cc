@@ -101,14 +101,16 @@ void Ieee80211SendDataWithAckFrameExchange::handleWithFSM(EventType event, cMess
 void Ieee80211SendDataWithAckFrameExchange::transmitDataFrame()
 {
     retryCount = 0;
-    context->transmitContentionFrame(frame, context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, this);
+    int txIndex = 0; //TODO
+    context->transmitContentionFrame(txIndex, frame, context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, this);
 }
 
 void Ieee80211SendDataWithAckFrameExchange::retryDataFrame()
 {
     retryCount++;
     frame->setRetry(true);
-    context->transmitContentionFrame(frame, context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, this);
+    int txIndex = 0; //TODO
+    context->transmitContentionFrame(txIndex, frame, context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, this);
 }
 
 void Ieee80211SendDataWithAckFrameExchange::scheduleAckTimeout()

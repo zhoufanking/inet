@@ -16,8 +16,7 @@
 #include "Ieee80211FrameExchange.h"
 #include "IIeee80211UpperMacContext.h"
 #include "Ieee80211UpperMac.h"
-#include "IIeee80211MacContentionTx.h"
-#include "IIeee80211MacImmediateTx.h"
+#include "IIeee80211MacTx.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 
 namespace inet {
@@ -87,7 +86,8 @@ void Ieee80211StepBasedFrameExchange::transmitContentionFrame(Ieee80211Frame* fr
 {
     ASSERT(status == INPROGRESS);
     ASSERT(stepType == NONE);
-    context->transmitContentionFrame(frame, context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, this);
+    int txIndex = 0; //TODO
+    context->transmitContentionFrame(txIndex, frame, context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, this);
     stepType = TRANSMIT_CONTENTION_FRAME;
 }
 
@@ -95,7 +95,8 @@ void Ieee80211StepBasedFrameExchange::transmitContentionFrame(Ieee80211Frame* fr
 {
     ASSERT(status == INPROGRESS);
     ASSERT(stepType == NONE);
-    context->transmitContentionFrame(frame, ifs, eifs, cwMin, cwMax, slotTime, retryCount, this);
+    int txIndex = 0; //TODO
+    context->transmitContentionFrame(txIndex, frame, ifs, eifs, cwMin, cwMax, slotTime, retryCount, this);
     stepType = TRANSMIT_CONTENTION_FRAME;
 }
 

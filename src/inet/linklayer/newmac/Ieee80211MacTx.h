@@ -35,6 +35,9 @@ class Ieee80211MacTx : public Ieee80211MacPlugin, public IIeee80211MacTx
         IIeee80211MacContentionTx *contentionTx[MAX_NUM_CONTENTIONTX];
         IIeee80211MacImmediateTx *immediateTx = nullptr;
 
+    protected:
+        virtual void handleMessage(cMessage *msg) override {}
+
     public:
         Ieee80211MacTx(Ieee80211NewMac *mac, int numContentionTx);
         virtual ~Ieee80211MacTx();
