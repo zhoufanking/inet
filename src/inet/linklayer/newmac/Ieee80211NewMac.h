@@ -72,7 +72,6 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
     IIeee80211UpperMac *upperMac = nullptr;
     IIeee80211MacRx *reception = nullptr;
     IIeee80211MacTx *tx = nullptr;
-    IIeee80211UpperMacContext *context = nullptr;  // owned here
 
   protected:
     /**
@@ -83,6 +82,7 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
     //@}
 
   protected:
+    MACAddress address; // only because createInterfaceEntry() needs it
     IRadio *radio = nullptr;
     IRadio::TransmissionState transmissionState = IRadio::TransmissionState::TRANSMISSION_STATE_UNDEFINED;
 
@@ -150,7 +150,6 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
     virtual void sendDownPendingRadioConfigMsg();
     //@}
   public:
-    virtual simtime_t getSlotTime() const;
     IIeee80211UpperMac *getUpperMac() const { return upperMac; }
     IIeee80211MacRx *getReception() const { return reception; }
     IIeee80211MacTx *getTransmission() const { return tx; }

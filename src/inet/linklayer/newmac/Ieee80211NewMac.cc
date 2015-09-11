@@ -49,7 +49,6 @@ Ieee80211NewMac::~Ieee80211NewMac()
 {
     if (pendingRadioConfigMsg)
         delete pendingRadioConfigMsg;
-    delete context;
 }
 
 /****************************************************************
@@ -90,7 +89,6 @@ void Ieee80211NewMac::initialize(int stage)
             shortRetryLimit = 7;
         ASSERT(shortRetryLimit > 0);
 
-        MACAddress address;
         const char *addressString = par("address");
         if (!strcmp(addressString, "auto")) {
             // assign automatic address
@@ -101,8 +99,7 @@ void Ieee80211NewMac::initialize(int stage)
         else
             address.setAddress(addressString);
 
-        context = new Ieee80211UpperMacContext(address, dataFrameMode, basicFrameMode, controlFrameMode, shortRetryLimit, rtsThreshold, tx);
-
+        IIeee80211UpperMacContext *context = new Ieee80211UpperMacContext(address, dataFrameMode, basicFrameMode, controlFrameMode, shortRetryLimit, rtsThreshold, tx);
         upperMac->setContext(context);
         reception->setAddress(address);
 
@@ -165,7 +162,6 @@ InterfaceEntry *Ieee80211NewMac::createInterfaceEntry()
     InterfaceEntry *e = new InterfaceEntry(this);
 
     // address
-    const MACAddress& address = context->getAddress();
     e->setMACAddress(address);
     e->setInterfaceToken(address.formInterfaceIdentifier());
 
@@ -312,11 +308,6 @@ bool Ieee80211NewMac::handleNodeShutdown(IDoneCallback *doneCallback)
 // FIXME
 void Ieee80211NewMac::handleNodeCrash()
 {
-}
-
-simtime_t Ieee80211NewMac::getSlotTime() const
-{
-    return context->getSlotTime();
 }
 
 }
