@@ -82,7 +82,7 @@ class Ieee80211StepBasedFrameExchange : public Ieee80211FrameExchange
         virtual void processTimeout(int step) = 0;
 
         void transmitContentionFrame(Ieee80211Frame *frame, int retryCount);
-        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, int retryCount);
+        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount);
         void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs);
         void expectReply(simtime_t timeout);
         void gotoStep(int step); // ~setNextStep()

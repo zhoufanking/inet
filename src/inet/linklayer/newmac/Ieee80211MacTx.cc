@@ -3,15 +3,15 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
 #include "Ieee80211MacTx.h"
 #include "Ieee80211NewMac.h"
@@ -52,7 +52,7 @@ Ieee80211MacTx::~Ieee80211MacTx()
     delete endEIFS;
 }
 
-void Ieee80211MacTx::transmitContentionFrame(Ieee80211Frame* frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, int retryCount, ICallback *completionCallback)
+void Ieee80211MacTx::transmitContentionFrame(Ieee80211Frame* frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ICallback *completionCallback)
 {
     ASSERT(fsm.getState() == IDLE);
     this->frame = frame;
@@ -60,6 +60,7 @@ void Ieee80211MacTx::transmitContentionFrame(Ieee80211Frame* frame, simtime_t if
     this->eifs = eifs;
     this->cwMin = cwMin;
     this->cwMax = cwMax;
+    this->slotTime = slotTime;
     this->retryCount = retryCount;
     this->completionCallback = completionCallback;
 
@@ -204,12 +205,12 @@ void Ieee80211MacTx::scheduleIFS()
 void Ieee80211MacTx::updateBackoffPeriod()
 {
     simtime_t elapsedBackoffTime = simTime() - endBackoff->getSendingTime();
-    backoffSlots -= ((int)(elapsedBackoffTime / mac->getSlotTime()));  //FIXME slot should be a parameter
+    backoffSlots -= ((int)(elapsedBackoffTime / slotTime));
 }
 
 void Ieee80211MacTx::scheduleBackoffPeriod(int backoffSlots)
 {
-    simtime_t backoffPeriod = backoffSlots * mac->getSlotTime();
+    simtime_t backoffPeriod = backoffSlots * slotTime;
     scheduleAt(simTime() + backoffPeriod, endBackoff);
 }
 

@@ -3,15 +3,15 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
 #ifndef __MAC_IEEE80211MACTX_H_
 #define __MAC_IEEE80211MACTX_H_
@@ -44,6 +44,7 @@ class Ieee80211MacTx : public Ieee80211MacPlugin, public IIeee80211MacTx
         simtime_t eifs = SIMTIME_ZERO;
         int cwMin = 0;
         int cwMax = 0;
+        simtime_t slotTime;
         int retryCount = 0;
         ICallback *completionCallback = nullptr;
 
@@ -77,7 +78,7 @@ class Ieee80211MacTx : public Ieee80211MacPlugin, public IIeee80211MacTx
         ~Ieee80211MacTx();
 
         //TODO also add a switchToReception() method? because switching takes time, so we dont automatically switch to tx after completing a transmission! (as we may want to transmit immediate frames afterwards)
-        virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, int retryCount, ICallback *completionCallback) override;
+        virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ICallback *completionCallback) override;
 
         virtual void mediumStateChanged(bool mediumFree) override;
         virtual void transmissionFinished() override;
