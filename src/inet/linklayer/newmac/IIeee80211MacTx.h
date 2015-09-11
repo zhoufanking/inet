@@ -34,7 +34,7 @@ class IIeee80211MacTx
 
         virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ICallback *completionCallback) = 0;
         virtual void mediumStateChanged(bool mediumFree) = 0;
-        virtual void transmissionFinished() = 0;
+        virtual void radioTransmissionFinished() = 0;
         virtual void lowerFrameReceived(bool isFcsOk) = 0;
 };
 

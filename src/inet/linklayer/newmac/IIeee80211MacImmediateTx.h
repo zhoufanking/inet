@@ -33,7 +33,7 @@ class IIeee80211MacImmediateTx
         };
 
         virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ICallback *completionCallback) = 0;
-        virtual void transmissionFinished() = 0;
+        virtual void radioTransmissionFinished() = 0;
 };
 
 }

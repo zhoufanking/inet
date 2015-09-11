@@ -87,7 +87,7 @@ void Ieee80211StepBasedFrameExchange::transmitContentionFrame(Ieee80211Frame* fr
 {
     ASSERT(status == INPROGRESS);
     ASSERT(stepType == NONE);
-    mac->tx->transmitContentionFrame(frame, context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, getUpperMac());
+    context->transmitContentionFrame(frame, context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, getUpperMac());
     stepType = TRANSMIT_CONTENTION_FRAME;
 }
 
@@ -95,7 +95,7 @@ void Ieee80211StepBasedFrameExchange::transmitContentionFrame(Ieee80211Frame* fr
 {
     ASSERT(status == INPROGRESS);
     ASSERT(stepType == NONE);
-    mac->tx->transmitContentionFrame(frame, ifs, eifs, cwMin, cwMax, slotTime, retryCount, getUpperMac());
+    context->transmitContentionFrame(frame, ifs, eifs, cwMin, cwMax, slotTime, retryCount, getUpperMac());
     stepType = TRANSMIT_CONTENTION_FRAME;
 }
 

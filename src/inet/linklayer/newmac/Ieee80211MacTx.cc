@@ -164,7 +164,7 @@ void Ieee80211MacTx::mediumStateChanged(bool mediumFree)
     handleWithFSM(MEDIUM_STATE_CHANGED, nullptr);
 }
 
-void Ieee80211MacTx::transmissionFinished()
+void Ieee80211MacTx::radioTransmissionFinished()
 {
     handleWithFSM(TRANSMISSION_FINISHED, nullptr);
 }

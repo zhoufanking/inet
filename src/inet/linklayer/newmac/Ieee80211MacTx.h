@@ -81,7 +81,7 @@ class Ieee80211MacTx : public Ieee80211MacPlugin, public IIeee80211MacTx
         virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ICallback *completionCallback) override;
 
         virtual void mediumStateChanged(bool mediumFree) override;
-        virtual void transmissionFinished() override;
+        virtual void radioTransmissionFinished() override;
         virtual void lowerFrameReceived(bool isFcsOk) override;
 };
 

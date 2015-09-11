@@ -18,6 +18,8 @@
 
 #include "inet/common/INETDefs.h"
 #include "inet/linklayer/common/MACAddress.h"
+#include "IIeee80211MacTx.h"
+#include "IIeee80211MacImmediateTx.h"
 
 namespace inet {
 
@@ -47,26 +49,29 @@ class IIeee80211UpperMacContext
 
         virtual int getMinCW() const = 0;
         virtual int getMaxCW() const = 0;
-        virtual int getShortRetryLimit() = 0;
-        virtual int getRtsThreshold() = 0;
+        virtual int getShortRetryLimit() const = 0;
+        virtual int getRtsThreshold() const = 0;
 
         virtual simtime_t getAckTimeout() const = 0;
         virtual simtime_t getCtsTimeout() const = 0;
 
-        virtual Ieee80211RTSFrame *buildRtsFrame(Ieee80211DataOrMgmtFrame *frame) = 0;
-        virtual Ieee80211CTSFrame *buildCtsFrame(Ieee80211RTSFrame *frame) = 0;
-        virtual Ieee80211ACKFrame *buildAckFrame(Ieee80211DataOrMgmtFrame *frameToACK) = 0;
-        virtual Ieee80211DataOrMgmtFrame *buildBroadcastFrame(Ieee80211DataOrMgmtFrame *frameToSend) = 0;
+        virtual Ieee80211RTSFrame *buildRtsFrame(Ieee80211DataOrMgmtFrame *frame) const = 0;
+        virtual Ieee80211CTSFrame *buildCtsFrame(Ieee80211RTSFrame *frame) const = 0;
+        virtual Ieee80211ACKFrame *buildAckFrame(Ieee80211DataOrMgmtFrame *frameToACK) const = 0;
+        virtual Ieee80211DataOrMgmtFrame *buildBroadcastFrame(Ieee80211DataOrMgmtFrame *frameToSend) const = 0;
 
         virtual double computeFrameDuration(Ieee80211Frame *msg) const = 0;
         virtual double computeFrameDuration(int bits, double bitrate) const = 0;
-        virtual Ieee80211Frame *setBasicBitrate(Ieee80211Frame *frame) = 0;
-        virtual void setDataFrameDuration(Ieee80211DataOrMgmtFrame *frame) = 0;
+        virtual Ieee80211Frame *setBasicBitrate(Ieee80211Frame *frame) const = 0;
+        virtual void setDataFrameDuration(Ieee80211DataOrMgmtFrame *frame) const = 0;
 
         virtual bool isForUs(Ieee80211Frame *frame) const = 0;
         virtual bool isBroadcast(Ieee80211Frame *frame) const = 0;
         virtual bool isCts(Ieee80211Frame *frame) const = 0;
         virtual bool isAck(Ieee80211Frame *frame) const = 0;
+
+        virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, IIeee80211MacTx::ICallback *completionCallback) const = 0;
+        virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, IIeee80211MacImmediateTx::ICallback *completionCallback) const = 0;
 };
 
 }

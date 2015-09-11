@@ -103,7 +103,7 @@ void Ieee80211NewMac::initialize(int stage)
         else
             address.setAddress(addressString);
 
-        context = new Ieee80211UpperMacContext(address, dataFrameMode, basicFrameMode, controlFrameMode, shortRetryLimit, rtsThreshold);
+        context = new Ieee80211UpperMacContext(address, dataFrameMode, basicFrameMode, controlFrameMode, shortRetryLimit, rtsThreshold, tx, immediateTx);
 
         upperMac->setContext(context);
         reception->setAddress(address);
@@ -257,8 +257,8 @@ void Ieee80211NewMac::receiveSignal(cComponent *source, simsignal_t signalID, lo
         bool transmissionFinished = (oldTransmissionState == IRadio::TRANSMISSION_STATE_TRANSMITTING && transmissionState == IRadio::TRANSMISSION_STATE_IDLE);
 
         if (transmissionFinished) {
-            immediateTx->transmissionFinished();
-            tx->transmissionFinished();
+            immediateTx->radioTransmissionFinished();
+            tx->radioTransmissionFinished();
             configureRadioMode(IRadio::RADIO_MODE_RECEIVER);
         }
         reception->transmissionStateChanged(transmissionState);
