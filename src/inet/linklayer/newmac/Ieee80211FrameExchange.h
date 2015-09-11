@@ -19,6 +19,7 @@
 #include "IIeee80211FrameExchange.h"
 #include "Ieee80211MacPlugin.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
+#include "Ieee80211UpperMac.h"  //TODO remove
 
 namespace inet {
 namespace ieee80211 {
@@ -30,6 +31,8 @@ class Ieee80211FrameExchange : public Ieee80211MacPlugin, public IIeee80211Frame
     protected:
         IIeee80211MacContext *context = nullptr;
         IFinishedCallback *finishedCallback = nullptr;
+
+        Ieee80211UpperMac *getUpperMac() { return (Ieee80211UpperMac *)mac->upperMac; }  //FIXME remove! todo remove 'mac' ptr!
 
     protected:
         virtual void reportSuccess();

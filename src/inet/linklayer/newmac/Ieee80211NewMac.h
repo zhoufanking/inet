@@ -62,16 +62,16 @@ using namespace physicallayer;
 class IIeee80211MacContext;
 class IIeee80211MacTx;
 class IIeee80211MacImmediateTx;
-class Ieee80211MacReception;
-class Ieee80211UpperMac;
+class IIeee80211MacRx;
+class IIeee80211UpperMac;
 class Ieee80211Frame;
 
 class INET_API Ieee80211NewMac : public MACProtocolBase
 {
   public:
 
-    Ieee80211UpperMac *upperMac = nullptr;
-    Ieee80211MacReception *reception = nullptr;
+    IIeee80211UpperMac *upperMac = nullptr;
+    IIeee80211MacRx *reception = nullptr;
     IIeee80211MacTx *tx = nullptr;
     IIeee80211MacImmediateTx *immediateTx = nullptr;
 
@@ -154,8 +154,8 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
     //@}
   public:
     virtual simtime_t getSlotTime() const;
-    Ieee80211UpperMac *getUpperMac() const { return upperMac; }
-    Ieee80211MacReception *getReception() const { return reception; }
+    IIeee80211UpperMac *getUpperMac() const { return upperMac; }
+    IIeee80211MacRx *getReception() const { return reception; }
     IIeee80211MacTx *getTransmission() const { return tx; }
 };
 

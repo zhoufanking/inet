@@ -23,7 +23,7 @@
 #include "inet/physicallayer/ieee80211/packetlevel/Ieee80211ControlInfo_m.h"
 #include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
 #include "Ieee80211UpperMac.h"
-#include "Ieee80211MacReception.h"
+#include "Ieee80211MacRx.h"
 #include "Ieee80211MacTx.h"
 #include "Ieee80211MacImmediateTx.h"
 #include "Ieee80211MacContext.h"
@@ -74,7 +74,7 @@ void Ieee80211NewMac::initialize(int stage)
         radio = check_and_cast<IRadio *>(radioModule);
 
         upperMac = new Ieee80211UpperMac(this);
-        reception = new Ieee80211MacReception(this);
+        reception = new Ieee80211MacRx(this);
         tx = new Ieee80211MacTx(this);
         immediateTx = new Ieee80211MacImmediateTx(this);
 
@@ -106,7 +106,7 @@ void Ieee80211NewMac::initialize(int stage)
         context = new Ieee80211MacContext(address, dataFrameMode, basicFrameMode, controlFrameMode, shortRetryLimit, rtsThreshold);
 
         upperMac->setContext(context);
-        reception->setContext(context);
+        reception->setAddress(address);
 
         // Initialize self messages
         stateSignal = registerSignal("state");
@@ -200,7 +200,7 @@ void Ieee80211NewMac::handleUpperPacket(cPacket *msg)
 
 void Ieee80211NewMac::handleLowerPacket(cPacket *msg)
 {
-    reception->handleLowerFrame(check_and_cast<Ieee80211Frame *>(msg));
+    reception->lowerFrameReceived(check_and_cast<Ieee80211Frame *>(msg));
 }
 
 void Ieee80211NewMac::handleUpperCommand(cMessage *msg)

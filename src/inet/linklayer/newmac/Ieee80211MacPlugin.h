@@ -3,15 +3,15 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
 #ifndef IEEE80211MACPLUGIN_H_
 #define IEEE80211MACPLUGIN_H_
@@ -23,10 +23,10 @@ namespace inet {
 namespace ieee80211 {
 
 class Ieee80211NewMac;
-class Ieee80211UpperMac;
-class Ieee80211MacReception;
-class Ieee80211MacTx;
-class Ieee80211MacImmediateTx;
+class IIeee80211UpperMac;
+class IIeee80211MacRx;
+class IIeee80211MacTx;
+class IIeee80211MacImmediateTx;
 
 class Ieee80211MacPlugin : public cObject
 {
@@ -42,8 +42,8 @@ class Ieee80211MacPlugin : public cObject
         virtual cMessage* cancelEvent(cMessage *msg);
 
         //TODO remove these
-        Ieee80211UpperMac *getUpperMac() { return mac->upperMac; }
-        Ieee80211MacReception *getReception() { return mac->reception; }
+        IIeee80211UpperMac *getUpperMac() { return mac->upperMac; }
+        IIeee80211MacRx *getReception() { return mac->reception; }
         IIeee80211MacTx *getTransmission() { return mac->tx; }
         IIeee80211MacImmediateTx *getImmediateTransmission() { return mac->immediateTx; }
 };
