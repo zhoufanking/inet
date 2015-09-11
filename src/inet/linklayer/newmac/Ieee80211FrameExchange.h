@@ -26,17 +26,19 @@ namespace ieee80211 {
 
 class Ieee80211UpperMacContext;
 
-class Ieee80211FrameExchange : public Ieee80211MacPlugin /*TODO remove this!*/, public IIeee80211FrameExchange
+class Ieee80211FrameExchange : public Ieee80211MacPlugin, public IIeee80211FrameExchange, public IIeee80211MacTx::ICallback, public IIeee80211MacImmediateTx::ICallback
 {
     protected:
         IIeee80211UpperMacContext *context = nullptr;
         IFinishedCallback *finishedCallback = nullptr;
 
-        Ieee80211UpperMac *getUpperMac() { return (Ieee80211UpperMac *)mac->upperMac; }  //FIXME remove! todo remove 'mac' ptr!
-
     protected:
         virtual void reportSuccess();
         virtual void reportFailure();
+
+        virtual void transmissionFinished() = 0;
+        virtual void transmissionComplete(IIeee80211MacTx *tx) {transmissionFinished();} //TODO straighten this
+        virtual void immediateTransmissionComplete() {transmissionFinished();}  //TODO straighten this
 
     public:
         //TODO init context!
@@ -46,7 +48,6 @@ class Ieee80211FrameExchange : public Ieee80211MacPlugin /*TODO remove this!*/, 
         virtual void start() = 0;
 
         virtual bool lowerFrameReceived(Ieee80211Frame *frame) = 0;  // true = processed
-        virtual void transmissionFinished() = 0;
 };
 
 class Ieee80211FSMBasedFrameExchange : public Ieee80211FrameExchange

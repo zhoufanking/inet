@@ -35,7 +35,6 @@ class IIeee80211FrameExchange
     public:
         virtual void start() = 0;
         virtual bool lowerFrameReceived(Ieee80211Frame *frame) = 0;  // true = processed
-        virtual void transmissionFinished() = 0;
 };
 
 }

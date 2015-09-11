@@ -157,13 +157,12 @@ void Ieee80211UpperMac::frameExchangeFinished(IIeee80211FrameExchange* what, boo
 
 void Ieee80211UpperMac::transmissionComplete(IIeee80211MacTx *tx)
 {
-    // TODO: Select the corresponding frame exchange to notify it
-    frameExchange->transmissionFinished();
+    //TODO
 }
 
 void Ieee80211UpperMac::immediateTransmissionComplete()
 {
-    // Finished immediate frame tx
+    //TODO
 }
 
 }
