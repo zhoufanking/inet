@@ -15,7 +15,7 @@
 
 #include "Ieee80211UpperMacContext.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
-#include "IIeee80211MacTx.h"
+#include "IIeee80211MacContentionTx.h"
 #include "IIeee80211MacImmediateTx.h"
 
 namespace inet {
@@ -23,7 +23,7 @@ namespace ieee80211 {
 
 Ieee80211UpperMacContext::Ieee80211UpperMacContext(const MACAddress& address,
         const IIeee80211Mode *dataFrameMode, const IIeee80211Mode *basicFrameMode, const IIeee80211Mode *controlFrameMode,
-        int shortRetryLimit,  int rtsThreshold, IIeee80211MacTx *tx, IIeee80211MacImmediateTx *immediateTx) :
+        int shortRetryLimit,  int rtsThreshold, IIeee80211MacContentionTx *tx, IIeee80211MacImmediateTx *immediateTx) :
                     address(address),
                     dataFrameMode(dataFrameMode), basicFrameMode(basicFrameMode), controlFrameMode(controlFrameMode),
                     shortRetryLimit(shortRetryLimit), rtsThreshold(rtsThreshold),
@@ -194,7 +194,7 @@ bool Ieee80211UpperMacContext::isAck(Ieee80211Frame *frame) const
     return dynamic_cast<Ieee80211ACKFrame *>(frame);
 }
 
-void Ieee80211UpperMacContext::transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, IIeee80211MacTx::ICallback *completionCallback) const
+void Ieee80211UpperMacContext::transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, IIeee80211MacContentionTx::ICallback *completionCallback) const
 {
     tx->transmitContentionFrame(frame, ifs, eifs, cwMin, cwMax, slotTime, retryCount, completionCallback);
 }

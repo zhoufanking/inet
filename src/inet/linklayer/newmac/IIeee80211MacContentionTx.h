@@ -13,8 +13,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __MAC_IIEEE80211MACTX_H_
-#define __MAC_IIEEE80211MACTX_H_
+#ifndef __MAC_IIEEE80211MACCONTENTIONTX_H_
+#define __MAC_IIEEE80211MACCONTENTIONTX_H_
 
 #include "Ieee80211MacPlugin.h"
 #include "inet/common/FSMA.h"
@@ -24,18 +24,15 @@ namespace inet {
 
 namespace ieee80211 {
 
-class IIeee80211MacTx
+class IIeee80211MacContentionTx
 {
     public:
         class ICallback {
             public:
-               virtual void transmissionComplete(int txIndex) = 0; // -1: immediate tx
-               virtual void internalCollision(int txIndex) = 0;  //TODO currently never called
+               virtual void transmissionComplete(IIeee80211MacContentionTx *tx) = 0; // tx=nullptr if frame was transmitted by MAC itself (immediate frame!), not a tx process
         };
 
-        virtual void transmitContentionFrame(int txIndex, Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ICallback *completionCallback) = 0;
-        virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ICallback *completionCallback) = 0;
-
+        virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ICallback *completionCallback) = 0;
         virtual void mediumStateChanged(bool mediumFree) = 0;
         virtual void radioTransmissionFinished() = 0;
         virtual void lowerFrameReceived(bool isFcsOk) = 0;

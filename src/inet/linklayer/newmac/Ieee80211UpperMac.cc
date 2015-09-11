@@ -15,7 +15,7 @@
 
 #include "Ieee80211UpperMac.h"
 #include "Ieee80211NewMac.h"
-#include "IIeee80211MacTx.h"
+#include "IIeee80211MacContentionTx.h"
 #include "IIeee80211MacImmediateTx.h"
 #include "IIeee80211UpperMacContext.h"
 #include "inet/common/ModuleAccess.h"
@@ -155,7 +155,7 @@ void Ieee80211UpperMac::frameExchangeFinished(IIeee80211FrameExchange* what, boo
     }
 }
 
-void Ieee80211UpperMac::transmissionComplete(IIeee80211MacTx *tx)
+void Ieee80211UpperMac::transmissionComplete(IIeee80211MacContentionTx *tx)
 {
     //TODO
 }

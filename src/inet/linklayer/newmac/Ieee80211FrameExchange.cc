@@ -16,7 +16,7 @@
 #include "Ieee80211FrameExchange.h"
 #include "IIeee80211UpperMacContext.h"
 #include "Ieee80211UpperMac.h"
-#include "IIeee80211MacTx.h"
+#include "IIeee80211MacContentionTx.h"
 #include "IIeee80211MacImmediateTx.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 

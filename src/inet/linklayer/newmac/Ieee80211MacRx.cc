@@ -14,7 +14,7 @@
 //
 
 #include "Ieee80211MacRx.h"
-#include "IIeee80211MacTx.h"
+#include "IIeee80211MacContentionTx.h"
 #include "Ieee80211NewMac.h"
 #include "IIeee80211UpperMac.h"
 

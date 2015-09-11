@@ -26,7 +26,7 @@ namespace ieee80211 {
 
 class Ieee80211UpperMacContext;
 
-class Ieee80211FrameExchange : public Ieee80211MacPlugin, public IIeee80211FrameExchange, public IIeee80211MacTx::ICallback, public IIeee80211MacImmediateTx::ICallback
+class Ieee80211FrameExchange : public Ieee80211MacPlugin, public IIeee80211FrameExchange, public IIeee80211MacContentionTx::ICallback, public IIeee80211MacImmediateTx::ICallback
 {
     protected:
         IIeee80211UpperMacContext *context = nullptr;
@@ -37,7 +37,7 @@ class Ieee80211FrameExchange : public Ieee80211MacPlugin, public IIeee80211Frame
         virtual void reportFailure();
 
         virtual void transmissionFinished() = 0;
-        virtual void transmissionComplete(IIeee80211MacTx *tx) {transmissionFinished();} //TODO straighten this
+        virtual void transmissionComplete(IIeee80211MacContentionTx *tx) {transmissionFinished();} //TODO straighten this
         virtual void immediateTransmissionComplete() {transmissionFinished();}  //TODO straighten this
 
     public:

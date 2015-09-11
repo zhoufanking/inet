@@ -3,15 +3,15 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
 #ifndef IEEE80211UPPERMAC_H_
 #define IEEE80211UPPERMAC_H_
@@ -19,7 +19,7 @@
 #include "Ieee80211MacPlugin.h"
 #include "IIeee80211UpperMac.h"
 #include "IIeee80211FrameExchange.h"
-#include "IIeee80211MacTx.h"
+#include "IIeee80211MacContentionTx.h"
 #include "IIeee80211MacImmediateTx.h"
 
 namespace inet {
@@ -30,7 +30,7 @@ class Ieee80211NewMac;
 class Ieee80211FrameExchange;
 
 
-class Ieee80211UpperMac : public Ieee80211MacPlugin, public IIeee80211UpperMac, public IIeee80211FrameExchange::IFinishedCallback, public IIeee80211MacTx::ICallback, public IIeee80211MacImmediateTx::ICallback
+class Ieee80211UpperMac : public Ieee80211MacPlugin, public IIeee80211UpperMac, public IIeee80211FrameExchange::IFinishedCallback, public IIeee80211MacContentionTx::ICallback, public IIeee80211MacImmediateTx::ICallback
 {
     public:
         typedef std::list<Ieee80211DataOrMgmtFrame*> Ieee80211DataOrMgmtFrameList;
@@ -66,7 +66,7 @@ class Ieee80211UpperMac : public Ieee80211MacPlugin, public IIeee80211UpperMac, 
         void sendAck(Ieee80211DataOrMgmtFrame *frame);
         void sendCts(Ieee80211RTSFrame *frame);
 
-        virtual void transmissionComplete(IIeee80211MacTx *tx) override;
+        virtual void transmissionComplete(IIeee80211MacContentionTx *tx) override;
         virtual void immediateTransmissionComplete() override;
 
     public:

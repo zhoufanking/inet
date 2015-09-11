@@ -25,7 +25,7 @@ namespace ieee80211 {
 class Ieee80211NewMac;
 class IIeee80211UpperMac;
 class IIeee80211MacRx;
-class IIeee80211MacTx;
+class IIeee80211MacContentionTx;
 class IIeee80211MacImmediateTx;
 
 class Ieee80211MacPlugin : public cObject
@@ -44,7 +44,7 @@ class Ieee80211MacPlugin : public cObject
         //TODO remove these
         IIeee80211UpperMac *getUpperMac() { return mac->upperMac; }
         IIeee80211MacRx *getReception() { return mac->reception; }
-        IIeee80211MacTx *getTransmission() { return mac->tx; }
+        IIeee80211MacContentionTx *getTransmission() { return mac->tx; }
         IIeee80211MacImmediateTx *getImmediateTransmission() { return mac->immediateTx; }
 };
 

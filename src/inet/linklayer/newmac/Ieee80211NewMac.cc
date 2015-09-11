@@ -24,7 +24,7 @@
 #include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
 #include "Ieee80211UpperMac.h"
 #include "Ieee80211MacRx.h"
-#include "Ieee80211MacTx.h"
+#include "Ieee80211MacContentionTx.h"
 #include "Ieee80211MacImmediateTx.h"
 #include "Ieee80211UpperMacContext.h"
 #include "inet/common/INETUtils.h"
@@ -75,7 +75,7 @@ void Ieee80211NewMac::initialize(int stage)
 
         upperMac = new Ieee80211UpperMac(this);
         reception = new Ieee80211MacRx(this);
-        tx = new Ieee80211MacTx(this);
+        tx = new Ieee80211MacContentionTx(this);
         immediateTx = new Ieee80211MacImmediateTx(this);
 
         // initialize parameters
