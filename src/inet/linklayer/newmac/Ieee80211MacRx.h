@@ -30,13 +30,12 @@ class IIeee80211UpperMac;
 class Ieee80211MacRx : public cSimpleModule, public IIeee80211MacRx
 {
     protected:
-        IIeee80211MacTx *tx = nullptr;
-        IIeee80211UpperMac *upperMac = nullptr;
-
         cMessage *endNavTimer = nullptr;
         IRadio::ReceptionState receptionState = IRadio::RECEPTION_STATE_UNDEFINED;
         IRadio::TransmissionState transmissionState = IRadio::TRANSMISSION_STATE_UNDEFINED;
         MACAddress address;
+        IIeee80211MacTx *tx = nullptr;
+        IIeee80211UpperMac *upperMac = nullptr;
 
     protected:
         void initialize();
