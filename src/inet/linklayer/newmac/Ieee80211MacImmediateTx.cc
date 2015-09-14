@@ -22,7 +22,7 @@ namespace inet {
 
 namespace ieee80211 {
 
-Ieee80211MacImmediateTx::Ieee80211MacImmediateTx(Ieee80211NewMac *mac) : Ieee80211MacPlugin(mac)
+Ieee80211MacImmediateTx::Ieee80211MacImmediateTx(cSimpleModule *ownerModule, Ieee80211NewMac *mac) : Ieee80211MacPlugin(ownerModule), mac(mac)
 {
     endIfsTimer = new cMessage("endIFS");
 }

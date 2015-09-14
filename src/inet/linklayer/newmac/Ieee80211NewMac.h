@@ -37,56 +37,43 @@ namespace ieee80211 {
 
 using namespace physicallayer;
 
-/**
- * IEEE 802.11b Media Access Control Layer.
- *
- * Various comments in the code refer to the Wireless LAN Medium Access
- * Control (MAC) and Physical Layer(PHY) Specifications
- * ANSI/IEEE Std 802.11, 1999 Edition (R2003)
- *
- * For more info, see the NED file.
- *
- * TODO: support fragmentation
- * TODO: PCF mode
- * TODO: CF period
- * TODO: pass radio power to upper layer
- * TODO: transmission complete notification to upper layer
- * TODO: STA TCF timer syncronization, see Chapter 11 pp 123
- *
- * Parts of the implementation have been taken over from the
- * Mobility Framework's Mac80211 module.
- *
- * @ingroup macLayer
- */
-
 class IIeee80211UpperMacContext;
 class IIeee80211MacTx;
 class IIeee80211MacRx;
 class IIeee80211UpperMac;
 class Ieee80211Frame;
 
-class INET_API Ieee80211NewMac : public MACProtocolBase
+
+class INET_API IIeee80211MacRadioInterface
 {
-  public:
+    public:
+        virtual void sendFrame(Ieee80211Frame *frameToSend) = 0;
+        virtual void sendDownPendingRadioConfigMsg() = 0;
+};
+
+
+/**
+ * IEEE 802.11b Media Access Control Layer.
+ *
+ * Various comments in the code refer to the Wireless LAN Medium Access
+ * Control (MAC) and Physical Layer(PHY) Specifications
+ * ANSI/IEEE Std 802.11, 1999 Edition (R2003)
+ */
+class INET_API Ieee80211NewMac : public MACProtocolBase, public IIeee80211MacRadioInterface
+{
+  protected:
+    MACAddress address; // only because createInterfaceEntry() needs it
 
     IIeee80211UpperMac *upperMac = nullptr;
     IIeee80211MacRx *rx = nullptr;
     IIeee80211MacTx *tx = nullptr;
-
-  protected:
-    /**
-     * The last change channel message received and not yet sent to the physical layer, or NULL.
-     * The message will be sent down when the state goes to IDLE or DEFER next time.
-     */
-    cMessage *pendingRadioConfigMsg = nullptr;
-    //@}
-
-  protected:
-    MACAddress address; // only because createInterfaceEntry() needs it
     IRadio *radio = nullptr;
+
     IRadio::TransmissionState transmissionState = IRadio::TransmissionState::TRANSMISSION_STATE_UNDEFINED;
 
-  protected:
+    // The last change channel message received and not yet sent to the physical layer, or NULL.
+    cMessage *pendingRadioConfigMsg = nullptr;
+
     /** @name Statistics */
     //@{
     long numRetry;
@@ -101,31 +88,15 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
     static simsignal_t radioStateSignal;
     //@}
 
-  public:
-    /**
-     * @name Construction functions
-     */
-    //@{
-    Ieee80211NewMac();
-    virtual ~Ieee80211NewMac();
-    //@}
-
   protected:
-    /**
-     * @name Initialization functions
-     */
-    //@{
-    /** @brief Initialization of the module and its variables */
     virtual int numInitStages() const {return NUM_INIT_STAGES;}
     virtual void initialize(int);
+
     void receiveSignal(cComponent *source, simsignal_t signalID, long value);
     void configureRadioMode(IRadio::RadioMode radioMode);
     virtual InterfaceEntry *createInterfaceEntry() override;
     virtual const MACAddress& isInterfaceRegistered();
     void transmissionStateChanged(IRadio::TransmissionState transmissionState);
-
-    //@}
-  protected:
 
     /** @brief Handle commands (msg kind+control info) coming from upper layers */
     virtual void handleUpperCommand(cMessage *msg);
@@ -144,15 +115,11 @@ class INET_API Ieee80211NewMac : public MACProtocolBase
     virtual void handleNodeCrash() override;
 
   public:
+    Ieee80211NewMac();
+    virtual ~Ieee80211NewMac();
 
     virtual void sendFrame(Ieee80211Frame *frameToSend);
-   /** @brief Send down the change channel message to the physical layer if there is any. */
     virtual void sendDownPendingRadioConfigMsg();
-    //@}
-  public:
-    IIeee80211UpperMac *getUpperMac() const { return upperMac; }
-    IIeee80211MacRx *getReception() const { return rx; }
-    IIeee80211MacTx *getTransmission() const { return tx; }
 };
 
 } // namespace ieee80211

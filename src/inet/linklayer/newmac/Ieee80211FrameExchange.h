@@ -39,6 +39,7 @@ class Ieee80211FrameExchange : public Ieee80211MacPlugin, public IIeee80211Frame
         virtual void transmissionFinished() = 0;
         virtual void transmissionComplete(int txIndex) override {transmissionFinished();}  //TODO merge the two calls...
         virtual void internalCollision(int txIndex) override {}  //TODO handle...
+
     public:
         Ieee80211FrameExchange(Ieee80211NewMac *mac, IIeee80211UpperMacContext *context, IFinishedCallback *callback) : Ieee80211MacPlugin(mac), context(context), finishedCallback(callback) {}
         virtual ~Ieee80211FrameExchange() {}

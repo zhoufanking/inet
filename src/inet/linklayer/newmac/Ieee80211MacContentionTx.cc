@@ -30,7 +30,7 @@ Register_Enum(Ieee80211NewMac,
    Ieee80211MacContentionTx::TRANSMIT,
    Ieee80211MacContentionTx::WAIT_IFS));
 
-Ieee80211MacContentionTx::Ieee80211MacContentionTx(Ieee80211NewMac* mac, int txIndex) : Ieee80211MacPlugin(mac), txIndex(txIndex)
+Ieee80211MacContentionTx::Ieee80211MacContentionTx(cSimpleModule *ownerModule, IIeee80211MacRadioInterface *mac, int txIndex) : Ieee80211MacPlugin(ownerModule), mac(mac), txIndex(txIndex)
 {
     fsm.setName("fsm");
     fsm.setState(IDLE);

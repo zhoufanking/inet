@@ -23,9 +23,12 @@ namespace inet {
 
 namespace ieee80211 {
 
+class IIeee80211MacRadioInterface;
+
 class Ieee80211MacImmediateTx : public Ieee80211MacPlugin, public IIeee80211MacImmediateTx
 {
     protected:
+        IIeee80211MacRadioInterface *mac;
         Ieee80211Frame *frame = nullptr;
         cMessage *endIfsTimer = nullptr;
         bool transmitting = false;
@@ -35,7 +38,7 @@ class Ieee80211MacImmediateTx : public Ieee80211MacPlugin, public IIeee80211MacI
         virtual void handleMessage(cMessage *msg);
 
     public:
-        Ieee80211MacImmediateTx(Ieee80211NewMac *mac);
+        Ieee80211MacImmediateTx(cSimpleModule *ownerModule, Ieee80211NewMac *mac);
         ~Ieee80211MacImmediateTx();
 
         virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ICallback *completionCallback) override;

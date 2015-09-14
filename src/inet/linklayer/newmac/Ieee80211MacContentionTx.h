@@ -38,6 +38,7 @@ class Ieee80211MacContentionTx : public Ieee80211MacPlugin, public IIeee80211Mac
         enum EventType { START, MEDIUM_STATE_CHANGED, TRANSMISSION_FINISHED, TIMER, FRAME_ARRIVED };
 
     protected:
+        IIeee80211MacRadioInterface *mac;
         int txIndex;
 
         // current transmission's parameters
@@ -76,7 +77,7 @@ class Ieee80211MacContentionTx : public Ieee80211MacPlugin, public IIeee80211Mac
         bool isIFSNecessary();
 
     public:
-        Ieee80211MacContentionTx(Ieee80211NewMac *mac, int txIndex);
+        Ieee80211MacContentionTx(cSimpleModule *ownerModule, IIeee80211MacRadioInterface *mac, int txIndex);
         ~Ieee80211MacContentionTx();
 
         //TODO also add a switchToReception() method? because switching takes time, so we dont automatically switch to tx after completing a transmission! (as we may want to transmit immediate frames afterwards)

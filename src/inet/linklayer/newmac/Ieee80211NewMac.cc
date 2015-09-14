@@ -51,9 +51,6 @@ Ieee80211NewMac::~Ieee80211NewMac()
         delete pendingRadioConfigMsg;
 }
 
-/****************************************************************
- * Initialization functions.
- */
 void Ieee80211NewMac::initialize(int stage)
 {
     MACProtocolBase::initialize(stage);
@@ -175,9 +172,6 @@ InterfaceEntry *Ieee80211NewMac::createInterfaceEntry()
     return e;
 }
 
-/****************************************************************
- * Message handling functions.
- */
 void Ieee80211NewMac::handleSelfMessage(cMessage *msg)
 {
     EV << "received self message: " << msg << endl;
