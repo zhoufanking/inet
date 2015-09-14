@@ -41,7 +41,7 @@ class Ieee80211FrameExchange : public Ieee80211MacPlugin, public IIeee80211Frame
         virtual void internalCollision(int txIndex) override {}  //TODO handle...
 
     public:
-        Ieee80211FrameExchange(Ieee80211NewMac *mac, IIeee80211UpperMacContext *context, IFinishedCallback *callback) : Ieee80211MacPlugin(mac), context(context), finishedCallback(callback) {}
+        Ieee80211FrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback) : Ieee80211MacPlugin(ownerModule), context(context), finishedCallback(callback) {}
         virtual ~Ieee80211FrameExchange() {}
 };
 
@@ -55,7 +55,7 @@ class Ieee80211FSMBasedFrameExchange : public Ieee80211FrameExchange
         virtual void handleWithFSM(EventType eventType, cMessage *frameOrTimer) = 0;
 
     public:
-        Ieee80211FSMBasedFrameExchange(Ieee80211NewMac *mac, IIeee80211UpperMacContext *context, IFinishedCallback *callback) : Ieee80211FrameExchange(mac, context, callback) { fsm.setName("Frame Exchange FSM"); }
+        Ieee80211FSMBasedFrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback) : Ieee80211FrameExchange(ownerModule, context, callback) { fsm.setName("Frame Exchange FSM"); }
         virtual void start() { EV_INFO << "Starting " << getClassName() << std::endl; handleWithFSM(EVENT_START, nullptr); }
         virtual bool lowerFrameReceived(Ieee80211Frame *frame) { handleWithFSM(EVENT_FRAMEARRIVED, frame); return true; }
         virtual void transmissionFinished() { handleWithFSM(EVENT_TXFINISHED, nullptr); }
@@ -88,7 +88,7 @@ class Ieee80211StepBasedFrameExchange : public Ieee80211FrameExchange
         void proceed();
 
     public:
-        Ieee80211StepBasedFrameExchange(Ieee80211NewMac *mac, IIeee80211UpperMacContext *context, IFinishedCallback *callback) : Ieee80211FrameExchange(mac, context, callback) { }
+        Ieee80211StepBasedFrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback) : Ieee80211FrameExchange(ownerModule, context, callback) { }
         virtual void start();
         virtual bool lowerFrameReceived(Ieee80211Frame *frame); // true = frame processed
         virtual void transmissionFinished();

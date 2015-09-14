@@ -22,8 +22,8 @@
 namespace inet {
 namespace ieee80211 {
 
-Ieee80211SendDataWithAckFrameExchange::Ieee80211SendDataWithAckFrameExchange(Ieee80211NewMac *mac, IIeee80211UpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *frame) :
-    Ieee80211FSMBasedFrameExchange(mac, context, callback), frame(frame)
+Ieee80211SendDataWithAckFrameExchange::Ieee80211SendDataWithAckFrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *frame) :
+    Ieee80211FSMBasedFrameExchange(ownerModule, context, callback), frame(frame)
 {
 }
 
@@ -133,8 +133,8 @@ bool Ieee80211SendDataWithAckFrameExchange::isAck(Ieee80211Frame* frame)
 
 //------------------------------
 
-Ieee80211SendDataWithRtsCtsFrameExchange::Ieee80211SendDataWithRtsCtsFrameExchange(Ieee80211NewMac *mac, IIeee80211UpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame) :
-    Ieee80211StepBasedFrameExchange(mac, context, callback), dataFrame(dataFrame)
+Ieee80211SendDataWithRtsCtsFrameExchange::Ieee80211SendDataWithRtsCtsFrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame) :
+    Ieee80211StepBasedFrameExchange(ownerModule, context, callback), dataFrame(dataFrame)
 {
 }
 

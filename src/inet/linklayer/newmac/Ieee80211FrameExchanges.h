@@ -46,7 +46,7 @@ class Ieee80211SendDataWithAckFrameExchange : public Ieee80211FSMBasedFrameExcha
         bool isAck(Ieee80211Frame *frame);
 
     public:
-        Ieee80211SendDataWithAckFrameExchange(Ieee80211NewMac *mac, IIeee80211UpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *frame);
+        Ieee80211SendDataWithAckFrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *frame);
         ~Ieee80211SendDataWithAckFrameExchange();
 };
 
@@ -60,7 +60,7 @@ class Ieee80211SendDataWithRtsCtsFrameExchange : public Ieee80211StepBasedFrameE
         virtual bool processReply(int step, Ieee80211Frame *frame);
         virtual void processTimeout(int step);
     public:
-        Ieee80211SendDataWithRtsCtsFrameExchange(Ieee80211NewMac *mac, IIeee80211UpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame);
+        Ieee80211SendDataWithRtsCtsFrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame);
 };
 
 }
