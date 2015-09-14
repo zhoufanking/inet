@@ -49,6 +49,14 @@ void Ieee80211MacTx::initialize()
 
 }
 
+void Ieee80211MacTx::handleMessage(cMessage *msg)
+{
+    if (msg->getContextPointer() != nullptr)
+        ((Ieee80211MacPlugin *)msg->getContextPointer())->handleMessage(msg);
+    else
+        ASSERT(false);
+}
+
 void Ieee80211MacTx::transmitContentionFrame(int txIndex, Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ICallback *completionCallback)
 {
     ASSERT(txIndex >= 0 && txIndex < numContentionTx);

@@ -39,7 +39,7 @@ class Ieee80211MacTx : public cSimpleModule, public IIeee80211MacTx
 
     protected:
         virtual void initialize() override;
-        virtual void handleMessage(cMessage *msg) override {}
+        virtual void handleMessage(cMessage *msg) override;
 
     public:
         Ieee80211MacTx();

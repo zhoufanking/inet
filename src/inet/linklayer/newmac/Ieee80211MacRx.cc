@@ -39,7 +39,9 @@ void Ieee80211MacRx::initialize()
 
 void Ieee80211MacRx::handleMessage(cMessage* msg)
 {
-    if (msg == endNavTimer)  //FIXME should signal to tx!!!! or not????
+    if (msg->getContextPointer() != nullptr)
+        ((Ieee80211MacPlugin *)msg->getContextPointer())->handleMessage(msg);
+    else if (msg == endNavTimer)  //FIXME should signal to tx!!!! or not????
         EV_INFO << "The radio channel has become free according to the NAV" << std::endl;
     else
         throw cRuntimeError("Unexpected self message");

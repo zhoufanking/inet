@@ -38,9 +38,7 @@ Define_Module(Ieee80211NewMac);
 simsignal_t Ieee80211NewMac::stateSignal = SIMSIGNAL_NULL;
 simsignal_t Ieee80211NewMac::radioStateSignal = SIMSIGNAL_NULL;
 
-/****************************************************************
- * Construction functions.
- */
+
 Ieee80211NewMac::Ieee80211NewMac()
 {
 }

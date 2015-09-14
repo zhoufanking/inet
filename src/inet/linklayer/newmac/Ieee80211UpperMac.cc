@@ -50,6 +50,10 @@ void Ieee80211UpperMac::initialize()
 
 void Ieee80211UpperMac::handleMessage(cMessage* msg)
 {
+    if (msg->getContextPointer() != nullptr)
+        ((Ieee80211MacPlugin *)msg->getContextPointer())->handleMessage(msg);
+    else
+        ASSERT(false);
 }
 
 void Ieee80211UpperMac::initializeQueueModule()
