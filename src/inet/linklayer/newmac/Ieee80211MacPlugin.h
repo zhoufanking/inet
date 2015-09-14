@@ -17,7 +17,6 @@
 #define IEEE80211MACPLUGIN_H_
 
 #include "inet/common/INETDefs.h"
-#include "Ieee80211NewMac.h"
 
 namespace inet {
 namespace ieee80211 {

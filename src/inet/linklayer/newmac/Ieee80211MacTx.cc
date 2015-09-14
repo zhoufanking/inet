@@ -17,7 +17,7 @@
 #include "Ieee80211MacContentionTx.h"
 #include "Ieee80211MacImmediateTx.h"
 #include "IIeee80211UpperMac.h"
-#include "Ieee80211NewMac.h" //TODO
+#include "IIeee80211MacRadioInterface.h"
 
 namespace inet {
 
@@ -38,7 +38,7 @@ Ieee80211MacTx::~Ieee80211MacTx()
 
 void Ieee80211MacTx::initialize()
 {
-    mac = check_and_cast<Ieee80211NewMac*>(getParentModule());  //TODO
+    mac = check_and_cast<IIeee80211MacRadioInterface *>(getParentModule());  //TODO
     upperMac = check_and_cast<IIeee80211UpperMac*>(getModuleByPath("^.upperMac")); //TODO
 
     numContentionTx = 4; //TODO

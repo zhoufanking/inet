@@ -17,7 +17,6 @@
 #define IEEE80211UPPERMACCONTEXT_H_
 
 #include "IIeee80211UpperMacContext.h"
-#include "Ieee80211NewMac.h"
 
 namespace inet {
 

@@ -14,7 +14,7 @@
 //
 
 #include "Ieee80211MacContentionTx.h"
-#include "Ieee80211NewMac.h"
+#include "IIeee80211MacRadioInterface.h"
 #include "inet/common/FSMA.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 
