@@ -1,4 +1,6 @@
 //
+// Copyright (C) 2015 Andras Varga
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -29,8 +31,8 @@ class Ieee80211Frame;
 
 using namespace inet::physicallayer;  //TODO Khmm
 
-/** 
- * isMediumFree() tells if the medium is free according to the physical and virtual carrier sense algorithm. 
+/**
+ * isMediumFree() tells if the medium is free according to the physical and virtual carrier sense algorithm.
  */
 class IIeee80211MacRx
 {

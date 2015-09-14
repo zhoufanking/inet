@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2006 Andras Varga and Levente M�sz�ros
+// Copyright (C) 2015 Andras Varga
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -30,6 +30,7 @@
 #include "inet/linklayer/base/MACProtocolBase.h"
 #include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h" //TODO not needed here
 #include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h" //TODO not needed here
+#include "IIeee80211MacRadioInterface.h"
 
 namespace inet {
 
@@ -42,14 +43,6 @@ class IIeee80211MacTx;
 class IIeee80211MacRx;
 class IIeee80211UpperMac;
 class Ieee80211Frame;
-
-
-class INET_API IIeee80211MacRadioInterface
-{
-    public:
-        virtual void sendFrame(Ieee80211Frame *frameToSend) = 0;
-        virtual void sendDownPendingRadioConfigMsg() = 0;
-};
 
 
 /**
