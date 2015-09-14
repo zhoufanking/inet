@@ -72,7 +72,7 @@ void Ieee80211NewMac::initialize(int stage)
         radio = check_and_cast<IRadio *>(radioModule);
 
         upperMac = new Ieee80211UpperMac(this);
-        rx = new Ieee80211MacRx(this);
+        rx = check_and_cast<IIeee80211MacRx*>(getModuleByPath("rx"));  //TODO
         tx = new Ieee80211MacTx(this, 1);
 
         // initialize parameters
