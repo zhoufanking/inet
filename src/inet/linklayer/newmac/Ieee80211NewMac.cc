@@ -65,9 +65,9 @@ void Ieee80211NewMac::initialize(int stage)
         radioModule->subscribe(IRadio::transmissionStateChangedSignal, this);
         radio = check_and_cast<IRadio *>(radioModule);
 
-        upperMac = check_and_cast<IIeee80211UpperMac*>(getModuleByPath("upperMac"));  //TODO
-        rx = check_and_cast<IIeee80211MacRx*>(getModuleByPath("rx"));  //TODO
-        tx = check_and_cast<IIeee80211MacTx*>(getModuleByPath("tx"));  //TODO
+        upperMac = check_and_cast<IIeee80211UpperMac*>(getModuleByPath(".upperMac"));  //TODO
+        rx = check_and_cast<IIeee80211MacRx*>(getModuleByPath(".rx"));  //TODO
+        tx = check_and_cast<IIeee80211MacTx*>(getModuleByPath(".tx"));  //TODO
 
         // initialize parameters
         double bitrate = par("bitrate");

@@ -44,7 +44,7 @@ void Ieee80211MacTx::initialize()
     IIeee80211MacRadioInterface *mac = check_and_cast<IIeee80211MacRadioInterface *>(getParentModule());  //TODO
 
     numContentionTx = 4; //TODO
-    ASSERT(numContentionTx < MAX_NUM_CONTENTIONTX);
+    ASSERT(numContentionTx <= MAX_NUM_CONTENTIONTX);
     for (int i = 0; i < numContentionTx; i++)
         contentionTx[i] = new Ieee80211MacContentionTx(this, mac, i); //TODO factory method
     immediateTx = new Ieee80211MacImmediateTx(this, mac); //TODO factory method
