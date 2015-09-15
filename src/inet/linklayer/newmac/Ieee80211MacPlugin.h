@@ -36,6 +36,8 @@ class Ieee80211MacPlugin : public cObject
         virtual void handleMessage(cMessage *msg) = 0;
         virtual void scheduleAt(simtime_t t, cMessage *msg);
         virtual cMessage* cancelEvent(cMessage *msg);
+        virtual void cancelAndDelete(cMessage *msg);
+
 };
 
 } // namespace ieee80211

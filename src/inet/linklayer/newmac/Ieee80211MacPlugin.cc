@@ -33,6 +33,12 @@ cMessage* Ieee80211MacPlugin::cancelEvent(cMessage* msg)
     return msg;
 }
 
+void Ieee80211MacPlugin::cancelAndDelete(cMessage *msg)
+{
+    ASSERT(msg->getContextPointer() == nullptr || msg->getContextPointer() == this);
+    ownerModule->cancelAndDelete(msg);
+}
+
 } // namespace ieee80211
 } // namespace inet
 
