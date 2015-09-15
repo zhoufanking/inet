@@ -22,6 +22,8 @@
 namespace inet {
 namespace ieee80211 {
 
+Define_Module(Ieee80211MacRx);
+
 Ieee80211MacRx::Ieee80211MacRx()
 {
 }

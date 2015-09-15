@@ -103,6 +103,6 @@ module Ieee80211NewMac extends MACProtocolBase like IMACProtocol
 
     submodules:
         upperMac: <default("Ieee80211UpperMac")> like IIeee80211UpperMac;
-        tx: <default("Ieee80211Tx")> like IIeee80211MacTx;
-        rx: <default("Ieee80211Rx")> like IIeee80211MacRx;
+        tx: <default("Ieee80211MacTx")> like IIeee80211MacTx;
+        rx: <default("Ieee80211MacRx")> like IIeee80211MacRx;
 }

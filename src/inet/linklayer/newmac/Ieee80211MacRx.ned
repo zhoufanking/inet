@@ -21,6 +21,6 @@ package inet.linklayer.newmac;
 //
 // TODO
 //
-simple Ieee80211MacRx
+simple Ieee80211MacRx like IIeee80211MacRx
 {
 }

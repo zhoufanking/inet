@@ -24,6 +24,8 @@
 namespace inet {
 namespace ieee80211 {
 
+Define_Module(Ieee80211MacTx);
+
 Ieee80211MacTx::Ieee80211MacTx()
 {
     for (int i = 0; i < MAX_NUM_CONTENTIONTX; i++)
