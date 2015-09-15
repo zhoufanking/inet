@@ -232,7 +232,6 @@ void Ieee80211NewMac::receiveSignal(cComponent *source, simsignal_t signalID, lo
     if (signalID == IRadio::receptionStateChangedSignal)
     {
         rx->receptionStateChanged((IRadio::ReceptionState)value);
-        tx->mediumStateChanged(rx->isMediumFree());
     }
     else if (signalID == IRadio::transmissionStateChangedSignal)
     {
@@ -246,7 +245,6 @@ void Ieee80211NewMac::receiveSignal(cComponent *source, simsignal_t signalID, lo
             configureRadioMode(IRadio::RADIO_MODE_RECEIVER);  //FIXME this is in a very wrong place!!! should be done explicitly from UpperMac!
         }
         rx->transmissionStateChanged(transmissionState);
-        tx->mediumStateChanged(rx->isMediumFree());
     }
 }
 
