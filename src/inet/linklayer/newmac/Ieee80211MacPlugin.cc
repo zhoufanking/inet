@@ -22,12 +22,14 @@ namespace ieee80211 {
 
 void Ieee80211MacPlugin::scheduleAt(simtime_t t, cMessage* msg)
 {
+    cContextSwitcher tmp(ownerModule);
     msg->setContextPointer(this);
     ownerModule->scheduleAt(t, msg);
 }
 
 cMessage* Ieee80211MacPlugin::cancelEvent(cMessage* msg)
 {
+    cContextSwitcher tmp(ownerModule);
     ASSERT(msg->getContextPointer() == nullptr || msg->getContextPointer() == this);
     ownerModule->cancelEvent(msg);
     return msg;
@@ -35,6 +37,7 @@ cMessage* Ieee80211MacPlugin::cancelEvent(cMessage* msg)
 
 void Ieee80211MacPlugin::cancelAndDelete(cMessage *msg)
 {
+    cContextSwitcher tmp(ownerModule);
     ASSERT(msg->getContextPointer() == nullptr || msg->getContextPointer() == this);
     ownerModule->cancelAndDelete(msg);
 }
