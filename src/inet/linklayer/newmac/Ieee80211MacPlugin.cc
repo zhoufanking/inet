@@ -28,7 +28,7 @@ void Ieee80211MacPlugin::scheduleAt(simtime_t t, cMessage* msg)
 
 cMessage* Ieee80211MacPlugin::cancelEvent(cMessage* msg)
 {
-    ASSERT(msg->getContextPointer() == this);
+    ASSERT(msg->getContextPointer() == nullptr || msg->getContextPointer() == this);
     ownerModule->cancelEvent(msg);
     return msg;
 }

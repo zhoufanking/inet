@@ -23,4 +23,5 @@ package inet.linklayer.newmac;
 //
 simple Ieee80211MacTx like IIeee80211MacTx
 {
+    @display("i=block/tx");
 }

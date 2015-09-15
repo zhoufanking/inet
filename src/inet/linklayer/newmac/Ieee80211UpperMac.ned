@@ -23,4 +23,5 @@ package inet.linklayer.newmac;
 //
 simple Ieee80211UpperMac like IIeee80211UpperMac
 {
+    @display("i=block/layer");
 }

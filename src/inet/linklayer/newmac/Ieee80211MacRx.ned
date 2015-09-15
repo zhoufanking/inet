@@ -23,4 +23,5 @@ package inet.linklayer.newmac;
 //
 simple Ieee80211MacRx like IIeee80211MacRx
 {
+    @display("i=block/rx");
 }
