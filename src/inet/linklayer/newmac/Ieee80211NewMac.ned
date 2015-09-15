@@ -18,9 +18,34 @@
 
 package inet.linklayer.newmac;
 
-import inet.linklayer.base.MACProtocolBase;
+//import inet.linklayer.base.MACProtocolBase;
 import inet.linklayer.contract.IMACProtocol;
 
+
+// near copy-paste of inet.linklayer.base.MACProtocolBase to work around "compound-module cannot extend a simple-module" error in OMNeT++ 4.x
+module LayeredProtocolBase
+{
+    parameters:
+        @signal[packetSentToUpper](type=cPacket);
+        @signal[packetReceivedFromUpper](type=cPacket);
+        @signal[packetFromUpperDropped](type=cPacket);
+        @signal[packetSentToLower](type=cPacket);
+        @signal[packetReceivedFromLower](type=cPacket);
+        @signal[packetFromLowerDropped](type=cPacket);
+}
+
+// near copy-paste of inet.linklayer.base.MACProtocolBase to work around "compound-module cannot extend a simple-module" error in OMNeT++ 4.x
+module MACProtocolBase extends LayeredProtocolBase
+{
+    parameters:
+        string interfaceTableModule;
+        @display("i=block/rxtx");
+    gates:
+        input upperLayerIn @labels(INetworkDatagram/down);
+        output upperLayerOut @labels(INetworkDatagram/up);
+        input lowerLayerIn @labels(ILinkLayerFrame/up);
+        output lowerLayerOut @labels(ILinkLayerFrame/down);
+}
 
 //
 // Implementation of the 802.11b MAC protocol. This module is intended
