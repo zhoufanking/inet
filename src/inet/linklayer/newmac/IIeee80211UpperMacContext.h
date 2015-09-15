@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef IIEEE80211MACCONTEXT_H_
-#define IIEEE80211MACCONTEXT_H_
+#ifndef __INET_IIEEE80211UPPERMACCONTEXT_H
+#define __INET_IIEEE80211UPPERMACCONTEXT_H
 
 #include "inet/common/INETDefs.h"
 #include "inet/linklayer/common/MACAddress.h"

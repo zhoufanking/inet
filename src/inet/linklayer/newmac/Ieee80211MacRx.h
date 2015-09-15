@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef IEEE80211MACRX_H_
-#define IEEE80211MACRX_H_
+#ifndef __INET_IEEE80211MACRX_H
+#define __INET_IEEE80211MACRX_H
 
 #include "IIeee80211MacRx.h"
 #include "Ieee80211MacPlugin.h"

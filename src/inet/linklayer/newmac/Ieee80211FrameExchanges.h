@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef IEEE80211FRAMEEXCHANGES_H_
-#define IEEE80211FRAMEEXCHANGES_H_
+#ifndef __INET_IEEE80211FRAMEEXCHANGES_H
+#define __INET_IEEE80211FRAMEEXCHANGES_H
 
 #include "Ieee80211MacPlugin.h"
 #include "Ieee80211FrameExchange.h"

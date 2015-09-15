@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __MAC_IEEE80211MACCONTENTIONTX_H_
-#define __MAC_IEEE80211MACCONTENTIONTX_H_
+#ifndef __INET_IEEE80211MACCONTENTIONTX_H
+#define __INET_IEEE80211MACCONTENTIONTX_H
 
 #include "Ieee80211MacPlugin.h"
 #include "IIeee80211MacContentionTx.h"

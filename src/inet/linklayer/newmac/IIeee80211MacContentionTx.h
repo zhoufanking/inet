@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __MAC_IIEEE80211MACCONTENTIONTX_H_
-#define __MAC_IIEEE80211MACCONTENTIONTX_H_
+#ifndef __INET_IIEEE80211MACCONTENTIONTX_H
+#define __INET_IIEEE80211MACCONTENTIONTX_H
 
 #include "inet/common/INETDefs.h"
 #include "IIeee80211MacTx.h"

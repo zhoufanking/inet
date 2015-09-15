@@ -15,8 +15,8 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef IEEE_80211_MAC_H
-#define IEEE_80211_MAC_H
+#ifndef __INET_IEEE80211NEWMAC_H
+#define __INET_IEEE80211NEWMAC_H
 
 // uncomment this if you do not want to log state machine transitions
 #define FSM_DEBUG

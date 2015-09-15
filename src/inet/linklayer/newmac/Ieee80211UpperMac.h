@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef IEEE80211UPPERMAC_H_
-#define IEEE80211UPPERMAC_H_
+#ifndef __INET_IEEE80211UPPERMAC_H
+#define __INET_IEEE80211UPPERMAC_H
 
 #include "Ieee80211MacPlugin.h"
 #include "IIeee80211UpperMac.h"

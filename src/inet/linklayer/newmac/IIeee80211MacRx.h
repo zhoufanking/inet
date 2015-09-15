@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef IIEEE80211MACRX_H_
-#define IIEEE80211MACRX_H_
+#ifndef __INET_IIEEE80211MACRX_H
+#define __INET_IIEEE80211MACRX_H
 
 #include "inet/common/INETDefs.h"
 #include "inet/physicallayer/contract/packetlevel/IRadio.h"
