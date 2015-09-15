@@ -263,7 +263,8 @@ void Ieee80211NewMac::configureRadioMode(IRadio::RadioMode radioMode)
 
 void Ieee80211NewMac::sendFrame(Ieee80211Frame *frame)
 {
-    EV << "sending frame\n";
+    Enter_Method("sendFrame(...)");
+    take(frame);
     configureRadioMode(IRadio::RADIO_MODE_TRANSMITTER);
     sendDown(frame);
 }

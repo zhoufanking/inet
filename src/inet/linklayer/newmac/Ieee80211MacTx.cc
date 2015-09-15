@@ -61,29 +61,36 @@ void Ieee80211MacTx::handleMessage(cMessage *msg)
 
 void Ieee80211MacTx::transmitContentionFrame(int txIndex, Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ICallback *completionCallback)
 {
+    Enter_Method("transmitContentionFrame()");
     ASSERT(txIndex >= 0 && txIndex < numContentionTx);
+    take(frame);
     contentionTx[txIndex]->transmitContentionFrame(frame, ifs, eifs, cwMin, cwMax, slotTime, retryCount, completionCallback);
 }
 
 void Ieee80211MacTx::transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ICallback *completionCallback)
 {
+    Enter_Method("transmitImmediateFrame()");
+    take(frame);
     immediateTx->transmitImmediateFrame(frame, ifs, completionCallback);
 }
 
 void Ieee80211MacTx::mediumStateChanged(bool mediumFree)
 {
+    Enter_Method("mediumState(%s)", mediumFree ? "FREE" : "BUSY");
     for (int i = 0; i < numContentionTx; i++)
         contentionTx[i]->mediumStateChanged(mediumFree);
 }
 
 void Ieee80211MacTx::radioTransmissionFinished()
 {
+    Enter_Method("radioTransmissionFinished()");
     for (int i = 0; i < numContentionTx; i++)
         contentionTx[i]->radioTransmissionFinished();
 }
 
 void Ieee80211MacTx::lowerFrameReceived(bool isFcsOk)
 {
+    Enter_Method("lowerFrameReceived(%s)", isFcsOk ? "OK" : "CORRUPT");
     for (int i = 0; i < numContentionTx; i++)
         contentionTx[i]->lowerFrameReceived(isFcsOk);
 }

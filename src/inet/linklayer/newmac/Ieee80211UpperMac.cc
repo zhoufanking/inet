@@ -74,6 +74,9 @@ void Ieee80211UpperMac::initializeQueueModule()
 
 void Ieee80211UpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame* frame)
 {
+    Enter_Method("upperFrameReceived()");
+    take(frame);
+
     if (queueModule)
         queueModule->requestPacket();
     // check for queue overflow
@@ -108,6 +111,9 @@ void Ieee80211UpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame* frame)
 
 void Ieee80211UpperMac::lowerFrameReceived(Ieee80211Frame* frame)
 {
+    Enter_Method("lowerFrameReceived()");
+    take(frame);
+
     if (context->isForUs(frame))
     {
         if (Ieee80211RTSFrame *rtsFrame = dynamic_cast<Ieee80211RTSFrame *>(frame))
@@ -134,6 +140,32 @@ void Ieee80211UpperMac::lowerFrameReceived(Ieee80211Frame* frame)
     }
 }
 
+void Ieee80211UpperMac::transmissionComplete(int txIndex)
+{
+    Enter_Method("transmissionComplete()");
+    //TODO
+}
+
+void Ieee80211UpperMac::internalCollision(int txIndex)
+{
+    Enter_Method("internalCollision()");
+    //TODO
+}
+
+void Ieee80211UpperMac::frameExchangeFinished(IIeee80211FrameExchange* what, bool successful)
+{
+    EV_INFO << "Frame exchange finished" << std::endl;
+    delete frameExchange;
+    frameExchange = nullptr;
+    if (!transmissionQueue.empty())
+    {
+        Ieee80211DataOrMgmtFrame *frame = check_and_cast<Ieee80211DataOrMgmtFrame *>(transmissionQueue.front());
+        transmissionQueue.pop_front();
+        frameExchange = new Ieee80211SendDataWithAckFrameExchange(mac, context, this, frame);
+        frameExchange->start();
+    }
+}
+
 Ieee80211DataOrMgmtFrame *Ieee80211UpperMac::buildBroadcastFrame(Ieee80211DataOrMgmtFrame *frameToSend)
 {
     Ieee80211DataOrMgmtFrame *frame = (Ieee80211DataOrMgmtFrame *)frameToSend->dup();
@@ -151,31 +183,6 @@ void Ieee80211UpperMac::sendCts(Ieee80211RTSFrame* frame)
 {
     Ieee80211CTSFrame *ctsFrame = context->buildCtsFrame(frame);
     tx->transmitImmediateFrame(ctsFrame, context->getSIFS(), this);
-}
-
-
-void Ieee80211UpperMac::frameExchangeFinished(IIeee80211FrameExchange* what, bool successful)
-{
-    EV_INFO << "Frame exchange finished" << std::endl;
-    delete frameExchange;
-    frameExchange = nullptr;
-    if (!transmissionQueue.empty())
-    {
-        Ieee80211DataOrMgmtFrame *frame = check_and_cast<Ieee80211DataOrMgmtFrame *>(transmissionQueue.front());
-        transmissionQueue.pop_front();
-        frameExchange = new Ieee80211SendDataWithAckFrameExchange(mac, context, this, frame);
-        frameExchange->start();
-    }
-}
-
-void Ieee80211UpperMac::transmissionComplete(int txIndex)
-{
-    //TODO
-}
-
-void Ieee80211UpperMac::internalCollision(int txIndex)
-{
-    //TODO
 }
 
 } // namespace ieee80211

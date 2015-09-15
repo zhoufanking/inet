@@ -52,8 +52,9 @@ void Ieee80211MacRx::handleMessage(cMessage* msg)
 
 void Ieee80211MacRx::lowerFrameReceived(Ieee80211Frame* frame)
 {
-    if (!frame)
-        throw cRuntimeError("message from physical layer (%s)%s is not a subclass of Ieee80211Frame", frame->getClassName(), frame->getName());
+    Enter_Method("lowerFrameReceived()");
+    take(frame);
+
     bool errorFree = isFcsOk(frame);
     tx->lowerFrameReceived(errorFree);
     if (errorFree)
@@ -84,11 +85,13 @@ bool Ieee80211MacRx::isMediumFree() const
 
 void Ieee80211MacRx::receptionStateChanged(IRadio::ReceptionState newReceptionState)
 {
+    Enter_Method("receptionStateChanged()");
     receptionState = newReceptionState;  //TODO notification of Tx ????????
 }
 
 void Ieee80211MacRx::transmissionStateChanged(IRadio::TransmissionState newTransmissionState)
 {
+    Enter_Method("transmissionStateChanged()");
     transmissionState = newTransmissionState; //TODO notification of Tx ????????
 }
 
