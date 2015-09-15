@@ -16,8 +16,9 @@
 //
 
 #include "Ieee80211UpperMacContext.h"
-#include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 #include "IIeee80211MacTx.h"
+#include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
+#include "inet/physicallayer/contract/packetlevel/RadioControlInfo_m.h"
 
 namespace inet {
 namespace ieee80211 {

@@ -20,10 +20,15 @@
 
 #include "Ieee80211MacPlugin.h"
 #include "IIeee80211MacContentionTx.h"
+#include "inet/physicallayer/contract/packetlevel/IRadio.h"
 
 namespace inet {
 
 namespace ieee80211 {
+
+using namespace inet::physicallayer;
+
+class IIeee80211MacRadioInterface;
 
 //TODO EDCA internal collisions should trigger retry (exp.backoff) in the lower pri tx process(es)
 //TODO fsm is wrong wrt channelLastBusyTime (not all cases handled)

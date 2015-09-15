@@ -19,15 +19,15 @@
 #define __INET_IEEE80211UPPERMACCONTEXT_H
 
 #include "IIeee80211UpperMacContext.h"
+#include "IIeee80211UpperMacContext.h"
+#include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h"
+#include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
 
 namespace inet {
 
-namespace physicallayer {
-class Ieee80211ModeSet;
-class Ieee80211Mode;
-}
-
 namespace ieee80211 {
+
+using namespace inet::physicallayer;
 
 class IIeee80211MacTx;
 

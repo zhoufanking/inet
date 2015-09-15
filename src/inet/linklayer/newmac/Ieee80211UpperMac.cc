@@ -18,6 +18,7 @@
 #include "Ieee80211UpperMac.h"
 #include "Ieee80211NewMac.h"
 #include "IIeee80211UpperMacContext.h"
+#include "inet/common/queue/IPassiveQueue.h"
 #include "inet/common/ModuleAccess.h"
 #include "Ieee80211FrameExchanges.h"
 

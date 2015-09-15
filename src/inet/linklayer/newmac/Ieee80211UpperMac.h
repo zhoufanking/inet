@@ -26,6 +26,8 @@
 
 namespace inet {
 
+class IPassiveQueue;
+
 namespace ieee80211 {
 
 class Ieee80211NewMac;

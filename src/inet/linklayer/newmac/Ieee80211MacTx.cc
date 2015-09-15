@@ -40,8 +40,7 @@ Ieee80211MacTx::~Ieee80211MacTx()
 
 void Ieee80211MacTx::initialize()
 {
-    mac = check_and_cast<IIeee80211MacRadioInterface *>(getParentModule());  //TODO
-    upperMac = check_and_cast<IIeee80211UpperMac*>(getModuleByPath("^.upperMac")); //TODO
+    IIeee80211MacRadioInterface *mac = check_and_cast<IIeee80211MacRadioInterface *>(getParentModule());  //TODO
 
     numContentionTx = 4; //TODO
     ASSERT(numContentionTx < MAX_NUM_CONTENTIONTX);

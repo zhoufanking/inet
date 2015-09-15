@@ -33,8 +33,6 @@ class IIeee80211MacImmediateTx;
 class Ieee80211MacTx : public cSimpleModule, public IIeee80211MacTx
 {
     protected:
-        Ieee80211NewMac *mac = nullptr;
-        IIeee80211UpperMac *upperMac = nullptr;
         int numContentionTx;
         IIeee80211MacContentionTx *contentionTx[MAX_NUM_CONTENTIONTX];
         IIeee80211MacImmediateTx *immediateTx = nullptr;
