@@ -20,7 +20,6 @@
 #include "IIeee80211UpperMac.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 Ieee80211MacRx::Ieee80211MacRx()
@@ -110,7 +109,6 @@ void Ieee80211MacRx::setNav(simtime_t navInterval)
         EV_INFO << "Frame duration field is 0" << std::endl; // e.g. Cf-End frame
 }
 
-}
-
-} /* namespace inet */
+} // namespace ieee80211
+} // namespace inet
 

@@ -30,7 +30,6 @@
 #include "inet/common/ModuleAccess.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 Define_Module(Ieee80211NewMac);
@@ -302,6 +301,6 @@ void Ieee80211NewMac::handleNodeCrash()
 {
 }
 
-}
+} // namespace ieee80211
 } // namespace inet
 

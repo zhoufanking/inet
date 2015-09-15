@@ -57,8 +57,8 @@ class Ieee80211MacRx : public cSimpleModule, public IIeee80211MacRx
 
 };
 
-}
+} // namespace ieee80211
+} // namespace inet
 
-} /* namespace inet */
+#endif
 
-#endif /* IEEE80211MACRECEPTION_H_ */

@@ -22,7 +22,6 @@
 #include "IIeee80211MacRadioInterface.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 Ieee80211MacTx::Ieee80211MacTx()
@@ -87,8 +86,6 @@ void Ieee80211MacTx::lowerFrameReceived(bool isFcsOk)
         contentionTx[i]->lowerFrameReceived(isFcsOk);
 }
 
-
-}
-
-} //namespace
+} // namespace ieee80211
+} // namespace inet
 

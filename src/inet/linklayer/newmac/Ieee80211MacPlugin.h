@@ -38,7 +38,8 @@ class Ieee80211MacPlugin : public cObject
         virtual cMessage* cancelEvent(cMessage *msg);
 };
 
-}
-} /* namespace inet */
+} // namespace ieee80211
+} // namespace inet
 
-#endif /* IEEE80211MACPLUGIN_H_ */
+#endif
+

@@ -23,7 +23,6 @@
 #include "inet/physicallayer/contract/packetlevel/IRadio.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 using namespace inet::physicallayer;
@@ -95,8 +94,8 @@ class Ieee80211MacContentionTx : public Ieee80211MacPlugin, public IIeee80211Mac
         virtual void lowerFrameReceived(bool isFcsOk) override;
 };
 
-}
-
-} //namespace
+} // namespace ieee80211
+} // namespace inet
 
 #endif
+

@@ -23,9 +23,7 @@
 #include "Ieee80211FrameExchanges.h"
 
 namespace inet {
-
 namespace ieee80211 {
-
 
 Ieee80211UpperMac::Ieee80211UpperMac()
 {
@@ -178,8 +176,6 @@ void Ieee80211UpperMac::internalCollision(int txIndex)
     //TODO
 }
 
-
-}
-
-} /* namespace inet */
+} // namespace ieee80211
+} // namespace inet
 

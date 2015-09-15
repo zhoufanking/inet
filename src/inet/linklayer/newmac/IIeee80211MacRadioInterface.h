@@ -21,7 +21,6 @@
 #include "inet/common/INETDefs.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 class Ieee80211Frame;
@@ -34,7 +33,6 @@ class INET_API IIeee80211MacRadioInterface
 };
 
 } // namespace ieee80211
-
 } // namespace inet
 
 #endif

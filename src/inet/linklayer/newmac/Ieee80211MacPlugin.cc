@@ -33,7 +33,6 @@ cMessage* Ieee80211MacPlugin::cancelEvent(cMessage* msg)
     return msg;
 }
 
-}
-
-} /* namespace inet */
+} // namespace ieee80211
+} // namespace inet
 

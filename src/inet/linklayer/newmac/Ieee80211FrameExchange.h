@@ -97,8 +97,8 @@ class Ieee80211StepBasedFrameExchange : public Ieee80211FrameExchange
         virtual void handleMessage(cMessage *timer);
 };
 
-}
-} /* namespace inet */
+} // namespace ieee80211
+} // namespace inet
 
 #endif
 

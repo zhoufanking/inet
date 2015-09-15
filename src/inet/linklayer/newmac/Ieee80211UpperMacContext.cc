@@ -205,7 +205,6 @@ void Ieee80211UpperMacContext::transmitImmediateFrame(Ieee80211Frame *frame, sim
     tx->transmitImmediateFrame(frame, ifs, completionCallback);
 }
 
-
-}
-} /* namespace inet */
+} // namespace ieee80211
+} // namespace inet
 

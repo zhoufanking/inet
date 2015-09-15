@@ -65,8 +65,8 @@ class Ieee80211SendDataWithRtsCtsFrameExchange : public Ieee80211StepBasedFrameE
         Ieee80211SendDataWithRtsCtsFrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame);
 };
 
-}
-} /* namespace inet */
+} // namespace ieee80211
+} // namespace inet
 
 #endif
 

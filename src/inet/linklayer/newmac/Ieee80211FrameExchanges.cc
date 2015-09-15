@@ -167,6 +167,6 @@ void Ieee80211SendDataWithRtsCtsFrameExchange::processTimeout(int step)
     }
 }
 
-}
+} // namespace ieee80211
+} // namespace inet
 
-} /* namespace inet */

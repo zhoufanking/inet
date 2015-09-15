@@ -140,6 +140,6 @@ void Ieee80211StepBasedFrameExchange::succeed()
     reportSuccess();
 }
 
-}
-} /* namespace inet */
+} // namespace ieee80211
+} // namespace inet
 

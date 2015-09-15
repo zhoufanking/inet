@@ -21,7 +21,6 @@
 #include "inet/common/INETDefs.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 class IIeee80211UpperMacContext;
@@ -36,8 +35,8 @@ class IIeee80211UpperMac
         virtual void lowerFrameReceived(Ieee80211Frame *frame) = 0;
 };
 
-} // namespace 80211
+} // namespace ieee80211
+} // namespace inet
 
-} /* namespace inet */
+#endif
 
-#endif /* IEEE80211UPPERMAC_H_ */

@@ -21,7 +21,6 @@
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 Ieee80211MacImmediateTx::Ieee80211MacImmediateTx(cSimpleModule *ownerModule, IIeee80211MacRadioInterface *mac) : Ieee80211MacPlugin(ownerModule), mac(mac)
@@ -62,7 +61,6 @@ void Ieee80211MacImmediateTx::handleMessage(cMessage *msg)
         ASSERT(false);
 }
 
-}
-
-} //namespace
+} // namespace ieee80211
+} // namespace inet
 

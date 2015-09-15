@@ -22,7 +22,6 @@
 #include "IIeee80211MacTx.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 class Ieee80211Frame;
@@ -38,8 +37,8 @@ class IIeee80211MacContentionTx
         virtual void lowerFrameReceived(bool isFcsOk) = 0;
 };
 
-}
-
-} //namespace
+} // namespace ieee80211
+} // namespace inet
 
 #endif
+

@@ -24,7 +24,6 @@
 #include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 using namespace inet::physicallayer;
@@ -86,7 +85,8 @@ class INET_API Ieee80211UpperMacContext : public IIeee80211UpperMacContext
         virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, IIeee80211MacTx::ICallback *completionCallback) const override;
 };
 
-}
-} /* namespace inet */
+} // namespace ieee80211
+} // namespace inet
 
 #endif
+

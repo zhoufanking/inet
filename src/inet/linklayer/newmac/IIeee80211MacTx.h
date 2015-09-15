@@ -23,7 +23,6 @@
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 class IIeee80211MacTx
@@ -43,8 +42,8 @@ class IIeee80211MacTx
         virtual void lowerFrameReceived(bool isFcsOk) = 0;
 };
 
-}
-
-} //namespace
+} // namespace ieee80211
+} // namespace inet
 
 #endif
+

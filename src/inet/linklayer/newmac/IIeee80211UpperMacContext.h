@@ -23,7 +23,6 @@
 #include "IIeee80211MacTx.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 class Ieee80211Frame;
@@ -75,7 +74,8 @@ class IIeee80211UpperMacContext
         virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, IIeee80211MacTx::ICallback *completionCallback) const = 0;
 };
 
-}
-} /* namespace inet */
+} // namespace ieee80211
+} // namespace inet
 
 #endif
+

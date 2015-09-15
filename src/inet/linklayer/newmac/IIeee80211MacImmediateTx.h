@@ -22,7 +22,6 @@
 #include "IIeee80211MacTx.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 class IIeee80211MacImmediateTx
@@ -34,8 +33,8 @@ class IIeee80211MacImmediateTx
         virtual void radioTransmissionFinished() = 0;
 };
 
-}
-
-} //namespace
+} // namespace ieee80211
+} // namespace inet
 
 #endif
+

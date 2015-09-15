@@ -40,8 +40,8 @@ class IIeee80211FrameExchange
         virtual bool lowerFrameReceived(Ieee80211Frame *frame) = 0;  // true = processed
 };
 
-}
-} /* namespace inet */
+} // namespace ieee80211
+} // namespace inet
 
 #endif
 

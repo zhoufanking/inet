@@ -44,8 +44,8 @@ class IIeee80211MacRx
         virtual void lowerFrameReceived(Ieee80211Frame *frame) = 0;
 };
 
-}
+} // namespace ieee80211
+} // namespace inet
 
-} /* namespace inet */
+#endif
 
-#endif /* IEEE80211MACRECEPTION_H_ */

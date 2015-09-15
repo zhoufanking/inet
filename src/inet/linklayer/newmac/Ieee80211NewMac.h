@@ -33,7 +33,6 @@
 #include "IIeee80211MacRadioInterface.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 using namespace physicallayer;
@@ -116,7 +115,6 @@ class INET_API Ieee80211NewMac : public MACProtocolBase, public IIeee80211MacRad
 };
 
 } // namespace ieee80211
-
 } // namespace inet
 
 #endif

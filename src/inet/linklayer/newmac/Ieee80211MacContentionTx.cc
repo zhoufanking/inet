@@ -21,7 +21,6 @@
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 // don't forget to keep synchronized the C++ enum and the runtime enum definition
@@ -227,8 +226,6 @@ bool Ieee80211MacContentionTx::isIFSNecessary()
     return elapsedFreeChannelTime < ifs || (useEIFS && elapsedFreeChannelTime < eifs);
 }
 
-
-}
-
-} //namespace
+} // namespace ieee80211
+} // namespace inet
 

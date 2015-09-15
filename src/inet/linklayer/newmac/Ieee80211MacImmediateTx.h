@@ -22,7 +22,6 @@
 #include "IIeee80211MacImmediateTx.h"
 
 namespace inet {
-
 namespace ieee80211 {
 
 class IIeee80211MacRadioInterface;
@@ -47,8 +46,8 @@ class Ieee80211MacImmediateTx : public Ieee80211MacPlugin, public IIeee80211MacI
         virtual void radioTransmissionFinished() override;
 };
 
-}
-
-} //namespace
+} // namespace ieee80211
+} // namespace inet
 
 #endif
+

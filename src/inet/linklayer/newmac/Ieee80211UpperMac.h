@@ -32,7 +32,6 @@ namespace ieee80211 {
 
 class Ieee80211NewMac;
 
-
 class Ieee80211UpperMac : public cSimpleModule, public IIeee80211UpperMac, public IIeee80211FrameExchange::IFinishedCallback, public IIeee80211MacTx::ICallback
 {
     public:
@@ -86,8 +85,8 @@ class Ieee80211UpperMac : public cSimpleModule, public IIeee80211UpperMac, publi
 
 };
 
-} // namespace 80211
+} // namespace ieee80211
+} // namespace inet
 
-} /* namespace inet */
+#endif
 
-#endif /* IEEE80211UPPERMAC_H_ */
