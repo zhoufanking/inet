@@ -259,6 +259,13 @@ void Ieee80211NewMac::configureRadioMode(IRadio::RadioMode radioMode)
     }
 }
 
+void Ieee80211NewMac::sendUp(cMessage *message)
+{
+    Enter_Method("sendUp()");
+    take(message);
+    MACProtocolBase::sendUp(message);
+}
+
 void Ieee80211NewMac::sendFrame(Ieee80211Frame *frame)
 {
     Enter_Method("sendFrame(...)");
