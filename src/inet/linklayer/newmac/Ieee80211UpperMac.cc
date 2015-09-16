@@ -140,6 +140,12 @@ void Ieee80211UpperMac::lowerFrameReceived(Ieee80211Frame* frame)
     }
 }
 
+void Ieee80211UpperMac::transmissionComplete(IIeee80211MacTx::ICallback *callback, int txIndex)
+{
+    Enter_Method("transmissionComplete()");
+    callback->transmissionComplete(txIndex);
+}
+
 void Ieee80211UpperMac::transmissionComplete(int txIndex)
 {
     Enter_Method("transmissionComplete()");

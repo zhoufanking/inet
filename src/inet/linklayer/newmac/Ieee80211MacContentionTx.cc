@@ -16,6 +16,7 @@
 //
 
 #include "Ieee80211MacContentionTx.h"
+#include "IIeee80211UpperMac.h"
 #include "IIeee80211MacRadioInterface.h"
 #include "inet/common/FSMA.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
@@ -31,7 +32,7 @@ Register_Enum(Ieee80211NewMac,
    Ieee80211MacContentionTx::TRANSMIT,
    Ieee80211MacContentionTx::WAIT_IFS));
 
-Ieee80211MacContentionTx::Ieee80211MacContentionTx(cSimpleModule *ownerModule, IIeee80211MacRadioInterface *mac, int txIndex) : Ieee80211MacPlugin(ownerModule), mac(mac), txIndex(txIndex)
+Ieee80211MacContentionTx::Ieee80211MacContentionTx(cSimpleModule *ownerModule, IIeee80211MacRadioInterface *mac, IIeee80211UpperMac *upperMac, int txIndex) : Ieee80211MacPlugin(ownerModule), mac(mac), upperMac(upperMac), txIndex(txIndex)
 {
     fsm.setName("fsm");
     fsm.setState(IDLE);
@@ -149,7 +150,7 @@ void Ieee80211MacContentionTx::handleWithFSM(EventType event, cMessage *msg)
             FSMA_Event_Transition(TxFinished,
                                   event == TRANSMISSION_FINISHED,
                                   IDLE,
-                                  completionCallback->transmissionComplete(txIndex);
+                                  upperMac->transmissionComplete(completionCallback, txIndex);
             );
         }
     }

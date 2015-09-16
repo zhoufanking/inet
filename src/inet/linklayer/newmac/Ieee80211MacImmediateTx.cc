@@ -16,6 +16,7 @@
 //
 
 #include "Ieee80211MacImmediateTx.h"
+#include "IIeee80211UpperMac.h"
 #include "IIeee80211MacRadioInterface.h"
 #include "inet/common/FSMA.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
@@ -23,7 +24,7 @@
 namespace inet {
 namespace ieee80211 {
 
-Ieee80211MacImmediateTx::Ieee80211MacImmediateTx(cSimpleModule *ownerModule, IIeee80211MacRadioInterface *mac) : Ieee80211MacPlugin(ownerModule), mac(mac)
+Ieee80211MacImmediateTx::Ieee80211MacImmediateTx(cSimpleModule *ownerModule, IIeee80211MacRadioInterface *mac, IIeee80211UpperMac *upperMac) : Ieee80211MacPlugin(ownerModule), mac(mac), upperMac(upperMac)
 {
     endIfsTimer = new cMessage("endIFS");
 }
@@ -45,7 +46,7 @@ void Ieee80211MacImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simt
 void Ieee80211MacImmediateTx::radioTransmissionFinished()
 {
     if (transmitting) {
-        completionCallback->transmissionComplete(-1);
+        upperMac->transmissionComplete(completionCallback, -1);
         transmitting = false;
         frame = nullptr;
     }
