@@ -31,12 +31,13 @@ Ieee80211MacImmediateTx::Ieee80211MacImmediateTx(cSimpleModule *ownerModule, IIe
 
 Ieee80211MacImmediateTx::~Ieee80211MacImmediateTx()
 {
-    //TODO cancelAndDelete(endIfsTimer);
+    cancelAndDelete(endIfsTimer);
     delete frame;
 }
 
 void Ieee80211MacImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t ifs, IIeee80211MacImmediateTx::ICallback *completionCallback)
 {
+    EV_DETAIL << "ImmediateTx: transmitImmediateFrame " << frame->getName() << endl;
     ASSERT(!endIfsTimer->isScheduled() && !transmitting); // we are idle
     scheduleAt(simTime() + ifs, endIfsTimer);
     this->frame = frame;
@@ -46,6 +47,7 @@ void Ieee80211MacImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simt
 void Ieee80211MacImmediateTx::radioTransmissionFinished()
 {
     if (transmitting) {
+        EV_DETAIL << "ImmediateTx: radioTransmissionFinished()\n";
         upperMac->transmissionComplete(completionCallback, -1);
         transmitting = false;
         frame = nullptr;
@@ -55,6 +57,7 @@ void Ieee80211MacImmediateTx::radioTransmissionFinished()
 void Ieee80211MacImmediateTx::handleMessage(cMessage *msg)
 {
     if (msg == endIfsTimer) {
+        EV_DETAIL << "ImmediateTx: endIfsTimer expired\n";
         transmitting = true;
         mac->sendFrame(frame);
     }
