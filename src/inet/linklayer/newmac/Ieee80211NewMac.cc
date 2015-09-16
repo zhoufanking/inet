@@ -228,7 +228,7 @@ void Ieee80211NewMac::handleUpperCommand(cMessage *msg)
 
 void Ieee80211NewMac::receiveSignal(cComponent *source, simsignal_t signalID, long value)
 {
-    Enter_Method_Silent();
+    Enter_Method("receiveSignal()");
     if (signalID == IRadio::receptionStateChangedSignal)
     {
         rx->receptionStateChanged((IRadio::ReceptionState)value);
@@ -242,6 +242,7 @@ void Ieee80211NewMac::receiveSignal(cComponent *source, simsignal_t signalID, lo
 
         if (transmissionFinished) {
             tx->radioTransmissionFinished();
+            EV_DEBUG << "changing radio to receiver mode\n";
             configureRadioMode(IRadio::RADIO_MODE_RECEIVER);  //FIXME this is in a very wrong place!!! should be done explicitly from UpperMac!
         }
         rx->transmissionStateChanged(transmissionState);
@@ -268,7 +269,7 @@ void Ieee80211NewMac::sendUp(cMessage *message)
 
 void Ieee80211NewMac::sendFrame(Ieee80211Frame *frame)
 {
-    Enter_Method("sendFrame(...)");
+    Enter_Method("sendFrame()");
     take(frame);
     configureRadioMode(IRadio::RADIO_MODE_TRANSMITTER);
     sendDown(frame);

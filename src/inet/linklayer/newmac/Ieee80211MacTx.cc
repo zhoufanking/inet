@@ -85,6 +85,7 @@ void Ieee80211MacTx::mediumStateChanged(bool mediumFree)
 void Ieee80211MacTx::radioTransmissionFinished()
 {
     Enter_Method("radioTransmissionFinished()");
+    immediateTx->radioTransmissionFinished();
     for (int i = 0; i < numContentionTx; i++)
         contentionTx[i]->radioTransmissionFinished();
 }

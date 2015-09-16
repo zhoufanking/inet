@@ -207,7 +207,7 @@ void Ieee80211MacContentionTx::scheduleIFS()
 void Ieee80211MacContentionTx::updateBackoffPeriod()
 {
     simtime_t elapsedBackoffTime = simTime() - endBackoff->getSendingTime();
-    backoffSlots -= ((int)(elapsedBackoffTime / slotTime));
+    backoffSlots -= ((int)(elapsedBackoffTime / slotTime)); //FIXME add some epsilon...?
 }
 
 void Ieee80211MacContentionTx::scheduleBackoffPeriod(int backoffSlots)
