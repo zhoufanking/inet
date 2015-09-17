@@ -81,8 +81,6 @@ int Ieee80211MacContentionTx::computeCW(int cwMin, int cwMax, int retryCount)
 
 void Ieee80211MacContentionTx::handleWithFSM(EventType event, cMessage *msg)
 {
-    if (frame == nullptr)
-        return; //FIXME ????????????????
     logState();
 //    emit(stateSignal, fsm.getState()); TODO
     FSMA_Switch(fsm)
@@ -146,7 +144,7 @@ void Ieee80211MacContentionTx::handleWithFSM(EventType event, cMessage *msg)
         }
         FSMA_State(TRANSMIT)
         {
-            FSMA_Enter(mac->sendFrame(frame->dup()));  //FIXME why is the dup() here!!!
+            FSMA_Enter(mac->sendFrame(frame));
             FSMA_Event_Transition(TxFinished,
                                   event == TRANSMISSION_FINISHED,
                                   IDLE,
