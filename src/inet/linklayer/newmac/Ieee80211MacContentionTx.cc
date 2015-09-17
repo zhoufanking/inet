@@ -88,13 +88,13 @@ void Ieee80211MacContentionTx::handleWithFSM(EventType event, cMessage *msg)
         FSMA_State(IDLE)
         {
             FSMA_Enter(mac->sendDownPendingRadioConfigMsg());
-            FSMA_Event_Transition(Ready-To-Transmit,
-                                  event == START && mediumFree && !isIFSNecessary(),
-                                  TRANSMIT,
-                                  ;
-            );
+//            FSMA_Event_Transition(Ready-To-Transmit,
+//                                  event == START && mediumFree && !isIFSNecessary(),
+//                                  TRANSMIT,
+//                                  ;
+//            );
             FSMA_Event_Transition(Need-IFS-Before-Transmit,
-                                  event == START && mediumFree && isIFSNecessary(),
+                                  event == START && mediumFree /*&& isIFSNecessary()*/,
                                   WAIT_IFS,
                                   ;
             );
@@ -193,12 +193,15 @@ void Ieee80211MacContentionTx::scheduleEIFSPeriod(simtime_t duration)
 void Ieee80211MacContentionTx::scheduleIFS()
 {
     ASSERT(mediumFree);
-    simtime_t elapsedFreeChannelTime = simTime() - channelLastBusyTime;
-    if (ifs > elapsedFreeChannelTime)
-        scheduleIFSPeriod(ifs - elapsedFreeChannelTime);
-    if (useEIFS && eifs > elapsedFreeChannelTime)
-        scheduleEIFSPeriod(eifs - elapsedFreeChannelTime);
-    useEIFS = false;
+//    simtime_t elapsedFreeChannelTime = simTime() - channelLastBusyTime;
+//    if (ifs > elapsedFreeChannelTime)
+//        scheduleIFSPeriod(ifs - elapsedFreeChannelTime);
+//    if (useEIFS && eifs > elapsedFreeChannelTime)
+//        scheduleEIFSPeriod(eifs - elapsedFreeChannelTime);
+//    useEIFS = false;
+    if (useEIFS)
+        scheduleEIFSPeriod(eifs);
+    scheduleIFSPeriod(ifs);
 }
 
 
