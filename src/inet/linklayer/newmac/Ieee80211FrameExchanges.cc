@@ -27,6 +27,7 @@ namespace ieee80211 {
 Ieee80211SendDataWithAckFrameExchange::Ieee80211SendDataWithAckFrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *frame) :
     Ieee80211FSMBasedFrameExchange(ownerModule, context, callback), frame(frame)
 {
+    frame->setDuration(context->getSIFS() + context->getAckDuration());
 }
 
 Ieee80211SendDataWithAckFrameExchange::~Ieee80211SendDataWithAckFrameExchange()

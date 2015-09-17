@@ -97,9 +97,8 @@ void Ieee80211UpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame* frame)
     // fill in missing fields (receiver address, seq number), and insert into the queue
     frame->setTransmitterAddress(context->getAddress());
     frame->setSequenceNumber(sequenceNumber);
-    context->setDataFrameDuration(frame);
     sequenceNumber = (sequenceNumber+1) % 4096;  //XXX seqNum must be checked upon reception of frames!
-
+    context->setDataBitrate(frame);
     if (frameExchange)
         transmissionQueue.push_back(frame);
     else
