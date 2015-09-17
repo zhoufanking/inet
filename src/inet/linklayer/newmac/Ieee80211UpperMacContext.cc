@@ -94,12 +94,12 @@ int Ieee80211UpperMacContext::getRtsThreshold() const
 
 simtime_t Ieee80211UpperMacContext::getAckTimeout() const
 {
-    return 2*MAX_PROPAGATION_DELAY + getSIFS() +  basicFrameMode->getDuration(LENGTH_ACK);
+    return basicFrameMode->getPhyRxStartDelay() + getSIFS() +  basicFrameMode->getDuration(LENGTH_ACK) + basicFrameMode->getSlotTime();
 }
 
 simtime_t Ieee80211UpperMacContext::getCtsTimeout() const
 {
-    return 2*MAX_PROPAGATION_DELAY + getSIFS() +  basicFrameMode->getDuration(LENGTH_CTS);
+    return basicFrameMode->getPhyRxStartDelay() + getSIFS() +  basicFrameMode->getDuration(LENGTH_CTS) + basicFrameMode->getSlotTime();
 }
 
 Ieee80211RTSFrame *Ieee80211UpperMacContext::buildRtsFrame(Ieee80211DataOrMgmtFrame *frame) const
