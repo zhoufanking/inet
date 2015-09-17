@@ -153,11 +153,26 @@ double Ieee80211UpperMacContext::computeFrameDuration(int bits, double bitrate) 
     return duration;
 }
 
+Ieee80211Frame *Ieee80211UpperMacContext::setControlBitrate(Ieee80211Frame *frame) const
+{
+    return setBitrate(frame, controlFrameMode);
+}
+
 Ieee80211Frame *Ieee80211UpperMacContext::setBasicBitrate(Ieee80211Frame *frame) const
+{
+    return setBitrate(frame, basicFrameMode);
+}
+
+Ieee80211Frame *Ieee80211UpperMacContext::setDataBitrate(Ieee80211Frame *frame) const
+{
+    return setBitrate(frame, dataFrameMode);
+}
+
+Ieee80211Frame *Ieee80211UpperMacContext::setBitrate(Ieee80211Frame* frame, const IIeee80211Mode* mode) const
 {
     ASSERT(frame->getControlInfo() == nullptr);
     TransmissionRequest *ctrl = new TransmissionRequest();
-    ctrl->setBitrate(bps(basicFrameMode->getDataMode()->getNetBitrate()));
+    ctrl->setBitrate(bps(mode->getDataMode()->getNetBitrate()));
     frame->setControlInfo(ctrl);
     return frame;
 }
@@ -166,13 +181,10 @@ void Ieee80211UpperMacContext::setDataFrameDuration(Ieee80211DataOrMgmtFrame *fr
 {
     if (isBroadcast(frame))
         frame->setDuration(0);
-//TODO
-//    else if (!frame->getMoreFragments())
-//        frame->setDuration(getSIFS() + computeFrameDuration(LENGTH_ACK, basicFrameMode->getDataMode()->getNetBitrate()));
-//    else
-//        // FIXME: shouldn't we use the next frame to be sent?
-//        frame->setDuration(3 * getSIFS() + 2 * computeFrameDuration(LENGTH_ACK, basicFrameMode->getDataMode()->getNetBitrate())
-//                + computeFrameDuration(frame));
+    else if (!frame->getMoreFragments())
+        frame->setDuration(getSIFS() + basicFrameMode->getDuration(LENGTH_ACK));
+    else
+        throw cRuntimeError("Fragmentation is not implemented");
 }
 
 bool Ieee80211UpperMacContext::isForUs(Ieee80211Frame *frame) const
