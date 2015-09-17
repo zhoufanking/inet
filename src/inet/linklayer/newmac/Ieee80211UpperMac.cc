@@ -112,6 +112,7 @@ void Ieee80211UpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame* frame)
 void Ieee80211UpperMac::lowerFrameReceived(Ieee80211Frame* frame)
 {
     Enter_Method("lowerFrameReceived()");
+    EV_INFO << "Lower frame received" << std::endl;
     take(frame);
 
     if (context->isForUs(frame))
@@ -126,7 +127,14 @@ void Ieee80211UpperMac::lowerFrameReceived(Ieee80211Frame* frame)
             mac->sendUp(dataOrMgmtFrame);
         }
         else if (frameExchange)
-            frameExchange->lowerFrameReceived(frame);
+        {
+            bool processed = frameExchange->lowerFrameReceived(frame);
+            if (!processed)
+            {
+                EV_INFO << "Unexpected frame " << frame->getName() << "\n";
+                // TODO: do something
+            }
+        }
         else
         {
             EV_INFO << "Dropped frame " << frame->getName() << std::endl;

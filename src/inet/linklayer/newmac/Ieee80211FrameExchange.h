@@ -54,12 +54,12 @@ class Ieee80211FSMBasedFrameExchange : public Ieee80211FrameExchange
         enum EventType { EVENT_START, EVENT_FRAMEARRIVED, EVENT_TXFINISHED, EVENT_TIMER };
 
     protected:
-        virtual void handleWithFSM(EventType eventType, cMessage *frameOrTimer) = 0;
+        virtual bool handleWithFSM(EventType eventType, cMessage *frameOrTimer) = 0;
 
     public:
         Ieee80211FSMBasedFrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback) : Ieee80211FrameExchange(ownerModule, context, callback) { fsm.setName("Frame Exchange FSM"); }
         virtual void start() { EV_INFO << "Starting " << getClassName() << std::endl; handleWithFSM(EVENT_START, nullptr); }
-        virtual bool lowerFrameReceived(Ieee80211Frame *frame) { handleWithFSM(EVENT_FRAMEARRIVED, frame); return true; }
+        virtual bool lowerFrameReceived(Ieee80211Frame *frame) { return handleWithFSM(EVENT_FRAMEARRIVED, frame); }
         virtual void transmissionFinished() { handleWithFSM(EVENT_TXFINISHED, nullptr); }
         virtual void handleMessage(cMessage *timer) { handleWithFSM(EVENT_TIMER, timer); } //TODO make it handleTimer in MAC and MACPlugin too!
 };

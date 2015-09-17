@@ -39,12 +39,11 @@ class Ieee80211SendDataWithAckFrameExchange : public Ieee80211FSMBasedFrameExcha
         State state = INIT;
 
     protected:
-        void handleWithFSM(EventType event, cMessage *frameOrTimer);
+        bool handleWithFSM(EventType event, cMessage *frameOrTimer);
 
         void transmitDataFrame();
         void retryDataFrame();
         void scheduleAckTimeout();
-        void processFrame(Ieee80211Frame *receivedFrame);
         bool isAck(Ieee80211Frame *frame);
 
     public:
