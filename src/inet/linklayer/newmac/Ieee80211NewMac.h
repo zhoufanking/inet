@@ -30,17 +30,17 @@
 #include "inet/linklayer/base/MACProtocolBase.h"
 #include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h" //TODO not needed here
 #include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h" //TODO not needed here
-#include "IIeee80211MacRadioInterface.h"
+#include "IMacRadioInterface.h"
 
 namespace inet {
 namespace ieee80211 {
 
 using namespace physicallayer;
 
-class IIeee80211UpperMacContext;
-class IIeee80211MacTx;
-class IIeee80211MacRx;
-class IIeee80211UpperMac;
+class IUpperMacContext;
+class ITx;
+class IRx;
+class IUpperMac;
 class Ieee80211Frame;
 
 
@@ -51,14 +51,14 @@ class Ieee80211Frame;
  * Control (MAC) and Physical Layer(PHY) Specifications
  * ANSI/IEEE Std 802.11, 1999 Edition (R2003)
  */
-class INET_API Ieee80211NewMac : public MACProtocolBase, public IIeee80211MacRadioInterface
+class INET_API Ieee80211NewMac : public MACProtocolBase, public IMacRadioInterface
 {
   protected:
     MACAddress address; // only because createInterfaceEntry() needs it
 
-    IIeee80211UpperMac *upperMac = nullptr;
-    IIeee80211MacRx *rx = nullptr;
-    IIeee80211MacTx *tx = nullptr;
+    IUpperMac *upperMac = nullptr;
+    IRx *rx = nullptr;
+    ITx *tx = nullptr;
     IRadio *radio = nullptr;
 
     IRadio::TransmissionState transmissionState = IRadio::TransmissionState::TRANSMISSION_STATE_UNDEFINED;

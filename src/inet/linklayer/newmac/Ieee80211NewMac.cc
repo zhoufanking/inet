@@ -22,10 +22,10 @@
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 #include "inet/physicallayer/ieee80211/packetlevel/Ieee80211ControlInfo_m.h"
 #include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
-#include "Ieee80211UpperMac.h"
-#include "Ieee80211MacRx.h"
-#include "Ieee80211MacTx.h"
-#include "Ieee80211UpperMacContext.h"
+#include "UpperMac.h"
+#include "Rx.h"
+#include "Tx.h"
+#include "UpperMacContext.h"
 #include "inet/common/INETUtils.h"
 #include "inet/common/ModuleAccess.h"
 
@@ -65,9 +65,9 @@ void Ieee80211NewMac::initialize(int stage)
         radioModule->subscribe(IRadio::transmissionStateChangedSignal, this);
         radio = check_and_cast<IRadio *>(radioModule);
 
-        upperMac = check_and_cast<IIeee80211UpperMac*>(getModuleByPath(".upperMac"));  //TODO
-        rx = check_and_cast<IIeee80211MacRx*>(getModuleByPath(".rx"));  //TODO
-        tx = check_and_cast<IIeee80211MacTx*>(getModuleByPath(".tx"));  //TODO
+        upperMac = check_and_cast<IUpperMac*>(getModuleByPath(".upperMac"));  //TODO
+        rx = check_and_cast<IRx*>(getModuleByPath(".rx"));  //TODO
+        tx = check_and_cast<ITx*>(getModuleByPath(".tx"));  //TODO
 
         // initialize parameters
         double bitrate = par("bitrate");
@@ -93,7 +93,7 @@ void Ieee80211NewMac::initialize(int stage)
         else
             address.setAddress(addressString);
 
-        IIeee80211UpperMacContext *context = new Ieee80211UpperMacContext(address, dataFrameMode, basicFrameMode, controlFrameMode, shortRetryLimit, rtsThreshold, tx);
+        IUpperMacContext *context = new UpperMacContext(address, dataFrameMode, basicFrameMode, controlFrameMode, shortRetryLimit, rtsThreshold, tx);
         upperMac->setContext(context);
         rx->setAddress(address);
 
@@ -173,7 +173,7 @@ void Ieee80211NewMac::handleSelfMessage(cMessage *msg)
 {
     EV << "received self message: " << msg << endl;
     if (msg->getContextPointer() != nullptr)
-        ((Ieee80211MacPlugin *)msg->getContextPointer())->handleMessage(msg);
+        ((MacPlugin *)msg->getContextPointer())->handleMessage(msg);
     else
         ASSERT(false);
 }
