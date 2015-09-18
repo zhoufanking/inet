@@ -18,9 +18,7 @@
 #ifndef __INET_ITXCALLBACK_H
 #define __INET_ITXCALLBACK_H
 
-#include "MacPlugin.h"
-#include "inet/common/FSMA.h"
-#include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
+#include "inet/common/INETDefs.h"
 
 namespace inet {
 namespace ieee80211 {

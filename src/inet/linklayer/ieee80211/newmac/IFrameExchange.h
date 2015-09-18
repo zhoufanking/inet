@@ -18,7 +18,7 @@
 #ifndef __INET_IFRAMEEXCHANGE_H
 #define __INET_IFRAMEEXCHANGE_H
 
-#include "MacPlugin.h"
+#include "inet/common/INETDefs.h"
 
 namespace inet {
 namespace ieee80211 {

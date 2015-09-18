@@ -19,10 +19,12 @@
 #define __INET_IIMMEDIATETX_H
 
 #include "inet/common/INETDefs.h"
-#include "ITxCallback.h"
 
 namespace inet {
 namespace ieee80211 {
+
+class Ieee80211Frame;
+class ITxCallback;
 
 class IImmediateTx
 {

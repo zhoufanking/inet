@@ -18,7 +18,6 @@
 #ifndef __INET_FRAMEEXCHANGES_H
 #define __INET_FRAMEEXCHANGES_H
 
-#include "MacPlugin.h"
 #include "FrameExchange.h"
 
 namespace inet {

@@ -172,11 +172,7 @@ InterfaceEntry *Ieee80211NewMac::createInterfaceEntry()
 
 void Ieee80211NewMac::handleSelfMessage(cMessage *msg)
 {
-    EV << "received self message: " << msg << endl;
-    if (msg->getContextPointer() != nullptr)
-        ((MacPlugin *)msg->getContextPointer())->handleMessage(msg);
-    else
-        ASSERT(false);
+    ASSERT(false);
 }
 
 void Ieee80211NewMac::handleUpperPacket(cPacket *msg)

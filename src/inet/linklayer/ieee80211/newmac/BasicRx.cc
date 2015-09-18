@@ -44,9 +44,7 @@ void BasicRx::initialize()
 
 void BasicRx::handleMessage(cMessage* msg)
 {
-    if (msg->getContextPointer() != nullptr)
-        ((MacPlugin *)msg->getContextPointer())->handleMessage(msg);
-    else if (msg == endNavTimer) {
+    if (msg == endNavTimer) {
         EV_INFO << "The radio channel has become free according to the NAV" << std::endl;
         recomputeMediumFree();
     }

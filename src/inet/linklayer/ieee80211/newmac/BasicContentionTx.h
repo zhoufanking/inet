@@ -18,7 +18,6 @@
 #ifndef __INET_BASICCONTENTIONTX_H
 #define __INET_BASICCONTENTIONTX_H
 
-#include "MacPlugin.h"
 #include "IContentionTx.h"
 #include "inet/physicallayer/contract/packetlevel/IRadio.h"
 
