@@ -67,7 +67,7 @@ class Ieee80211FSMBasedFrameExchange : public Ieee80211FrameExchange
 class Ieee80211StepBasedFrameExchange : public Ieee80211FrameExchange
 {
     protected:
-        enum StepType { NONE, TRANSMIT_CONTENTION_FRAME, TRANSMIT_IMMEDIATE_FRAME, EXPECT_REPLY };
+        enum StepType { NONE, TRANSMIT_CONTENTION_FRAME, TRANSMIT_IMMEDIATE_FRAME, EXPECT_REPLY, GOTO_STEP, FAIL, SUCCEED };
         enum Status { INPROGRESS, SUCCEEDED, FAILED };
         int step = 0;
         StepType stepType = NONE;
@@ -79,18 +79,25 @@ class Ieee80211StepBasedFrameExchange : public Ieee80211FrameExchange
         virtual bool processReply(int step, Ieee80211Frame *frame) = 0; // true = frame accepted as reply
         virtual void processTimeout(int step) = 0;
 
-        void transmitContentionFrame(Ieee80211Frame *frame, int retryCount);
-        void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount);
-        void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs);
-        void expectReply(simtime_t timeout);
-        void gotoStep(int step); // ~setNextStep()
-        void fail();
-        void succeed();
+        virtual void transmitContentionFrame(Ieee80211Frame *frame, int retryCount);
+        virtual void transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount);
+        virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs);
+        virtual void expectReply(simtime_t timeout);
+        virtual void gotoStep(int step); // ~setNextStep()
+        virtual void fail();
+        virtual void succeed();
+        virtual void proceed();
+        virtual void cleanup();
+        void setOperation(StepType type);
 
-        void proceed();
+        static const char *statusName(Status status);
+        static const char *stepTypeName(StepType stepType);
+        static const char *operationName(StepType stepType);
 
     public:
-        Ieee80211StepBasedFrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback) : Ieee80211FrameExchange(ownerModule, context, callback) { }
+        Ieee80211StepBasedFrameExchange(cSimpleModule *ownerModule, IIeee80211UpperMacContext *context, IFinishedCallback *callback);
+        virtual ~Ieee80211StepBasedFrameExchange();
+        std::string info() const override;
         virtual void start();
         virtual bool lowerFrameReceived(Ieee80211Frame *frame); // true = frame processed
         virtual void transmissionFinished();

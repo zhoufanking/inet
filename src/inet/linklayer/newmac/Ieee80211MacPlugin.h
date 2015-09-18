@@ -23,7 +23,7 @@
 namespace inet {
 namespace ieee80211 {
 
-class Ieee80211MacPlugin : public cObject
+class Ieee80211MacPlugin : public cOwnedObject
 {
     protected:
         cSimpleModule *ownerModule = nullptr;
