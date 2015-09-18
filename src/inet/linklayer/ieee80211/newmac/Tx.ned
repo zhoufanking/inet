@@ -16,12 +16,12 @@
 //
 
 
-package inet.linklayer.newmac;
+package inet.linklayer.ieee80211.newmac;
 
 //
 // TODO
 //
-simple Rx like IRx
+simple Tx like ITx
 {
-    @display("i=block/rx");
+    @display("i=block/tx");
 }

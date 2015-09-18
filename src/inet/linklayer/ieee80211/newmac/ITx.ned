@@ -16,11 +16,11 @@
 //
 
 
-package inet.linklayer.newmac;
+package inet.linklayer.ieee80211.newmac;
 
 //
 // TODO
 //
-moduleinterface IUpperMac
+moduleinterface ITx
 {
 }

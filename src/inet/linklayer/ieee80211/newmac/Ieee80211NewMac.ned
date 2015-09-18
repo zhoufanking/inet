@@ -16,7 +16,7 @@
 //
 
 
-package inet.linklayer.newmac;
+package inet.linklayer.ieee80211.newmac;
 
 //import inet.linklayer.base.MACProtocolBase;
 import inet.linklayer.contract.IMACProtocol;

@@ -16,11 +16,12 @@
 //
 
 
-package inet.linklayer.newmac;
+package inet.linklayer.ieee80211.newmac;
 
 //
 // TODO
 //
-moduleinterface IRx
+simple Rx like IRx
 {
+    @display("i=block/rx");
 }

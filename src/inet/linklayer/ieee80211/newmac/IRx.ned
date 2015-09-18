@@ -16,12 +16,11 @@
 //
 
 
-package inet.linklayer.newmac;
+package inet.linklayer.ieee80211.newmac;
 
 //
 // TODO
 //
-simple UpperMac like IUpperMac
+moduleinterface IRx
 {
-    @display("i=block/layer");
 }

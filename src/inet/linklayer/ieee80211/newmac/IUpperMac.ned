@@ -16,12 +16,11 @@
 //
 
 
-package inet.linklayer.newmac;
+package inet.linklayer.ieee80211.newmac;
 
 //
 // TODO
 //
-simple Tx like ITx
+moduleinterface IUpperMac
 {
-    @display("i=block/tx");
 }
