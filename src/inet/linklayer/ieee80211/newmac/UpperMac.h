@@ -32,7 +32,7 @@ namespace ieee80211 {
 
 class Ieee80211NewMac;
 
-class UpperMac : public cSimpleModule, public IUpperMac, public IFrameExchange::IFinishedCallback
+class UpperMac : public cSimpleModule, public IUpperMac, protected IFrameExchange::IFinishedCallback
 {
     public:
         typedef std::list<Ieee80211DataOrMgmtFrame*> Ieee80211DataOrMgmtFrameList;
