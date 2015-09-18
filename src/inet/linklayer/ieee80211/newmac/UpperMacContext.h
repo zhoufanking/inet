@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __INET_IEEE80211UPPERMACCONTEXT_H
-#define __INET_IEEE80211UPPERMACCONTEXT_H
+#ifndef __INET_UPPERMACCONTEXT_H
+#define __INET_UPPERMACCONTEXT_H
 
 #include "IUpperMacContext.h"
 #include "IUpperMacContext.h"

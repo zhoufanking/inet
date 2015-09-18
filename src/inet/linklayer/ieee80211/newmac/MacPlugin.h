@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __INET_IEEE80211MACPLUGIN_H
-#define __INET_IEEE80211MACPLUGIN_H
+#ifndef __INET_MACPLUGIN_H
+#define __INET_MACPLUGIN_H
 
 #include "inet/common/INETDefs.h"
 

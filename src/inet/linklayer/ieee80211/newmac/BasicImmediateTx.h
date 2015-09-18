@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __INET_IEEE80211MACIMMEDIATETX_H
-#define __INET_IEEE80211MACIMMEDIATETX_H
+#ifndef __INET_BASICIMMEDIATETX_H
+#define __INET_BASICIMMEDIATETX_H
 
 #include "MacPlugin.h"
 #include "IImmediateTx.h"
@@ -27,7 +27,7 @@ namespace ieee80211 {
 class IUpperMac;
 class IMacRadioInterface;
 
-class ImmediateTx : public MacPlugin, public IImmediateTx
+class BasicImmediateTx : public MacPlugin, public IImmediateTx
 {
     protected:
         IMacRadioInterface *mac;
@@ -41,8 +41,8 @@ class ImmediateTx : public MacPlugin, public IImmediateTx
         virtual void handleMessage(cMessage *msg);
 
     public:
-        ImmediateTx(cSimpleModule *ownerModule, IMacRadioInterface *mac, IUpperMac *upperMac);
-        ~ImmediateTx();
+        BasicImmediateTx(cSimpleModule *ownerModule, IMacRadioInterface *mac, IUpperMac *upperMac);
+        ~BasicImmediateTx();
 
         virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ICallback *completionCallback) override;
         virtual void radioTransmissionFinished() override;

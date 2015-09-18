@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __INET_IIEEE80211MACIMMEDIATETX_H
-#define __INET_IIEEE80211MACIMMEDIATETX_H
+#ifndef __INET_IIMMEDIATETX_H
+#define __INET_IIMMEDIATETX_H
 
 #include "inet/common/INETDefs.h"
 #include "ITx.h"

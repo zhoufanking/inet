@@ -15,8 +15,8 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef __INET_IIEEE80211MACRADIOINTERFACE_H
-#define __INET_IIEEE80211MACRADIOINTERFACE_H
+#ifndef __INET_IMACRADIOINTERFACE_H
+#define __INET_IMACRADIOINTERFACE_H
 
 #include "inet/common/INETDefs.h"
 

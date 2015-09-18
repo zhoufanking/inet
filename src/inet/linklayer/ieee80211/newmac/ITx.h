@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __INET_IIEEE80211MACTX_H
-#define __INET_IIEEE80211MACTX_H
+#ifndef __INET_ITX_H
+#define __INET_ITX_H
 
 #include "MacPlugin.h"
 #include "inet/common/FSMA.h"

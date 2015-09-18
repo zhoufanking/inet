@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __INET_IEEE80211MACTX_H
-#define __INET_IEEE80211MACTX_H
+#ifndef __INET_BASICTX_H
+#define __INET_BASICTX_H
 
 #include "MacPlugin.h"
 #include "ITx.h"
@@ -29,7 +29,7 @@ class IImmediateTx;
 
 #define MAX_NUM_CONTENTIONTX 4
 
-class Tx : public cSimpleModule, public ITx
+class BasicTx : public cSimpleModule, public ITx
 {
     protected:
         int numContentionTx;
@@ -41,8 +41,8 @@ class Tx : public cSimpleModule, public ITx
         virtual void handleMessage(cMessage *msg) override;
 
     public:
-        Tx();
-        virtual ~Tx();
+        BasicTx();
+        virtual ~BasicTx();
 
         virtual void transmitContentionFrame(int txIndex, Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ICallback *completionCallback) override;
         virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ICallback *completionCallback) override;
