@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __INET_ITX_H
-#define __INET_ITX_H
+#ifndef __INET_ITXCALLBACK_H
+#define __INET_ITXCALLBACK_H
 
 #include "MacPlugin.h"
 #include "inet/common/FSMA.h"
@@ -25,22 +25,10 @@
 namespace inet {
 namespace ieee80211 {
 
-class ITx
-{
+class ITxCallback {
     public:
-        class ICallback {
-            public:
-               virtual void transmissionComplete(int txIndex) = 0; // -1: immediate tx
-               virtual void internalCollision(int txIndex) = 0;  //TODO currently never called
-        };
-
-        virtual void transmitContentionFrame(int txIndex, Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ICallback *completionCallback) = 0;
-        virtual void transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ICallback *completionCallback) = 0;
-
-        virtual void radioTransmissionFinished() = 0;
-
-        virtual void mediumStateChanged(bool mediumFree) = 0;
-        virtual void lowerFrameReceived(bool isFcsOk) = 0;
+        virtual void transmissionComplete(int txIndex) = 0; // -1: immediate tx
+        virtual void internalCollision(int txIndex) = 0;
 };
 
 } // namespace ieee80211

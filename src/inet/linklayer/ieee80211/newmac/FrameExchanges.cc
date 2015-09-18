@@ -17,7 +17,6 @@
 
 #include "FrameExchanges.h"
 #include "inet/common/FSMA.h"
-#include "UpperMac.h"
 #include "IUpperMacContext.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 

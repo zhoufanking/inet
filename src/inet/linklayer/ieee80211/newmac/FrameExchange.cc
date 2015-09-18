@@ -17,8 +17,6 @@
 
 #include "FrameExchange.h"
 #include "IUpperMacContext.h"
-#include "UpperMac.h"
-#include "ITx.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 
 namespace inet {

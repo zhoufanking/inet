@@ -21,6 +21,7 @@ package inet.linklayer.ieee80211.newmac;
 //
 // TODO
 //
-moduleinterface ITx
+simple BasicImmediateTx like IImmediateTx
 {
+    @display("i=block/tx");
 }

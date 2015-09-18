@@ -21,7 +21,6 @@ package inet.linklayer.ieee80211.newmac;
 //
 // TODO
 //
-simple BasicTx like ITx
+moduleinterface IContentionTx
 {
-    @display("i=block/tx");
 }

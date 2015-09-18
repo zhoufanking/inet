@@ -24,10 +24,7 @@
 namespace inet {
 namespace ieee80211 {
 
-BasicImmediateTx::BasicImmediateTx(cSimpleModule *ownerModule, IMacRadioInterface *mac, IUpperMac *upperMac) : MacPlugin(ownerModule), mac(mac), upperMac(upperMac)
-{
-    endIfsTimer = new cMessage("endIFS");
-}
+Define_Module(BasicImmediateTx);
 
 BasicImmediateTx::~BasicImmediateTx()
 {
@@ -35,7 +32,14 @@ BasicImmediateTx::~BasicImmediateTx()
     delete frame;
 }
 
-void BasicImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t ifs, IImmediateTx::ICallback *completionCallback)
+void BasicImmediateTx::initialize()
+{
+    mac = dynamic_cast<IMacRadioInterface*>(getModuleByPath("^"));
+    upperMac = dynamic_cast<IUpperMac*>(getModuleByPath("^.upperMac"));
+    endIfsTimer = new cMessage("endIFS");
+}
+
+void BasicImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t ifs, ITxCallback *completionCallback)
 {
     EV_DETAIL << "BasicImmediateTx: transmitImmediateFrame " << frame->getName() << endl;
     ASSERT(!endIfsTimer->isScheduled() && !transmitting); // we are idle
@@ -46,6 +50,7 @@ void BasicImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t i
 
 void BasicImmediateTx::radioTransmissionFinished()
 {
+    Enter_Method("radioTransmissionFinished()");
     if (transmitting) {
         EV_DETAIL << "BasicImmediateTx: radioTransmissionFinished()\n";
         upperMac->transmissionComplete(completionCallback, -1);
