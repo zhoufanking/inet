@@ -19,14 +19,14 @@
 #define __INET_IEEE80211FRAMEEXCHANGE_H
 
 #include "IFrameExchange.h"
+#include "ITx.h"
 #include "MacPlugin.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
-#include "UpperMac.h"  //TODO remove
 
 namespace inet {
 namespace ieee80211 {
 
-class UpperMacContext;
+class IUpperMacContext;
 
 class FrameExchange : public MacPlugin, public IFrameExchange, public ITx::ICallback
 {
