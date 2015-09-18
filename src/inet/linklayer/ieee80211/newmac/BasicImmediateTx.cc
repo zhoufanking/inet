@@ -41,7 +41,7 @@ void BasicImmediateTx::initialize()
 
 void BasicImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t ifs, ITxCallback *completionCallback)
 {
-    EV_DETAIL << "BasicImmediateTx: transmitImmediateFrame " << frame->getName() << endl;
+    Enter_Method("transmitImmediateFrame(%s)", frame->getName());
     ASSERT(!endIfsTimer->isScheduled() && !transmitting); // we are idle
     scheduleAt(simTime() + ifs, endIfsTimer);
     this->frame = frame;
@@ -50,7 +50,7 @@ void BasicImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t i
 
 void BasicImmediateTx::radioTransmissionFinished()
 {
-    Enter_Method("radioTransmissionFinished()");
+    Enter_Method_Silent();
     if (transmitting) {
         EV_DETAIL << "BasicImmediateTx: radioTransmissionFinished()\n";
         upperMac->transmissionComplete(completionCallback, -1);

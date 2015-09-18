@@ -71,6 +71,7 @@ BasicContentionTx::~BasicContentionTx()
 
 void BasicContentionTx::transmitContentionFrame(Ieee80211Frame* frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ITxCallback *completionCallback)
 {
+    Enter_Method("transmitContentionFrame(%s)", frame->getName());
     ASSERT(fsm.getState() == IDLE);
     this->frame = frame;
     this->ifs = ifs;
@@ -182,7 +183,7 @@ void BasicContentionTx::mediumStateChanged(bool mediumFree)
 
 void BasicContentionTx::radioTransmissionFinished()
 {
-    Enter_Method("radioTransmissionFinished()");
+    Enter_Method_Silent();
     handleWithFSM(TRANSMISSION_FINISHED, nullptr);
 }
 
