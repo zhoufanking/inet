@@ -24,12 +24,12 @@ namespace ieee80211 {
 
 void FrameExchange::reportSuccess()
 {
-    finishedCallback->frameExchangeFinished(this, true);
+    finishedCallback->frameExchangeFinished(this, true);  // may delete this FrameExchange object
 }
 
 void FrameExchange::reportFailure()
 {
-    finishedCallback->frameExchangeFinished(this, false);
+    finishedCallback->frameExchangeFinished(this, false);  // may delete this FrameExchange object
 }
 
 //--------
@@ -155,24 +155,25 @@ void StepBasedFrameExchange::internalCollision(int txIndex)
 
 void StepBasedFrameExchange::handleMessage(cMessage* msg)
 {
-    if (status != INPROGRESS)
-        return;  // too late, frame exchange already finished
     ASSERT(msg == timeoutMsg);
-    processTimeout(step);
+    ASSERT(status == INPROGRESS);
+    ASSERT(stepType == EXPECT_REPLY);
+
+    processTimeout(step);  //TODO goto inside processTimeout(), handleMessage() etc requires more thought!
     proceed();
 }
 
 void StepBasedFrameExchange::transmitContentionFrame(Ieee80211Frame* frame, int retryCount)
 {
     setOperation(TRANSMIT_CONTENTION_FRAME);
-    int txIndex = 0; //TODO
+    int txIndex = 0; //TODO take this from where?
     context->transmitContentionFrame(txIndex, frame, context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, this);
 }
 
 void StepBasedFrameExchange::transmitContentionFrame(Ieee80211Frame* frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount)
 {
     setOperation(TRANSMIT_CONTENTION_FRAME);
-    int txIndex = 0; //TODO
+    int txIndex = 0; //TODO take this from where?
     context->transmitContentionFrame(txIndex, frame, ifs, eifs, cwMin, cwMax, slotTime, retryCount, this);
 }
 
@@ -200,16 +201,16 @@ void StepBasedFrameExchange::fail()
 {
     setOperation(FAIL);
     status = FAILED;
-    reportFailure();
     cleanup();
+    reportFailure(); // must come last
 }
 
 void StepBasedFrameExchange::succeed()
 {
     setOperation(SUCCEED);
     status = SUCCEEDED;
-    reportSuccess();
     cleanup();
+    reportSuccess(); // must come last
 }
 
 void StepBasedFrameExchange::setOperation(StepType newStepType)
@@ -217,7 +218,7 @@ void StepBasedFrameExchange::setOperation(StepType newStepType)
     if (status != INPROGRESS)
         throw cRuntimeError(this, "cannot do operation %s: frame exchange already terminated (%s)", operationName(newStepType), statusName(status));
     if (stepType != NONE)
-        throw cRuntimeError(this, "only one operation is permitted per step: cannot do %s after a %s, in doStep(step=%d)", operationName(newStepType), operationName(stepType), step);
+        throw cRuntimeError(this, "only one operation is permitted per step: cannot do %s after %s, in doStep(step=%d)", operationName(newStepType), operationName(stepType), step);
     stepType = newStepType;
 }
 
