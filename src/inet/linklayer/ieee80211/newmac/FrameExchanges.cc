@@ -144,6 +144,7 @@ void Ieee80211SendDataWithAckFrameExchange::doStep(int step)
         case 0: transmitContentionFrame(dataFrame->dup(), retryCount); break;
         case 1: expectReply(context->getAckTimeout()); break;
         case 2: succeed(); break;
+        default: ASSERT(false);
     }
 }
 
@@ -151,7 +152,7 @@ bool Ieee80211SendDataWithAckFrameExchange::processReply(int step, Ieee80211Fram
 {
     switch (step) {
         case 1: return context->isAck(frame);
-        default: return false;
+        default: ASSERT(false); return false;
     }
 }
 
@@ -159,8 +160,18 @@ void Ieee80211SendDataWithAckFrameExchange::processTimeout(int step)
 {
     switch (step) {
         case 1: if (++retryCount < context->getShortRetryLimit()) {dataFrame->setRetry(true); gotoStep(0);} else fail(); break;
+        default: ASSERT(false);
     }
 }
+
+void Ieee80211SendDataWithAckFrameExchange::processInternalCollision()
+{
+    switch (step) {
+        case 0: if (++retryCount < context->getShortRetryLimit()) {gotoStep(0);} else fail(); break;
+        default: ASSERT(false);
+    }
+}
+
 
 //------------------------------
 
@@ -178,6 +189,7 @@ void Ieee80211SendDataWithRtsCtsFrameExchange::doStep(int step)
         case 2: transmitImmediateFrame(dataFrame->dup(), context->getSIFS()); break;
         case 3: expectReply(context->getAckTimeout()); break;
         case 4: succeed(); break;
+        default: ASSERT(false);
     }
 }
 
@@ -186,7 +198,7 @@ bool Ieee80211SendDataWithRtsCtsFrameExchange::processReply(int step, Ieee80211F
     switch (step) {
         case 1: return context->isCts(frame);  // true=accepted
         case 3: return context->isAck(frame);
-        default: return false;
+        default: ASSERT(false); return false;
     }
 }
 
@@ -195,6 +207,15 @@ void Ieee80211SendDataWithRtsCtsFrameExchange::processTimeout(int step)
     switch (step) {
         case 1: if (++retryCount < context->getShortRetryLimit()) {gotoStep(0);} else fail(); break;
         case 3: fail(); break;
+        default: ASSERT(false);
+    }
+}
+
+void Ieee80211SendDataWithRtsCtsFrameExchange::processInternalCollision()
+{
+    switch (step) {
+        case 0: if (++retryCount < context->getShortRetryLimit()) {gotoStep(0);} else fail(); break;
+        default: ASSERT(false);
     }
 }
 

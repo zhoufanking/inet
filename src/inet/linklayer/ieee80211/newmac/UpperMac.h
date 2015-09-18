@@ -32,7 +32,7 @@ namespace ieee80211 {
 
 class Ieee80211NewMac;
 
-class UpperMac : public cSimpleModule, public IUpperMac, public IFrameExchange::IFinishedCallback, public ITx::ICallback
+class UpperMac : public cSimpleModule, public IUpperMac, public IFrameExchange::IFinishedCallback
 {
     public:
         typedef std::list<Ieee80211DataOrMgmtFrame*> Ieee80211DataOrMgmtFrameList;
@@ -73,9 +73,6 @@ class UpperMac : public cSimpleModule, public IUpperMac, public IFrameExchange::
         void sendAck(Ieee80211DataOrMgmtFrame *frame);
         void sendCts(Ieee80211RTSFrame *frame);
 
-        virtual void transmissionComplete(int txIndex) override;
-        virtual void internalCollision(int txIndex) override;
-
     public:
         UpperMac();
         ~UpperMac();
@@ -83,7 +80,7 @@ class UpperMac : public cSimpleModule, public IUpperMac, public IFrameExchange::
         virtual void upperFrameReceived(Ieee80211DataOrMgmtFrame *frame) override;
         virtual void lowerFrameReceived(Ieee80211Frame *frame) override;
         virtual void transmissionComplete(ITx::ICallback *callback, int txIndex) override;
-
+        virtual void internalCollision(ITx::ICallback *callback, int txIndex) override;
 };
 
 } // namespace ieee80211
