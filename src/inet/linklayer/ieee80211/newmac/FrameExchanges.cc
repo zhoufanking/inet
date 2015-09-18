@@ -24,20 +24,20 @@
 namespace inet {
 namespace ieee80211 {
 
-Ieee80211SendDataWithAckFSMBasedFrameExchange::Ieee80211SendDataWithAckFSMBasedFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *frame) :
-    Ieee80211FSMBasedFrameExchange(ownerModule, context, callback), frame(frame)
+SendDataWithAckFsmBasedFrameExchange::SendDataWithAckFsmBasedFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *frame) :
+    FsmBasedFrameExchange(ownerModule, context, callback), frame(frame)
 {
     frame->setDuration(context->getSIFS() + context->getAckDuration());
 }
 
-Ieee80211SendDataWithAckFSMBasedFrameExchange::~Ieee80211SendDataWithAckFSMBasedFrameExchange()
+SendDataWithAckFsmBasedFrameExchange::~SendDataWithAckFsmBasedFrameExchange()
 {
     delete frame;
     if (ackTimer)
         delete cancelEvent(ackTimer);
 }
 
-bool Ieee80211SendDataWithAckFSMBasedFrameExchange::handleWithFSM(EventType event, cMessage *frameOrTimer)
+bool SendDataWithAckFsmBasedFrameExchange::handleWithFSM(EventType event, cMessage *frameOrTimer)
 {
     bool frameProcessed = false;
     Ieee80211Frame *receivedFrame = event == EVENT_FRAMEARRIVED ? check_and_cast<Ieee80211Frame*>(frameOrTimer) : nullptr;
@@ -103,14 +103,14 @@ bool Ieee80211SendDataWithAckFSMBasedFrameExchange::handleWithFSM(EventType even
     return frameProcessed;
 }
 
-void Ieee80211SendDataWithAckFSMBasedFrameExchange::transmitDataFrame()
+void SendDataWithAckFsmBasedFrameExchange::transmitDataFrame()
 {
     retryCount = 0;
     int txIndex = 0; //TODO
     context->transmitContentionFrame(txIndex, frame->dup(), context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, this);
 }
 
-void Ieee80211SendDataWithAckFSMBasedFrameExchange::retryDataFrame()
+void SendDataWithAckFsmBasedFrameExchange::retryDataFrame()
 {
     retryCount++;
     frame->setRetry(true);
@@ -118,7 +118,7 @@ void Ieee80211SendDataWithAckFSMBasedFrameExchange::retryDataFrame()
     context->transmitContentionFrame(txIndex, frame->dup(), context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, this);
 }
 
-void Ieee80211SendDataWithAckFSMBasedFrameExchange::scheduleAckTimeout()
+void SendDataWithAckFsmBasedFrameExchange::scheduleAckTimeout()
 {
     if (ackTimer == nullptr)
         ackTimer = new cMessage("timeout");
@@ -126,19 +126,19 @@ void Ieee80211SendDataWithAckFSMBasedFrameExchange::scheduleAckTimeout()
     scheduleAt(t, ackTimer);
 }
 
-bool Ieee80211SendDataWithAckFSMBasedFrameExchange::isAck(Ieee80211Frame* frame)
+bool SendDataWithAckFsmBasedFrameExchange::isAck(Ieee80211Frame* frame)
 {
     return dynamic_cast<Ieee80211ACKFrame *>(frame) != nullptr;
 }
 
 //------------------------------
 
-Ieee80211SendDataWithAckFrameExchange::Ieee80211SendDataWithAckFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame) :
-    Ieee80211StepBasedFrameExchange(ownerModule, context, callback), dataFrame(dataFrame)
+SendDataWithAckFrameExchange::SendDataWithAckFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame) :
+    StepBasedFrameExchange(ownerModule, context, callback), dataFrame(dataFrame)
 {
 }
 
-void Ieee80211SendDataWithAckFrameExchange::doStep(int step)
+void SendDataWithAckFrameExchange::doStep(int step)
 {
     switch (step) {
         case 0: transmitContentionFrame(dataFrame->dup(), retryCount); break;
@@ -148,7 +148,7 @@ void Ieee80211SendDataWithAckFrameExchange::doStep(int step)
     }
 }
 
-bool Ieee80211SendDataWithAckFrameExchange::processReply(int step, Ieee80211Frame *frame)
+bool SendDataWithAckFrameExchange::processReply(int step, Ieee80211Frame *frame)
 {
     switch (step) {
         case 1: return context->isAck(frame);
@@ -156,7 +156,7 @@ bool Ieee80211SendDataWithAckFrameExchange::processReply(int step, Ieee80211Fram
     }
 }
 
-void Ieee80211SendDataWithAckFrameExchange::processTimeout(int step)
+void SendDataWithAckFrameExchange::processTimeout(int step)
 {
     switch (step) {
         case 1: if (++retryCount < context->getShortRetryLimit()) {dataFrame->setRetry(true); gotoStep(0);} else fail(); break;
@@ -164,7 +164,7 @@ void Ieee80211SendDataWithAckFrameExchange::processTimeout(int step)
     }
 }
 
-void Ieee80211SendDataWithAckFrameExchange::processInternalCollision()
+void SendDataWithAckFrameExchange::processInternalCollision()
 {
     switch (step) {
         case 0: if (++retryCount < context->getShortRetryLimit()) {gotoStep(0);} else fail(); break;
@@ -176,12 +176,12 @@ void Ieee80211SendDataWithAckFrameExchange::processInternalCollision()
 //------------------------------
 
 
-Ieee80211SendDataWithRtsCtsFrameExchange::Ieee80211SendDataWithRtsCtsFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame) :
-    Ieee80211StepBasedFrameExchange(ownerModule, context, callback), dataFrame(dataFrame)
+SendDataWithRtsCtsFrameExchange::SendDataWithRtsCtsFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame) :
+    StepBasedFrameExchange(ownerModule, context, callback), dataFrame(dataFrame)
 {
 }
 
-void Ieee80211SendDataWithRtsCtsFrameExchange::doStep(int step)
+void SendDataWithRtsCtsFrameExchange::doStep(int step)
 {
     switch (step) {
         case 0: transmitContentionFrame(context->buildRtsFrame(dataFrame), retryCount); break;
@@ -193,7 +193,7 @@ void Ieee80211SendDataWithRtsCtsFrameExchange::doStep(int step)
     }
 }
 
-bool Ieee80211SendDataWithRtsCtsFrameExchange::processReply(int step, Ieee80211Frame *frame)
+bool SendDataWithRtsCtsFrameExchange::processReply(int step, Ieee80211Frame *frame)
 {
     switch (step) {
         case 1: return context->isCts(frame);  // true=accepted
@@ -202,7 +202,7 @@ bool Ieee80211SendDataWithRtsCtsFrameExchange::processReply(int step, Ieee80211F
     }
 }
 
-void Ieee80211SendDataWithRtsCtsFrameExchange::processTimeout(int step)
+void SendDataWithRtsCtsFrameExchange::processTimeout(int step)
 {
     switch (step) {
         case 1: if (++retryCount < context->getShortRetryLimit()) {gotoStep(0);} else fail(); break;
@@ -211,7 +211,7 @@ void Ieee80211SendDataWithRtsCtsFrameExchange::processTimeout(int step)
     }
 }
 
-void Ieee80211SendDataWithRtsCtsFrameExchange::processInternalCollision()
+void SendDataWithRtsCtsFrameExchange::processInternalCollision()
 {
     switch (step) {
         case 0: if (++retryCount < context->getShortRetryLimit()) {gotoStep(0);} else fail(); break;
