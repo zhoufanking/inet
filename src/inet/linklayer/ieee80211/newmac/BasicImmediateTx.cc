@@ -18,7 +18,6 @@
 #include "BasicImmediateTx.h"
 #include "IUpperMac.h"
 #include "IMacRadioInterface.h"
-#include "inet/common/FSMA.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 
 namespace inet {

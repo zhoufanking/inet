@@ -19,9 +19,10 @@
 #include "Ieee80211NewMac.h"
 #include "IRx.h"
 #include "IUpperMacContext.h"
+#include "FrameExchanges.h"
 #include "inet/common/queue/IPassiveQueue.h"
 #include "inet/common/ModuleAccess.h"
-#include "FrameExchanges.h"
+#include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 
 namespace inet {
 namespace ieee80211 {
@@ -54,7 +55,7 @@ void BasicUpperMac::initialize()
 void BasicUpperMac::handleMessage(cMessage* msg)
 {
     if (msg->getContextPointer() != nullptr)
-        ((MacPlugin *)msg->getContextPointer())->handleMessage(msg);
+        ((MacPlugin *)msg->getContextPointer())->handleSelfMessage(msg);
     else
         ASSERT(false);
 }

@@ -20,7 +20,6 @@
 
 #include "inet/common/INETDefs.h"
 #include "inet/linklayer/common/MACAddress.h"
-#include "ITxCallback.h"
 
 namespace inet {
 namespace ieee80211 {
@@ -30,6 +29,8 @@ class Ieee80211DataOrMgmtFrame;
 class Ieee80211ACKFrame;
 class Ieee80211RTSFrame;
 class Ieee80211CTSFrame;
+class ITxCallback;
+
 
 class IUpperMacContext
 {

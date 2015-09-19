@@ -16,6 +16,7 @@
 //
 
 #include "UpperMacContext.h"
+#include "ITxCallback.h"
 #include "IImmediateTx.h"
 #include "IContentionTx.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"

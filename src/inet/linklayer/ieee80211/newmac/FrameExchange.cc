@@ -34,6 +34,34 @@ void FrameExchange::reportFailure()
 
 //--------
 
+void FsmBasedFrameExchange::start()
+{
+    EV_INFO << "Starting " << getClassName() << std::endl;
+    handleWithFSM(EVENT_START, nullptr);
+}
+
+bool FsmBasedFrameExchange::lowerFrameReceived(Ieee80211Frame* frame)
+{
+    return handleWithFSM(EVENT_FRAMEARRIVED, frame);
+}
+
+void FsmBasedFrameExchange::transmissionComplete(int txIndex)
+{
+    handleWithFSM(EVENT_TXFINISHED, nullptr);
+}
+
+void FsmBasedFrameExchange::internalCollision(int txIndex)
+{
+    handleWithFSM(EVENT_INTERNALCOLLISION, nullptr);
+}
+
+void FsmBasedFrameExchange::handleSelfMessage(cMessage *msg)
+{
+    handleWithFSM(EVENT_TIMER, msg);
+}
+
+//--------
+
 StepBasedFrameExchange::StepBasedFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback) :
         FrameExchange(ownerModule, context, callback)
 {
@@ -153,7 +181,7 @@ void StepBasedFrameExchange::internalCollision(int txIndex)
     proceed();
 }
 
-void StepBasedFrameExchange::handleMessage(cMessage* msg)
+void StepBasedFrameExchange::handleSelfMessage(cMessage* msg)
 {
     ASSERT(msg == timeoutMsg);
     ASSERT(status == INPROGRESS);
