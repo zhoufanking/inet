@@ -25,6 +25,11 @@ namespace ieee80211 {
 
 class Ieee80211Frame;
 
+/**
+ * Abstract interface for frame exhange classes. Frame exchanges are a basic
+ * building block of UpperMac (see IUpperMac), and coordinate interrelated
+ * frame sequences.
+ */
 class IFrameExchange
 {
     public:

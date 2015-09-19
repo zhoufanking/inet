@@ -26,6 +26,12 @@ namespace ieee80211 {
 class Ieee80211Frame;
 class ITxCallback;
 
+/**
+ * Abstract interface for processes that unconditionally transmit a frame
+ * after waiting for a specified inter-frame space (usually SIFS). Such
+ * processes can be used to transmit frames where no contention is needed,
+ * e.g. ACK, CTS, or the second and further frames of a TXOP.
+ */
 class IImmediateTx
 {
     public:
