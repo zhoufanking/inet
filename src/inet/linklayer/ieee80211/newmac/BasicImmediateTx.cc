@@ -36,6 +36,7 @@ void BasicImmediateTx::initialize()
     mac = dynamic_cast<IMacRadioInterface*>(getModuleByPath("^"));
     upperMac = dynamic_cast<IUpperMac*>(getModuleByPath("^.upperMac"));
     endIfsTimer = new cMessage("endIFS");
+    updateDisplayString();
 }
 
 void BasicImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t ifs, ITxCallback *completionCallback)
@@ -45,6 +46,8 @@ void BasicImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t i
     scheduleAt(simTime() + ifs, endIfsTimer);
     this->frame = frame;
     this->completionCallback = completionCallback;
+    if (ev.isGUI())
+        updateDisplayString();
 }
 
 void BasicImmediateTx::radioTransmissionFinished()
@@ -55,6 +58,8 @@ void BasicImmediateTx::radioTransmissionFinished()
         upperMac->transmissionComplete(completionCallback, -1);
         transmitting = false;
         frame = nullptr;
+        if (ev.isGUI())
+            updateDisplayString();
     }
 }
 
@@ -64,9 +69,22 @@ void BasicImmediateTx::handleMessage(cMessage *msg)
         EV_DETAIL << "BasicImmediateTx: endIfsTimer expired\n";
         transmitting = true;
         mac->sendFrame(frame);
+        if (ev.isGUI())
+            updateDisplayString();
     }
     else
         ASSERT(false);
+}
+
+void BasicImmediateTx::updateDisplayString()
+{
+    const char *stateName = endIfsTimer->isScheduled() ? "WAIT_IFS" : transmitting ? "TRANSMIT" : "IDLE";
+    // faster version is just to display the state: getDisplayString().setTagArg("t", 0, stateName);
+    std::stringstream os;
+    if (frame)
+        os << frame->getName() << "\n";
+    os << stateName;
+    getDisplayString().setTagArg("t", 0, os.str().c_str());
 }
 
 } // namespace ieee80211

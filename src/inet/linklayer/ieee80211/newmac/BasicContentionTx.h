@@ -31,6 +31,7 @@ class IMacRadioInterface;
 
 //TODO EDCA internal collisions should trigger retry (exp.backoff) in the lower pri tx process(es)
 //TODO fsm is wrong wrt channelLastBusyTime (not all cases handled)
+//TODO why do we need to schedule IFS and Backoff separately? why not compute waittime = ifs+backoff upfront, and schedule that?
 class BasicContentionTx : public cSimpleModule, public IContentionTx
 {
     public:
@@ -68,22 +69,23 @@ class BasicContentionTx : public cSimpleModule, public IContentionTx
         cMessage *endBackoff = nullptr;
         cMessage *endIFS = nullptr;
         cMessage *endEIFS = nullptr;
-        simtime_t backoffPeriod = SIMTIME_ZERO;
         cMessage *frameDuration = nullptr;
 
     protected:
-        void initialize();
-        void handleMessage(cMessage *msg);
+        virtual void initialize();
+        virtual void handleMessage(cMessage *msg);
 
         virtual int computeCW(int cwMin, int cwMax, int retryCount);
-        void handleWithFSM(EventType event, cMessage *msg);
-        void scheduleIFS();
-        void scheduleIFSPeriod(simtime_t deferDuration);
-        void scheduleEIFSPeriod(simtime_t deferDuration);
-        void updateBackoffPeriod();
-        void scheduleBackoffPeriod(int backoffPeriod);
-        void logState();
-        bool isIFSNecessary();
+        virtual void handleWithFSM(EventType event, cMessage *msg);
+        virtual bool isIFSNecessary();
+        virtual void scheduleIFS();
+        virtual void scheduleIFSPeriod(simtime_t deferDuration);
+        virtual void scheduleEIFSPeriod(simtime_t deferDuration);
+        virtual void updateBackoffPeriod();
+        virtual void scheduleBackoffPeriod(int backoffPeriod);
+        virtual void transmissionComplete();
+        virtual void logState();
+        virtual void updateDisplayString();
 
     public:
         BasicContentionTx() {}

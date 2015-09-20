@@ -24,13 +24,13 @@
 namespace inet {
 namespace ieee80211 {
 
-// don't forget to keep synchronized the C++ enum and the runtime enum definition
-Register_Enum(Ieee80211NewMac,
+// for @statistic; don't forget to keep synchronized the C++ enum and the runtime enum definition
+Register_Enum(BasicContentionTx::State,
    (BasicContentionTx::IDLE,
    BasicContentionTx::DEFER,
    BasicContentionTx::BACKOFF,
-   BasicContentionTx::TRANSMIT,
-   BasicContentionTx::WAIT_IFS));
+   BasicContentionTx::WAIT_IFS,
+   BasicContentionTx::TRANSMIT));
 
 Define_Module(BasicContentionTx);
 
@@ -56,7 +56,7 @@ void BasicContentionTx::initialize()
     txIndex = getIndex();
 
     fsm.setName("fsm");
-    fsm.setState(IDLE);
+    fsm.setState(IDLE, "IDLE");
     endIFS = new cMessage("IFS");
     endBackoff = new cMessage("Backoff");
     endEIFS = new cMessage("EIFS");
@@ -164,13 +164,15 @@ void BasicContentionTx::handleWithFSM(EventType event, cMessage *msg)
             FSMA_Event_Transition(TxFinished,
                                   event == TRANSMISSION_FINISHED,
                                   IDLE,
-                                  upperMac->transmissionComplete(completionCallback, txIndex);
+                                  transmissionComplete();
             );
         }
     }
 
-    logState();
     // emit(stateSignal, fsm.getState()); TODO
+    logState();
+    if (ev.isGUI())
+        updateDisplayString();
 }
 
 void BasicContentionTx::mediumStateChanged(bool mediumFree)
@@ -236,9 +238,25 @@ void BasicContentionTx::scheduleBackoffPeriod(int backoffSlots)
     scheduleAt(simTime() + backoffPeriod, endBackoff);
 }
 
+void BasicContentionTx::transmissionComplete()
+{
+    upperMac->transmissionComplete(completionCallback, txIndex);
+    frame = nullptr;
+}
+
 void BasicContentionTx::logState()
 {
-    EV  << "state information: " << "state = " << fsm.getStateName() << ", backoffPeriod = " << backoffPeriod << endl;
+    EV_DETAIL << "FSM state: " << fsm.getStateName() << ", frame: " << (frame ? frame->getName() : "none") <<endl;
+}
+
+void BasicContentionTx::updateDisplayString()
+{
+    // faster version is just to display the state: getDisplayString().setTagArg("t", 0, fsm.getStateName());
+    std::stringstream os;
+    if (frame)
+        os << frame->getName() << "\n";
+    os << fsm.getStateName();
+    getDisplayString().setTagArg("t", 0, os.str().c_str());
 }
 
 bool BasicContentionTx::isIFSNecessary()
