@@ -21,12 +21,10 @@
 #include "inet/networklayer/contract/IInterfaceTable.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 #include "inet/physicallayer/ieee80211/packetlevel/Ieee80211ControlInfo_m.h"
-#include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
 #include "IUpperMac.h"
 #include "IRx.h"
 #include "IImmediateTx.h"
 #include "IContentionTx.h"
-#include "UpperMacContext.h"
 #include "inet/common/INETUtils.h"
 #include "inet/common/ModuleAccess.h"
 
@@ -56,8 +54,6 @@ void Ieee80211NewMac::initialize(int stage)
     {
         EV << "Initializing stage 0\n";
 
-        const Ieee80211ModeSet *modeSet = Ieee80211ModeSet::getModeSet(*par("opMode").stringValue());
-
         // radio
         cModule *radioModule = gate("lowerLayerOut")->getNextGate()->getOwnerModule();
         radioModule->subscribe(IRadio::radioModeChangedSignal, this);
@@ -70,39 +66,14 @@ void Ieee80211NewMac::initialize(int stage)
         immediateTx = check_and_cast<IImmediateTx*>(getModuleByPath(".immTx"));  //TODO
         collectContentionTxModules(getModuleByPath(".conTx[0]"), contentionTx); //TODO
 
-        // initialize parameters
-        double bitrate = par("bitrate");
-        double basicBitrate = par("basicBitrate");
-        int rtsThreshold = par("rtsThresholdBytes");
-
-        const IIeee80211Mode *dataFrameMode = (bitrate == -1) ? modeSet->getFastestMode() : modeSet->getMode(bps(bitrate));
-        const IIeee80211Mode *basicFrameMode = (basicBitrate == -1) ? modeSet->getSlowestMode() : modeSet->getMode(bps(basicBitrate));; //TODO ???
-        const IIeee80211Mode *controlFrameMode = (basicBitrate == -1) ? modeSet->getSlowestMode() : modeSet->getMode(bps(basicBitrate)); //TODO ???
-
-        int shortRetryLimit = par("retryLimit");
-        if (shortRetryLimit == -1)
-            shortRetryLimit = 7;
-        ASSERT(shortRetryLimit > 0);
-
         const char *addressString = par("address");
         if (!strcmp(addressString, "auto")) {
-            // assign automatic address
-            address = MACAddress::generateAutoAddress();
             // change module parameter from "auto" to concrete address
-            par("address").setStringValue(address.str().c_str());
+            par("address").setStringValue(MACAddress::generateAutoAddress().str().c_str());
+            addressString = par("address");
         }
-        else
-            address.setAddress(addressString);
+        address.setAddress(addressString);
 
-        IUpperMacContext *context = new UpperMacContext(address, dataFrameMode, basicFrameMode, controlFrameMode, shortRetryLimit, rtsThreshold, immediateTx, contentionTx);
-        upperMac->setContext(context);
-        rx->setAddress(address);
-
-        // Initialize self messages
-        stateSignal = registerSignal("state");
-    //        stateSignal.setEnum("Ieee80211NewMac");
-        radioStateSignal = registerSignal("radioState");
-    //        radioStateSignal.setEnum("RadioState");
         // interface
         registerInterface();
 
