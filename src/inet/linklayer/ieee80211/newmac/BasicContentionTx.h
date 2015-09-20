@@ -30,8 +30,10 @@ class IUpperMac;
 class IMacRadioInterface;
 
 //TODO EDCA internal collisions should trigger retry (exp.backoff) in the lower pri tx process(es)
-//TODO fsm is wrong wrt channelLastBusyTime (not all cases handled)
 //TODO why do we need to schedule IFS and Backoff separately? why not compute waittime = ifs+backoff upfront, and schedule that?
+//TODO fsm is wrong wrt channelLastBusyTime (not all cases handled) -- FIGURE OUT HOW TO HANDLE IT WHEN CHANNEL IS LONG FREE WHEN WE WANT TO TRANSMIT!
+//TODO needs to be decided whether slots for different ACs are aligned; and if not, whether "within a slot time" is a good definition for collision!
+//TODO NOTE: latter is interlinked with the prev question -- what if we could transmit immediately? we should wait for 1 slot time to make sure we don't collide with a higher priority process??
 class BasicContentionTx : public cSimpleModule, public IContentionTx
 {
     public:

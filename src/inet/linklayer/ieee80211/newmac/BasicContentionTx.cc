@@ -197,7 +197,7 @@ void BasicContentionTx::handleMessage(cMessage *msg)
 void BasicContentionTx::lowerFrameReceived(bool isFcsOk)
 {
     Enter_Method("%s frame received", isFcsOk ? "HEALTHY" : "CORRUPTED");
-    useEIFS = !isFcsOk;
+    useEIFS = !isFcsOk;  //TODO almost certainly not enough -- we probably need to schedule EIFS timer or something
 }
 
 void BasicContentionTx::scheduleIFSPeriod(simtime_t deferDuration)
