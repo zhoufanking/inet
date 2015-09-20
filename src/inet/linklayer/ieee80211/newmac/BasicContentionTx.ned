@@ -23,5 +23,8 @@ package inet.linklayer.ieee80211.newmac;
 //
 simple BasicContentionTx like IContentionTx
 {
-    @display("i=block/tx");
+    parameters:
+        string macModule = default("^");
+        string upperMacModule = default("^.upperMac");
+        @display("i=block/tx");
 }

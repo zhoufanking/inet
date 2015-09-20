@@ -88,6 +88,10 @@ module Ieee80211NewMac extends MACProtocolBase like IMACProtocol
                                           // a generated MAC address in init stage 0.
         string queueModule = default("");    // name of optional external queue module
         int maxQueueSize = default(14); // max queue length in frames; only used if queueModule==""
+        string upperMacModule = default(".upperMac");
+        string rxModule = default(".rx");
+        string immediateTxModule = default(".immTx");
+        string firstContentionTxModule = default(".conTx[0]");
         @display("i=block/layer");
         @class(Ieee80211NewMac);
 

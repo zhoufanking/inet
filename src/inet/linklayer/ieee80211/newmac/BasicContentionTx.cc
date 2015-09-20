@@ -51,8 +51,8 @@ void collectContentionTxModules(cModule *firstContentionTxModule, IContentionTx 
 
 void BasicContentionTx::initialize()
 {
-    mac = dynamic_cast<IMacRadioInterface*>(getModuleByPath("^"));
-    upperMac = dynamic_cast<IUpperMac*>(getModuleByPath("^.upperMac"));
+    mac = dynamic_cast<IMacRadioInterface*>(getModuleByPath(par("macModule")));
+    upperMac = dynamic_cast<IUpperMac*>(getModuleByPath(par("upperMacModule")));
     txIndex = getIndex();
 
     fsm.setName("fsm");

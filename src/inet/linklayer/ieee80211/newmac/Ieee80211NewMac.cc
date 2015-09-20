@@ -61,10 +61,10 @@ void Ieee80211NewMac::initialize(int stage)
         radioModule->subscribe(IRadio::transmissionStateChangedSignal, this);
         radio = check_and_cast<IRadio *>(radioModule);
 
-        upperMac = check_and_cast<IUpperMac*>(getModuleByPath(".upperMac"));  //TODO
-        rx = check_and_cast<IRx*>(getModuleByPath(".rx"));  //TODO
-        immediateTx = check_and_cast<IImmediateTx*>(getModuleByPath(".immTx"));  //TODO
-        collectContentionTxModules(getModuleByPath(".conTx[0]"), contentionTx); //TODO
+        upperMac = check_and_cast<IUpperMac*>(getModuleByPath(par("upperMacModule")));
+        rx = check_and_cast<IRx*>(getModuleByPath(par("rxModule")));
+        immediateTx = check_and_cast<IImmediateTx*>(getModuleByPath(par("immediateTxModule")));
+        collectContentionTxModules(getModuleByPath(par("firstContentionTxModule")), contentionTx);
 
         const char *addressString = par("address");
         if (!strcmp(addressString, "auto")) {

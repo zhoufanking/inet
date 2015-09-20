@@ -24,6 +24,11 @@ package inet.linklayer.ieee80211.newmac;
 simple BasicUpperMac like IUpperMac
 {
     parameters:
+        string macModule = default("^");
+        string rxModule = default("^.rx");
+        string immediateTxModule = default("^.immTx");
+        string firstContentionTxModule = default("^.conTx[0]");
+
         string opMode @enum("a", "b", "g", "n", "p") = default("g");
         double bitrate @unit("bps");
         double basicBitrate @unit("bps") = default(2000000bps);

@@ -49,8 +49,8 @@ BasicUpperMac::~BasicUpperMac()
 
 void BasicUpperMac::initialize()
 {
-    mac = check_and_cast<Ieee80211NewMac*>(getParentModule());  //TODO
-    rx = check_and_cast<IRx*>(getModuleByPath("^.rx"));  //TODO
+    mac = check_and_cast<Ieee80211NewMac*>(getModuleByPath(par("macModule")));
+    rx = check_and_cast<IRx*>(getModuleByPath(par("rxModule")));
 
     maxQueueSize = mac->par("maxQueueSize");
     initializeQueueModule();
@@ -61,9 +61,9 @@ void BasicUpperMac::initialize()
 
 IUpperMacContext *BasicUpperMac::createContext()
 {
-    IImmediateTx *immediateTx = check_and_cast<IImmediateTx*>(getModuleByPath("^.immTx"));  //TODO
+    IImmediateTx *immediateTx = check_and_cast<IImmediateTx*>(getModuleByPath(par("immediateTxModule")));  //TODO
     IContentionTx **contentionTx = nullptr;
-    collectContentionTxModules(getModuleByPath("^.conTx[0]"), contentionTx); //TODO
+    collectContentionTxModules(getModuleByPath(par("firstContentionTxModule")), contentionTx); //TODO
 
     MACAddress address(mac->par("address").stringValue()); // note: we rely on MAC to have replaced "auto" with concrete address by now
 

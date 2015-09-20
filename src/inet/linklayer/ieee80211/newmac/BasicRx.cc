@@ -36,8 +36,8 @@ BasicRx::~BasicRx()
 
 void BasicRx::initialize()
 {
-    upperMac = check_and_cast<IUpperMac*>(getModuleByPath("^.upperMac")); //TODO
-    collectContentionTxModules(getModuleByPath("^.conTx[0]"), contentionTx); //TODO
+    upperMac = check_and_cast<IUpperMac*>(getModuleByPath(par("upperMacModule")));
+    collectContentionTxModules(getModuleByPath(par("firstContentionTxModule")), contentionTx);
     endNavTimer = new cMessage("NAV");
     recomputeMediumFree();
 }
