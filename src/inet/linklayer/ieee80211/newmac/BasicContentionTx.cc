@@ -71,7 +71,7 @@ BasicContentionTx::~BasicContentionTx()
 
 void BasicContentionTx::transmitContentionFrame(Ieee80211Frame* frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ITxCallback *completionCallback)
 {
-    Enter_Method("transmitContentionFrame(%s)", frame->getName());
+    Enter_Method("transmitContentionFrame(\"%s\")", frame->getName());
     ASSERT(fsm.getState() == IDLE);
     this->frame = frame;
     this->ifs = ifs;
@@ -196,7 +196,7 @@ void BasicContentionTx::handleMessage(cMessage *msg)
 
 void BasicContentionTx::lowerFrameReceived(bool isFcsOk)
 {
-    Enter_Method("lowerFrameReceived(%s)", isFcsOk ? "HEALTHY" : "CORRUPT");
+    Enter_Method("%s frame received", isFcsOk ? "HEALTHY" : "CORRUPTED");
     useEIFS = !isFcsOk;
 }
 

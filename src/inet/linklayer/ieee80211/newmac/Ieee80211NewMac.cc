@@ -196,7 +196,7 @@ void Ieee80211NewMac::handleUpperCommand(cMessage *msg)
 
 void Ieee80211NewMac::receiveSignal(cComponent *source, simsignal_t signalID, long value)
 {
-    Enter_Method("receiveSignal()");
+    Enter_Method_Silent("receiveSignal()");
     if (signalID == IRadio::receptionStateChangedSignal)
     {
         rx->receptionStateChanged((IRadio::ReceptionState)value);
@@ -231,16 +231,16 @@ void Ieee80211NewMac::configureRadioMode(IRadio::RadioMode radioMode)
     }
 }
 
-void Ieee80211NewMac::sendUp(cMessage *message)
+void Ieee80211NewMac::sendUp(cMessage *msg)
 {
-    Enter_Method("sendUp()");
-    take(message);
-    MACProtocolBase::sendUp(message);
+    Enter_Method("sendUp(\"%s\")", msg->getName());
+    take(msg);
+    MACProtocolBase::sendUp(msg);
 }
 
 void Ieee80211NewMac::sendFrame(Ieee80211Frame *frame)
 {
-    Enter_Method("sendFrame()");
+    Enter_Method("sendFrame(\"%s\")", frame->getName());
     take(frame);
     configureRadioMode(IRadio::RADIO_MODE_TRANSMITTER);
     sendDown(frame);

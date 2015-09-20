@@ -106,7 +106,7 @@ void BasicUpperMac::initializeQueueModule()
 
 void BasicUpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame* frame)
 {
-    Enter_Method("upperFrameReceived()");
+    Enter_Method("upperFrameReceived(\"%s\")", frame->getName());
     take(frame);
 
     if (queueModule)
@@ -142,8 +142,7 @@ void BasicUpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame* frame)
 
 void BasicUpperMac::lowerFrameReceived(Ieee80211Frame* frame)
 {
-    Enter_Method("lowerFrameReceived()");
-    EV_INFO << "Lower frame received" << std::endl;
+    Enter_Method("lowerFrameReceived(\"%s\")", frame->getName());
     take(frame);
 
     if (context->isForUs(frame))

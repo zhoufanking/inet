@@ -54,7 +54,7 @@ void BasicRx::handleMessage(cMessage* msg)
 
 void BasicRx::lowerFrameReceived(Ieee80211Frame* frame)
 {
-    Enter_Method("lowerFrameReceived()");
+    Enter_Method("lowerFrameReceived(\"%s\")", frame->getName());
     take(frame);
 
     bool errorFree = isFcsOk(frame);

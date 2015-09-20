@@ -41,7 +41,7 @@ void BasicImmediateTx::initialize()
 
 void BasicImmediateTx::transmitImmediateFrame(Ieee80211Frame* frame, simtime_t ifs, ITxCallback *completionCallback)
 {
-    Enter_Method("transmitImmediateFrame(%s)", frame->getName());
+    Enter_Method("transmitImmediateFrame(\"%s\")", frame->getName());
     ASSERT(!endIfsTimer->isScheduled() && !transmitting); // we are idle
     scheduleAt(simTime() + ifs, endIfsTimer);
     this->frame = frame;
