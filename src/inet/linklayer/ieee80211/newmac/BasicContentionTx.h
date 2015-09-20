@@ -69,7 +69,6 @@ class BasicContentionTx : public cSimpleModule, public IContentionTx
         cMessage *endBackoff = nullptr;
         cMessage *endIFS = nullptr;
         cMessage *endEIFS = nullptr;
-        cMessage *frameDuration = nullptr;
 
     protected:
         virtual void initialize();
