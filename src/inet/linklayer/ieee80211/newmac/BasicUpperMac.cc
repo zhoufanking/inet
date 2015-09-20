@@ -209,13 +209,13 @@ void BasicUpperMac::frameExchangeFinished(IFrameExchange* what, bool successful)
 void BasicUpperMac::sendAck(Ieee80211DataOrMgmtFrame* frame)
 {
     Ieee80211ACKFrame *ackFrame = context->buildAckFrame(frame);
-    context->transmitImmediateFrame(ackFrame, context->getSIFS(), nullptr);
+    context->transmitImmediateFrame(ackFrame, context->getSifsTime(), nullptr);
 }
 
 void BasicUpperMac::sendCts(Ieee80211RTSFrame* frame)
 {
     Ieee80211CTSFrame *ctsFrame = context->buildCtsFrame(frame);
-    context->transmitImmediateFrame(ctsFrame, context->getSIFS(), nullptr);
+    context->transmitImmediateFrame(ctsFrame, context->getSifsTime(), nullptr);
 }
 
 } // namespace ieee80211

@@ -195,7 +195,7 @@ void StepBasedFrameExchange::transmitContentionFrame(Ieee80211Frame* frame, int 
 {
     setOperation(TRANSMIT_CONTENTION_FRAME);
     int txIndex = 0; //TODO take this from where?
-    context->transmitContentionFrame(txIndex, frame, context->getDIFS(), context->getEIFS(), context->getMinCW(), context->getMaxCW(), context->getSlotTime(), retryCount, this);
+    context->transmitContentionFrame(txIndex, frame, context->getDifsTime(), context->getEifsTime(), context->getCwMin(), context->getCwMax(), context->getSlotTime(), retryCount, this);
 }
 
 void StepBasedFrameExchange::transmitContentionFrame(Ieee80211Frame* frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount)
