@@ -128,7 +128,7 @@ void BasicContentionTx::handleWithFSM(EventType event, cMessage *msg)
                     );
         }
         FSMA_State(WAIT_IFS) {
-            FSMA_Enter(scheduleIFS());
+            FSMA_Enter(scheduleIfs());
             FSMA_Event_Transition(Backoff,
                     event == TIMER && !endIFS->isScheduled() && !endEIFS->isScheduled(),
                     BACKOFF,
@@ -195,18 +195,18 @@ void BasicContentionTx::lowerFrameReceived(bool isFcsOk)
     useEIFS = !isFcsOk;    //TODO almost certainly not enough -- we probably need to schedule EIFS timer or something
 }
 
-void BasicContentionTx::scheduleIFSPeriod(simtime_t deferDuration)
+void BasicContentionTx::scheduleIfsPeriod(simtime_t ifs)
 {
-    scheduleAt(simTime() + deferDuration, endIFS);
+    scheduleAt(simTime() + ifs, endIFS);
 }
 
-void BasicContentionTx::scheduleEIFSPeriod(simtime_t duration)
+void BasicContentionTx::scheduleEifsPeriod(simtime_t eifs)
 {
     cancelEvent(endEIFS);
-    scheduleAt(simTime() + duration, endEIFS);
+    scheduleAt(simTime() + eifs, endEIFS);
 }
 
-void BasicContentionTx::scheduleIFS()
+void BasicContentionTx::scheduleIfs()
 {
     ASSERT(mediumFree);
 //    simtime_t elapsedFreeChannelTime = simTime() - channelLastBusyTime;
@@ -216,11 +216,11 @@ void BasicContentionTx::scheduleIFS()
 //        scheduleEIFSPeriod(eifs - elapsedFreeChannelTime);
 //    useEIFS = false;
     if (useEIFS)
-        scheduleEIFSPeriod(eifs);
-    scheduleIFSPeriod(ifs);
+        scheduleEifsPeriod(eifs);
+    scheduleIfsPeriod(ifs);
 }
 
-void BasicContentionTx::updateBackoffPeriod()
+void BasicContentionTx::updateBackoffPeriod() //TODO computeRemainingBackoffSlots()
 {
     simtime_t elapsedBackoffTime = simTime() - endBackoff->getSendingTime();
     backoffSlots -= ((int)(elapsedBackoffTime / slotTime));    //FIXME add some epsilon...?

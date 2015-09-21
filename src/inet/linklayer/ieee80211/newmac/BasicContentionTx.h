@@ -79,11 +79,11 @@ class BasicContentionTx : public cSimpleModule, public IContentionTx
         virtual int computeCW(int cwMin, int cwMax, int retryCount);
         virtual void handleWithFSM(EventType event, cMessage *msg);
         virtual bool isIFSNecessary();
-        virtual void scheduleIFS();
-        virtual void scheduleIFSPeriod(simtime_t deferDuration);
-        virtual void scheduleEIFSPeriod(simtime_t deferDuration);
+        virtual void scheduleIfs();
+        virtual void scheduleIfsPeriod(simtime_t ifs);
+        virtual void scheduleEifsPeriod(simtime_t eifs);
         virtual void updateBackoffPeriod();
-        virtual void scheduleBackoffPeriod(int backoffPeriod);
+        virtual void scheduleBackoffPeriod(int backoffSlots);
         virtual void transmissionComplete();
         virtual void logState();
         virtual void updateDisplayString();
