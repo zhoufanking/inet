@@ -25,6 +25,6 @@ simple BasicImmediateTx like IImmediateTx
 {
     parameters:
         string macModule = default("^");
-        string upperMacModule = default("^.upperMac");
+        string upperMacModule;
         @display("i=block/tx");
 }
