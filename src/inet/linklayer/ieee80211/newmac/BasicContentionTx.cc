@@ -66,6 +66,8 @@ BasicContentionTx::~BasicContentionTx()
     cancelAndDelete(endIFS);
     cancelAndDelete(endBackoff);
     cancelAndDelete(endEIFS);
+    if (frame && fsm.getState() != TRANSMIT)
+        delete frame;
 }
 
 void BasicContentionTx::transmitContentionFrame(Ieee80211Frame *frame, simtime_t ifs, simtime_t eifs, int cwMin, int cwMax, simtime_t slotTime, int retryCount, ITxCallback *completionCallback)

@@ -28,7 +28,8 @@ Define_Module(BasicImmediateTx);
 BasicImmediateTx::~BasicImmediateTx()
 {
     cancelAndDelete(endIfsTimer);
-    delete frame;
+    if (frame && !transmitting)
+        delete frame;
 }
 
 void BasicImmediateTx::initialize()
