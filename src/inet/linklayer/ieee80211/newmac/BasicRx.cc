@@ -36,13 +36,13 @@ BasicRx::~BasicRx()
 
 void BasicRx::initialize()
 {
-    upperMac = check_and_cast<IUpperMac*>(getModuleByPath(par("upperMacModule")));
+    upperMac = check_and_cast<IUpperMac *>(getModuleByPath(par("upperMacModule")));
     collectContentionTxModules(getModuleByPath(par("firstContentionTxModule")), contentionTx);
     endNavTimer = new cMessage("NAV");
     recomputeMediumFree();
 }
 
-void BasicRx::handleMessage(cMessage* msg)
+void BasicRx::handleMessage(cMessage *msg)
 {
     if (msg == endNavTimer) {
         EV_INFO << "The radio channel has become free according to the NAV" << std::endl;
@@ -52,7 +52,7 @@ void BasicRx::handleMessage(cMessage* msg)
         throw cRuntimeError("Unexpected self message");
 }
 
-void BasicRx::lowerFrameReceived(Ieee80211Frame* frame)
+void BasicRx::lowerFrameReceived(Ieee80211Frame *frame)
 {
     Enter_Method("lowerFrameReceived(\"%s\")", frame->getName());
     take(frame);
@@ -61,22 +61,19 @@ void BasicRx::lowerFrameReceived(Ieee80211Frame* frame)
     for (int i = 0; contentionTx[i]; i++)
         contentionTx[i]->lowerFrameReceived(errorFree);
 
-    if (errorFree)
-    {
+    if (errorFree) {
         EV_INFO << "Received message from lower layer: " << frame << endl;
         if (frame->getReceiverAddress() != address)
             setOrExtendNav(frame->getDuration());
         upperMac->lowerFrameReceived(frame);
     }
-    else
-    {
+    else {
         EV_INFO << "Received an erroneous frame. Dropping it." << std::endl;
         delete frame;
     }
-
 }
 
-bool BasicRx::isFcsOk(Ieee80211Frame* frame) const
+bool BasicRx::isFcsOk(Ieee80211Frame *frame) const
 {
     return !frame->hasBitError();
 }
@@ -114,7 +111,7 @@ void BasicRx::setOrExtendNav(simtime_t navInterval)
         if (endNavTimer->isScheduled()) {
             simtime_t oldEndNav = endNavTimer->getArrivalTime();
             if (endNav < oldEndNav)
-                return;  // never decrease NAV
+                return;    // never decrease NAV
             cancelEvent(endNavTimer);
         }
         EV_INFO << "Setting NAV to " << navInterval << std::endl;
