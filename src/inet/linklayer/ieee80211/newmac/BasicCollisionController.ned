@@ -21,11 +21,8 @@ package inet.linklayer.ieee80211.newmac;
 //
 // TODO
 //
-simple BasicContentionTx like IContentionTx
+simple BasicCollisionController like ICollisionController
 {
     parameters:
-        string macModule;
-        string upperMacModule;
-        string collisionControllerModule;
-        @display("i=block/tx");
+        @display("i=block/control");
 }

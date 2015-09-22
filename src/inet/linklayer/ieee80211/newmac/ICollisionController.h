@@ -15,23 +15,24 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef __INET_ICOLLISIONMANAGER_H
-#define __INET_ICOLLISIONMANAGER_H
+#ifndef __INET_ICOLLISIONCONTROLLER_H
+#define __INET_ICOLLISIONCONTROLLER_H
 
 #include "inet/common/INETDefs.h"
 
 namespace inet {
 namespace ieee80211 {
 
-class CollisionManager {
+class ICollisionController
+{
     public:
-        class ITx {
-            // these will be called at the specified txStartTime
-            //TODO put into IContentionTx
-            virtual void transmissionGranted(int txIndex) = 0;
-            virtual void internalCollision(int txIndex);
+        class ICallback {
+            public:
+                virtual ~ICallback() {}
+                virtual void transmissionGranted(int txIndex) = 0;
+                virtual void internalCollision(int txIndex) = 0;
         };
-        virtual void scheduleTransmissionRequest(int txIndex, simtime_t txStartTime) = 0;
+        virtual void scheduleTransmissionRequest(int txIndex, simtime_t txStartTime, ICallback *callback) = 0;
         virtual void cancelTransmissionRequest(int txIndex) = 0;
 };
 
