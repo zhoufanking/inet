@@ -94,7 +94,7 @@ module Ieee80211NewMac extends MACProtocolBase like IMACProtocol
         string immediateTxModule = ".iTx";
         string firstContentionTxModule = ".cTx[0]";
         int numContentionTx = default(4);
-        string collisionControllerModule = "ctrl";
+        string collisionControllerModule = ".ctrl";
         *.macModule = "^";
         *.upperMacModule = "^" + upperMacModule;
         *.rxModule = "^" + rxModule;
