@@ -68,9 +68,9 @@ class BasicContentionTx : public cSimpleModule, public IContentionTx
         IRadio::TransmissionState transmissionState = IRadio::TRANSMISSION_STATE_UNDEFINED;
 
         cFSM fsm;
-        cMessage *endBackoff = nullptr;
-        cMessage *endIFS = nullptr;
-        cMessage *endEIFS = nullptr;
+        cMessage *endBackoffTimer = nullptr;
+        cMessage *endIfsTimer = nullptr;
+        cMessage *endEifsTimer = nullptr;
 
     protected:
         virtual void initialize() override;

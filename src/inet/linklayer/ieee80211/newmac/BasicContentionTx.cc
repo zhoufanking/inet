@@ -56,16 +56,16 @@ void BasicContentionTx::initialize()
 
     fsm.setName("fsm");
     fsm.setState(IDLE, "IDLE");
-    endIFS = new cMessage("IFS");
-    endBackoff = new cMessage("Backoff");
-    endEIFS = new cMessage("EIFS");
+    endIfsTimer = new cMessage("IFS");
+    endBackoffTimer = new cMessage("Backoff");
+    endEifsTimer = new cMessage("EIFS");
 }
 
 BasicContentionTx::~BasicContentionTx()
 {
-    cancelAndDelete(endIFS);
-    cancelAndDelete(endBackoff);
-    cancelAndDelete(endEIFS);
+    cancelAndDelete(endIfsTimer);
+    cancelAndDelete(endBackoffTimer);
+    cancelAndDelete(endEifsTimer);
     if (frame && fsm.getState() != TRANSMIT)
         delete frame;
 }
@@ -108,7 +108,7 @@ void BasicContentionTx::handleWithFSM(EventType event, cMessage *msg)
 //                                  TRANSMIT,
 //                                  ;
 //            );
-            FSMA_Event_Transition(Need - IFS - Before - Transmit,
+            FSMA_Event_Transition(Need-IFS-Before-Transmit,
                     event == START && mediumFree    /*&& isIFSNecessary()*/,
                     WAIT_IFS,
                     ;
@@ -121,7 +121,7 @@ void BasicContentionTx::handleWithFSM(EventType event, cMessage *msg)
         }
         FSMA_State(DEFER) {
             FSMA_Enter(mac->sendDownPendingRadioConfigMsg());
-            FSMA_Event_Transition(WAIT - Ifs,
+            FSMA_Event_Transition(WAIT-Ifs,
                     event == MEDIUM_STATE_CHANGED && mediumFree,
                     WAIT_IFS,
                     ;
@@ -130,28 +130,28 @@ void BasicContentionTx::handleWithFSM(EventType event, cMessage *msg)
         FSMA_State(WAIT_IFS) {
             FSMA_Enter(scheduleIfs());
             FSMA_Event_Transition(Backoff,
-                    event == TIMER && !endIFS->isScheduled() && !endEIFS->isScheduled(),
+                    event == TIMER && !endIfsTimer->isScheduled() && !endEifsTimer->isScheduled(),
                     BACKOFF,
                     ;
                     );
             FSMA_Event_Transition(Busy,
                     event == MEDIUM_STATE_CHANGED && !mediumFree,
                     DEFER,
-                    cancelEvent(endIFS);
+                    cancelEvent(endIfsTimer);
                     );
         }
         FSMA_State(BACKOFF) {
             FSMA_Enter(scheduleBackoffPeriod(backoffSlots));
-            FSMA_Event_Transition(Transmit - Data,
-                    event == TIMER && msg == endBackoff,
+            FSMA_Event_Transition(Transmit-Data,
+                    event == TIMER && msg == endBackoffTimer,
                     TRANSMIT,
                     ;
                     );
-            FSMA_Event_Transition(Backoff - Busy,
+            FSMA_Event_Transition(Backoff-Busy,
                     event == MEDIUM_STATE_CHANGED && !mediumFree,
                     DEFER,
                     updateBackoffPeriod();
-                    cancelEvent(endBackoff);
+                    cancelEvent(endBackoffTimer);
                     );
         }
         FSMA_State(TRANSMIT) {
@@ -197,13 +197,13 @@ void BasicContentionTx::lowerFrameReceived(bool isFcsOk)
 
 void BasicContentionTx::scheduleIfsPeriod(simtime_t ifs)
 {
-    scheduleAt(simTime() + ifs, endIFS);
+    scheduleAt(simTime() + ifs, endIfsTimer);
 }
 
 void BasicContentionTx::scheduleEifsPeriod(simtime_t eifs)
 {
-    cancelEvent(endEIFS);
-    scheduleAt(simTime() + eifs, endEIFS);
+    cancelEvent(endEifsTimer);
+    scheduleAt(simTime() + eifs, endEifsTimer);
 }
 
 void BasicContentionTx::scheduleIfs()
@@ -222,14 +222,14 @@ void BasicContentionTx::scheduleIfs()
 
 void BasicContentionTx::updateBackoffPeriod() //TODO computeRemainingBackoffSlots()
 {
-    simtime_t elapsedBackoffTime = simTime() - endBackoff->getSendingTime();
+    simtime_t elapsedBackoffTime = simTime() - endBackoffTimer->getSendingTime();
     backoffSlots -= ((int)(elapsedBackoffTime / slotTime));    //FIXME add some epsilon...?
 }
 
 void BasicContentionTx::scheduleBackoffPeriod(int backoffSlots)
 {
     simtime_t backoffPeriod = backoffSlots * slotTime;
-    scheduleAt(simTime() + backoffPeriod, endBackoff);
+    scheduleAt(simTime() + backoffPeriod, endBackoffTimer);
 }
 
 void BasicContentionTx::transmissionComplete()
