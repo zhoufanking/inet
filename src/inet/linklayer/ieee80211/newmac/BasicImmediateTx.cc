@@ -43,10 +43,12 @@ void BasicImmediateTx::initialize()
 void BasicImmediateTx::transmitImmediateFrame(Ieee80211Frame *frame, simtime_t ifs, ITxCallback *completionCallback)
 {
     Enter_Method("transmitImmediateFrame(\"%s\")", frame->getName());
-    ASSERT(!endIfsTimer->isScheduled() && !transmitting);    // we are idle
-    scheduleAt(simTime() + ifs, endIfsTimer);
+    take(frame);
     this->frame = frame;
     this->completionCallback = completionCallback;
+
+    ASSERT(!endIfsTimer->isScheduled() && !transmitting);    // we are idle
+    scheduleAt(simTime() + ifs, endIfsTimer);
     if (ev.isGUI())
         updateDisplayString();
 }
