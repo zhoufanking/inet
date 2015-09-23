@@ -812,6 +812,8 @@ void IPv4::sendDatagramToOutput(IPv4Datagram *datagram, const InterfaceEntry *ie
 
 void IPv4::arpResolutionCompleted(IARP::Notification *entry)
 {
+    Enter_Method("arpResolutionCompleted");
+
     if (entry->l3Address.getType() != L3Address::IPv4)
         return;
     auto it = pendingPackets.find(entry->l3Address.toIPv4());
@@ -831,6 +833,8 @@ void IPv4::arpResolutionCompleted(IARP::Notification *entry)
 
 void IPv4::arpResolutionTimedOut(IARP::Notification *entry)
 {
+    Enter_Method("arpResolutionTimedOut");
+
     if (entry->l3Address.getType() != L3Address::IPv4)
         return;
     auto it = pendingPackets.find(entry->l3Address.toIPv4());
