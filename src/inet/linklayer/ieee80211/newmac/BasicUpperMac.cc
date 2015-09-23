@@ -120,7 +120,7 @@ void BasicUpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame *frame)
 
     // must be a Ieee80211DataOrMgmtFrame, within the max size because we don't support fragmentation
     if (frame->getByteLength() > fragmentationThreshold)
-        opp_error("message from higher layer (%s)%s is too long for 802.11b, %d bytes (fragmentation is not supported yet)",
+        throw cRuntimeError("message from higher layer (%s)%s is too long for 802.11b, %d bytes (fragmentation is not supported yet)",
                 frame->getClassName(), frame->getName(), (int)(frame->getByteLength()));
     EV_INFO << "Frame " << frame << " received from higher layer, receiver = " << frame->getReceiverAddress() << endl;
     ASSERT(!frame->getReceiverAddress().isUnspecified());
