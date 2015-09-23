@@ -165,7 +165,7 @@ void BasicContentionTx::handleWithFSM(EventType event, cMessage *msg)
 
     // emit(stateSignal, fsm.getState()); TODO
     logState();
-    if (ev.isGUI())
+    if (hasGUI())
         updateDisplayString();
 }
 
