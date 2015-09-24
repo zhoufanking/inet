@@ -38,6 +38,7 @@ module MACProtocolBase extends LayeredProtocolBase
 {
     parameters:
         string interfaceTableModule;
+        int mtu @unit("B") = default(2304B);
         @display("i=block/rxtx");
     gates:
         input upperLayerIn @labels(INetworkDatagram/down);
