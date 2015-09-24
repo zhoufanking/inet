@@ -131,6 +131,7 @@ bool SendDataWithAckFsmBasedFrameExchange::isAck(Ieee80211Frame *frame)
 SendDataWithAckFrameExchange::SendDataWithAckFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame, int txIndex) :
     StepBasedFrameExchange(ownerModule, context, callback), dataFrame(dataFrame), txIndex(txIndex)
 {
+    dataFrame->setDuration(context->getSifsTime() + context->getAckDuration());
 }
 
 SendDataWithAckFrameExchange::~SendDataWithAckFrameExchange()
@@ -178,6 +179,7 @@ void SendDataWithAckFrameExchange::processInternalCollision(int step)
 SendDataWithRtsCtsFrameExchange::SendDataWithRtsCtsFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame, int txIndex) :
     StepBasedFrameExchange(ownerModule, context, callback), dataFrame(dataFrame), txIndex(txIndex)
 {
+    dataFrame->setDuration(context->getSifsTime() + context->getAckDuration());
 }
 
 SendDataWithRtsCtsFrameExchange::~SendDataWithRtsCtsFrameExchange()
