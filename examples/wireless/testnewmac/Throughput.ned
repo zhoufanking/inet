@@ -74,7 +74,6 @@ module ThroughputServer
             parameters:
                 @display("p=120,158;q=queue");
                 mgmtType = "Ieee80211MgmtAdhoc";
-                macType = "Ieee80211CompatibleNewMac";
         }
         mobility: StationaryMobility {
             parameters:
