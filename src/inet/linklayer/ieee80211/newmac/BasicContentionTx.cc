@@ -109,7 +109,7 @@ void BasicContentionTx::handleWithFSM(EventType event, cMessage *msg)
             FSMA_Event_Transition(Starting-IFS-and-Backoff,
                     event == START && mediumFree,
                     IFS_AND_BACKOFF,
-                    ;
+                    scheduleTransmissionRequest();
                     );
             FSMA_Event_Transition(Busy,
                     event == START && !mediumFree,
@@ -123,12 +123,12 @@ void BasicContentionTx::handleWithFSM(EventType event, cMessage *msg)
             FSMA_Event_Transition(Restarting-IFS-and-Backoff,
                     event == MEDIUM_STATE_CHANGED && mediumFree,
                     IFS_AND_BACKOFF,
-                    ;
+                    scheduleTransmissionRequest();
                     );
             FSMA_Event_Transition_Error();
         }
         FSMA_State(IFS_AND_BACKOFF) {
-            FSMA_Enter(scheduleTransmissionRequest());
+            FSMA_Enter();
             FSMA_Event_Transition(Backoff-expired,
                     event == TRANSMISSION_GRANTED,
                     TRANSMIT,
