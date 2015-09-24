@@ -23,6 +23,7 @@ import inet.linklayer.ieee80211.Ieee80211Nic;
 import inet.mobility.static.StationaryMobility;
 import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
 
+
 module ThroughputClient
 {
     parameters:
@@ -42,6 +43,7 @@ module ThroughputClient
             parameters:
                 @display("p=112,134;q=queue");
                 mgmtType = default("Ieee80211MgmtSTASimplified");
+                macType = "Ieee80211CompatibelNewMac";
         }
         mobility: StationaryMobility {
             parameters:

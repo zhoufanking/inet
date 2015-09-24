@@ -18,8 +18,7 @@
 
 package inet.linklayer.ieee80211.newmac;
 
-//import inet.linklayer.base.MACProtocolBase;
-import inet.linklayer.contract.IMACProtocol;
+import inet.linklayer.ieee80211.IIeee80211Mac;
 
 
 // near copy-paste of inet.linklayer.base.MACProtocolBase to work around "compound-module cannot extend a simple-module" error in OMNeT++ 4.x
@@ -80,7 +79,7 @@ module MACProtocolBase extends LayeredProtocolBase
 // listen interval which is related to power management, capability information
 // which is related to PCF and other non-modelled features).
 //
-module Ieee80211NewMac extends MACProtocolBase like IMACProtocol
+module Ieee80211NewMac extends MACProtocolBase like IIeee80211Mac
 {
     parameters:
         string address = default("auto"); // MAC address as hex string (12 hex digits), or
@@ -127,7 +126,7 @@ module Ieee80211NewMac extends MACProtocolBase like IMACProtocol
 module Ieee80211CompatibleNewMac extends Ieee80211NewMac
 {
     parameters:
-        string opMode @enum("a", "b", "g", "n", "p") = default("g");
+        string opMode @enum("a","b","g","n","p") = default("g");
         double bitrate @unit("bps");
         double basicBitrate @unit("bps") = default(2000000bps);
         int rtsThresholdBytes @unit("B") = default(2346B);
