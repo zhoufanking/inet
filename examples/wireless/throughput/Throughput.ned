@@ -43,7 +43,7 @@ module ThroughputClient
             parameters:
                 @display("p=112,134;q=queue");
                 mgmtType = default("Ieee80211MgmtSTASimplified");
-                macType = "Ieee80211CompatibelNewMac";
+                macType = "Ieee80211CompatibleNewMac";
         }
         mobility: StationaryMobility {
             parameters:

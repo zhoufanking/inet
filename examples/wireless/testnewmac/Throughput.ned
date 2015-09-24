@@ -45,7 +45,7 @@ module ThroughputClient
             parameters:
                 @display("p=112,134;q=queue");
                 mgmtType = "Ieee80211MgmtAdhoc";
-                macType = "Ieee80211CompatibelNewMac";
+                macType = "Ieee80211CompatibleNewMac";
         }
         mobility: CircleMobility {
             parameters:
@@ -74,7 +74,7 @@ module ThroughputServer
             parameters:
                 @display("p=120,158;q=queue");
                 mgmtType = "Ieee80211MgmtAdhoc";
-                macType = "Ieee80211CompatibelNewMac";
+                macType = "Ieee80211CompatibleNewMac";
         }
         mobility: StationaryMobility {
             parameters:
