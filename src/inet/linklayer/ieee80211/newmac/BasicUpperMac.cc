@@ -107,8 +107,6 @@ void BasicUpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame *frame)
     Enter_Method("upperFrameReceived(\"%s\")", frame->getName());
     take(frame);
 
-    if (queueModule)
-        queueModule->requestPacket();
     // check for queue overflow
     if (maxQueueSize && (int)transmissionQueue.size() == maxQueueSize) {
         EV << "message " << frame << " received from higher layer but MAC queue is full, dropping message\n";
@@ -197,6 +195,10 @@ void BasicUpperMac::frameExchangeFinished(IFrameExchange *what, bool successful)
     EV_INFO << "Frame exchange finished" << std::endl;
     delete frameExchange;
     frameExchange = nullptr;
+
+    if (queueModule)
+        queueModule->requestPacket();
+
     if (!transmissionQueue.empty()) {
         Ieee80211DataOrMgmtFrame *frame = check_and_cast<Ieee80211DataOrMgmtFrame *>(transmissionQueue.front());
         transmissionQueue.pop_front();
