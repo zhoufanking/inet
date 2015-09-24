@@ -189,7 +189,9 @@ Ieee80211Frame *UpperMacContext::setBitrate(Ieee80211Frame *frame, const IIeee80
 
 bool UpperMacContext::isForUs(Ieee80211Frame *frame) const
 {
-    return frame->getReceiverAddress() == address;
+    return frame->getReceiverAddress() == address
+            || frame->getReceiverAddress().isBroadcast()
+            || frame->getReceiverAddress().isMulticast();       //TODO
 }
 
 bool UpperMacContext::isBroadcast(Ieee80211Frame *frame) const
