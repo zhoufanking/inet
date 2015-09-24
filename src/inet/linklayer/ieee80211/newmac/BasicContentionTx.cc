@@ -138,6 +138,7 @@ void BasicContentionTx::handleWithFSM(EventType event, cMessage *msg)
                     event == MEDIUM_STATE_CHANGED && !mediumFree,
                     DEFER,
                     cancelTransmissionRequest();
+                    computeRemainingBackoffSlots();
                     );
             FSMA_Event_Transition(Internal-collision,
                     event == INTERNAL_COLLISION,
