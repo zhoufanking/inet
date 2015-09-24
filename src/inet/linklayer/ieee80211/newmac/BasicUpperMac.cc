@@ -61,19 +61,17 @@ void BasicUpperMac::initialize()
 
 IUpperMacContext *BasicUpperMac::createContext()
 {
-    IImmediateTx *immediateTx = check_and_cast<IImmediateTx *>(getModuleByPath(par("immediateTxModule")));    //TODO
+    IImmediateTx *immediateTx = check_and_cast<IImmediateTx *>(getModuleByPath(par("immediateTxModule")));
     IContentionTx **contentionTx = nullptr;
-    collectContentionTxModules(getModuleByPath(par("firstContentionTxModule")), contentionTx);    //TODO
+    collectContentionTxModules(getModuleByPath(par("firstContentionTxModule")), contentionTx);
 
     MACAddress address(mac->par("address").stringValue());    // note: we rely on MAC to have replaced "auto" with concrete address by now
 
     const Ieee80211ModeSet *modeSet = Ieee80211ModeSet::getModeSet(*par("opMode").stringValue());
     double bitrate = par("bitrate");
-    double basicBitrate = par("basicBitrate");
     const IIeee80211Mode *dataFrameMode = (bitrate == -1) ? modeSet->getFastestMode() : modeSet->getMode(bps(bitrate));
-    const IIeee80211Mode *basicFrameMode = (basicBitrate == -1) ? modeSet->getSlowestMode() : modeSet->getMode(bps(basicBitrate));
-    ;    //TODO ???
-    const IIeee80211Mode *controlFrameMode = (basicBitrate == -1) ? modeSet->getSlowestMode() : modeSet->getMode(bps(basicBitrate));    //TODO ???
+    const IIeee80211Mode *basicFrameMode = modeSet->getSlowestMode();
+    const IIeee80211Mode *controlFrameMode = modeSet->getSlowestMode(); //TODO check
 
     int rtsThreshold = par("rtsThresholdBytes");
     int shortRetryLimit = par("retryLimit");

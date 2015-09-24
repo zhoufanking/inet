@@ -128,13 +128,11 @@ module Ieee80211CompatibleNewMac extends Ieee80211NewMac
     parameters:
         string opMode @enum("a","b","g","n","p") = default("g");
         double bitrate @unit("bps");
-        double basicBitrate @unit("bps") = default(2000000bps);
         int rtsThresholdBytes @unit("B") = default(2346B);
         int retryLimit = default(-1);
 
         upperMac.opMode = opMode;
         upperMac.bitrate = bitrate;
-        upperMac.basicBitrate = basicBitrate;
         upperMac.rtsThresholdBytes = rtsThresholdBytes;
         upperMac.retryLimit = retryLimit;
 }
