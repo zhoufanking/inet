@@ -84,6 +84,7 @@ class INET_API UpperMacContext : public IUpperMacContext
         virtual Ieee80211Frame *setControlBitrate(Ieee80211Frame *frame) const override;
 
         virtual bool isForUs(Ieee80211Frame *frame) const override;
+        virtual bool isMulticast(Ieee80211Frame *frame) const override;
         virtual bool isBroadcast(Ieee80211Frame *frame) const override;
         virtual bool isCts(Ieee80211Frame *frame) const override;
         virtual bool isAck(Ieee80211Frame *frame) const override;

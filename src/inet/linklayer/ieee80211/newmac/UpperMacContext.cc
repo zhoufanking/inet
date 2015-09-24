@@ -191,7 +191,12 @@ bool UpperMacContext::isForUs(Ieee80211Frame *frame) const
 {
     return frame->getReceiverAddress() == address
             || frame->getReceiverAddress().isBroadcast()
-            || frame->getReceiverAddress().isMulticast();       //TODO
+            || frame->getReceiverAddress().isMulticast();       //TODO may need to filter for locally joined mcast groups
+}
+
+bool UpperMacContext::isMulticast(Ieee80211Frame *frame) const
+{
+    return frame && frame->getReceiverAddress().isMulticast();
 }
 
 bool UpperMacContext::isBroadcast(Ieee80211Frame *frame) const

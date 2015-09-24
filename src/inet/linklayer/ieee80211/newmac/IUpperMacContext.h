@@ -69,6 +69,7 @@ class IUpperMacContext
         virtual Ieee80211Frame *setControlBitrate(Ieee80211Frame *frame) const = 0;
 
         virtual bool isForUs(Ieee80211Frame *frame) const = 0;
+        virtual bool isMulticast(Ieee80211Frame *frame) const = 0;
         virtual bool isBroadcast(Ieee80211Frame *frame) const = 0;
         virtual bool isCts(Ieee80211Frame *frame) const = 0;
         virtual bool isAck(Ieee80211Frame *frame) const = 0;
