@@ -34,6 +34,14 @@ UpperMacContext::UpperMacContext(const MACAddress& address,
 {
 }
 
+std::string UpperMacContext::info() const
+{
+    std::stringstream os;
+    os << "data: " << dataFrameMode->getInfoStringRepresentation();
+    os << ", basic: " << basicFrameMode->getInfoStringRepresentation();
+    return os.str().c_str();
+}
+
 const MACAddress& UpperMacContext::getAddress() const
 {
     return address;

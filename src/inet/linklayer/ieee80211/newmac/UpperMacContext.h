@@ -31,7 +31,7 @@ using namespace inet::physicallayer;
 class IImmediateTx;
 class IContentionTx;
 
-class INET_API UpperMacContext : public IUpperMacContext
+class INET_API UpperMacContext : public cOwnedObject, public IUpperMacContext
 {
     private:
         MACAddress address;
@@ -52,6 +52,8 @@ class INET_API UpperMacContext : public IUpperMacContext
                 const IIeee80211Mode *basicFrameMode, const IIeee80211Mode *controlFrameMode,
                 int shortRetryLimit, int rtsThreshold, IImmediateTx *immediateTx, IContentionTx **contentionTx);
         virtual ~UpperMacContext() {}
+
+        virtual std::string info() const override; // cObject
 
         virtual const MACAddress& getAddress() const override;
 
