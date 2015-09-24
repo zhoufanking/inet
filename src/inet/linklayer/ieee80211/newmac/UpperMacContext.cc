@@ -46,7 +46,7 @@ simtime_t UpperMacContext::getSlotTime() const
 
 simtime_t UpperMacContext::getAifsTime() const
 {
-    return dataFrameMode->getAifsTime(2);    //TODO!!!
+    return dataFrameMode->getAifsTime(AC_LEGACY);    //TODO!!!
 }
 
 simtime_t UpperMacContext::getSifsTime() const
@@ -61,7 +61,7 @@ simtime_t UpperMacContext::getDifsTime() const
 
 simtime_t UpperMacContext::getEifsTime() const
 {
-    return dataFrameMode->getEifsTime(basicFrameMode, LENGTH_ACK);    //TODO ???
+    return dataFrameMode->getEifsTime(basicFrameMode, AC_LEGACY, LENGTH_ACK);    //TODO ???
 }
 
 simtime_t UpperMacContext::getPifsTime() const
@@ -76,12 +76,12 @@ simtime_t UpperMacContext::getRifsTime() const
 
 int UpperMacContext::getCwMin() const
 {
-    return dataFrameMode->getCwMin();
+    return dataFrameMode->getCwMin(AC_LEGACY);
 }
 
 int UpperMacContext::getCwMax() const
 {
-    return dataFrameMode->getCwMax();
+    return dataFrameMode->getCwMax(AC_LEGACY);
 }
 
 int UpperMacContext::getShortRetryLimit() const
