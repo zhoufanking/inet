@@ -138,6 +138,7 @@ void BasicUpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame *frame)
 void BasicUpperMac::lowerFrameReceived(Ieee80211Frame *frame)
 {
     Enter_Method("lowerFrameReceived(\"%s\")", frame->getName());
+    delete frame->removeControlInfo();          //TODO
     take(frame);
 
     if (context->isForUs(frame)) {
