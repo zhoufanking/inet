@@ -58,15 +58,15 @@ class INET_API UpperMacContext : public cOwnedObject, public IUpperMacContext
         virtual const MACAddress& getAddress() const override;
 
         virtual simtime_t getSlotTime() const override;
-        virtual simtime_t getAifsTime() const override;
+        virtual simtime_t getAifsTime(int accessCategory) const override;
         virtual simtime_t getSifsTime() const override;
         virtual simtime_t getDifsTime() const override;
-        virtual simtime_t getEifsTime() const override;
+        virtual simtime_t getEifsTime(int accessCategory) const override;
         virtual simtime_t getPifsTime() const override;
         virtual simtime_t getRifsTime() const override;
 
-        virtual int getCwMin() const override;
-        virtual int getCwMax() const override;
+        virtual int getCwMin(int accessCategory) const override;
+        virtual int getCwMax(int accessCategory) const override;
         virtual int getShortRetryLimit() const override;
         virtual int getRtsThreshold() const override;
 

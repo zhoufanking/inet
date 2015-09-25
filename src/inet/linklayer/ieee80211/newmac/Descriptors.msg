@@ -29,14 +29,14 @@ class UpperMacContext
     @descriptor(readonly);
     MACAddress address;
     simtime_t slotTime;
-    simtime_t aifsTime;
+    simtime_t aifsTime[4];
     simtime_t sifsTime;
     simtime_t difsTime;
-    simtime_t eifsTime;
+    simtime_t eifsTime[4];
     simtime_t pifsTime;
     simtime_t rifsTime;
-    int cwMin;
-    int cwMax;
+    int cwMin[4];
+    int cwMax[4];
     int shortRetryLimit;
     int rtsThreshold;
     simtime_t ackTimeout;

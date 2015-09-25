@@ -19,19 +19,27 @@
 #define __INET_FRAMEEXCHANGES_H
 
 #include "FrameExchange.h"
+#include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h"
 
 namespace inet {
 namespace ieee80211 {
 
 class Ieee80211DataOrMgmtFrame;
 
+//using namespace inet::physicallayer;
+using inet::physicallayer::AccessCategory;
+//using inet::physicallayer::AccessCategory;
+//typedef inet::physicallayer::AccessCategory AccessCategory;
+
 // just to demonstrate the use FsmBasedFrameExchange; otherwise we prefer the step-based because it's simpler
 class SendDataWithAckFsmBasedFrameExchange : public FsmBasedFrameExchange
 {
     protected:
         Ieee80211DataOrMgmtFrame *frame;
-        int retryCount = 0;
+        int txIndex;
+        int accessCategory;
         cMessage *ackTimer = nullptr;
+        int retryCount = 0;
 
         enum State { INIT, TRANSMITDATA, WAITACK, SUCCESS, FAILURE };
         State state = INIT;
@@ -45,7 +53,7 @@ class SendDataWithAckFsmBasedFrameExchange : public FsmBasedFrameExchange
         bool isAck(Ieee80211Frame *frame);
 
     public:
-        SendDataWithAckFsmBasedFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *frame);
+        SendDataWithAckFsmBasedFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *frame, int txIndex, int accessCategory);
         ~SendDataWithAckFsmBasedFrameExchange();
 };
 
@@ -53,7 +61,6 @@ class SendDataWithAckFrameExchange : public StepBasedFrameExchange
 {
     protected:
         Ieee80211DataOrMgmtFrame *dataFrame = nullptr;
-        int txIndex = 0;
         int retryCount = 0;
     protected:
         virtual void doStep(int step) override;
@@ -61,7 +68,7 @@ class SendDataWithAckFrameExchange : public StepBasedFrameExchange
         virtual void processTimeout(int step) override;
         virtual void processInternalCollision(int step) override;
     public:
-        SendDataWithAckFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame, int txIndex=0);
+        SendDataWithAckFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame, int txIndex, int accessCategory);
         ~SendDataWithAckFrameExchange();
 };
 
@@ -69,7 +76,6 @@ class SendDataWithRtsCtsFrameExchange : public StepBasedFrameExchange
 {
     protected:
         Ieee80211DataOrMgmtFrame *dataFrame = nullptr;
-        int txIndex = 0;
         int retryCount = 0;
     protected:
         virtual void doStep(int step) override;
@@ -77,7 +83,7 @@ class SendDataWithRtsCtsFrameExchange : public StepBasedFrameExchange
         virtual void processTimeout(int step) override;
         virtual void processInternalCollision(int step) override;
     public:
-        SendDataWithRtsCtsFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame, int txIndex=0);
+        SendDataWithRtsCtsFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame, int txIndex=0, int accessCategory=AccessCategory::AC_LEGACY);
         ~SendDataWithRtsCtsFrameExchange();
 };
 

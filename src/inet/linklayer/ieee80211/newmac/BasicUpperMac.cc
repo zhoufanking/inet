@@ -190,9 +190,9 @@ void BasicUpperMac::startSendDataFrameExchange(Ieee80211DataOrMgmtFrame *frame)
     ASSERT(!frameExchange);
     bool useRtsCts = frame->getByteLength() > context->getRtsThreshold();
     if (useRtsCts)
-        frameExchange = new SendDataWithRtsCtsFrameExchange(this, context, this, frame);
+        frameExchange = new SendDataWithRtsCtsFrameExchange(this, context, this, frame, 0, AccessCategory::AC_LEGACY);
     else
-        frameExchange = new SendDataWithAckFrameExchange(this, context, this, frame);
+        frameExchange = new SendDataWithAckFrameExchange(this, context, this, frame, 0, AccessCategory::AC_LEGACY);
     frameExchange->start();
 }
 

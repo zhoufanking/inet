@@ -52,9 +52,9 @@ simtime_t UpperMacContext::getSlotTime() const
     return dataFrameMode->getSlotTime();
 }
 
-simtime_t UpperMacContext::getAifsTime() const
+simtime_t UpperMacContext::getAifsTime(int accessCategory) const
 {
-    return dataFrameMode->getAifsTime(AC_LEGACY);    //TODO!!!
+    return dataFrameMode->getAifsTime((AccessCategory)accessCategory);
 }
 
 simtime_t UpperMacContext::getSifsTime() const
@@ -67,9 +67,9 @@ simtime_t UpperMacContext::getDifsTime() const
     return dataFrameMode->getDifsTime();
 }
 
-simtime_t UpperMacContext::getEifsTime() const
+simtime_t UpperMacContext::getEifsTime(int accessCategory) const
 {
-    return dataFrameMode->getEifsTime(basicFrameMode, AC_LEGACY, LENGTH_ACK);    //TODO ???
+    return dataFrameMode->getEifsTime(basicFrameMode, (AccessCategory)accessCategory, LENGTH_ACK);
 }
 
 simtime_t UpperMacContext::getPifsTime() const
@@ -82,14 +82,14 @@ simtime_t UpperMacContext::getRifsTime() const
     return dataFrameMode->getRifsTime();
 }
 
-int UpperMacContext::getCwMin() const
+int UpperMacContext::getCwMin(int accessCategory) const
 {
-    return dataFrameMode->getCwMin(AC_LEGACY);
+    return dataFrameMode->getCwMin((AccessCategory)accessCategory);
 }
 
-int UpperMacContext::getCwMax() const
+int UpperMacContext::getCwMax(int accessCategory) const
 {
-    return dataFrameMode->getCwMax(AC_LEGACY);
+    return dataFrameMode->getCwMax((AccessCategory)accessCategory);
 }
 
 int UpperMacContext::getShortRetryLimit() const
