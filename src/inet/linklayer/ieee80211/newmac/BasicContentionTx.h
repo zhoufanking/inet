@@ -79,8 +79,8 @@ class BasicContentionTx : public cSimpleModule, public IContentionTx, protected 
         virtual void computeRemainingBackoffSlots();
         virtual void reportTransmissionComplete();
         virtual void reportInternalCollision();
-        virtual void logState();
         virtual void updateDisplayString();
+        const char *getEventName(EventType event);
 
     public:
         BasicContentionTx() {}
