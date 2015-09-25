@@ -150,14 +150,15 @@ void BasicUpperMac::lowerFrameReceived(Ieee80211Frame *frame)
             sendCts(rtsFrame);
         }
         else if (Ieee80211DataOrMgmtFrame *dataOrMgmtFrame = dynamic_cast<Ieee80211DataOrMgmtFrame *>(frame)) {
-            sendAck(dataOrMgmtFrame);
+            if (!context->isBroadcast(frame) && !context->isMulticast(frame))
+                sendAck(dataOrMgmtFrame);
             mac->sendUp(dataOrMgmtFrame);
         }
         else if (frameExchange) {
             bool processed = frameExchange->lowerFrameReceived(frame);
             if (!processed) {
-                EV_INFO << "Unexpected frame " << frame->getName() << "\n";
-                // TODO: do something
+                EV_INFO << "Unexpected frame " << frame->getName() << ", dropping\n";
+                delete frame;
             }
         }
         else {
@@ -188,11 +189,18 @@ void BasicUpperMac::internalCollision(ITxCallback *callback, int txIndex)
 void BasicUpperMac::startSendDataFrameExchange(Ieee80211DataOrMgmtFrame *frame)
 {
     ASSERT(!frameExchange);
+
+    int txIndex = 0; //TODO
+    int accessCategory = AccessCategory::AC_LEGACY; //TODO
+
     bool useRtsCts = frame->getByteLength() > context->getRtsThreshold();
-    if (useRtsCts)
-        frameExchange = new SendDataWithRtsCtsFrameExchange(this, context, this, frame, 0, AccessCategory::AC_LEGACY);
+    if (context->isBroadcast(frame) || context->isMulticast(frame))
+        frameExchange = new SendMulticastDataFrameExchange(this, context, this, frame, txIndex, accessCategory);
+    else if (useRtsCts)
+        frameExchange = new SendDataWithRtsCtsFrameExchange(this, context, this, frame, txIndex, accessCategory);
     else
-        frameExchange = new SendDataWithAckFrameExchange(this, context, this, frame, 0, AccessCategory::AC_LEGACY);
+        frameExchange = new SendDataWithAckFrameExchange(this, context, this, frame, txIndex, accessCategory);
+
     frameExchange->start();
 }
 

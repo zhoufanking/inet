@@ -173,7 +173,6 @@ void SendDataWithAckFrameExchange::processInternalCollision(int step)
     }
 }
 
-
 //------------------------------
 
 SendDataWithRtsCtsFrameExchange::SendDataWithRtsCtsFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame, int txIndex, int accessCategory) :
@@ -221,6 +220,48 @@ void SendDataWithRtsCtsFrameExchange::processInternalCollision(int step)
 {
     switch (step) {
         case 0: if (++retryCount < context->getShortRetryLimit()) {gotoStep(0);} else fail(); break;
+        default: ASSERT(false);
+    }
+}
+
+//------------------------------
+
+SendMulticastDataFrameExchange::SendMulticastDataFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame, int txIndex, int accessCategory) :
+    StepBasedFrameExchange(ownerModule, context, callback, txIndex, accessCategory), dataFrame(dataFrame)
+{
+    ASSERT(context->isBroadcast(dataFrame) || context->isMulticast(dataFrame));
+    dataFrame->setDuration(0);
+}
+
+SendMulticastDataFrameExchange::~SendMulticastDataFrameExchange()
+{
+    delete dataFrame;
+}
+
+void SendMulticastDataFrameExchange::doStep(int step)
+{
+    switch (step) {
+        case 0: transmitMulticastContentionFrame(dataFrame->dup()); break;
+        case 1: succeed(); break;
+        default: ASSERT(false);
+    }
+}
+
+bool SendMulticastDataFrameExchange::processReply(int step, Ieee80211Frame *frame)
+{
+    ASSERT(false);
+    return false;
+}
+
+void SendMulticastDataFrameExchange::processTimeout(int step)
+{
+    ASSERT(false);
+}
+
+void SendMulticastDataFrameExchange::processInternalCollision(int step)
+{
+    switch (step) {
+        case 0: if (++retryCount < context->getShortRetryLimit()) {dataFrame->setRetry(true); gotoStep(0);} else fail(); break;
         default: ASSERT(false);
     }
 }

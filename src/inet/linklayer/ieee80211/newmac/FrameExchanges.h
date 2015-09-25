@@ -87,6 +87,21 @@ class SendDataWithRtsCtsFrameExchange : public StepBasedFrameExchange
         ~SendDataWithRtsCtsFrameExchange();
 };
 
+class SendMulticastDataFrameExchange : public StepBasedFrameExchange
+{
+    protected:
+        Ieee80211DataOrMgmtFrame *dataFrame = nullptr;
+        int retryCount = 0; // internal collisions are still possible (EDCA)
+    protected:
+        virtual void doStep(int step) override;
+        virtual bool processReply(int step, Ieee80211Frame *frame) override;
+        virtual void processTimeout(int step) override;
+        virtual void processInternalCollision(int step) override;
+    public:
+        SendMulticastDataFrameExchange(cSimpleModule *ownerModule, IUpperMacContext *context, IFinishedCallback *callback, Ieee80211DataOrMgmtFrame *dataFrame, int txIndex, int accessCategory);
+        ~SendMulticastDataFrameExchange();
+};
+
 } // namespace ieee80211
 } // namespace inet
 

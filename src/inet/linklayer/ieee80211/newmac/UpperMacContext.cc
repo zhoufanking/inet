@@ -97,6 +97,11 @@ int UpperMacContext::getCwMax(int accessCategory) const
     return dataFrameMode->getCwMax((AccessCategory)accessCategory);
 }
 
+int UpperMacContext::getCwMulticast(int accessCategory) const
+{
+    return dataFrameMode->getCwMin((AccessCategory)accessCategory);  //TODO check
+}
+
 int UpperMacContext::getShortRetryLimit() const
 {
     return shortRetryLimit;

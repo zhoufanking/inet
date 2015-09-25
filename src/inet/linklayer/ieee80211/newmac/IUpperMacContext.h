@@ -49,6 +49,7 @@ class IUpperMacContext
 
         virtual int getCwMin(int accessCategory) const = 0;
         virtual int getCwMax(int accessCategory) const = 0;
+        virtual int getCwMulticast(int accessCategory) const = 0;
         virtual int getShortRetryLimit() const = 0;
         virtual int getRtsThreshold() const = 0;
         virtual simtime_t getTxopLimit(int accessCategory) const = 0;

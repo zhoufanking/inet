@@ -68,6 +68,7 @@ class INET_API UpperMacContext : public cOwnedObject, public IUpperMacContext
 
         virtual int getCwMin(int accessCategory) const override;
         virtual int getCwMax(int accessCategory) const override;
+        virtual int getCwMulticast(int accessCategory) const override;
         virtual int getShortRetryLimit() const override;
         virtual int getRtsThreshold() const override;
         virtual simtime_t getTxopLimit(int accessCategory) const override;
