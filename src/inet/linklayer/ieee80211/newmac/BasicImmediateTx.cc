@@ -37,6 +37,8 @@ void BasicImmediateTx::initialize()
     mac = dynamic_cast<IMacRadioInterface *>(getModuleByPath(par("macModule")));
     upperMac = dynamic_cast<IUpperMac *>(getModuleByPath(par("upperMacModule")));
     endIfsTimer = new cMessage("endIFS");
+
+    WATCH(transmitting);
     updateDisplayString();
 }
 

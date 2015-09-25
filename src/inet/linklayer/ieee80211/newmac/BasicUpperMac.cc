@@ -40,6 +40,7 @@ BasicUpperMac::BasicUpperMac()
 BasicUpperMac::~BasicUpperMac()
 {
     delete frameExchange;
+    delete context;
     while (!transmissionQueue.empty()) {
         Ieee80211Frame *temp = transmissionQueue.front();
         transmissionQueue.pop_front();
@@ -57,6 +58,11 @@ void BasicUpperMac::initialize()
 
     context = createContext();
     rx->setAddress(context->getAddress());
+
+    WATCH(maxQueueSize);
+    WATCH(fragmentationThreshold);
+    WATCH(sequenceNumber);
+    WATCH_LIST(transmissionQueue);
 }
 
 IUpperMacContext *BasicUpperMac::createContext()

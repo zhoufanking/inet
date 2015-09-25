@@ -52,12 +52,27 @@ void BasicContentionTx::initialize()
     mac = check_and_cast<IMacRadioInterface *>(getModuleByPath(par("macModule")));
     upperMac = check_and_cast<IUpperMac *>(getModuleByPath(par("upperMacModule")));
     collisionController = dynamic_cast<ICollisionController *>(getModuleByPath(par("collisionControllerModule")));
+
     txIndex = getIndex();
     if (txIndex > 0 && !collisionController)
         throw cRuntimeError("No collision controller module -- one is needed when multiple ContentionTx instances are present");
 
     fsm.setName("fsm");
     fsm.setState(IDLE, "IDLE");
+
+    WATCH(txIndex);
+    WATCH(ifs);
+    WATCH(eifs);
+    WATCH(cwMin);
+    WATCH(cwMax);
+    WATCH(slotTime);
+    WATCH(retryCount);
+    WATCH(endEifsTime);
+    WATCH(backoffSlots);
+    WATCH(scheduledTransmissionTime);
+    WATCH(channelLastBusyTime);
+    WATCH(mediumFree);
+    updateDisplayString();
 }
 
 BasicContentionTx::~BasicContentionTx()

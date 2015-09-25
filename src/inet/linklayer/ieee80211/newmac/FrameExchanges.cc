@@ -201,7 +201,6 @@ void SendDataWithRtsCtsFrameExchange::doStep(int step)
 
 bool SendDataWithRtsCtsFrameExchange::processReply(int step, Ieee80211Frame *frame)
 {
-    bool accepted;
     switch (step) {
         case 1: if (context->isCts(frame)) {delete frame; return true;} else return false;
         case 3: if (context->isAck(frame)) {delete frame; return true;} else return false;

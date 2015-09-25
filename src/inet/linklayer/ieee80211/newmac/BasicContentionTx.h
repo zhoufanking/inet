@@ -63,7 +63,6 @@ class BasicContentionTx : public cSimpleModule, public IContentionTx, protected 
         simtime_t scheduledTransmissionTime = SIMTIME_ZERO;
         simtime_t channelLastBusyTime = SIMTIME_ZERO;  //TODO lastChannelStateChangeTime?
         bool mediumFree = false;
-        IRadio::TransmissionState transmissionState = IRadio::TRANSMISSION_STATE_UNDEFINED;
 
     protected:
         virtual void initialize() override;
