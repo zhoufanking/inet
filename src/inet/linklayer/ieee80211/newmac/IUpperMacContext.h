@@ -51,6 +51,7 @@ class IUpperMacContext
         virtual int getCwMax(int accessCategory) const = 0;
         virtual int getShortRetryLimit() const = 0;
         virtual int getRtsThreshold() const = 0;
+        virtual simtime_t getTxopLimit(int accessCategory) const = 0;
 
         virtual simtime_t getAckTimeout() const = 0;
         virtual simtime_t getAckDuration() const = 0;

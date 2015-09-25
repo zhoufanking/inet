@@ -39,6 +39,7 @@ class UpperMacContext
     int cwMax[4];
     int shortRetryLimit;
     int rtsThreshold;
+    simtime_t txopLimit[4];
     simtime_t ackTimeout;
     simtime_t ackDuration;
     simtime_t ctsTimeout;

@@ -34,11 +34,16 @@ UpperMacContext::UpperMacContext(const MACAddress& address,
 {
 }
 
+const char *UpperMacContext::getName() const
+{
+    return "MAC parameters";
+}
+
 std::string UpperMacContext::info() const
 {
     std::stringstream os;
-    os << "data: " << dataFrameMode->getInfoStringRepresentation();
-    os << ", basic: " << basicFrameMode->getInfoStringRepresentation();
+    os << "dataBitrate: " << dataFrameMode->getDataMode()->getGrossBitrate();
+    os << ", basicBitrate: " << basicFrameMode->getDataMode()->getGrossBitrate();
     return os.str().c_str();
 }
 
@@ -100,6 +105,11 @@ int UpperMacContext::getShortRetryLimit() const
 int UpperMacContext::getRtsThreshold() const
 {
     return rtsThreshold;
+}
+
+simtime_t UpperMacContext::getTxopLimit(int accessCategory) const
+{
+    return dataFrameMode->getTxopLimit((AccessCategory)accessCategory);
 }
 
 simtime_t UpperMacContext::getAckTimeout() const

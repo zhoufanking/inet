@@ -53,6 +53,7 @@ class INET_API UpperMacContext : public cOwnedObject, public IUpperMacContext
                 int shortRetryLimit, int rtsThreshold, IImmediateTx *immediateTx, IContentionTx **contentionTx);
         virtual ~UpperMacContext() {}
 
+        virtual const char *getName() const override; // cObject
         virtual std::string info() const override; // cObject
 
         virtual const MACAddress& getAddress() const override;
@@ -69,6 +70,7 @@ class INET_API UpperMacContext : public cOwnedObject, public IUpperMacContext
         virtual int getCwMax(int accessCategory) const override;
         virtual int getShortRetryLimit() const override;
         virtual int getRtsThreshold() const override;
+        virtual simtime_t getTxopLimit(int accessCategory) const override;
 
         virtual simtime_t getAckTimeout() const override;
         virtual simtime_t getAckDuration() const override;
