@@ -133,7 +133,6 @@ void BasicUpperMac::upperFrameReceived(Ieee80211DataOrMgmtFrame *frame)
     frame->setTransmitterAddress(context->getAddress());
     frame->setSequenceNumber(sequenceNumber);
     sequenceNumber = (sequenceNumber + 1) % 4096;    //XXX seqNum must be checked upon reception of frames!
-    context->setDataBitrate(frame);
     if (frameExchange)
         transmissionQueue.push_back(frame);
     else {
@@ -194,6 +193,10 @@ void BasicUpperMac::startSendDataFrameExchange(Ieee80211DataOrMgmtFrame *frame)
 
     int txIndex = 0; //TODO
     int accessCategory = AccessCategory::AC_LEGACY; //TODO
+    if (context->isBroadcast(frame) || context->isMulticast(frame))
+        context->setBasicBitrate(frame);
+    else
+        context->setDataBitrate(frame);
 
     bool useRtsCts = frame->getByteLength() > context->getRtsThreshold();
     if (context->isBroadcast(frame) || context->isMulticast(frame))

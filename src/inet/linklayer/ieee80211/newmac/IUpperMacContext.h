@@ -63,7 +63,6 @@ class IUpperMacContext
         virtual Ieee80211RTSFrame *buildRtsFrame(Ieee80211DataOrMgmtFrame *frame) const = 0;
         virtual Ieee80211CTSFrame *buildCtsFrame(Ieee80211RTSFrame *frame) const = 0;
         virtual Ieee80211ACKFrame *buildAckFrame(Ieee80211DataOrMgmtFrame *frameToACK) const = 0;
-        virtual Ieee80211DataOrMgmtFrame *buildBroadcastFrame(Ieee80211DataOrMgmtFrame *frameToSend) const = 0;
 
         virtual double computeFrameDuration(int bits, double bitrate) const = 0;
         virtual Ieee80211Frame *setBasicBitrate(Ieee80211Frame *frame) const = 0;

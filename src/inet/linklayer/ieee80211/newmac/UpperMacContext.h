@@ -84,7 +84,6 @@ class INET_API UpperMacContext : public cOwnedObject, public IUpperMacContext
         virtual Ieee80211RTSFrame *buildRtsFrame(Ieee80211DataOrMgmtFrame *frame) const override;
         virtual Ieee80211CTSFrame *buildCtsFrame(Ieee80211RTSFrame *frame) const override;
         virtual Ieee80211ACKFrame *buildAckFrame(Ieee80211DataOrMgmtFrame *frameToACK) const override;
-        virtual Ieee80211DataOrMgmtFrame *buildBroadcastFrame(Ieee80211DataOrMgmtFrame *frameToSend) const override;
 
         virtual double computeFrameDuration(int bits, double bitrate) const override;
         virtual Ieee80211Frame *setBasicBitrate(Ieee80211Frame *frame) const override;

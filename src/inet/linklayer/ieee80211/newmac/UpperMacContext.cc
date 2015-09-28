@@ -182,13 +182,6 @@ Ieee80211ACKFrame *UpperMacContext::buildAckFrame(Ieee80211DataOrMgmtFrame *fram
     return ackFrame;
 }
 
-Ieee80211DataOrMgmtFrame *UpperMacContext::buildBroadcastFrame(Ieee80211DataOrMgmtFrame *frameToSend) const    //FIXME completely misleading name, random functionality
-{
-    Ieee80211DataOrMgmtFrame *frame = (Ieee80211DataOrMgmtFrame *)frameToSend->dup();
-    frame->setDuration(0);
-    return frame;
-}
-
 double UpperMacContext::computeFrameDuration(int bits, double bitrate) const
 {
     const IIeee80211Mode *modType = modeSet->getMode(bps(bitrate));
