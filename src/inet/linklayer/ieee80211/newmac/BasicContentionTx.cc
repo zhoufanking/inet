@@ -305,7 +305,10 @@ void BasicContentionTx::updateDisplayString()
     std::stringstream os;
     if (frame)
         os << frame->getName() << "\n";
-    os << fsm.getStateName();
+    const char *stateName = fsm.getStateName();
+    if (strcmp(stateName, "IFS_AND_BACKOFF") == 0)
+        stateName = "IFS&BKOFF";
+    os << stateName;
     getDisplayString().setTagArg("t", 0, os.str().c_str());
 }
 
