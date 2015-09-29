@@ -91,7 +91,7 @@ IUpperMacContext *BasicUpperMac::createContext()
         shortRetryLimit = 7;
     ASSERT(shortRetryLimit > 0);
 
-    bool useEDCA = false; //TODO
+    bool useEDCA = true; //TODO
 
     return new UpperMacContext(address, dataFrameMode, basicFrameMode, controlFrameMode, shortRetryLimit, rtsThreshold, useEDCA, immediateTx, contentionTx);
 }

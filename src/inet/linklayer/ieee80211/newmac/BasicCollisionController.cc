@@ -79,6 +79,7 @@ void BasicCollisionController::handleMessage(cMessage *msg)
     bool granted = false;
     for (int i = maxTxIndex; i >= 0; i--) {
         if (txTime[i] == now) {
+            txTime[i] = MAX_TIME;
             if (!granted) {
                 callback[i]->transmissionGranted(i);
                 granted = true;
@@ -86,7 +87,6 @@ void BasicCollisionController::handleMessage(cMessage *msg)
             else {
                 callback[i]->internalCollision(i);
             }
-            txTime[i] = MAX_TIME;
         }
     }
 
