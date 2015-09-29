@@ -170,7 +170,7 @@ InterfaceEntry *BMacLayer::createInterfaceEntry()
 
     // capabilities
     e->setMtu(par("mtu").longValue());
-    e->setMulticast(false);
+    e->setMulticast(true);
     e->setBroadcast(true);
 
     return e;
@@ -357,7 +357,7 @@ void BMacLayer::handleSelfMessage(cMessage *msg)
 
         case WAIT_TX_DATA_OVER:
             if (msg->getKind() == BMAC_DATA_TX_OVER) {
-                if ((useMacAcks) && !lastDataPktDestAddr.isBroadcast()) {
+                if ((useMacAcks) && !lastDataPktDestAddr.isMulticast() && !lastDataPktDestAddr.isBroadcast()) {
                     EV_DETAIL << "State WAIT_TX_DATA_OVER, message BMAC_DATA_TX_OVER,"
                                  " new state WAIT_ACK" << endl;
                     macState = WAIT_ACK;
@@ -473,7 +473,7 @@ void BMacLayer::handleSelfMessage(cMessage *msg)
                 BMacFrame *mac = static_cast<BMacFrame *>(msg);
                 const MACAddress& dest = mac->getDestAddr();
                 const MACAddress& src = mac->getSrcAddr();
-                if ((dest == address) || dest.isBroadcast()) {
+                if ((dest == address) || dest.isMulticast() || dest.isBroadcast()) {
                     EV_DETAIL << "Local delivery " << mac << endl;
                     sendUp(decapsMsg(mac));
                 }

@@ -142,7 +142,7 @@ InterfaceEntry *LMacLayer::createInterfaceEntry()
 
     // capabilities
     e->setMtu(par("mtu").longValue());
-    e->setMulticast(false);
+    e->setMulticast(true);
     e->setBroadcast(true);
 
     return e;
@@ -312,7 +312,7 @@ void LMacLayer::handleSelfMessage(cMessage *msg)
                     findNewSlot();
                 }
 
-                if (dest == address || dest.isBroadcast()) {
+                if (dest == address || dest.isMulticast() || dest.isBroadcast()) {
                     EV_DETAIL << "I need to stay awake.\n";
                     if (timeout->isScheduled())
                         cancelEvent(timeout);
@@ -340,7 +340,7 @@ void LMacLayer::handleSelfMessage(cMessage *msg)
                     //collision = true;
                 }
                 EV_DETAIL << " I have received a data packet.\n";
-                if (dest == address || dest.isBroadcast()) {
+                if (dest == address  || dest.isMulticast()|| dest.isBroadcast()) {
                     EV_DETAIL << "sending pkt to upper...\n";
                     sendUp(decapsMsg(mac));
                 }
@@ -413,7 +413,7 @@ void LMacLayer::handleSelfMessage(cMessage *msg)
                     findNewSlot();
                 }
 
-                if (dest == address || dest.isBroadcast()) {
+                if (dest == address || dest.isMulticast() || dest.isBroadcast()) {
                     EV_DETAIL << "I need to stay awake.\n";
                     macState = WAIT_DATA;
                     EV_DETAIL << "Old state: WAIT_CONTROL, New state: WAIT_DATA" << endl;
@@ -530,7 +530,7 @@ void LMacLayer::handleSelfMessage(cMessage *msg)
                 const MACAddress& dest = mac->getDestAddr();
 
                 EV_DETAIL << " I have received a data packet.\n";
-                if (dest == address || dest.isBroadcast()) {
+                if (dest == address || dest.isMulticast() || dest.isBroadcast()) {
                     EV_DETAIL << "sending pkt to upper...\n";
                     sendUp(decapsMsg(mac));
                 }
