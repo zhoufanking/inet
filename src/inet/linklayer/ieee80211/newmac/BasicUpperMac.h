@@ -31,6 +31,7 @@ class IRx;
 class ITxCallback;
 class Ieee80211NewMac;
 class Ieee80211RTSFrame;
+class IMacQoSClassifier;
 
 class BasicUpperMac : public cSimpleModule, public IUpperMac, protected IFrameExchange::IFinishedCallback
 {
@@ -39,6 +40,7 @@ class BasicUpperMac : public cSimpleModule, public IUpperMac, protected IFrameEx
 
     protected:
         IPassiveQueue *queueModule = nullptr;
+        IMacQoSClassifier *classifier = nullptr;
         Ieee80211NewMac *mac = nullptr;
         IRx *rx = nullptr;
 
