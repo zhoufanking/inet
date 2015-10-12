@@ -98,7 +98,39 @@ void PcapDump::openPcap(const char *filename, unsigned int snaplen_par)
     fwrite(&fh, sizeof(fh), 1, dumpfile);
 }
 
-void PcapDump::writeFrame(simtime_t stime, const IPv4Datagram *ipPacket)
+void PcapDump::writeFrame(simtime_t stime, const cPacket *packet)
+{
+    if (!dumpfile)
+        throw cRuntimeError("Cannot write frame: pcap output file is not open");
+
+    uint8 buf[MAXBUFLENGTH];
+    memset((void *)&buf, 0, sizeof(buf));
+
+    struct pcaprec_hdr ph;
+    ph.ts_sec = (int32)stime.inUnit(0);
+    ph.ts_usec = (uint32)(stime.inUnit(-6) - (uint32)1000000 * stime.inUnit(0));
+
+    serializer::Buffer b(buf, sizeof(buf));
+    serializer::Context c;
+    c.throwOnSerializerNotFound = false;
+    serializer::ProtocolGroup group = serializer::UNKNOWN;
+    int id = -1;
+    serializer::SerializerBase::lookupAndSerialize(packet, b, c, group, id, sizeof(buf));
+    int32 serialized_ip = b.getPos();
+
+    uint32_t hdr;
+    ph.orig_len = serialized_ip + sizeof(hdr);
+    ph.incl_len = ph.orig_len > snaplen ? snaplen : ph.orig_len;
+    hdr = 2; // for ipv4/ipv6
+    hdr = 105; // for ieeee802.11
+    fwrite(&ph, sizeof(ph), 1, dumpfile);
+    fwrite(&hdr, sizeof(hdr), 1, dumpfile);
+    fwrite(buf, ph.incl_len - sizeof(hdr), 1, dumpfile);
+    if (flush)
+        fflush(dumpfile);
+}
+
+void PcapDump::writeIPv4Frame(simtime_t stime, const IPv4Datagram *ipPacket)
 {
     if (!dumpfile)
         throw cRuntimeError("Cannot write frame: pcap output file is not open");

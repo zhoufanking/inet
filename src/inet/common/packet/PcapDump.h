@@ -69,7 +69,8 @@ class PcapDump
      * Records the given packet into the output file if it is open,
      * and throws an exception otherwise.
      */
-    void writeFrame(simtime_t time, const IPv4Datagram *ipPacket);
+    void writeFrame(simtime_t time, const cPacket *packet);
+    void writeIPv4Frame(simtime_t time, const IPv4Datagram *ipPacket);
     void writeIPv6Frame(simtime_t stime, const IPv6Datagram *ipPacket);
 
     /**
