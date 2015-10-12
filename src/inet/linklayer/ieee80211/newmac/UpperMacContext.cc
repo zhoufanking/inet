@@ -42,8 +42,8 @@ const char *UpperMacContext::getName() const
 std::string UpperMacContext::info() const
 {
     std::stringstream os;
-    os << "dataBitrate: " << dataFrameMode->getDataMode()->getGrossBitrate();
-    os << ", basicBitrate: " << basicFrameMode->getDataMode()->getGrossBitrate();
+    os << "dataBitrate: " << dataFrameMode->getDataMode()->getNetBitrate();
+    os << ", basicBitrate: " << basicFrameMode->getDataMode()->getNetBitrate();
     return os.str().c_str();
 }
 
