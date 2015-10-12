@@ -214,7 +214,7 @@ void BasicContentionTx::handleMessage(cMessage *msg)
 void BasicContentionTx::corruptedFrameReceived()
 {
     Enter_Method("corruptedFrameReceived()");
-    handleWithFSM(CORRUPTED_FRAME_RECEIVED, nullptr);
+    //handleWithFSM(CORRUPTED_FRAME_RECEIVED, nullptr);
 }
 
 void BasicContentionTx::transmissionGranted(int txIndex)
