@@ -87,7 +87,7 @@ IUpperMacContext *BasicUpperMac::createContext()
     const Ieee80211ModeSet *modeSet = Ieee80211ModeSet::getModeSet(*par("opMode").stringValue());
     double bitrate = par("bitrate");
     const IIeee80211Mode *dataFrameMode = (bitrate == -1) ? modeSet->getFastestMode() : modeSet->getMode(bps(bitrate));
-    const IIeee80211Mode *basicFrameMode = modeSet->getSlowestMode();
+    const IIeee80211Mode *basicFrameMode = modeSet->getMode(bps(24e6));
     const IIeee80211Mode *controlFrameMode = modeSet->getSlowestMode(); //TODO check
 
     int rtsThreshold = par("rtsThresholdBytes");
