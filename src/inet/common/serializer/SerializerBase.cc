@@ -125,7 +125,12 @@ cPacket *SerializerBase::lookupAndDeserialize(const Buffer &b, Context& context,
 
 void DefaultSerializer::serialize(const cPacket *pkt, Buffer &b, Context& context)
 {
-    b.fillNBytes(pkt->getByteLength(), '?');
+    const char *className = pkt->getClassName();
+    unsigned int nameLength = strlen(className);
+    unsigned int pktLength = pkt->getByteLength();
+    b.writeNBytes(std::min(nameLength, pktLength), className);
+    if (pktLength > nameLength)
+        b.fillNBytes(pktLength - nameLength, '?');
     context.errorOccured = true;
 }
 
