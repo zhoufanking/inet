@@ -68,9 +68,24 @@ SerializerBase & SerializerBase::lookupSerializer(const cPacket *pkt, Context& c
     SerializerBase *serializer = serializers.lookup(group, id);
     if (serializer != nullptr)
         return *serializer;
-    serializer = serializers.lookup(pkt->getClassName());
+    const char *className = pkt->getClassName();
+    serializer = serializers.lookup(className);
     if (serializer != nullptr)
         return *serializer;
+
+    cClassDescriptor *desc = cClassDescriptor::getDescriptorFor(className);
+    if (desc != nullptr)
+        desc = desc->getBaseClassDescriptor();
+    while (desc != nullptr) {
+        serializer = serializers.lookup(desc->getFullName());
+        if (serializer != nullptr) {
+            //add to lookup table
+            serializers.add(className, UNKNOWN, -1, serializer);
+            return *serializer;
+        }
+        desc = desc->getBaseClassDescriptor();
+    }
+
     if (context.throwOnSerializerNotFound)
         throw cRuntimeError("Serializer not found for '%s' (%i, %i)", pkt->getClassName(), group, id);
     return serializers.defaultSerializer;
@@ -165,8 +180,8 @@ SerializerRegistrationList::~SerializerRegistrationList()
 
 void SerializerRegistrationList::clear()
 {
-    for (auto elem : stringToSerializerMap) {
-        dropAndDelete(elem.second);
+    for (auto elem : serializerSet) {
+        dropAndDelete(elem);
     }
     stringToSerializerMap.clear();
     keyToSerializerMap.clear();
@@ -176,12 +191,15 @@ void SerializerRegistrationList::add(const char *name, int protocolGroup, int pr
 {
     Key key(protocolGroup, protocolId);
 
-    take(obj);
     if (protocolGroup != UNKNOWN)
         keyToSerializerMap.insert(std::pair<Key,SerializerBase*>(key, obj));
     if (!name)
         throw cRuntimeError("missing 'name' of registered serializer");
     stringToSerializerMap.insert(std::pair<std::string,SerializerBase*>(name, obj));
+    if (serializerSet.find(obj) == serializerSet.end()) {
+        take(obj);
+        serializerSet.insert(obj);
+    }
 }
 
 SerializerBase *SerializerRegistrationList::lookup(int protocolGroup, int protocolId) const

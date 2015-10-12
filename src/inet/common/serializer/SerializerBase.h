@@ -109,8 +109,10 @@ class INET_API SerializerRegistrationList : public cNamedObject, noncopyable
 
     protected:
         typedef std::pair<int, int> Key;
+        typedef std::set<SerializerBase*> SerializerSet;
         typedef std::map<Key, SerializerBase*> KeyToSerializerMap;
         typedef std::map<std::string, SerializerBase*> StringToSerializerMap;
+        SerializerSet serializerSet;
         KeyToSerializerMap keyToSerializerMap;
         StringToSerializerMap stringToSerializerMap;
 
