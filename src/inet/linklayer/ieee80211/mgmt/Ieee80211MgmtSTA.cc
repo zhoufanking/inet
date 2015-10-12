@@ -458,7 +458,10 @@ void Ieee80211MgmtSTA::sendProbeRequest()
 {
     EV << "Sending Probe Request, BSSID=" << scanning.bssid << ", SSID=\"" << scanning.ssid << "\"\n";
     Ieee80211ProbeRequestFrame *frame = new Ieee80211ProbeRequestFrame("ProbeReq");
-    frame->getBody().setSSID(scanning.ssid.c_str());
+    Ieee80211ProbeRequestFrameBody& frameBody = frame->getBody();
+    frameBody.setSSID(scanning.ssid.c_str());
+    frameBody.setBodyLength(2 + scanning.ssid.length() + 2 + frameBody.getSupportedRates().numRates);
+    frame->setByteLength(28 + frameBody.getBodyLength());
     sendManagementFrame(frame, scanning.bssid);
 }
 
