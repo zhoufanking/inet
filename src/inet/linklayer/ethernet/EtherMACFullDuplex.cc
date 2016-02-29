@@ -23,6 +23,7 @@
 #include "inet/common/RawPacket.h"
 #include "inet/common/serializer/SerializerBase.h"
 #include "inet/common/serializer/headerserializers/ethernet/EthernetSerializer.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/linklayer/ethernet/EtherFrame.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
 
@@ -344,7 +345,13 @@ void EtherMACFullDuplex::processReceivedDataFrame(EtherFrame *frame)
 
     numFramesPassedToHL++;
     emit(packetSentToUpperSignal, frame);
+
     // pass up to upper layer
+    if (interfaceEntry) {
+        InterfaceIdIndicationTag *ifInfo = frame->ensureTag<InterfaceIdIndicationTag>();
+        ifInfo->setInterfaceId(interfaceEntry->getInterfaceId());
+    }
+
     EV_INFO << "Sending " << frame << " to upper layer.\n";
     send(frame, "upperLayerOut");
 }

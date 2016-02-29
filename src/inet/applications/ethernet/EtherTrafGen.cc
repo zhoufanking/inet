@@ -184,8 +184,8 @@ void EtherTrafGen::sendBurstPackets()
         datapacket->setByteLength(len);
 
         Ieee802Ctrl *etherctrl = datapacket->ensureTag<Ieee802Ctrl>();
-        SimpleLinkLayerControlInfo *cInfo = datapacket->ensureTag<SimpleLinkLayerControlInfo>();
         etherctrl->setEtherType(etherType);
+        LinkLayerAddressRequestTag *cInfo = datapacket->ensureTag<LinkLayerAddressRequestTag>();
         cInfo->setDest(destMACAddress);
 
         EV_INFO << "Send packet `" << msgname << "' dest=" << destMACAddress << " length=" << len << "B type=" << etherType << "\n";

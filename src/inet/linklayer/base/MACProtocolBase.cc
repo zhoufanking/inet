@@ -15,6 +15,7 @@
 //
 
 #include "inet/linklayer/base/MACProtocolBase.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/common/ModuleAccess.h"
 
 namespace inet {
@@ -53,6 +54,10 @@ void MACProtocolBase::sendUp(cMessage *message)
 {
     if (message->isPacket())
         emit(packetSentToUpperSignal, message);
+    if (interfaceEntry) {
+        InterfaceIdIndicationTag *ifInfo = message->ensureTag<InterfaceIdIndicationTag>();
+        ifInfo->setInterfaceId(interfaceEntry->getInterfaceId());
+    }
     send(message, upperLayerOutGateId);
 }
 

@@ -651,7 +651,7 @@ LMacFrame *LMacLayer::encapsMsg(cPacket *netwPkt)
 
     // copy dest address from the Control Info attached to the network
     // message by the network layer
-    SimpleLinkLayerControlInfo* cInfo = netwPkt->getTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag* cInfo = netwPkt->getMandatoryTag<LinkLayerAddressRequestTag>();
     EV_DETAIL << "CInfo removed, mac addr=" << cInfo->getDest() << endl;
     pkt->setDestAddr(cInfo->getDest());
 
@@ -687,12 +687,12 @@ void LMacLayer::attachSignal(LMacFrame *macPkt)
 /**
  * Attaches a "control info" (MacToNetw) structure (object) to the message pMsg.
  */
-cObject *LMacLayer::setUpControlInfo(cMessage *const pMsg, const MACAddress& pSrcAddr)
+void LMacLayer::setUpControlInfo(cMessage *const pMsg, const MACAddress& pSrcAddr)
 {
-    SimpleLinkLayerControlInfo *cCtrlInfo = pMsg->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressIndicationTag *cCtrlInfo = pMsg->ensureTag<LinkLayerAddressIndicationTag>();
     cCtrlInfo->setSrc(pSrcAddr);
-    cCtrlInfo->setInterfaceId(interfaceEntry->getInterfaceId());
-    return cCtrlInfo;
+    InterfaceIdIndicationTag *ifTag = pMsg->ensureTag<InterfaceIdIndicationTag>();
+    ifTag->setInterfaceId(interfaceEntry->getInterfaceId());
 }
 
 } // namespace inet

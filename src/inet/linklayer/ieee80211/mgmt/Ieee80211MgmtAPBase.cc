@@ -84,7 +84,7 @@ void Ieee80211MgmtAPBase::sendToUpperLayer(Ieee80211DataFrame *frame)
         case ENCAP_DECAP_TRUE: {
             cPacket *payload = frame->decapsulate();
                 Ieee802Ctrl *ctrl = payload->ensureTag<Ieee802Ctrl>();
-                SimpleLinkLayerControlInfo *cInfo = payload->ensureTag<SimpleLinkLayerControlInfo>();
+                LinkLayerAddressRequestTag *cInfo = payload->ensureTag<LinkLayerAddressRequestTag>();
                 cInfo->setSrc(frame->getTransmitterAddress());
                 cInfo->setDest(frame->getAddress3());
             Ieee80211DataFrameWithSNAP *frameWithSNAP = dynamic_cast<Ieee80211DataFrameWithSNAP *>(frame);
@@ -179,7 +179,7 @@ Ieee80211DataFrame *Ieee80211MgmtAPBase::encapsulate(cPacket *msg)
 
         case ENCAP_DECAP_TRUE: {
             Ieee802Ctrl *ctrl = msg->getTag<Ieee802Ctrl>();
-            SimpleLinkLayerControlInfo *cInfo = msg->getTag<SimpleLinkLayerControlInfo>();
+            LinkLayerAddressRequestTag *cInfo = msg->getTag<LinkLayerAddressRequestTag>();
             Ieee80211DataFrameWithSNAP *frame = new Ieee80211DataFrameWithSNAP(msg->getName());
             frame->setFromDS(true);
 

@@ -206,7 +206,7 @@ void CSMA::handleUpperPacket(cPacket *msg)
     //MacPkt*macPkt = encapsMsg(msg);
     CSMAFrame *macPkt = new CSMAFrame(msg->getName());
     macPkt->setBitLength(headerLength);
-    SimpleLinkLayerControlInfo *cInfo = msg->getTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cInfo = msg->getTag<LinkLayerAddressRequestTag>();
     EV_DETAIL << "CSMA received a message from upper layer, name is " << msg->getName() <<", CInfo removed, mac addr="<< cInfo->getDest() << endl;
     MACAddress dest = cInfo->getDest();
     macPkt->setDestAddr(dest);
@@ -942,7 +942,7 @@ cPacket *CSMA::decapsMsg(CSMAFrame *macPkt)
  */
 cObject *CSMA::setUpControlInfo(cMessage *const pMsg, const MACAddress& pSrcAddr)
 {
-    SimpleLinkLayerControlInfo *cCtrlInfo = pMsg->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressIndicationTag *cCtrlInfo = pMsg->ensureTag<LinkLayerAddressIndicationTag>();
     cCtrlInfo->setSrc(pSrcAddr);
     return cCtrlInfo;
 }

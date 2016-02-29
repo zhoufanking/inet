@@ -21,26 +21,5 @@
 #include "inet/common/INETDefs.h"
 #include "inet/linklayer/common/SimpleLinkLayerControlInfo_m.h"
 
-namespace inet {
-
-/**
- * Represents a SimpleLinkLayer control info. More info in the SimpleLinkLayerControlInfo.msg file
- * (and the documentation generated from it).
- */
-class INET_API SimpleLinkLayerControlInfo : public SimpleLinkLayerControlInfo_Base
-{
-  public:
-    SimpleLinkLayerControlInfo() : SimpleLinkLayerControlInfo_Base() {}
-    SimpleLinkLayerControlInfo(const SimpleLinkLayerControlInfo& other) : SimpleLinkLayerControlInfo_Base(other) {}
-    SimpleLinkLayerControlInfo& operator=(const SimpleLinkLayerControlInfo& other) { SimpleLinkLayerControlInfo_Base::operator=(other); return *this; }
-
-    virtual SimpleLinkLayerControlInfo *dup() const override { return new SimpleLinkLayerControlInfo(*this); }
-
-    virtual int getInterfaceId() const override { return SimpleLinkLayerControlInfo_Base::getInterfaceId(); }
-    virtual void setInterfaceId(int interfaceId) override { SimpleLinkLayerControlInfo_Base::setInterfaceId(interfaceId); }
-};
-
-} // namespace inet
-
 #endif // ifndef __INET_SIMPLELINKLAYERCONTROLINFO_H
 

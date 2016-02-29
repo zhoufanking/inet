@@ -200,7 +200,7 @@ void EtherAppCli::sendPacket()
     datapacket->setResponseBytes(respLen);
 
     Ieee802Ctrl *etherctrl = datapacket->ensureTag<Ieee802Ctrl>();
-    SimpleLinkLayerControlInfo *cInfo = datapacket->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cInfo = datapacket->ensureTag<LinkLayerAddressRequestTag>();
     etherctrl->setSsap(localSAP);
     etherctrl->setDsap(remoteSAP);
     cInfo->setDest(destMACAddress);

@@ -139,7 +139,7 @@ void EtherLLC::processPacketFromHigherLayer(cPacket *msg)
     EV << "Sent from " << getSimulation()->getModule(msg->getSenderModuleId())->getFullPath() << " at " << msg->getSendingTime() << " and was created " << msg->getCreationTime() << "\n";
 
     Ieee802Ctrl *etherctrl = msg->getTag<Ieee802Ctrl>();
-    SimpleLinkLayerControlInfo *cInfo = msg->getTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cInfo = msg->getTag<LinkLayerAddressRequestTag>();
     if (!etherctrl)
         throw cRuntimeError("packet `%s' from higher layer received without Ieee802Ctrl", msg->getName());
 
@@ -175,7 +175,7 @@ void EtherLLC::processFrameFromMAC(EtherFrameWithLLC *frame)
     cPacket *higherlayermsg = frame->decapsulate();
 
     Ieee802Ctrl *etherctrl = higherlayermsg->ensureTag<Ieee802Ctrl>();
-    SimpleLinkLayerControlInfo *cInfo = higherlayermsg->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cInfo = higherlayermsg->ensureTag<LinkLayerAddressRequestTag>();
     etherctrl->setSsap(frame->getSsap());
     etherctrl->setDsap(frame->getDsap());
     cInfo->setSrc(frame->getSrc());
@@ -242,7 +242,7 @@ void EtherLLC::handleDeregisterSAP(cMessage *msg)
 void EtherLLC::handleSendPause(cMessage *msg)
 {
     Ieee802Ctrl *etherctrl = msg->getTag<Ieee802Ctrl>();
-    SimpleLinkLayerControlInfo *cInfo = msg->getTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cInfo = msg->getTag<LinkLayerAddressRequestTag>();
     if (!etherctrl)
         throw cRuntimeError("PAUSE command `%s' from higher layer received without Ieee802Ctrl", msg->getName());
 

@@ -224,7 +224,7 @@ Ieee80211DataFrame *Ieee80211MgmtSTA::encapsulate(cPacket *msg)
 
     // destination address is in address3
     Ieee802Ctrl *ctrl = msg->getTag<Ieee802Ctrl>();
-    SimpleLinkLayerControlInfo *cInfo = msg->getTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cInfo = msg->getTag<LinkLayerAddressRequestTag>();
     frame->setAddress3(cInfo->getDest());
     frame->setEtherType(ctrl->getEtherType());
     int up = ctrl->getUserPriority();
@@ -244,7 +244,7 @@ cPacket *Ieee80211MgmtSTA::decapsulate(Ieee80211DataFrame *frame)
     cPacket *payload = frame->decapsulate();
 
     Ieee802Ctrl *ctrl = payload->ensureTag<Ieee802Ctrl>();
-    SimpleLinkLayerControlInfo *cInfo = payload->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressIndicationTag *cInfo = payload->ensureTag<LinkLayerAddressIndicationTag>();
     cInfo->setSrc(frame->getAddress3());
     cInfo->setDest(frame->getReceiverAddress());
     if (frame->getType() == ST_DATA_WITH_QOS) {

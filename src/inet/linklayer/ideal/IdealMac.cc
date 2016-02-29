@@ -151,7 +151,7 @@ void IdealMac::startTransmitting(cPacket *msg)
     // if there's any control info, remove it; then encapsulate the packet
     if (lastSentPk)
         throw cRuntimeError("Model error: unacked send");
-    SimpleLinkLayerControlInfo *ctrl = msg->getTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *ctrl = msg->getTag<LinkLayerAddressRequestTag>();
     MACAddress dest = ctrl->getDest();
     IdealMacFrame *frame = encapsulate(msg);
 
@@ -247,7 +247,7 @@ void IdealMac::acked(IdealMacFrame *frame)
 
 IdealMacFrame *IdealMac::encapsulate(cPacket *msg)
 {
-    SimpleLinkLayerControlInfo *ctrl = msg->getTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *ctrl = msg->getTag<LinkLayerAddressRequestTag>();
     IdealMacFrame *frame = new IdealMacFrame(msg->getName());
     frame->setByteLength(headerLength);
     frame->setSrc(ctrl->getSrc());
@@ -285,9 +285,11 @@ cPacket *IdealMac::decapsulate(IdealMacFrame *frame)
 {
     // decapsulate and attach control info
     cPacket *packet = frame->decapsulate();
-    SimpleLinkLayerControlInfo *ctrl = packet->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressIndicationTag *ctrl = packet->ensureTag<LinkLayerAddressIndicationTag>();
     ctrl->setSrc(frame->getSrc());
     ctrl->setDest(frame->getDest());
+    InterfaceIdIndicationTag *ifTag = packet->ensureTag<InterfaceIdIndicationTag>();
+    ifTag->setInterfaceId(interfaceEntry->getInterfaceId());
     delete frame;
     return packet;
 }

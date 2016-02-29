@@ -163,7 +163,7 @@ void WiseRoute::handleLowerPacket(cPacket *msg)
                 msgCopy = check_and_cast<WiseRouteDatagram *>(netwMsg->dup());
                 netwMsg->setSrcAddr(myNetwAddr);
                 delete netwMsg->removeControlInfo();
-                delete netwMsg->removeTag<SimpleLinkLayerControlInfo>();   //TODO or use clearTags() ???
+                delete netwMsg->removeTag<LinkLayerAddressIndicationTag>();   //TODO or use clearTags() ???
                 setDownControlInfo(netwMsg, MACAddress::BROADCAST_ADDRESS);
                 netwMsg->setNbHops(netwMsg->getNbHops() + 1);
                 sendDown(netwMsg);
@@ -186,7 +186,7 @@ void WiseRoute::handleLowerPacket(cPacket *msg)
             if (floodType == FORWARD) {
                 netwMsg->setSrcAddr(myNetwAddr);
                 delete netwMsg->removeControlInfo();
-                delete netwMsg->removeTag<SimpleLinkLayerControlInfo>();   //TODO or use clearTags() ???
+                delete netwMsg->removeTag<LinkLayerAddressIndicationTag>();   //TODO or use clearTags() ???
                 setDownControlInfo(netwMsg, MACAddress::BROADCAST_ADDRESS);
                 netwMsg->setNbHops(netwMsg->getNbHops() + 1);
                 sendDown(netwMsg);
@@ -203,7 +203,7 @@ void WiseRoute::handleLowerPacket(cPacket *msg)
                 netwMsg->setSrcAddr(myNetwAddr);
                 netwMsg->setDestAddr(nextHop);
                 delete netwMsg->removeControlInfo();
-                delete netwMsg->removeTag<SimpleLinkLayerControlInfo>();   //TODO or use clearTags() ???
+                delete netwMsg->removeTag<LinkLayerAddressRequestTag>();   //TODO or use clearTags() ???
                 MACAddress nextHopMacAddr = arp->resolveL3Address(nextHop, nullptr);    //FIXME interface entry pointer needed
                 if (nextHopMacAddr.isUnspecified())
                     throw cRuntimeError("Cannot immediately resolve MAC address. Please configure a GenericARP module.");
@@ -387,7 +387,7 @@ WiseRoute::tFloodTable::key_type WiseRoute::getRoute(const tFloodTable::key_type
  */
 cObject *WiseRoute::setDownControlInfo(cMessage *const pMsg, const MACAddress& pDestAddr)
 {
-    SimpleLinkLayerControlInfo *cCtrlInfo = pMsg->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cCtrlInfo = pMsg->ensureTag<LinkLayerAddressRequestTag>();
     cCtrlInfo->setDest(pDestAddr);
     return cCtrlInfo;
 }

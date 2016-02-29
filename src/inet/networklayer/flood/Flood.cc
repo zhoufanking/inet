@@ -308,7 +308,7 @@ FloodDatagram *Flood::encapsMsg(cPacket *appPkt)
  */
 cObject *Flood::setDownControlInfo(cMessage *const pMsg, const MACAddress& pDestAddr)
 {
-    SimpleLinkLayerControlInfo *cCtrlInfo = pMsg->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cCtrlInfo = pMsg->ensureTag<LinkLayerAddressRequestTag>();
     cCtrlInfo->setDest(pDestAddr);
     return cCtrlInfo;
 }

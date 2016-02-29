@@ -83,7 +83,7 @@ void EtherAppSrv::handleMessage(cMessage *msg)
     packetsReceived++;
     emit(rcvdPkSignal, req);
 
-    SimpleLinkLayerControlInfo *cInfo = req->getTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cInfo = req->getTag<LinkLayerAddressRequestTag>();
     Ieee802Ctrl *ctrl = req->getTag<Ieee802Ctrl>();
     MACAddress srcAddr = cInfo->getSrc();
     int srcSap = ctrl->getSsap();
@@ -113,7 +113,7 @@ void EtherAppSrv::handleMessage(cMessage *msg)
 void EtherAppSrv::sendPacket(cPacket *datapacket, const MACAddress& destAddr, int destSap)
 {
     Ieee802Ctrl *etherctrl = datapacket->ensureTag<Ieee802Ctrl>();
-    SimpleLinkLayerControlInfo *cInfo = datapacket->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cInfo = datapacket->ensureTag<LinkLayerAddressRequestTag>();
     etherctrl->setSsap(localSAP);
     etherctrl->setDsap(destSap);
     cInfo->setDest(destAddr);

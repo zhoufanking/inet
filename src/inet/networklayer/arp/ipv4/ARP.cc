@@ -207,9 +207,10 @@ void ARP::initiateARPResolution(ARPCacheEntry *entry)
 void ARP::sendPacketToNIC(cMessage *msg, const InterfaceEntry *ie, const MACAddress& macAddress, int etherType)
 {
     // add control info with MAC address
-    SimpleLinkLayerControlInfo *cInfo = msg->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cInfo = msg->ensureTag<LinkLayerAddressRequestTag>();
     cInfo->setDest(macAddress);
-    cInfo->setInterfaceId(ie->getInterfaceId());
+    InterfaceIdRequestTag *ifInfo = msg->ensureTag<InterfaceIdRequestTag>();
+    ifInfo->setInterfaceId(ie->getInterfaceId());
     Ieee802Ctrl *controlInfo = msg->ensureTag<Ieee802Ctrl>();
     controlInfo->setEtherType(etherType);
 
@@ -295,7 +296,8 @@ void ARP::processARPPacket(ARPPacket *arp)
     dumpARPPacket(arp);
 
     // extract input port
-    SimpleLinkLayerControlInfo *ctrl = arp->getTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressIndicationTag *cInfo = arp->getTag<LinkLayerAddressIndicationTag>();
+    InterfaceIdIndicationTag *ctrl = arp->getMandatoryTag<InterfaceIdIndicationTag>();
     InterfaceEntry *ie = ift->getInterfaceById(ctrl->getInterfaceId());
     arp->clearTags();
 

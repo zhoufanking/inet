@@ -62,7 +62,7 @@ void ProbabilisticBroadcast::handleLowerPacket(cPacket *msg)
 {
     MACAddress macSrcAddr;
     ProbabilisticBroadcastDatagram *m = check_and_cast<ProbabilisticBroadcastDatagram *>(msg);
-    SimpleLinkLayerControlInfo *cInfo = msg->getTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressIndicationTag *cInfo = msg->getTag<LinkLayerAddressIndicationTag>();
     m->setNbHops(m->getNbHops() + 1);
     macSrcAddr = cInfo->getSrc();
     ++nbDataPacketsReceived;
@@ -343,11 +343,10 @@ cPacket *ProbabilisticBroadcast::decapsMsg(ProbabilisticBroadcastDatagram *msg)
 /**
  * Attaches a "control info" structure (object) to the down message pMsg.
  */
-cObject *ProbabilisticBroadcast::setDownControlInfo(cMessage *const pMsg, const MACAddress& pDestAddr)
+void ProbabilisticBroadcast::setDownControlInfo(cMessage *const pMsg, const MACAddress& pDestAddr)
 {
-    SimpleLinkLayerControlInfo *cCtrlInfo = pMsg->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cCtrlInfo = pMsg->ensureTag<LinkLayerAddressRequestTag>();
     cCtrlInfo->setDest(pDestAddr);
-    return cCtrlInfo;
 }
 
 } // namespace inet

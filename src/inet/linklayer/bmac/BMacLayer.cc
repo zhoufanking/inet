@@ -733,7 +733,7 @@ BMacFrame *BMacLayer::encapsMsg(cPacket *netwPkt)
 
     // copy dest address from the Control Info attached to the network
     // message by the network layer
-    SimpleLinkLayerControlInfo* cInfo = netwPkt->getTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag* cInfo = netwPkt->getTag<LinkLayerAddressRequestTag>();
     EV_DETAIL << "CInfo removed, mac addr=" << cInfo->getDest() << endl;
     pkt->setDestAddr(cInfo->getDest());
     //set the src address to own mac address (nic module getId())
@@ -749,12 +749,12 @@ BMacFrame *BMacLayer::encapsMsg(cPacket *netwPkt)
 /**
  * Attaches a "control info" (MacToNetw) structure (object) to the message pMsg.
  */
-cObject *BMacLayer::setUpControlInfo(cMessage *const pMsg, const MACAddress& pSrcAddr)
+void BMacLayer::setUpControlInfo(cMessage *const pMsg, const MACAddress& pSrcAddr)
 {
-    SimpleLinkLayerControlInfo *cCtrlInfo = pMsg->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressIndicationTag *cCtrlInfo = pMsg->ensureTag<LinkLayerAddressIndicationTag>();
     cCtrlInfo->setSrc(pSrcAddr);
-    cCtrlInfo->setInterfaceId(interfaceEntry->getInterfaceId());
-    return cCtrlInfo;
+    InterfaceIdIndicationTag *interfaceIdTag = pMsg->ensureTag<InterfaceIdIndicationTag>();
+    interfaceIdTag->setInterfaceId(interfaceEntry->getInterfaceId());
 }
 
 } // namespace inet

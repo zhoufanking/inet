@@ -260,7 +260,7 @@ void IPv4::preroutingFinish(IPv4Datagram *datagram, const InterfaceEntry *fromIE
 void IPv4::handleIncomingARPPacket(ARPPacket *packet, const InterfaceEntry *fromIE)
 {
     // give it to the ARP module
-    SimpleLinkLayerControlInfo* ctrl = packet->getMandatoryTag<SimpleLinkLayerControlInfo>();
+    InterfaceIdIndicationTag *ctrl = packet->getMandatoryTag<InterfaceIdIndicationTag>();
     ctrl->setInterfaceId(fromIE->getInterfaceId());
     EV_INFO << "Sending " << packet << " to arp.\n";
     send(packet, arpOutGate);
@@ -329,7 +329,7 @@ void IPv4::handlePacketFromARP(cPacket *packet)
 {
     EV_INFO << "Received " << packet << " from arp.\n";
     // send out packet on the appropriate interface
-    SimpleLinkLayerControlInfo* ctrl = packet->getMandatoryTag<SimpleLinkLayerControlInfo>();
+    InterfaceIdRequestTag* ctrl = packet->getMandatoryTag<InterfaceIdRequestTag>();
     InterfaceEntry *destIE = ift->getInterfaceById(ctrl->getInterfaceId());
     sendPacketToNIC(packet, destIE);
 }
@@ -881,11 +881,9 @@ void IPv4::sendPacketToIeee802NIC(cPacket *packet, const InterfaceEntry *ie, con
 {
     // remove old control info
     delete packet->removeControlInfo();
-    delete packet->removeTag<SimpleLinkLayerControlInfo>();
-    delete packet->removeTag<Ieee802Ctrl>();
 
     // add control info with MAC address
-    SimpleLinkLayerControlInfo *cInfo = packet->ensureTag<SimpleLinkLayerControlInfo>();
+    LinkLayerAddressRequestTag *cInfo = packet->ensureTag<LinkLayerAddressRequestTag>();
     cInfo->setDest(macAddress);
     Ieee802Ctrl *controlInfo = packet->ensureTag<Ieee802Ctrl>();
     controlInfo->setEtherType(etherType);

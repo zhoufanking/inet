@@ -18,6 +18,8 @@
 //
 
 #include "inet/linklayer/ieee80211/oldmac/Ieee80211OldMac.h"
+
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/physicallayer/contract/packetlevel/IRadio.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
 #include "inet/physicallayer/contract/packetlevel/RadioControlInfo_m.h"
@@ -2531,6 +2533,10 @@ void Ieee80211OldMac::sendUp(cMessage *msg)
         EV_INFO << "Sending up " << msg << "\n";
         if (msg->isPacket())
             emit(packetSentToUpperSignal, msg);
+        if (interfaceEntry) {
+            InterfaceIdIndicationTag *ifInfo = msg->ensureTag<InterfaceIdIndicationTag>();
+            ifInfo->setInterfaceId(interfaceEntry->getInterfaceId());
+        }
         send(msg, upperLayerOutGateId);
     }
 }

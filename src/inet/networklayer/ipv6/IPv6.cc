@@ -827,7 +827,7 @@ void IPv6::sendDatagramToOutput(IPv6Datagram *datagram, const InterfaceEntry *de
     // if link layer uses MAC addresses (basically, not PPP), add control info
     if (!macAddr.isUnspecified())
     {
-        SimpleLinkLayerControlInfo *ctrl = datagram->ensureTag<SimpleLinkLayerControlInfo>();
+        LinkLayerAddressRequestTag *ctrl = datagram->ensureTag<LinkLayerAddressRequestTag>();
         Ieee802Ctrl *controlInfo = datagram->ensureTag<Ieee802Ctrl>();
         ctrl->setDest(macAddr);
         controlInfo->setEtherType(ETHERTYPE_IPv6);
