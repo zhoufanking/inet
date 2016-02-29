@@ -473,6 +473,7 @@ void GenericNetworkProtocol::sendDatagramToOutput(GenericDatagram *datagram, con
     else {
         // add control info with MAC address
         SimpleLinkLayerControlInfo *cInfo = datagram->ensureTag<SimpleLinkLayerControlInfo>();
+        cInfo->setSrc(MACAddress());
         cInfo->setDest(nextHopMAC);
         Ieee802Ctrl *controlInfo = datagram->ensureTag<Ieee802Ctrl>();
         controlInfo->setEtherType(ETHERTYPE_INET_GENERIC);

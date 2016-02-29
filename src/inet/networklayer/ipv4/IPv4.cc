@@ -882,6 +882,7 @@ void IPv4::sendPacketToIeee802NIC(cPacket *packet, const InterfaceEntry *ie, con
     // remove old control info
     delete packet->removeControlInfo();
     delete packet->removeTag<SimpleLinkLayerControlInfo>();
+    delete packet->removeTag<Ieee802Ctrl>();
 
     // add control info with MAC address
     SimpleLinkLayerControlInfo *cInfo = packet->ensureTag<SimpleLinkLayerControlInfo>();
