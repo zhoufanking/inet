@@ -183,7 +183,7 @@ void Ieee8021dRelay::learn(EtherFrame *frame)
 void Ieee8021dRelay::dispatchBPDU(BPDU *bpdu)
 {
     LinkLayerAddressRequestTag *lltag = bpdu->removeMandatoryTag<LinkLayerAddressRequestTag>();
-    Ieee802Ctrl *controlInfo = check_and_cast<Ieee802Ctrl *>(bpdu->removeControlInfo());
+    Ieee802CtrlRequestTag *controlInfo = check_and_cast<Ieee802CtrlRequestTag *>(bpdu->removeControlInfo());
     unsigned int portNum = controlInfo->getSwitchPort();
     MACAddress address = lltag->getDest();
     delete controlInfo;
@@ -213,7 +213,7 @@ void Ieee8021dRelay::deliverBPDU(EtherFrame *frame)
 {
     BPDU *bpdu = check_and_cast<BPDU *>(frame->decapsulate());
 
-    Ieee802Ctrl *controlInfo = new Ieee802Ctrl();
+    Ieee802CtrlIndicationTag *controlInfo = new Ieee802CtrlIndicationTag();
     controlInfo->setSwitchPort(frame->getArrivalGate()->getIndex());
     LinkLayerAddressIndicationTag *lltag = bpdu->ensureTag<LinkLayerAddressIndicationTag>();
     lltag->setSrc(frame->getSrc());

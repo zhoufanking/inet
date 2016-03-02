@@ -275,7 +275,7 @@ void RSTP::handleIncomingFrame(BPDU *frame)
 {
     // incoming BPDU handling
     // checking message age
-    Ieee802Ctrl *etherctrl = check_and_cast<Ieee802Ctrl *>(frame->removeControlInfo());
+    Ieee802CtrlIndicationTag *etherctrl = check_and_cast<Ieee802CtrlIndicationTag *>(frame->removeControlInfo());
     int arrivalPortNum = etherctrl->getSwitchPort();
     LinkLayerAddressIndicationTag *lltag = frame->getMandatoryTag<LinkLayerAddressIndicationTag>();
     MACAddress src = lltag->getSrc();
@@ -582,7 +582,7 @@ void RSTP::sendTCNtoRoot()
         if (rootPort->getRole() != Ieee8021dInterfaceData::DISABLED) {
             if (simTime() < rootPort->getTCWhile()) {
                 BPDU *frame = new BPDU();
-                Ieee802Ctrl *etherctrl = new Ieee802Ctrl();
+                Ieee802CtrlRequestTag *etherctrl = new Ieee802CtrlRequestTag();
 
                 frame->setRootPriority(rootPort->getRootPriority());
                 frame->setRootAddress(rootPort->getRootAddress());
@@ -634,7 +634,7 @@ void RSTP::sendBPDU(int port)
         rootPort = getPortInterfaceData(r);
     if (iport->getRole() != Ieee8021dInterfaceData::DISABLED) {
         BPDU *frame = new BPDU();
-        Ieee802Ctrl *etherctrl = new Ieee802Ctrl();
+        Ieee802CtrlRequestTag *etherctrl = new Ieee802CtrlRequestTag();
         if (r != -1) {
             frame->setRootPriority(rootPort->getRootPriority());
             frame->setRootAddress(rootPort->getRootAddress());

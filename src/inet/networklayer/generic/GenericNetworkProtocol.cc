@@ -453,7 +453,7 @@ void GenericNetworkProtocol::sendDatagramToOutput(GenericDatagram *datagram, con
         //TODO
         //SimpleLinkLayerControlInfo *cInfo = datagram->ensureTag<SimpleLinkLayerControlInfo>();
         //cInfo->setDest(???);
-        Ieee802Ctrl *controlInfo = datagram->ensureTag<Ieee802Ctrl>();
+        Ieee802CtrlRequestTag *controlInfo = datagram->ensureTag<Ieee802CtrlRequestTag>();
         controlInfo->setEtherType(ETHERTYPE_INET_GENERIC);
         send(datagram, queueOutBaseGateId + ie->getNetworkLayerGateIndex());    //FIXME controlinfo???
         return;
@@ -474,7 +474,7 @@ void GenericNetworkProtocol::sendDatagramToOutput(GenericDatagram *datagram, con
         // add control info with MAC address
         LinkLayerAddressRequestTag *cInfo = datagram->ensureTag<LinkLayerAddressRequestTag>();
         cInfo->setDest(nextHopMAC);
-        Ieee802Ctrl *controlInfo = datagram->ensureTag<Ieee802Ctrl>();
+        Ieee802CtrlRequestTag *controlInfo = datagram->ensureTag<Ieee802CtrlRequestTag>();
         controlInfo->setEtherType(ETHERTYPE_INET_GENERIC);
 
         // send out

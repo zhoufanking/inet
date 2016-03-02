@@ -95,7 +95,7 @@ void STP::handleMessage(cMessage *msg)
 
 void STP::handleBPDU(BPDU *bpdu)
 {
-    Ieee802Ctrl *controlInfo = check_and_cast<Ieee802Ctrl *>(bpdu->getControlInfo());
+    Ieee802CtrlIndicationTag *controlInfo = check_and_cast<Ieee802CtrlIndicationTag *>(bpdu->getControlInfo());
     int arrivalGate = controlInfo->getSwitchPort();
     Ieee8021dInterfaceData *port = getPortInterfaceData(arrivalGate);
 
@@ -143,7 +143,7 @@ void STP::handleTCN(BPDU *tcn)
     EV_INFO << "Topology Change Notification BDPU " << tcn << " arrived." << endl;
     topologyChangeNotification = true;
 
-    Ieee802Ctrl *controlInfo = check_and_cast<Ieee802Ctrl *>(tcn->getControlInfo());
+    Ieee802CtrlIndicationTag *controlInfo = check_and_cast<Ieee802CtrlIndicationTag *>(tcn->removeControlInfo());
     int arrivalGate = controlInfo->getSwitchPort();
     LinkLayerAddressIndicationTag *lltag = tcn->removeMandatoryTag<LinkLayerAddressIndicationTag>();
     MACAddress address = lltag->getSrc();
@@ -154,9 +154,10 @@ void STP::handleTCN(BPDU *tcn)
     EV_INFO << "Sending Topology Change Notification ACK." << endl;
     generateBPDU(arrivalGate, address, false, true);
 
-    controlInfo->setSwitchPort(rootPort);    // send TCN to the Root Switch
-
     if (!isRoot) {
+        Ieee802CtrlRequestTag *etherctrl = new Ieee802CtrlRequestTag();
+        etherctrl->setSwitchPort(rootPort);    // send TCN to the Root Switch
+        tcn->setControlInfo(etherctrl);
         LinkLayerAddressRequestTag *lltag = tcn->ensureTag<LinkLayerAddressRequestTag>();
         lltag->setSrc(address);
         lltag->setDest(destaddress);
@@ -171,7 +172,7 @@ void STP::generateBPDU(int port, const MACAddress& address, bool tcFlag, bool tc
     BPDU *bpdu = new BPDU();
     LinkLayerAddressRequestTag *lltag = bpdu->ensureTag<LinkLayerAddressRequestTag>();
     lltag->setDest(address);
-    Ieee802Ctrl *controlInfo = new Ieee802Ctrl();
+    Ieee802CtrlRequestTag *controlInfo = new Ieee802CtrlRequestTag();
     controlInfo->setSwitchPort(port);
 
     bpdu->setName("BPDU");
@@ -224,7 +225,7 @@ void STP::generateTCN()
 
             LinkLayerAddressRequestTag *lltag = tcn->ensureTag<LinkLayerAddressRequestTag>();
             lltag->setDest(MACAddress::STP_MULTICAST_ADDRESS);
-            Ieee802Ctrl *controlInfo = new Ieee802Ctrl();
+            Ieee802CtrlRequestTag *controlInfo = new Ieee802CtrlRequestTag();
             controlInfo->setSwitchPort(rootPort);
             tcn->setControlInfo(controlInfo);
 

@@ -211,7 +211,7 @@ void ARP::sendPacketToNIC(cMessage *msg, const InterfaceEntry *ie, const MACAddr
     cInfo->setDest(macAddress);
     InterfaceIdRequestTag *ifInfo = msg->ensureTag<InterfaceIdRequestTag>();
     ifInfo->setInterfaceId(ie->getInterfaceId());
-    Ieee802Ctrl *controlInfo = msg->ensureTag<Ieee802Ctrl>();
+    Ieee802CtrlRequestTag *controlInfo = msg->ensureTag<Ieee802CtrlRequestTag>();
     controlInfo->setEtherType(etherType);
 
     // send out

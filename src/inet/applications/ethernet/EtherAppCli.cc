@@ -175,7 +175,7 @@ void EtherAppCli::registerDSAP(int dsap)
     EV_DEBUG << getFullPath() << " registering DSAP " << dsap << "\n";
 
     cMessage *msg = new cMessage("register_DSAP", IEEE802CTRL_REGISTER_DSAP);
-    Ieee802Ctrl *etherctrl = msg->ensureTag<Ieee802Ctrl>();
+    Ieee802CtrlRequestTag *etherctrl = msg->ensureTag<Ieee802CtrlRequestTag>();
     etherctrl->setDsap(dsap);
 
     send(msg, "out");
@@ -199,7 +199,7 @@ void EtherAppCli::sendPacket()
     long respLen = respLength->longValue();
     datapacket->setResponseBytes(respLen);
 
-    Ieee802Ctrl *etherctrl = datapacket->ensureTag<Ieee802Ctrl>();
+    Ieee802CtrlRequestTag *etherctrl = datapacket->ensureTag<Ieee802CtrlRequestTag>();
     LinkLayerAddressRequestTag *cInfo = datapacket->ensureTag<LinkLayerAddressRequestTag>();
     etherctrl->setSsap(localSAP);
     etherctrl->setDsap(remoteSAP);

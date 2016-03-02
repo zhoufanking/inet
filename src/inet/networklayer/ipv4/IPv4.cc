@@ -885,7 +885,7 @@ void IPv4::sendPacketToIeee802NIC(cPacket *packet, const InterfaceEntry *ie, con
     // add control info with MAC address
     LinkLayerAddressRequestTag *cInfo = packet->ensureTag<LinkLayerAddressRequestTag>();
     cInfo->setDest(macAddress);
-    Ieee802Ctrl *controlInfo = packet->ensureTag<Ieee802Ctrl>();
+    Ieee802CtrlRequestTag *controlInfo = packet->ensureTag<Ieee802CtrlRequestTag>();
     controlInfo->setEtherType(etherType);
 
     sendPacketToNIC(packet, ie);

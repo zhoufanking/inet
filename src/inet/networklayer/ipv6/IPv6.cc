@@ -828,7 +828,7 @@ void IPv6::sendDatagramToOutput(IPv6Datagram *datagram, const InterfaceEntry *de
     if (!macAddr.isUnspecified())
     {
         LinkLayerAddressRequestTag *ctrl = datagram->ensureTag<LinkLayerAddressRequestTag>();
-        Ieee802Ctrl *controlInfo = datagram->ensureTag<Ieee802Ctrl>();
+        Ieee802CtrlRequestTag *controlInfo = datagram->ensureTag<Ieee802CtrlRequestTag>();
         ctrl->setDest(macAddr);
         controlInfo->setEtherType(ETHERTYPE_IPv6);
     }

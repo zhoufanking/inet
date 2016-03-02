@@ -25,7 +25,7 @@ Define_Module(RandomQoSClassifier);
 void RandomQoSClassifier::handleMessage(cMessage *msg)
 {
     int userPriority = intrand(8);
-    Ieee802Ctrl *ctrl = check_and_cast<Ieee802Ctrl*>(msg->getControlInfo());
+    Ieee802CtrlRequestTag *ctrl = msg->getMandatoryTag<Ieee802CtrlRequestTag>();
     ctrl->setUserPriority(userPriority);
     send(msg, "out");
 }

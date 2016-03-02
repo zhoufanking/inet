@@ -51,7 +51,7 @@ Ieee80211DataFrame *Ieee80211MgmtAdhoc::encapsulate(cPacket *msg)
     Ieee80211DataFrameWithSNAP *frame = new Ieee80211DataFrameWithSNAP(msg->getName());
 
     // copy receiver address from the control info (sender address will be set in MAC)
-    Ieee802Ctrl *ctrl = msg->getTag<Ieee802Ctrl>();
+    Ieee802CtrlRequestTag *ctrl = msg->getTag<Ieee802CtrlRequestTag>();
     LinkLayerAddressRequestTag *cInfo = msg->getTag<LinkLayerAddressRequestTag>();
     frame->setReceiverAddress(cInfo->getDest());
     frame->setEtherType(ctrl->getEtherType());
@@ -71,7 +71,7 @@ cPacket *Ieee80211MgmtAdhoc::decapsulate(Ieee80211DataFrame *frame)
 {
     cPacket *payload = frame->decapsulate();
 
-    Ieee802Ctrl *ctrl = payload->ensureTag<Ieee802Ctrl>();
+    Ieee802CtrlIndicationTag *ctrl = payload->ensureTag<Ieee802CtrlIndicationTag>();
     LinkLayerAddressIndicationTag *cInfo = payload->ensureTag<LinkLayerAddressIndicationTag>();
     cInfo->setSrc(frame->getTransmitterAddress());
     cInfo->setDest(frame->getReceiverAddress());

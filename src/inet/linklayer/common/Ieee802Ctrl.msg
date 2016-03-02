@@ -73,7 +73,7 @@ enum EtherType
 //
 // Control structure for communication between LLC and higher layers
 //
-class Ieee802Ctrl
+class Ieee802Ctrl_
 {
     int etherType @enum(EtherType);   // used with ~EthernetIIFrame
 //    int interfaceId; // incoming or outgoing interface (not needed everywhere)
@@ -83,3 +83,8 @@ class Ieee802Ctrl
     int dsap;        // used with IEEE 802 LLC (see ~EtherFrameWithLLC)
     int pauseUnits;  // used with IEEE802CTRL_SENDPAUSE
 }
+
+class Ieee802CtrlRequestTag extends Ieee802Ctrl_ {}
+
+class Ieee802CtrlIndicationTag extends Ieee802Ctrl_ {}
+

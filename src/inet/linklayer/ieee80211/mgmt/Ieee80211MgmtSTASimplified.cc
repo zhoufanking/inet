@@ -67,8 +67,8 @@ Ieee80211DataFrame *Ieee80211MgmtSTASimplified::encapsulate(cPacket *msg)
     frame->setReceiverAddress(accessPointAddress);
 
     // destination address is in address3
-    LinkLayerAddressRequestTag *cInfo = msg->getTag<LinkLayerAddressRequestTag>();
-    Ieee802Ctrl *ctrl = msg->getTag<Ieee802Ctrl>();
+    LinkLayerAddressRequestTag *cInfo = msg->getMandatoryTag<LinkLayerAddressRequestTag>();
+    Ieee802CtrlRequestTag *ctrl = msg->getMandatoryTag<Ieee802CtrlRequestTag>();
     ASSERT(!cInfo->getDest().isUnspecified());
     frame->setAddress3(cInfo->getDest());
     frame->setEtherType(ctrl->getEtherType());
@@ -88,7 +88,7 @@ cPacket *Ieee80211MgmtSTASimplified::decapsulate(Ieee80211DataFrame *frame)
 {
     cPacket *payload = frame->decapsulate();
 
-    Ieee802Ctrl *ctrl = payload->ensureTag<Ieee802Ctrl>();
+    Ieee802CtrlIndicationTag *ctrl = payload->ensureTag<Ieee802CtrlIndicationTag>();
     LinkLayerAddressIndicationTag *cInfo = payload->ensureTag<LinkLayerAddressIndicationTag>();
     cInfo->setSrc(frame->getAddress3());
     cInfo->setDest(frame->getReceiverAddress());

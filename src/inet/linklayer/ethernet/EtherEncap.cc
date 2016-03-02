@@ -96,7 +96,7 @@ void EtherEncap::processPacketFromHigherLayer(cPacket *msg)
     EV_DETAIL << "Encapsulating higher layer packet `" << msg->getName() << "' for MAC\n";
 
     LinkLayerAddressRequestTag* controlInfo = msg->getMandatoryTag<LinkLayerAddressRequestTag>();
-    Ieee802Ctrl *etherctrl = msg->getTag<Ieee802Ctrl>();
+    Ieee802CtrlRequestTag *etherctrl = msg->getTag<Ieee802CtrlRequestTag>();
     EtherFrame *frame = NULL;
 
     if (useSNAP) {
@@ -135,7 +135,7 @@ void EtherEncap::processFrameFromMAC(EtherFrame *frame)
     cPacket *higherlayermsg = frame->decapsulate();
 
     // add Ieee802Ctrl to packet
-    Ieee802Ctrl *etherctrl = higherlayermsg->ensureTag<Ieee802Ctrl>();
+    Ieee802CtrlIndicationTag *etherctrl = higherlayermsg->ensureTag<Ieee802CtrlIndicationTag>();
     LinkLayerAddressIndicationTag *cInfo = higherlayermsg->ensureTag<LinkLayerAddressIndicationTag>();
     cInfo->setSrc(frame->getSrc());
     cInfo->setDest(frame->getDest());
@@ -159,7 +159,7 @@ void EtherEncap::processFrameFromMAC(EtherFrame *frame)
 void EtherEncap::handleSendPause(cMessage *msg)
 {
     LinkLayerAddressRequestTag *cInfo = msg->getMandatoryTag<LinkLayerAddressRequestTag>();
-    Ieee802Ctrl *etherctrl = msg->getMandatoryTag<Ieee802Ctrl>();
+    Ieee802CtrlRequestTag *etherctrl = msg->getMandatoryTag<Ieee802CtrlRequestTag>();
     int pauseUnits = etherctrl->getPauseUnits();
 
     EV_DETAIL << "Creating and sending PAUSE frame, with duration = " << pauseUnits << " units\n";

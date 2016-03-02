@@ -183,7 +183,7 @@ void EtherTrafGen::sendBurstPackets()
         long len = packetLength->longValue();
         datapacket->setByteLength(len);
 
-        Ieee802Ctrl *etherctrl = datapacket->ensureTag<Ieee802Ctrl>();
+        Ieee802CtrlRequestTag *etherctrl = datapacket->ensureTag<Ieee802CtrlRequestTag>();
         etherctrl->setEtherType(etherType);
         LinkLayerAddressRequestTag *cInfo = datapacket->ensureTag<LinkLayerAddressRequestTag>();
         cInfo->setDest(destMACAddress);

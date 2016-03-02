@@ -83,8 +83,8 @@ void EtherAppSrv::handleMessage(cMessage *msg)
     packetsReceived++;
     emit(rcvdPkSignal, req);
 
-    LinkLayerAddressRequestTag *cInfo = req->getTag<LinkLayerAddressRequestTag>();
-    Ieee802Ctrl *ctrl = req->getTag<Ieee802Ctrl>();
+    LinkLayerAddressIndicationTag *cInfo = req->getMandatoryTag<LinkLayerAddressIndicationTag>();
+    Ieee802CtrlIndicationTag *ctrl = req->getMandatoryTag<Ieee802CtrlIndicationTag>();
     MACAddress srcAddr = cInfo->getSrc();
     int srcSap = ctrl->getSsap();
     long requestId = req->getRequestId();
@@ -112,7 +112,7 @@ void EtherAppSrv::handleMessage(cMessage *msg)
 
 void EtherAppSrv::sendPacket(cPacket *datapacket, const MACAddress& destAddr, int destSap)
 {
-    Ieee802Ctrl *etherctrl = datapacket->ensureTag<Ieee802Ctrl>();
+    Ieee802CtrlRequestTag *etherctrl = datapacket->ensureTag<Ieee802CtrlRequestTag>();
     LinkLayerAddressRequestTag *cInfo = datapacket->ensureTag<LinkLayerAddressRequestTag>();
     etherctrl->setSsap(localSAP);
     etherctrl->setDsap(destSap);
@@ -127,7 +127,7 @@ void EtherAppSrv::registerDSAP(int dsap)
     EV_DEBUG << getFullPath() << " registering DSAP " << dsap << "\n";
 
     cMessage *msg = new cMessage("register_DSAP", IEEE802CTRL_REGISTER_DSAP);
-    Ieee802Ctrl *etherctrl = msg->ensureTag<Ieee802Ctrl>();
+    Ieee802CtrlRequestTag *etherctrl = msg->ensureTag<Ieee802CtrlRequestTag>();
     etherctrl->setDsap(dsap);
 
     send(msg, "out");
