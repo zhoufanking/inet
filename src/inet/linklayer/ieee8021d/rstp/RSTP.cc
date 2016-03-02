@@ -19,6 +19,7 @@
 #include "inet/linklayer/ieee8021d/rstp/RSTP.h"
 
 #include "inet/linklayer/common/Ieee802Ctrl.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/lifecycle/NodeOperations.h"
@@ -276,7 +277,8 @@ void RSTP::handleIncomingFrame(BPDU *frame)
     // checking message age
     Ieee802Ctrl *etherctrl = check_and_cast<Ieee802Ctrl *>(frame->removeControlInfo());
     int arrivalPortNum = etherctrl->getSwitchPort();
-    MACAddress src = etherctrl->getSrc();
+    LinkLayerAddressIndicationTag *lltag = frame->getMandatoryTag<LinkLayerAddressIndicationTag>();
+    MACAddress src = lltag->getSrc();
     delete etherctrl;
     EV_INFO << "BPDU received at port " << arrivalPortNum << "." << endl;
     if (frame->getMessageAge() < maxAge) {
@@ -597,8 +599,9 @@ void RSTP::sendTCNtoRoot()
                 frame->setForwardDelay(forwardDelay);
                 if (frame->getByteLength() < MIN_ETHERNET_FRAME_BYTES)
                     frame->setByteLength(MIN_ETHERNET_FRAME_BYTES);
-                etherctrl->setSrc(bridgeAddress);
-                etherctrl->setDest(MACAddress::STP_MULTICAST_ADDRESS);
+                LinkLayerAddressRequestTag *lltag = frame->ensureTag<LinkLayerAddressRequestTag>();
+                lltag->setSrc(bridgeAddress);
+                lltag->setDest(MACAddress::STP_MULTICAST_ADDRESS);
                 etherctrl->setSwitchPort(r);
                 frame->setControlInfo(etherctrl);
                 send(frame, "relayOut");
@@ -658,8 +661,9 @@ void RSTP::sendBPDU(int port)
         frame->setForwardDelay(forwardDelay);
         if (frame->getByteLength() < MIN_ETHERNET_FRAME_BYTES)
             frame->setByteLength(MIN_ETHERNET_FRAME_BYTES);
-        etherctrl->setSrc(bridgeAddress);
-        etherctrl->setDest(MACAddress::STP_MULTICAST_ADDRESS);
+        LinkLayerAddressRequestTag *lltag = frame->ensureTag<LinkLayerAddressRequestTag>();
+        lltag->setSrc(bridgeAddress);
+        lltag->setDest(MACAddress::STP_MULTICAST_ADDRESS);
         etherctrl->setSwitchPort(port);
         frame->setControlInfo(etherctrl);
         send(frame, "relayOut");

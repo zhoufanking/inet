@@ -14,6 +14,7 @@
 #include "inet/applications/ethernet/EthernetApplication.h"
 #include "inet/applications/ethernet/EtherApp_m.h"
 #include "inet/linklayer/common/Ieee802Ctrl.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 
 namespace inet {
 
@@ -100,12 +101,9 @@ void EthernetApplication::sendPacket()
     long respLen = respLength->longValue();
     datapacket->setResponseBytes(respLen);
 
-    Ieee802Ctrl *etherctrl = new Ieee802Ctrl();
+    LinkLayerAddressRequestTag *etherctrl = datapacket->ensureTag<LinkLayerAddressRequestTag>();
     etherctrl->setDest(destMACAddress);
-    datapacket->setControlInfo(etherctrl);
-
-    send(datapacket, "out");
-    packetsSent++;
+    sendPacket(datapacket, destMACAddress);
 }
 
 void EthernetApplication::receivePacket(cMessage *msg)
@@ -115,10 +113,9 @@ void EthernetApplication::receivePacket(cMessage *msg)
     packetsReceived++;
     // simtime_t lastEED = simTime() - msg->getCreationTime();
 
-    if (dynamic_cast<EtherAppReq *>(msg)) {
-        EtherAppReq *req = check_and_cast<EtherAppReq *>(msg);
+    if (EtherAppReq *req = dynamic_cast<EtherAppReq *>(msg)) {
         emit(rcvdPkSignal, req);
-        Ieee802Ctrl *ctrl = check_and_cast<Ieee802Ctrl *>(req->removeControlInfo());
+        LinkLayerAddressIndicationTag *ctrl = req->getMandatoryTag<LinkLayerAddressIndicationTag>();
         MACAddress srcAddr = ctrl->getSrc();
         long requestId = req->getRequestId();
         long replyBytes = req->getResponseBytes();
@@ -138,7 +135,6 @@ void EthernetApplication::receivePacket(cMessage *msg)
             datapacket->setRequestId(requestId);
             datapacket->setByteLength(l);
             sendPacket(datapacket, srcAddr);
-            packetsSent++;
         }
     }
 
@@ -147,11 +143,11 @@ void EthernetApplication::receivePacket(cMessage *msg)
 
 void EthernetApplication::sendPacket(cMessage *datapacket, const MACAddress& destAddr)
 {
-    Ieee802Ctrl *etherctrl = new Ieee802Ctrl();
+    LinkLayerAddressRequestTag *etherctrl = datapacket->ensureTag<LinkLayerAddressRequestTag>();
     etherctrl->setDest(destAddr);
-    datapacket->setControlInfo(etherctrl);
     emit(sentPkSignal, datapacket);
     send(datapacket, "out");
+    packetsSent++;
 }
 
 void EthernetApplication::finish()

@@ -21,6 +21,7 @@
 #include "inet/linklayer/ethernet/EtherFrame.h"
 #include "inet/linklayer/ieee8021d/stp/STP.h"
 #include "inet/linklayer/common/Ieee802Ctrl.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
 
 namespace inet {
@@ -144,7 +145,10 @@ void STP::handleTCN(BPDU *tcn)
 
     Ieee802Ctrl *controlInfo = check_and_cast<Ieee802Ctrl *>(tcn->getControlInfo());
     int arrivalGate = controlInfo->getSwitchPort();
-    MACAddress address = controlInfo->getSrc();
+    LinkLayerAddressIndicationTag *lltag = tcn->removeMandatoryTag<LinkLayerAddressIndicationTag>();
+    MACAddress address = lltag->getSrc();
+    MACAddress destaddress = lltag->getDest();
+    delete lltag;
 
     // send ACK to the sender
     EV_INFO << "Sending Topology Change Notification ACK." << endl;
@@ -152,8 +156,12 @@ void STP::handleTCN(BPDU *tcn)
 
     controlInfo->setSwitchPort(rootPort);    // send TCN to the Root Switch
 
-    if (!isRoot)
+    if (!isRoot) {
+        LinkLayerAddressRequestTag *lltag = tcn->ensureTag<LinkLayerAddressRequestTag>();
+        lltag->setSrc(address);
+        lltag->setDest(destaddress);
         send(tcn, "relayOut");
+    }
     else
         delete tcn;
 }
@@ -161,8 +169,9 @@ void STP::handleTCN(BPDU *tcn)
 void STP::generateBPDU(int port, const MACAddress& address, bool tcFlag, bool tcaFlag)
 {
     BPDU *bpdu = new BPDU();
+    LinkLayerAddressRequestTag *lltag = bpdu->ensureTag<LinkLayerAddressRequestTag>();
+    lltag->setDest(address);
     Ieee802Ctrl *controlInfo = new Ieee802Ctrl();
-    controlInfo->setDest(address);
     controlInfo->setSwitchPort(port);
 
     bpdu->setName("BPDU");
@@ -213,8 +222,9 @@ void STP::generateTCN()
             // 1 if Topology Change Notification BPDU
             tcn->setBpduType(1);
 
+            LinkLayerAddressRequestTag *lltag = tcn->ensureTag<LinkLayerAddressRequestTag>();
+            lltag->setDest(MACAddress::STP_MULTICAST_ADDRESS);
             Ieee802Ctrl *controlInfo = new Ieee802Ctrl();
-            controlInfo->setDest(MACAddress::STP_MULTICAST_ADDRESS);
             controlInfo->setSwitchPort(rootPort);
             tcn->setControlInfo(controlInfo);
 

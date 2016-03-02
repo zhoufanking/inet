@@ -17,6 +17,7 @@
 
 #include "inet/linklayer/ieee8021d/relay/Ieee8021dRelay.h"
 #include "inet/linklayer/common/Ieee802Ctrl.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
 #include "inet/linklayer/configurator/Ieee8021dInterfaceData.h"
 #include "inet/common/ModuleAccess.h"
@@ -181,9 +182,10 @@ void Ieee8021dRelay::learn(EtherFrame *frame)
 
 void Ieee8021dRelay::dispatchBPDU(BPDU *bpdu)
 {
+    LinkLayerAddressRequestTag *lltag = bpdu->removeMandatoryTag<LinkLayerAddressRequestTag>();
     Ieee802Ctrl *controlInfo = check_and_cast<Ieee802Ctrl *>(bpdu->removeControlInfo());
     unsigned int portNum = controlInfo->getSwitchPort();
-    MACAddress address = controlInfo->getDest();
+    MACAddress address = lltag->getDest();
     delete controlInfo;
 
     if (portNum >= portCount)
@@ -212,9 +214,10 @@ void Ieee8021dRelay::deliverBPDU(EtherFrame *frame)
     BPDU *bpdu = check_and_cast<BPDU *>(frame->decapsulate());
 
     Ieee802Ctrl *controlInfo = new Ieee802Ctrl();
-    controlInfo->setSrc(frame->getSrc());
     controlInfo->setSwitchPort(frame->getArrivalGate()->getIndex());
-    controlInfo->setDest(frame->getDest());
+    LinkLayerAddressIndicationTag *lltag = bpdu->ensureTag<LinkLayerAddressIndicationTag>();
+    lltag->setSrc(frame->getSrc());
+    lltag->setDest(frame->getDest());
 
     bpdu->setControlInfo(controlInfo);
 
