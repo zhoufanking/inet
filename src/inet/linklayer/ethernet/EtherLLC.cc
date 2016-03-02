@@ -254,7 +254,9 @@ void EtherLLC::handleSendPause(cMessage *msg)
     sprintf(framename, "pause-%d-%d", getId(), seqNum++);
     EtherPauseFrame *frame = new EtherPauseFrame(framename);
     frame->setPauseTime(pauseUnits);
-    MACAddress dest = cInfo->getDest();
+    MACAddress dest;
+    if (cInfo)
+        cInfo->getDest();
     if (dest.isUnspecified())
         dest = MACAddress::MULTICAST_PAUSE_ADDRESS;
     frame->setDest(dest);
