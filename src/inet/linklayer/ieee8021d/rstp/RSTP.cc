@@ -275,12 +275,12 @@ void RSTP::handleIncomingFrame(BPDU *frame)
 {
     // incoming BPDU handling
     // checking message age
-    Ieee802CtrlIndicationTag *etherctrl = check_and_cast<Ieee802CtrlIndicationTag *>(frame->removeControlInfo());
+    Ieee802CtrlIndicationTag *etherctrl = frame->getMandatoryTag<Ieee802CtrlIndicationTag>();
     int arrivalPortNum = etherctrl->getSwitchPort();
     LinkLayerAddressIndicationTag *lltag = frame->getMandatoryTag<LinkLayerAddressIndicationTag>();
     MACAddress src = lltag->getSrc();
-    delete etherctrl;
     EV_INFO << "BPDU received at port " << arrivalPortNum << "." << endl;
+
     if (frame->getMessageAge() < maxAge) {
         // checking TC
         checkTC(frame, arrivalPortNum);    // sets TCWhile if arrival port was FORWARDING
@@ -582,7 +582,6 @@ void RSTP::sendTCNtoRoot()
         if (rootPort->getRole() != Ieee8021dInterfaceData::DISABLED) {
             if (simTime() < rootPort->getTCWhile()) {
                 BPDU *frame = new BPDU();
-                Ieee802CtrlRequestTag *etherctrl = new Ieee802CtrlRequestTag();
 
                 frame->setRootPriority(rootPort->getRootPriority());
                 frame->setRootAddress(rootPort->getRootAddress());
@@ -602,8 +601,8 @@ void RSTP::sendTCNtoRoot()
                 LinkLayerAddressRequestTag *lltag = frame->ensureTag<LinkLayerAddressRequestTag>();
                 lltag->setSrc(bridgeAddress);
                 lltag->setDest(MACAddress::STP_MULTICAST_ADDRESS);
+                Ieee802CtrlRequestTag *etherctrl = frame->ensureTag<Ieee802CtrlRequestTag>();
                 etherctrl->setSwitchPort(r);
-                frame->setControlInfo(etherctrl);
                 send(frame, "relayOut");
             }
         }
@@ -634,7 +633,6 @@ void RSTP::sendBPDU(int port)
         rootPort = getPortInterfaceData(r);
     if (iport->getRole() != Ieee8021dInterfaceData::DISABLED) {
         BPDU *frame = new BPDU();
-        Ieee802CtrlRequestTag *etherctrl = new Ieee802CtrlRequestTag();
         if (r != -1) {
             frame->setRootPriority(rootPort->getRootPriority());
             frame->setRootAddress(rootPort->getRootAddress());
@@ -664,8 +662,8 @@ void RSTP::sendBPDU(int port)
         LinkLayerAddressRequestTag *lltag = frame->ensureTag<LinkLayerAddressRequestTag>();
         lltag->setSrc(bridgeAddress);
         lltag->setDest(MACAddress::STP_MULTICAST_ADDRESS);
+        Ieee802CtrlRequestTag *etherctrl = frame->ensureTag<Ieee802CtrlRequestTag>();
         etherctrl->setSwitchPort(port);
-        frame->setControlInfo(etherctrl);
         send(frame, "relayOut");
     }
 }
