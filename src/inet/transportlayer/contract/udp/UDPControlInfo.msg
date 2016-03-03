@@ -69,6 +69,11 @@ class UDPControlInfo
     int sockId = -1;  // must uniquely identify the socket in the ~UDP module
 }
 
+class UDPSocketIdRequestTag
+{
+    int sockId = -1;  // must uniquely identify the socket in the ~UDP module
+}
+
 //
 // Control info for binding an UDP socket. To create and bind a socket,
 // send a message to the ~UDP module with kind=UDP_C_BIND and an
@@ -79,7 +84,7 @@ class UDPControlInfo
 //
 // @see ~UDPCommandCode
 //
-class UDPBindCommand extends UDPControlInfo
+class UDPBindCommand
 {
     L3Address localAddr;
     int localPort = -1;
@@ -95,7 +100,7 @@ class UDPBindCommand extends UDPControlInfo
 //
 // @see ~UDPCommandCode
 //
-class UDPConnectCommand extends UDPControlInfo
+class UDPConnectCommand
 {
     L3Address remoteAddr;
     int remotePort = -1;
@@ -112,7 +117,7 @@ class UDPConnectCommand extends UDPControlInfo
 //
 // @see ~UDPCommandCode
 //
-class UDPSendCommand extends UDPControlInfo
+class UDPSendCommand
 {
     L3Address destAddr; // destination IPv4 or IPv6 address
     int destPort = -1;     // destination port

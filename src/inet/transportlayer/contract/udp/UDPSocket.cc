@@ -60,12 +60,12 @@ void UDPSocket::bind(L3Address localAddr, int localPort)
     if (localPort < -1 || localPort > 65535) // -1: ephemeral port
         throw cRuntimeError("UDPSocket::bind(): invalid port number %d", localPort);
 
-    UDPBindCommand *ctrl = new UDPBindCommand();
-    ctrl->setSockId(sockId);
+    cMessage *msg = new cMessage("BIND", UDP_C_BIND);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPBindCommand *ctrl = msg->ensureTag<UDPBindCommand>();
     ctrl->setLocalAddr(localAddr);
     ctrl->setLocalPort(localPort);
-    cMessage *msg = new cMessage("BIND", UDP_C_BIND);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
@@ -76,126 +76,128 @@ void UDPSocket::connect(L3Address addr, int port)
     if (port <= 0 || port > 65535)
         throw cRuntimeError("UDPSocket::connect(): invalid remote port number %d", port);
 
-    UDPConnectCommand *ctrl = new UDPConnectCommand();
-    ctrl->setSockId(sockId);
+    cMessage *msg = new cMessage("CONNECT", UDP_C_CONNECT);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPConnectCommand *ctrl = msg->ensureTag<UDPConnectCommand>();
     ctrl->setRemoteAddr(addr);
     ctrl->setRemotePort(port);
-    cMessage *msg = new cMessage("CONNECT", UDP_C_CONNECT);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::sendTo(cPacket *pk, L3Address destAddr, int destPort, const SendOptions *options)
 {
     pk->setKind(UDP_C_DATA);
-    UDPSendCommand *ctrl = new UDPSendCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = pk->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPSendCommand *ctrl = pk->ensureTag<UDPSendCommand>();
     ctrl->setDestAddr(destAddr);
     ctrl->setDestPort(destPort);
     if (options) {
         ctrl->setSrcAddr(options->srcAddr);
         ctrl->setInterfaceId(options->outInterfaceId);
     }
-    pk->setControlInfo(ctrl);
     sendToUDP(pk);
 }
 
 void UDPSocket::send(cPacket *pk)
 {
     pk->setKind(UDP_C_DATA);
-    UDPSendCommand *ctrl = new UDPSendCommand();
-    ctrl->setSockId(sockId);
-    pk->setControlInfo(ctrl);
+    UDPSocketIdRequestTag *sid = pk->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPSendCommand *ctrl = pk->ensureTag<UDPSendCommand>();
     sendToUDP(pk);
 }
 
 void UDPSocket::close()
 {
     cMessage *msg = new cMessage("CLOSE", UDP_C_CLOSE);
-    UDPCloseCommand *ctrl = new UDPCloseCommand();
-    ctrl->setSockId(sockId);
-    msg->setControlInfo(ctrl);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPCloseCommand *ctrl = msg->ensureTag<UDPCloseCommand>();
     sendToUDP(msg);
 }
 
 void UDPSocket::setBroadcast(bool broadcast)
 {
     cMessage *msg = new cMessage("SetBroadcast", UDP_C_SETOPTION);
-    UDPSetBroadcastCommand *ctrl = new UDPSetBroadcastCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPSetBroadcastCommand *ctrl = msg->ensureTag<UDPSetBroadcastCommand>();
     ctrl->setBroadcast(broadcast);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::setTimeToLive(int ttl)
 {
     cMessage *msg = new cMessage("SetTTL", UDP_C_SETOPTION);
-    UDPSetTimeToLiveCommand *ctrl = new UDPSetTimeToLiveCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPSetTimeToLiveCommand *ctrl = msg->ensureTag<UDPSetTimeToLiveCommand>();
     ctrl->setTtl(ttl);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::setTypeOfService(unsigned char tos)
 {
     cMessage *msg = new cMessage("SetTOS", UDP_C_SETOPTION);
-    UDPSetTypeOfServiceCommand *ctrl = new UDPSetTypeOfServiceCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPSetTypeOfServiceCommand *ctrl = msg->ensureTag<UDPSetTypeOfServiceCommand>();
     ctrl->setTos(tos);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::setMulticastOutputInterface(int interfaceId)
 {
     cMessage *msg = new cMessage("SetMulticastOutputIf", UDP_C_SETOPTION);
-    UDPSetMulticastInterfaceCommand *ctrl = new UDPSetMulticastInterfaceCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPSetMulticastInterfaceCommand *ctrl = msg->ensureTag<UDPSetMulticastInterfaceCommand>();
     ctrl->setInterfaceId(interfaceId);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::setMulticastLoop(bool value)
 {
     cMessage *msg = new cMessage("SetMulticastLoop", UDP_C_SETOPTION);
-    UDPSetMulticastLoopCommand *ctrl = new UDPSetMulticastLoopCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPSetMulticastLoopCommand *ctrl = msg->ensureTag<UDPSetMulticastLoopCommand>();
     ctrl->setLoop(value);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::setReuseAddress(bool value)
 {
     cMessage *msg = new cMessage("SetReuseAddress", UDP_C_SETOPTION);
-    UDPSetReuseAddressCommand *ctrl = new UDPSetReuseAddressCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPSetReuseAddressCommand *ctrl = msg->ensureTag<UDPSetReuseAddressCommand>();
     ctrl->setReuseAddress(value);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::joinMulticastGroup(const L3Address& multicastAddr, int interfaceId)
 {
     cMessage *msg = new cMessage("JoinMulticastGroups", UDP_C_SETOPTION);
-    UDPJoinMulticastGroupsCommand *ctrl = new UDPJoinMulticastGroupsCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPJoinMulticastGroupsCommand *ctrl = msg->ensureTag<UDPJoinMulticastGroupsCommand>();
     ctrl->setMulticastAddrArraySize(1);
     ctrl->setMulticastAddr(0, multicastAddr);
     ctrl->setInterfaceIdArraySize(1);
     ctrl->setInterfaceId(0, interfaceId);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::joinLocalMulticastGroups(MulticastGroupList mgl)
 {
     if (mgl.size() > 0) {
-        UDPJoinMulticastGroupsCommand *ctrl = new UDPJoinMulticastGroupsCommand();
-        ctrl->setSockId(sockId);
+        cMessage *msg = new cMessage("JoinMulticastGroups", UDP_C_SETOPTION);
+        UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+        sid->setSockId(sockId);
+        UDPJoinMulticastGroupsCommand *ctrl = msg->ensureTag<UDPJoinMulticastGroupsCommand>();
         ctrl->setMulticastAddrArraySize(mgl.size());
         ctrl->setInterfaceIdArraySize(mgl.size());
 
@@ -204,8 +206,6 @@ void UDPSocket::joinLocalMulticastGroups(MulticastGroupList mgl)
             ctrl->setInterfaceId(j, mgl[j].interfaceId);
         }
 
-        cMessage *msg = new cMessage("JoinMulticastGroups", UDP_C_SETOPTION);
-        msg->setControlInfo(ctrl);
         sendToUDP(msg);
     }
 }
@@ -213,27 +213,27 @@ void UDPSocket::joinLocalMulticastGroups(MulticastGroupList mgl)
 void UDPSocket::leaveMulticastGroup(const L3Address& multicastAddr)
 {
     cMessage *msg = new cMessage("LeaveMulticastGroups", UDP_C_SETOPTION);
-    UDPLeaveMulticastGroupsCommand *ctrl = new UDPLeaveMulticastGroupsCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPLeaveMulticastGroupsCommand *ctrl = msg->ensureTag<UDPLeaveMulticastGroupsCommand>();
     ctrl->setMulticastAddrArraySize(1);
     ctrl->setMulticastAddr(0, multicastAddr);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::leaveLocalMulticastGroups(MulticastGroupList mgl)
 {
     if (mgl.size() > 0) {
-        UDPLeaveMulticastGroupsCommand *ctrl = new UDPLeaveMulticastGroupsCommand();
-        ctrl->setSockId(sockId);
+        cMessage *msg = new cMessage("LeaveMulticastGroups", UDP_C_SETOPTION);
+        UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+        sid->setSockId(sockId);
+        UDPLeaveMulticastGroupsCommand *ctrl = msg->ensureTag<UDPLeaveMulticastGroupsCommand>();
         ctrl->setMulticastAddrArraySize(mgl.size());
 
         for (unsigned int j = 0; j < mgl.size(); ++j) {
             ctrl->setMulticastAddr(j, mgl[j].multicastAddr);
         }
 
-        cMessage *msg = new cMessage("LeaveMulticastGroups", UDP_C_SETOPTION);
-        msg->setControlInfo(ctrl);
         sendToUDP(msg);
     }
 }
@@ -241,56 +241,56 @@ void UDPSocket::leaveLocalMulticastGroups(MulticastGroupList mgl)
 void UDPSocket::blockMulticastSources(int interfaceId, const L3Address& multicastAddr, const std::vector<L3Address>& sourceList)
 {
     cMessage *msg = new cMessage("BlockMulticastSources", UDP_C_SETOPTION);
-    UDPBlockMulticastSourcesCommand *ctrl = new UDPBlockMulticastSourcesCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPBlockMulticastSourcesCommand *ctrl = msg->ensureTag<UDPBlockMulticastSourcesCommand>();
     ctrl->setInterfaceId(interfaceId);
     ctrl->setMulticastAddr(multicastAddr);
     ctrl->setSourceListArraySize(sourceList.size());
     for (int i = 0; i < (int)sourceList.size(); ++i)
         ctrl->setSourceList(i, sourceList[i]);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::unblockMulticastSources(int interfaceId, const L3Address& multicastAddr, const std::vector<L3Address>& sourceList)
 {
     cMessage *msg = new cMessage("UnblockMulticastSources", UDP_C_SETOPTION);
-    UDPUnblockMulticastSourcesCommand *ctrl = new UDPUnblockMulticastSourcesCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPUnblockMulticastSourcesCommand *ctrl = msg->ensureTag<UDPUnblockMulticastSourcesCommand>();
     ctrl->setInterfaceId(interfaceId);
     ctrl->setMulticastAddr(multicastAddr);
     ctrl->setSourceListArraySize(sourceList.size());
     for (int i = 0; i < (int)sourceList.size(); ++i)
         ctrl->setSourceList(i, sourceList[i]);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::joinMulticastSources(int interfaceId, const L3Address& multicastAddr, const std::vector<L3Address>& sourceList)
 {
     cMessage *msg = new cMessage("JoinMulticastSources", UDP_C_SETOPTION);
-    UDPJoinMulticastSourcesCommand *ctrl = new UDPJoinMulticastSourcesCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPJoinMulticastSourcesCommand *ctrl = msg->ensureTag<UDPJoinMulticastSourcesCommand>();
     ctrl->setInterfaceId(interfaceId);
     ctrl->setMulticastAddr(multicastAddr);
     ctrl->setSourceListArraySize(sourceList.size());
     for (int i = 0; i < (int)sourceList.size(); ++i)
         ctrl->setSourceList(i, sourceList[i]);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
 void UDPSocket::leaveMulticastSources(int interfaceId, const L3Address& multicastAddr, const std::vector<L3Address>& sourceList)
 {
     cMessage *msg = new cMessage("LeaveMulticastSources", UDP_C_SETOPTION);
-    UDPLeaveMulticastSourcesCommand *ctrl = new UDPLeaveMulticastSourcesCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPLeaveMulticastSourcesCommand *ctrl = msg->ensureTag<UDPLeaveMulticastSourcesCommand>();
     ctrl->setInterfaceId(interfaceId);
     ctrl->setMulticastAddr(multicastAddr);
     ctrl->setSourceListArraySize(sourceList.size());
     for (int i = 0; i < (int)sourceList.size(); ++i)
         ctrl->setSourceList(i, sourceList[i]);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
@@ -298,15 +298,15 @@ void UDPSocket::setMulticastSourceFilter(int interfaceId, const L3Address& multi
         UDPSourceFilterMode filterMode, const std::vector<L3Address>& sourceList)
 {
     cMessage *msg = new cMessage("SetMulticastSourceFilter", UDP_C_SETOPTION);
-    UDPSetMulticastSourceFilterCommand *ctrl = new UDPSetMulticastSourceFilterCommand();
-    ctrl->setSockId(sockId);
+    UDPSocketIdRequestTag *sid = msg->ensureTag<UDPSocketIdRequestTag>();
+    sid->setSockId(sockId);
+    UDPSetMulticastSourceFilterCommand *ctrl = msg->ensureTag<UDPSetMulticastSourceFilterCommand>();
     ctrl->setInterfaceId(interfaceId);
     ctrl->setMulticastAddr(multicastAddr);
     ctrl->setFilterMode(filterMode);
     ctrl->setSourceListArraySize(sourceList.size());
     for (int i = 0; i < (int)sourceList.size(); ++i)
         ctrl->setSourceList(i, sourceList[i]);
-    msg->setControlInfo(ctrl);
     sendToUDP(msg);
 }
 
@@ -324,6 +324,7 @@ bool UDPSocket::belongsToAnyUDPSocket(cMessage *msg)
 std::string UDPSocket::getReceivedPacketInfo(cPacket *pk)
 {
     UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(pk->getControlInfo());
+    // later: UDPDataIndication *ctrl = pk->getMandatoryTag<UDPDataIndication>();
 
     L3Address srcAddr = ctrl->getSrcAddr();
     L3Address destAddr = ctrl->getDestAddr();
