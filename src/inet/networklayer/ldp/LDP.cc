@@ -508,7 +508,7 @@ void LDP::processHelloTimeout(cMessage *msg)
 
 void LDP::processLDPHello(LDPHello *msg)
 {
-    UDPDataIndication *controlInfo = check_and_cast<UDPDataIndication *>(msg->getControlInfo());
+    UDPDataIndication *controlInfo = msg->getMandatoryTag<UDPDataIndication>();
     //IPv4Address peerAddr = controlInfo->getSrcAddr().toIPv4();
     IPv4Address peerAddr = msg->getSenderAddress();
     int interfaceId = controlInfo->getInterfaceId();

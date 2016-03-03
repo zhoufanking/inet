@@ -142,7 +142,7 @@ void VoIPStreamReceiver::createConnection(VoIPStreamPacket *vp)
 {
     ASSERT(curConn.offline);
 
-    UDPDataIndication *udpCtrl = check_and_cast<UDPDataIndication *>(vp->getControlInfo());
+    UDPDataIndication *udpCtrl = vp->getMandatoryTag<UDPDataIndication>();
 
     curConn.srcAddr = udpCtrl->getSrcAddr();
     curConn.srcPort = udpCtrl->getSrcPort();
@@ -181,7 +181,7 @@ void VoIPStreamReceiver::checkSourceAndParameters(VoIPStreamPacket *vp)
 {
     ASSERT(!curConn.offline);
 
-    UDPDataIndication *udpCtrl = check_and_cast<UDPDataIndication *>(vp->getControlInfo());
+    UDPDataIndication *udpCtrl = vp->getMandatoryTag<UDPDataIndication>();
     if (curConn.srcAddr != udpCtrl->getSrcAddr()
         || curConn.srcPort != udpCtrl->getSrcPort()
         || curConn.destAddr != udpCtrl->getDestAddr()

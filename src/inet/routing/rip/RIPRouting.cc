@@ -597,7 +597,7 @@ void RIPRouting::processRequest(RIPPacket *packet)
         return;
     }
 
-    UDPDataIndication *ctrlInfo = check_and_cast<UDPDataIndication *>(packet->removeControlInfo());
+    UDPDataIndication *ctrlInfo = packet->removeMandatoryTag<UDPDataIndication>();
     L3Address srcAddr = ctrlInfo->getSrcAddr();
     int srcPort = ctrlInfo->getSrcPort();
     int interfaceId = ctrlInfo->getInterfaceId();
@@ -750,7 +750,7 @@ void RIPRouting::processResponse(RIPPacket *packet)
         return;
     }
 
-    UDPDataIndication *ctrlInfo = check_and_cast<UDPDataIndication *>(packet->removeControlInfo());
+    UDPDataIndication *ctrlInfo = packet->removeMandatoryTag<UDPDataIndication>();
     L3Address srcAddr = ctrlInfo->getSrcAddr();
     int interfaceId = ctrlInfo->getInterfaceId();
     delete ctrlInfo;
@@ -794,7 +794,7 @@ void RIPRouting::processResponse(RIPPacket *packet)
 
 bool RIPRouting::isValidResponse(RIPPacket *packet)
 {
-    UDPDataIndication *ctrlInfo = check_and_cast<UDPDataIndication *>(packet->getControlInfo());
+    UDPDataIndication *ctrlInfo = packet->getMandatoryTag<UDPDataIndication>();
 
     // check that received from ripUdpPort
     if (ctrlInfo->getSrcPort() != ripUdpPort) {

@@ -160,7 +160,7 @@ void DHCPServer::processDHCPMessage(DHCPMessage *packet)
     ASSERT(isOperational && ie != nullptr);
 
     // check that the packet arrived on the interface we are supposed to serve
-    UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(packet->removeControlInfo());
+    UDPDataIndication *ctrl = packet->removeMandatoryTag<UDPDataIndication>();
     int inputInterfaceId = ctrl->getInterfaceId();
     delete ctrl;
     if (inputInterfaceId != ie->getInterfaceId()) {

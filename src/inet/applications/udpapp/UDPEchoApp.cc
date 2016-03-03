@@ -54,13 +54,13 @@ void UDPEchoApp::handleMessageWhenUp(cMessage *msg)
         emit(pkSignal, pk);
 
         // determine its source address/port
-        pk->clearTags();
-        UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(pk->removeControlInfo());
+        UDPDataIndication *ctrl = pk->removeMandatoryTag<UDPDataIndication>();
         L3Address srcAddress = ctrl->getSrcAddr();
         int srcPort = ctrl->getSrcPort();
         delete ctrl;
 
         // send back
+        pk->clearTags();
         socket.sendTo(pk, srcAddress, srcPort);
 
         if (hasGUI())

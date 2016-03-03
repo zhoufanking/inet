@@ -323,8 +323,7 @@ bool UDPSocket::belongsToAnyUDPSocket(cMessage *msg)
 
 std::string UDPSocket::getReceivedPacketInfo(cPacket *pk)
 {
-    UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(pk->getControlInfo());
-    // later: UDPDataIndication *ctrl = pk->getMandatoryTag<UDPDataIndication>();
+    UDPDataIndication *ctrl = pk->getMandatoryTag<UDPDataIndication>();
 
     L3Address srcAddr = ctrl->getSrcAddr();
     L3Address destAddr = ctrl->getDestAddr();

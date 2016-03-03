@@ -704,7 +704,7 @@ void UDP::sendUp(cPacket *payload, SockDesc *sd, const L3Address& srcAddr, ushor
     EV_INFO << "Sending payload up to socket sockId=" << sd->sockId << "\n";
 
     // send payload with UDPControlInfo up to the application
-    UDPDataIndication *udpCtrl = new UDPDataIndication();
+    UDPDataIndication *udpCtrl = payload->ensureTag<UDPDataIndication>();
     udpCtrl->setSockId(sd->sockId);
     udpCtrl->setSrcAddr(srcAddr);
     udpCtrl->setDestAddr(destAddr);
@@ -713,7 +713,6 @@ void UDP::sendUp(cPacket *payload, SockDesc *sd, const L3Address& srcAddr, ushor
     udpCtrl->setInterfaceId(interfaceId);
     udpCtrl->setTtl(ttl);
     udpCtrl->setTypeOfService(tos);
-    payload->setControlInfo(udpCtrl);
     payload->setKind(UDP_I_DATA);
 
     emit(passedUpPkSignal, payload);
@@ -724,13 +723,12 @@ void UDP::sendUp(cPacket *payload, SockDesc *sd, const L3Address& srcAddr, ushor
 void UDP::sendUpErrorIndication(SockDesc *sd, const L3Address& localAddr, ushort localPort, const L3Address& remoteAddr, ushort remotePort)
 {
     cMessage *notifyMsg = new cMessage("ERROR", UDP_I_ERROR);
-    UDPErrorIndication *udpCtrl = new UDPErrorIndication();
+    UDPErrorIndication *udpCtrl = notifyMsg->ensureTag<UDPErrorIndication>();
     udpCtrl->setSockId(sd->sockId);
     udpCtrl->setSrcAddr(localAddr);
     udpCtrl->setDestAddr(remoteAddr);
     udpCtrl->setSrcPort(sd->localPort);
     udpCtrl->setDestPort(remotePort);
-    notifyMsg->setControlInfo(udpCtrl);
 
     send(notifyMsg, "appOut", sd->appGateIndex);
 }
