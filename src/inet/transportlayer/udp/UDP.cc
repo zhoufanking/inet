@@ -20,6 +20,7 @@
 #include <string>
 #include "inet/transportlayer/udp/UDP.h"
 #include "inet/transportlayer/udp/UDPPacket.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
 #include "inet/networklayer/common/IPSocket.h"
@@ -705,12 +706,13 @@ void UDP::sendUp(cPacket *payload, SockDesc *sd, const L3Address& srcAddr, ushor
 
     // send payload with UDPControlInfo up to the application
     UDPDataIndication *udpCtrl = payload->ensureTag<UDPDataIndication>();
+    InterfaceIdIndicationTag *ifCtrl = payload->ensureTag<InterfaceIdIndicationTag>();
     udpCtrl->setSockId(sd->sockId);
     udpCtrl->setSrcAddr(srcAddr);
     udpCtrl->setDestAddr(destAddr);
     udpCtrl->setSrcPort(srcPort);
     udpCtrl->setDestPort(destPort);
-    udpCtrl->setInterfaceId(interfaceId);
+    ifCtrl->setInterfaceId(interfaceId);
     udpCtrl->setTtl(ttl);
     udpCtrl->setTypeOfService(tos);
     payload->setKind(UDP_I_DATA);

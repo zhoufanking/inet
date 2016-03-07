@@ -22,6 +22,7 @@
 #include "inet/networklayer/ldp/LDP.h"
 
 //#include "inet/networklayer/mpls/ConstType.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/networklayer/mpls/LIBTable.h"
 #include "inet/networklayer/ipv4/IPv4InterfaceData.h"
 #include "inet/common/NotifierConsts.h"
@@ -508,7 +509,7 @@ void LDP::processHelloTimeout(cMessage *msg)
 
 void LDP::processLDPHello(LDPHello *msg)
 {
-    UDPDataIndication *controlInfo = msg->getMandatoryTag<UDPDataIndication>();
+    InterfaceIdIndicationTag *controlInfo = msg->getMandatoryTag<InterfaceIdIndicationTag>();
     //IPv4Address peerAddr = controlInfo->getSrcAddr().toIPv4();
     IPv4Address peerAddr = msg->getSenderAddress();
     int interfaceId = controlInfo->getInterfaceId();

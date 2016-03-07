@@ -17,6 +17,7 @@
 
 #include "inet/transportlayer/contract/udp/UDPSocket.h"
 #include "inet/transportlayer/contract/udp/UDPControlInfo.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #ifdef WITH_IPv4
 #include "inet/networklayer/ipv4/IPv4InterfaceData.h"
 #endif // ifdef WITH_IPv4
@@ -313,12 +314,13 @@ void UDPSocket::setMulticastSourceFilter(int interfaceId, const L3Address& multi
 std::string UDPSocket::getReceivedPacketInfo(cPacket *pk)
 {
     UDPDataIndication *ctrl = pk->getMandatoryTag<UDPDataIndication>();
+    InterfaceIdIndicationTag *idCtrl = pk->getMandatoryTag<InterfaceIdIndicationTag>();
 
     L3Address srcAddr = ctrl->getSrcAddr();
     L3Address destAddr = ctrl->getDestAddr();
     int srcPort = ctrl->getSrcPort();
     int destPort = ctrl->getDestPort();
-    int interfaceID = ctrl->getInterfaceId();
+    int interfaceID = idCtrl->getInterfaceId();
     int ttl = ctrl->getTtl();
     int tos = ctrl->getTypeOfService();
 

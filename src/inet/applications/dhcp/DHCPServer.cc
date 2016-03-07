@@ -22,6 +22,7 @@
 #include "inet/applications/dhcp/DHCPServer.h"
 
 #include "inet/transportlayer/contract/udp/UDPControlInfo_m.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "inet/networklayer/common/InterfaceTable.h"
 #include "inet/networklayer/ipv4/IPv4InterfaceData.h"
@@ -160,9 +161,8 @@ void DHCPServer::processDHCPMessage(DHCPMessage *packet)
     ASSERT(isOperational && ie != nullptr);
 
     // check that the packet arrived on the interface we are supposed to serve
-    UDPDataIndication *ctrl = packet->removeMandatoryTag<UDPDataIndication>();
+    auto *ctrl = packet->getMandatoryTag<InterfaceIdIndicationTag>();
     int inputInterfaceId = ctrl->getInterfaceId();
-    delete ctrl;
     if (inputInterfaceId != ie->getInterfaceId()) {
         EV_WARN << "DHCP message arrived on a different interface, dropping\n";
         delete packet;

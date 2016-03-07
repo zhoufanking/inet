@@ -19,6 +19,9 @@
 #include <algorithm>
 #include <functional>
 
+
+#include "inet/transportlayer/contract/udp/UDPControlInfo_m.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/networklayer/contract/IL3AddressType.h"
 #include "inet/networklayer/common/InterfaceMatcher.h"
 #include "inet/common/lifecycle/NodeOperations.h"
@@ -598,10 +601,12 @@ void RIPRouting::processRequest(RIPPacket *packet)
     }
 
     UDPDataIndication *ctrlInfo = packet->removeMandatoryTag<UDPDataIndication>();
+    InterfaceIdIndicationTag *ifInfo = packet->removeMandatoryTag<InterfaceIdIndicationTag>();
     L3Address srcAddr = ctrlInfo->getSrcAddr();
     int srcPort = ctrlInfo->getSrcPort();
-    int interfaceId = ctrlInfo->getInterfaceId();
+    int interfaceId = ifInfo->getInterfaceId();
     delete ctrlInfo;
+    delete ifInfo;
 
     EV_INFO << "received request from " << srcAddr << "\n";
 
@@ -751,8 +756,9 @@ void RIPRouting::processResponse(RIPPacket *packet)
     }
 
     UDPDataIndication *ctrlInfo = packet->removeMandatoryTag<UDPDataIndication>();
+    InterfaceIdIndicationTag *ifInfo = packet->removeMandatoryTag<InterfaceIdIndicationTag>();
     L3Address srcAddr = ctrlInfo->getSrcAddr();
-    int interfaceId = ctrlInfo->getInterfaceId();
+    int interfaceId = ifInfo->getInterfaceId();
     delete ctrlInfo;
 
     RIPInterfaceEntry *incomingIe = findInterfaceById(interfaceId);
