@@ -248,22 +248,6 @@ class INET_API UDPSocket
     void close();
     //@}
 
-    /** @name Handling of messages arriving from UDP */
-    //@{
-    /**
-     * Returns true if the message belongs to this socket instance (message
-     * has a UDPControlInfo as getControlInfo(), and the sockId in it matches
-     * that of the socket.)
-     */
-    bool belongsToSocket(cMessage *msg);
-
-    /**
-     * Returns true if the message belongs to any UDPSocket instance.
-     * (This basically checks if the message has an UDPControlInfo attached to
-     * it as getControlInfo().)
-     */
-    static bool belongsToAnyUDPSocket(cMessage *msg);
-
     /**
      * Utility function: returns a line of information about a packet received via UDP.
      */

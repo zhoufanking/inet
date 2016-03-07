@@ -310,17 +310,6 @@ void UDPSocket::setMulticastSourceFilter(int interfaceId, const L3Address& multi
     sendToUDP(msg);
 }
 
-bool UDPSocket::belongsToSocket(cMessage *msg)
-{
-    return dynamic_cast<UDPControlInfo *>(msg->getControlInfo()) &&
-           ((UDPControlInfo *)(msg->getControlInfo()))->getSockId() == sockId;
-}
-
-bool UDPSocket::belongsToAnyUDPSocket(cMessage *msg)
-{
-    return dynamic_cast<UDPControlInfo *>(msg->getControlInfo());
-}
-
 std::string UDPSocket::getReceivedPacketInfo(cPacket *pk)
 {
     UDPDataIndication *ctrl = pk->getMandatoryTag<UDPDataIndication>();
