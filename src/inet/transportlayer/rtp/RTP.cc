@@ -88,33 +88,33 @@ void RTP::handleMessage(cMessage *msg)
 //
 void RTP::handleMessageFromApp(cMessage *msg)
 {
-    RTPControlInfo *ci = check_and_cast<RTPControlInfo *>(msg->removeControlInfo());
-    delete msg;
+    ASSERT(msg->getControlInfo() == nullptr);
 
-    switch (ci->getType()) {
+    switch (msg->getKind()) {
         case RTP_IFP_ENTER_SESSION:
-            enterSession(check_and_cast<RTPCIEnterSession *>(ci));
+            enterSession(msg->removeMandatoryTag<RTPCIEnterSession>());
             break;
 
         case RTP_IFP_CREATE_SENDER_MODULE:
-            createSenderModule(check_and_cast<RTPCICreateSenderModule *>(ci));
+            createSenderModule(msg->removeMandatoryTag<RTPCICreateSenderModule>());
             break;
 
         case RTP_IFP_DELETE_SENDER_MODULE:
-            deleteSenderModule(check_and_cast<RTPCIDeleteSenderModule *>(ci));
+            deleteSenderModule(msg->removeMandatoryTag<RTPCIDeleteSenderModule>());
             break;
 
         case RTP_IFP_SENDER_CONTROL:
-            senderModuleControl(check_and_cast<RTPCISenderControl *>(ci));
+            senderModuleControl(msg->removeMandatoryTag<RTPCISenderControl>());
             break;
 
         case RTP_IFP_LEAVE_SESSION:
-            leaveSession(check_and_cast<RTPCILeaveSession *>(ci));
+            leaveSession(msg->removeMandatoryTag<RTPCILeaveSession>());
             break;
 
         default:
-            throw cRuntimeError("Unknown RTPControlInfo type from application");
+            throw cRuntimeError("Unknown RTPControlInfo type from application: %i", msg->getKind());
     }
+    delete msg;
 }
 
 void RTP::handleMessageFromProfile(cMessage *msg)
@@ -258,10 +258,9 @@ void RTP::profileInitialized(RTPInnerPacket *rinp)
 
 void RTP::senderModuleCreated(RTPInnerPacket *rinp)
 {
-    RTPCISenderModuleCreated *ci = new RTPCISenderModuleCreated();
-    ci->setSsrc(rinp->getSsrc());
     cMessage *msg = new RTPControlMsg("senderModuleCreated()");
-    msg->setControlInfo(ci);
+    RTPCISenderModuleCreated *ci = msg->ensureTag<RTPCISenderModuleCreated>();
+    ci->setSsrc(rinp->getSsrc());
     send(msg, "appOut");
 
     delete rinp;
@@ -269,10 +268,9 @@ void RTP::senderModuleCreated(RTPInnerPacket *rinp)
 
 void RTP::senderModuleDeleted(RTPInnerPacket *rinp)
 {
-    RTPCISenderModuleDeleted *ci = new RTPCISenderModuleDeleted();
-    ci->setSsrc(rinp->getSsrc());
     cMessage *msg = new RTPControlMsg("senderModuleDeleted()");
-    msg->setControlInfo(ci);
+    RTPCISenderModuleDeleted *ci = msg->ensureTag<RTPCISenderModuleDeleted>();
+    ci->setSsrc(rinp->getSsrc());
     send(msg, "appOut");
     // perhaps we should send a message to rtcp module
     delete rinp;
@@ -286,12 +284,11 @@ void RTP::senderModuleInitialized(RTPInnerPacket *rinp)
 void RTP::senderModuleStatus(RTPInnerPacket *rinp)
 {
     RTPSenderStatusMessage *ssm = (RTPSenderStatusMessage *)(rinp->decapsulate());
-    RTPCISenderStatus *ci = new RTPCISenderStatus();
+    cMessage *msg = new RTPControlMsg("senderModuleStatus()");
+    RTPCISenderStatus *ci = msg->ensureTag<RTPCISenderStatus>();
     ci->setSsrc(rinp->getSsrc());
     ci->setStatus(ssm->getStatus());
     ci->setTimeStamp(ssm->getTimeStamp());
-    cMessage *msg = new RTPControlMsg("senderModuleStatus()");
-    msg->setControlInfo(ci);
     send(msg, "appOut");
     delete ssm;
     delete rinp;
@@ -309,10 +306,9 @@ void RTP::dataOut(RTPInnerPacket *rinp)
 
 void RTP::rtcpInitialized(RTPInnerPacket *rinp)
 {
-    RTPCISessionEntered *ci = new RTPCISessionEntered();
-    ci->setSsrc(rinp->getSsrc());
     cMessage *msg = new RTPControlMsg("sessionEntered()");
-    msg->setControlInfo(ci);
+    RTPCISessionEntered *ci = msg->ensureTag<RTPCISessionEntered>();
+    ci->setSsrc(rinp->getSsrc());
     send(msg, "appOut");
 
     delete rinp;
@@ -320,9 +316,8 @@ void RTP::rtcpInitialized(RTPInnerPacket *rinp)
 
 void RTP::sessionLeft(RTPInnerPacket *rinp)
 {
-    RTPCISessionLeft *ci = new RTPCISessionLeft();
     cMessage *msg = new RTPControlMsg("sessionLeft()");
-    msg->setControlInfo(ci);
+    RTPCISessionLeft *ci = msg->ensureTag<RTPCISessionLeft>();
     send(msg, "appOut");
 
     delete rinp;
