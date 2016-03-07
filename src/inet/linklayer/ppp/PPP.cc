@@ -374,7 +374,11 @@ void PPP::displayIdle()
 
 void PPP::updateDisplayString()
 {
-    if (datarateChannel != nullptr) {
+    if (getEnvir()->isExpressMode()) {
+        // speed up things
+        getDisplayString().setTagArg("t", 0, "");
+    }
+    else if (datarateChannel != nullptr) {
         char datarateText[40];
 
         double datarate = datarateChannel->getNominalDatarate();
@@ -456,3 +460,4 @@ void PPP::clearQueue()
 }
 
 } // namespace inet
+
