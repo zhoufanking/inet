@@ -1,0 +1,187 @@
+TODO: az osszes TAG szarmazzon egy Base Class-bol
+
+used tags:
+        Ieee802CtrlIndicationTag : etherType, interfaceId, switchPort, userPriority, ssap, dsap, pauseUnits;
+        Ieee802CtrlRequestTag    : etherType, interfaceId, switchPort, userPriority, ssap, dsap, pauseUnits;
+        InterfaceIdIndicationTag : interfaceId
+        InterfaceIdRequestTag    : interfaceId
+        LinkLayerAddressIndicationTag : src, dest;
+        LinkLayerAddressRequestTag    : src, dest;
+
+        RTPCICreateSenderModule : type, ssrc, payloadType, fileName;
+        RTPCIEnterSession : type, commonName, profileName, bandwidth, destinationAddress, port;
+        RTPCILeaveSession : type;
+        RTPCISenderControl : type, ssrc, command, commandParameter1, commandParameter2;
+        RTPCISenderModuleCreated : type, ssrc;
+        RTPCISenderModuleDeleted : type, ssrc;
+        RTPCISenderStatus : type, ssrc, status, timeStamp;
+        RTPCISessionEntered : type, ssrc;
+        RTPCISessionLeft : type;
+
+        UDPBindCommand : localAddr, localPort;
+        UDPBlockMulticastSourcesCommand : sockId, interfaceId, multicastAddr, sourceList[];
+        UDPCloseCommand : sockId;
+        UDPConnectCommand : remoteAddr, remotePort;
+        UDPDataIndication : sockId, srcAddr, destAddr, srcPort, destPort, ttl, typeOfService;
+        UDPErrorIndication : sockId, srcAddr, destAddr, srcPort, destPort;
+        UDPJoinMulticastGroupsCommand : sockId, multicastAddr[], interfaceId[];
+        UDPJoinMulticastSourcesCommand: sockId, interfaceId, sourceList[];
+        UDPLeaveMulticastGroupsCommand : sockId, multicastAddr[];
+        UDPLeaveMulticastSourcesCommand : sockId, interfaceId, multicastAddr, sourceList[];
+        UDPSendCommand : destAddr, destPort, srcAddr, interfaceId; !!! TODO interfaceId
+        UDPSetBroadcastCommand : sockId, broadcast;
+        UDPSetMulticastInterfaceCommand : sockId, interfaceId;
+        UDPSetMulticastLoopCommand : sockId, loop;
+        UDPSetMulticastSourceFilterCommand : sockId, interfaceId, multicastAddr, filterMode, sourceList[];
+        UDPSetReuseAddressCommand : sockId, reuseAddress;
+        UDPSetTimeToLiveCommand : sockId, ttl;
+        UDPSetTypeOfServiceCommand : sockId, tos;
+        UDPSocketIdRequestTag : sockId;
+        UDPUnblockMulticastSourcesCommand : sockId, interfaceId, multicastAddr, sourceList[];
+-----------------------------------------------------------------
+Ieee802Ctrl -->
+        Ieee802CtrlRequestTag / Ieee802CtrlIndicationTag
+        LinkLayerAddressRequestTag / LinkLayerAddressIndicationTag
+        InterfaceIdRequestTag / InterfaceIdIndicationTag
+
+SimpleLinkLayerControlInfo -->
+        LinkLayerAddressRequestTag / LinkLayerAddressIndicationTag
+        InterfaceIdRequestTag / InterfaceIdIndicationTag
+
+RTPCICreateSenderModule -->
+        RTPCICreateSenderModule
+
+RTPCIEnterSession -->
+        RTPCIEnterSession
+
+RTPCILeaveSession -->
+        RTPCILeaveSession
+
+RTPCISenderControl -->
+        RTPCISenderControl
+
+RTPCISenderModuleCreated -->
+        RTPCISenderModuleCreated
+
+RTPCISenderModuleDeleted -->
+        RTPCISenderModuleDeleted
+
+RTPCISenderStatus -->
+        RTPCISenderStatus
+
+RTPCISessionEntered -->
+        RTPCISessionEntered
+
+RTPCISessionLeft -->
+        RTPCISessionLeft
+
+SimpleNetworkProtocolControlInfo -->
+        SimpleNetworkProtocolControlInfo
+
+UDPDataIndication -->
+        UDPDataIndication
+        InterfaceIdIndicationTag
+
+UDPBindCommand -->
+        UDPBindCommand
+        UDPSocketIdRequestTag
+
+UDPCloseCommand -->
+        UDPCloseCommand
+        UDPSocketIdRequestTag
+
+UDPConnectCommand -->
+        UDPConnectCommand
+        UDPSocketIdRequestTag
+
+UDPSendCommand -->
+        UDPSendCommand
+        UDPSocketIdRequestTag
+
+UDPSetBroadcastCommand -->
+        UDPSetBroadcastCommand
+        UDPSocketIdRequestTag
+
+UDPSetTimeToLiveCommand -->
+        UDPSetTimeToLiveCommand
+        UDPSocketIdRequestTag
+
+UDPSetTypeOfServiceCommand -->
+        UDPSetTypeOfServiceCommand
+        UDPSocketIdRequestTag
+
+UDPSetMulticastInterfaceCommand -->
+        UDPSetMulticastInterfaceCommand
+        UDPSocketIdRequestTag
+
+UDPSetMulticastLoopCommand -->
+        UDPSetMulticastLoopCommand
+        UDPSocketIdRequestTag
+
+UDPSetReuseAddressCommand -->
+        UDPSetReuseAddressCommand
+        UDPSocketIdRequestTag
+
+UDPJoinMulticastGroupsCommand -->
+        UDPJoinMulticastGroupsCommand
+        UDPSocketIdRequestTag
+
+UDPLeaveMulticastGroupsCommand -->
+        UDPLeaveMulticastGroupsCommand
+        UDPSocketIdRequestTag
+
+UDPBlockMulticastSourcesCommand -->
+        UDPBlockMulticastSourcesCommand
+        UDPSocketIdRequestTag
+
+UDPUnblockMulticastSourcesCommand -->
+        UDPUnblockMulticastSourcesCommand
+        UDPSocketIdRequestTag
+
+UDPJoinMulticastSourcesCommand -->
+        UDPJoinMulticastSourcesCommand
+        UDPSocketIdRequestTag
+
+UDPLeaveMulticastSourcesCommand -->
+        UDPLeaveMulticastSourcesCommand
+        UDPSocketIdRequestTag
+
+UDPSetMulticastSourceFilterCommand -->
+        UDPSetMulticastSourceFilterCommand
+        UDPSocketIdRequestTag
+
+------------------------------------------------
+
+used controlinfos:
+        ConfigureRadioCommand : radioMode, power, bitrate, modulation, carrierFrequency, bandwidth;
+        INetworkProtocolControlInfo* (type selection based on destAddr.addressType)
+        Ieee80211ConfigureRadioCommand : =ConfigureRadioCommand=, opMode, modeSet, mode, band, channel, channelNumber;
+        Ieee80211PrimRequest : -empty-;
+        Ieee80211PrimConfirm : resultCode;
+        Ieee80211Prim_ScanRequest : BSSType, BSSID, SSID, activeScan, probeDelay, channelList[], minChannelTime, maxhannelTime;
+        IPv4ControlInfo : destAddr, srcAddr, interfaceId, multicastLoop, protocol, tos, diffServCodePoint, explicitCongestionNotification, ttl, dontFragment;
+        IPv6ControlInfo : protocol, destAddr, srcAddr, trafficClass, diffServCodePoint, explicitCongestionNotification, hopLimit, interfaceId, multicastLoop, extensionHeader[];
+        IPv6NDControlInfo : nextHop, interfaceId, fromHL;
+        GenericNetworkProtocolControlInfo : destinationAddress, sourceAddress, interfaceId, protocol, hopLimit;
+        SimpleNetworkProtocolControlInfo : destinationAddress, sourceAddress, interfaceId, protocol, hopLimit;
+
+        SCTPCommand*
+        SCTPConnectInfo
+        SCTPInfo
+        SCTPOpenCommand
+        SCTPPathInfo
+        SCTPRcvInfo
+        SCTPResetInfo
+        SCTPSendInfo (this is a cPacket!!!)
+        SCTPSendQueueAbated
+        SCTPStatusInfo
+
+        TCPCommand : connId, userId;
+        TCPConnectInfo : connId, userId, localAddr, remoteAddr, localPort, remotePort;
+        TCPOpenCommand : connId, userId, localAddr, remoteAddr, localPort, remotePort, fork, dataTransferMode, tcpAlgorithmClass;
+        TCPSendCommand : connId, userId;
+        TCPStatusInfo : connId, userId, state, stateName, localAddr, remoteAddr, localPort, remotePort, -statusvariables-;
+
+        TransmissionRequest : power, bitrate, carrierFrequency, bandwidth;
+        RadioFrame
+        ReceptionIndication : bitErrorCount, symbolErrorCount, packetErrorRate, bitErrorRate, symbolErrorRate, minRSSI, minSNIR;
