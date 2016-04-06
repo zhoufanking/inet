@@ -23,7 +23,7 @@ namespace inet {
 
 TCPSocket *TCPSocketMap::findSocketFor(cMessage *msg)
 {
-    TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
+    TCPCommand *ind = msg->getTag<TCPCommand>();
     if (!ind)
         throw cRuntimeError("TCPSocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
 

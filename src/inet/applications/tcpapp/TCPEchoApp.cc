@@ -109,10 +109,11 @@ void TCPEchoApp::handleMessage(cMessage *msg)
         else {
             // reverse direction, modify length, and send it back
             pkt->setKind(TCP_C_SEND);
-            TCPCommand *ind = check_and_cast<TCPCommand *>(pkt->removeControlInfo());
-            TCPSendCommand *cmd = new TCPSendCommand();
+            TCPCommand *ind = pkt->removeMandatoryTag<TCPCommand>();
+            pkt->clearTags();
+            TCPCommand *cmd = pkt->ensureTag<TCPCommand>();
+            pkt->ensureTag<TCPSendCommand>();
             cmd->setConnId(ind->getConnId());
-            pkt->setControlInfo(cmd);
             delete ind;
 
             long byteLen = pkt->getByteLength() * echoFactor;

@@ -122,16 +122,17 @@ void TCPGenericSrvApp::handleMessage(cMessage *msg)
             maxMsgDelay = msgDelay;
 
         bool doClose = appmsg->getServerClose();
-        int connId = check_and_cast<TCPCommand *>(appmsg->getControlInfo())->getConnId();
+        int connId = appmsg->getMandatoryTag<TCPCommand>()->getConnId();
 
         if (requestedBytes == 0) {
             delete msg;
         }
         else {
             delete appmsg->removeControlInfo();
-            TCPSendCommand *cmd = new TCPSendCommand();
+            appmsg->clearTags();
+            TCPCommand *cmd = appmsg->ensureTag<TCPCommand>();
+            TCPSendCommand *sendCmd = appmsg->ensureTag<TCPSendCommand>();
             cmd->setConnId(connId);
-            appmsg->setControlInfo(cmd);
 
             // set length and send it back
             appmsg->setKind(TCP_C_SEND);
@@ -142,9 +143,8 @@ void TCPGenericSrvApp::handleMessage(cMessage *msg)
         if (doClose) {
             cMessage *msg = new cMessage("close");
             msg->setKind(TCP_C_CLOSE);
-            TCPCommand *cmd = new TCPCommand();
+            TCPCommand *cmd = msg->ensureTag<TCPCommand>();
             cmd->setConnId(connId);
-            msg->setControlInfo(cmd);
             sendOrSchedule(msg, delay + maxMsgDelay);
         }
     }

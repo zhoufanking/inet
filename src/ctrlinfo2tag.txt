@@ -18,6 +18,12 @@ used tags:
         RTPCISessionEntered : type, ssrc;
         RTPCISessionLeft : type;
 
+        TCPCommand : connId, userId;
+        TCPConnectInfo : localAddr, remoteAddr, localPort, remotePort; required: TCPCommand
+        TCPOpenCommand : localAddr, remoteAddr, localPort, remotePort, fork, dataTransferMode, tcpAlgorithmClass; required: TCPCommand
+        TCPSendCommand : -empty-; required: TCPCommand
+        TCPStatusInfo  : state, stateName, localAddr, remoteAddr, localPort, remotePort, -statusvariables-; required: TCPCommand
+
         UDPBindCommand : localAddr, localPort;
         UDPBlockMulticastSourcesCommand : sockId, interfaceId, multicastAddr, sourceList[];
         UDPCloseCommand : sockId;
@@ -77,6 +83,10 @@ RTPCISessionLeft -->
 
 SimpleNetworkProtocolControlInfo -->
         SimpleNetworkProtocolControlInfo
+
+TCPCommand, TCPConnectInfo, TCPOpenCommand, TCPSendCommand, TCPStatusInfo :
+        TCPCommand is a simple Tag, other TCP* tags don't depend on it.
+        When use any other TCP* tag, you must use a TCPCommand Tag, too.
 
 UDPDataIndication -->
         UDPDataIndication
@@ -175,12 +185,6 @@ used controlinfos:
         SCTPSendInfo (this is a cPacket!!!)
         SCTPSendQueueAbated
         SCTPStatusInfo
-
-        TCPCommand : connId, userId;
-        TCPConnectInfo : =TCPCommand=, localAddr, remoteAddr, localPort, remotePort;
-        TCPOpenCommand : =TCPCommand=, localAddr, remoteAddr, localPort, remotePort, fork, dataTransferMode, tcpAlgorithmClass;
-        TCPSendCommand : =TCPCommand=;
-        TCPStatusInfo  : =TCPCommand=, state, stateName, localAddr, remoteAddr, localPort, remotePort, -statusvariables-;
 
         TransmissionRequest : power, bitrate, carrierFrequency, bandwidth;
         RadioFrame : four pointers;

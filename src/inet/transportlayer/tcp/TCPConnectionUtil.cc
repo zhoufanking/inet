@@ -293,10 +293,9 @@ void TCPConnection::sendIndicationToApp(int code, const int id)
     EV_INFO << "Notifying app: " << indicationName(code) << "\n";
     cMessage *msg = new cMessage(indicationName(code));
     msg->setKind(code);
-    TCPCommand *ind = new TCPCommand();
+    TCPCommand *ind = msg->ensureTag<TCPCommand>();
     ind->setConnId(connId);
     ind->setUserId(id);
-    msg->setControlInfo(ind);
     sendToApp(msg);
 }
 
@@ -306,14 +305,14 @@ void TCPConnection::sendEstabIndicationToApp()
     cMessage *msg = new cMessage(indicationName(TCP_I_ESTABLISHED));
     msg->setKind(TCP_I_ESTABLISHED);
 
-    TCPConnectInfo *ind = new TCPConnectInfo();
-    ind->setConnId(connId);
+    TCPCommand *cmd = msg->ensureTag<TCPCommand>();
+    TCPConnectInfo *ind = msg->ensureTag<TCPConnectInfo>();
+    cmd->setConnId(connId);
     ind->setLocalAddr(localAddr);
     ind->setRemoteAddr(remoteAddr);
     ind->setLocalPort(localPort);
     ind->setRemotePort(remotePort);
 
-    msg->setControlInfo(ind);
     sendToApp(msg);
 }
 

@@ -273,13 +273,13 @@ void TCP_NSC::sendEstablishedMsg(TCP_NSC_Connection& connP)
 
     cMessage *msg = new cMessage("TCP_I_ESTABLISHED");
     msg->setKind(TCP_I_ESTABLISHED);
-    TCPConnectInfo *tcpConnectInfo = new TCPConnectInfo();
-    tcpConnectInfo->setConnId(connP.connIdM);
+    TCPCommand *tcpCommand = msg->ensureTag<TCPCommand>();
+    TCPConnectInfo *tcpConnectInfo = msg->ensureTag<TCPConnectInfo>();
+    tcpCommand->setConnId(connP.connIdM);
     tcpConnectInfo->setLocalAddr(connP.inetSockPairM.localM.ipAddrM);
     tcpConnectInfo->setRemoteAddr(connP.inetSockPairM.remoteM.ipAddrM);
     tcpConnectInfo->setLocalPort(connP.inetSockPairM.localM.portM);
     tcpConnectInfo->setRemotePort(connP.inetSockPairM.remoteM.portM);
-    msg->setControlInfo(tcpConnectInfo);
     send(msg, "appOut", connP.appGateIndexM);
     connP.sentEstablishedM = true;
 }
@@ -523,13 +523,13 @@ void TCP_NSC::sendDataToApp(TCP_NSC_Connection& c)
     cPacket *dataMsg;
 
     while (nullptr != (dataMsg = c.receiveQueueM->extractBytesUpTo())) {
-        TCPConnectInfo *tcpConnectInfo = new TCPConnectInfo();
-        tcpConnectInfo->setConnId(c.connIdM);
+        TCPCommand *tcpCommand = dataMsg->ensureTag<TCPCommand>();
+        TCPConnectInfo *tcpConnectInfo = dataMsg->ensureTag<TCPConnectInfo>();
+        tcpCommand->setConnId(c.connIdM);
         tcpConnectInfo->setLocalAddr(c.inetSockPairM.localM.ipAddrM);
         tcpConnectInfo->setRemoteAddr(c.inetSockPairM.remoteM.ipAddrM);
         tcpConnectInfo->setLocalPort(c.inetSockPairM.localM.portM);
         tcpConnectInfo->setRemotePort(c.inetSockPairM.remoteM.portM);
-        dataMsg->setControlInfo(tcpConnectInfo);
         // send Msg to Application layer:
         send(dataMsg, "appOut", c.appGateIndexM);
     }
@@ -572,10 +572,9 @@ void TCP_NSC::sendErrorNotificationToApp(TCP_NSC_Connection& c, int err)
     if (code != -1) {
         cMessage *msg = new cMessage(name);
         msg->setKind(code);
-        TCPCommand *ind = new TCPCommand();
-                    ind->setConnId(c.connIdM);
-        msg->setControlInfo(ind);
-                    send(msg, "appOut", c.appGateIndexM);
+        TCPCommand *ind = msg->ensureTag<TCPCommand>();
+        ind->setConnId(c.connIdM);
+        send(msg, "appOut", c.appGateIndexM);
     }
 }
 
@@ -611,13 +610,13 @@ TCP_NSC_ReceiveQueue *TCP_NSC::createReceiveQueue(TCPDataTransferMode transferMo
 
 void TCP_NSC::handleAppMessage(cMessage *msgP)
 {
-    TCPCommand *controlInfo = check_and_cast<TCPCommand *>(msgP->getControlInfo());
+    TCPCommand *controlInfo = msgP->getMandatoryTag<TCPCommand>();
     int connId = controlInfo->getConnId();
 
     TCP_NSC_Connection *conn = findAppConn(connId);
 
     if (!conn) {
-        TCPOpenCommand *openCmd = check_and_cast<TCPOpenCommand *>(controlInfo);
+        TCPOpenCommand *openCmd = msgP->getMandatoryTag<TCPOpenCommand>();
 
         // add into appConnMap
         conn = &tcpAppConnMapM[connId];
@@ -929,31 +928,29 @@ void TCP_NSC::processAppCommand(TCP_NSC_Connection& connP, cMessage *msgP)
     printConnBrief(connP);
 
     // first do actions
-    TCPCommand *tcpCommand = (TCPCommand *)(msgP->removeControlInfo());
-
     switch (msgP->getKind()) {
         case TCP_C_OPEN_ACTIVE:
-            process_OPEN_ACTIVE(connP, tcpCommand, msgP);
+            process_OPEN_ACTIVE(connP, msgP);
             break;
 
         case TCP_C_OPEN_PASSIVE:
-            process_OPEN_PASSIVE(connP, tcpCommand, msgP);
+            process_OPEN_PASSIVE(connP, msgP);
             break;
 
         case TCP_C_SEND:
-            process_SEND(connP, tcpCommand, check_and_cast<cPacket *>(msgP));
+            process_SEND(connP, check_and_cast<cPacket *>(msgP));
             break;
 
         case TCP_C_CLOSE:
-            process_CLOSE(connP, tcpCommand, msgP);
+            process_CLOSE(connP, msgP);
             break;
 
         case TCP_C_ABORT:
-            process_ABORT(connP, tcpCommand, msgP);
+            process_ABORT(connP, msgP);
             break;
 
         case TCP_C_STATUS:
-            process_STATUS(connP, tcpCommand, msgP);
+            process_STATUS(connP, msgP);
             break;
 
         default:
@@ -967,9 +964,10 @@ void TCP_NSC::processAppCommand(TCP_NSC_Connection& connP, cMessage *msgP)
      */
 }
 
-void TCP_NSC::process_OPEN_ACTIVE(TCP_NSC_Connection& connP, TCPCommand *tcpCommandP, cMessage *msgP)
+void TCP_NSC::process_OPEN_ACTIVE(TCP_NSC_Connection& connP, cMessage *msgP)
 {
-    TCPOpenCommand *openCmd = check_and_cast<TCPOpenCommand *>(tcpCommandP);
+    TCPCommand *tcpCommandP = msgP->getMandatoryTag<TCPCommand>();
+    TCPOpenCommand *openCmd = msgP->getMandatoryTag<TCPOpenCommand>();
 
     TCP_NSC_Connection::SockPair inetSockPair, nscSockPair;
     inetSockPair.localM.ipAddrM = openCmd->getLocalAddr();
@@ -1006,15 +1004,15 @@ void TCP_NSC::process_OPEN_ACTIVE(TCP_NSC_Connection& connP, TCPCommand *tcpComm
     // TODO sendToIp already set the addresses.
     //changeAddresses(connP, inetSockPair, nscSockPair);
 
-    delete tcpCommandP;
     delete msgP;
 }
 
-void TCP_NSC::process_OPEN_PASSIVE(TCP_NSC_Connection& connP, TCPCommand *tcpCommandP, cMessage *msgP)
+void TCP_NSC::process_OPEN_PASSIVE(TCP_NSC_Connection& connP, cMessage *msgP)
 {
     ASSERT(pStackM);
 
-    TCPOpenCommand *openCmd = check_and_cast<TCPOpenCommand *>(tcpCommandP);
+    TCPCommand *tcpCommandP = msgP->getMandatoryTag<TCPCommand>();
+    TCPOpenCommand *openCmd = msgP->getMandatoryTag<TCPOpenCommand>();
 
     if (!openCmd->getFork())
         throw cRuntimeError("TCP_NSC supports Forking mode only");
@@ -1052,13 +1050,14 @@ void TCP_NSC::process_OPEN_PASSIVE(TCP_NSC_Connection& connP, TCPCommand *tcpCom
 
     changeAddresses(connP, inetSockPair, nscSockPair);
 
-    delete openCmd;
     delete msgP;
 }
 
-void TCP_NSC::process_SEND(TCP_NSC_Connection& connP, TCPCommand *tcpCommandP, cPacket *msgP)
+void TCP_NSC::process_SEND(TCP_NSC_Connection& connP, cPacket *msgP)
 {
-    TCPSendCommand *sendCommand = check_and_cast<TCPSendCommand *>(tcpCommandP);
+    TCPCommand *tcpCommandP = msgP->removeMandatoryTag<TCPCommand>();
+    TCPSendCommand *sendCommand = msgP->removeMandatoryTag<TCPSendCommand>();
+    delete tcpCommandP;
     delete sendCommand;
 
     connP.send(msgP);
@@ -1074,31 +1073,33 @@ void TCP_NSC::do_SEND_all()
     }
 }
 
-void TCP_NSC::process_CLOSE(TCP_NSC_Connection& connP, TCPCommand *tcpCommandP, cMessage *msgP)
+void TCP_NSC::process_CLOSE(TCP_NSC_Connection& connP, cMessage *msgP)
 {
     EV_INFO << this << ": process_CLOSE()\n";
 
-    delete tcpCommandP;
+    TCPCommand *tcpCommandP = msgP->getMandatoryTag<TCPCommand>();
     delete msgP;
 
     connP.close();
 }
 
-void TCP_NSC::process_ABORT(TCP_NSC_Connection& connP, TCPCommand *tcpCommandP, cMessage *msgP)
+void TCP_NSC::process_ABORT(TCP_NSC_Connection& connP, cMessage *msgP)
 {
     EV_INFO << this << ": process_ABORT()\n";
 
-    delete tcpCommandP;
+    TCPCommand *tcpCommandP = msgP->getMandatoryTag<TCPCommand>();
     delete msgP;
 
     connP.abort();
 }
 
-void TCP_NSC::process_STATUS(TCP_NSC_Connection& connP, TCPCommand *tcpCommandP, cMessage *msgP)
+void TCP_NSC::process_STATUS(TCP_NSC_Connection& connP, cMessage *msgP)
 {
-    delete tcpCommandP;    // but we'll reuse msg for reply
+    TCPCommand *tcpCommandP = msgP->removeMandatoryTag<TCPCommand>();
+    delete tcpCommandP;
 
-    TCPStatusInfo *statusInfo = new TCPStatusInfo();
+    // but we'll reuse msg for reply
+    TCPStatusInfo *statusInfo = msgP->ensureTag<TCPStatusInfo>();
 
     /*
        ...
@@ -1145,7 +1146,6 @@ void TCP_NSC::process_STATUS(TCP_NSC_Connection& connP, TCPCommand *tcpCommandP,
     statusInfo->setFin_ack_rcvd(state->fin_ack_rcvd);
  */
 
-    msgP->setControlInfo(statusInfo);
     msgP->setKind(TCP_I_STATUS);
     send(msgP, "appOut", connP.appGateIndexM);
 }

@@ -34,7 +34,7 @@ namespace tcp {
 
 void TCPConnection::process_OPEN_ACTIVE(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg)
 {
-    TCPOpenCommand *openCmd = check_and_cast<TCPOpenCommand *>(tcpCommand);
+    TCPOpenCommand *openCmd = msg->removeMandatoryTag<TCPOpenCommand>();
     L3Address localAddr, remoteAddr;
     int localPort, remotePort;
 
@@ -72,13 +72,14 @@ void TCPConnection::process_OPEN_ACTIVE(TCPEventCode& event, TCPCommand *tcpComm
             throw cRuntimeError(tcpMain, "Error processing command OPEN_ACTIVE: connection already exists");
     }
 
+    delete tcpCommand;
     delete openCmd;
     delete msg;
 }
 
 void TCPConnection::process_OPEN_PASSIVE(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg)
 {
-    TCPOpenCommand *openCmd = check_and_cast<TCPOpenCommand *>(tcpCommand);
+    TCPOpenCommand *openCmd = msg->removeMandatoryTag<TCPOpenCommand>();
     L3Address localAddr;
     int localPort;
 
@@ -104,13 +105,14 @@ void TCPConnection::process_OPEN_PASSIVE(TCPEventCode& event, TCPCommand *tcpCom
             throw cRuntimeError(tcpMain, "Error processing command OPEN_PASSIVE: connection already exists");
     }
 
+    delete tcpCommand;
     delete openCmd;
     delete msg;
 }
 
 void TCPConnection::process_SEND(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg)
 {
-    TCPSendCommand *sendCommand = check_and_cast<TCPSendCommand *>(tcpCommand);
+    TCPSendCommand *sendCommand = msg->removeMandatoryTag<TCPSendCommand>();
 
     // FIXME how to support PUSH? One option is to treat each SEND as a unit of data,
     // and set PSH at SEND boundaries
@@ -156,6 +158,7 @@ void TCPConnection::process_SEND(TCPEventCode& event, TCPCommand *tcpCommand, cM
         state->queueUpdate = false;
 
     delete sendCommand;    // msg itself has been taken by the sendQueue
+    delete tcpCommand;
 }
 
 void TCPConnection::process_READ_REQUEST(TCPEventCode& event, TCPCommand *tcpCommand, cMessage *msg)
@@ -165,9 +168,8 @@ void TCPConnection::process_READ_REQUEST(TCPEventCode& event, TCPCommand *tcpCom
     while ((dataMsg = receiveQueue->extractBytesUpTo(state->rcv_nxt)) != nullptr)
     {
         dataMsg->setKind(TCP_I_DATA);
-        TCPCommand *cmd = new TCPCommand();
+        TCPCommand *cmd = dataMsg->ensureTag<TCPCommand>();
         cmd->setConnId(connId);
-        dataMsg->setControlInfo(cmd);
         sendToApp(dataMsg);
     }
 }
@@ -268,7 +270,9 @@ void TCPConnection::process_STATUS(TCPEventCode& event, TCPCommand *tcpCommand, 
     if (fsm.getState() == TCP_S_INIT)
         throw cRuntimeError("Error processing command STATUS: connection not open");
 
-    TCPStatusInfo *statusInfo = new TCPStatusInfo();
+    msg->clearTags();
+    TCPCommand *cmd = msg->ensureTag<TCPCommand>();
+    TCPStatusInfo *statusInfo = msg->ensureTag<TCPStatusInfo>();
 
     statusInfo->setState(fsm.getState());
     statusInfo->setStateName(stateName(fsm.getState()));
@@ -293,7 +297,6 @@ void TCPConnection::process_STATUS(TCPEventCode& event, TCPCommand *tcpCommand, 
     statusInfo->setIrs(state->irs);
     statusInfo->setFin_ack_rcvd(state->fin_ack_rcvd);
 
-    msg->setControlInfo(statusInfo);
     msg->setKind(TCP_I_STATUS);
     sendToApp(msg);
 }

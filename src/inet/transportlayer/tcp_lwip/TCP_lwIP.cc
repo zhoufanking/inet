@@ -331,13 +331,13 @@ err_t TCP_lwIP::tcp_event_recv(TcpLwipConnection& conn, struct pbuf *p, err_t er
     }
 
     while (cPacket *dataMsg = conn.receiveQueueM->extractBytesUpTo()) {
-        TCPConnectInfo *tcpConnectInfo = new TCPConnectInfo();
-        tcpConnectInfo->setConnId(conn.connIdM);
+        TCPCommand *tcpCommand = dataMsg->ensureTag<TCPCommand>();
+        TCPConnectInfo *tcpConnectInfo = dataMsg->ensureTag<TCPConnectInfo>();
+        tcpCommand->setConnId(conn.connIdM);
         tcpConnectInfo->setLocalAddr(conn.pcbM->local_ip.addr);
         tcpConnectInfo->setRemoteAddr(conn.pcbM->remote_ip.addr);
         tcpConnectInfo->setLocalPort(conn.pcbM->local_port);
         tcpConnectInfo->setRemotePort(conn.pcbM->remote_port);
-        dataMsg->setControlInfo(tcpConnectInfo);
         // send Msg to Application layer:
         send(dataMsg, "appOut", conn.appGateIndexM);
     }
@@ -396,13 +396,13 @@ struct netif *TCP_lwIP::ip_route(L3Address const& ipAddr)
 
 void TCP_lwIP::handleAppMessage(cMessage *msgP)
 {
-    TCPCommand *controlInfo = check_and_cast<TCPCommand *>(msgP->getControlInfo());
+    TCPCommand *controlInfo = msgP->getMandatoryTag<TCPCommand>();
     int connId = controlInfo->getConnId();
 
     TcpLwipConnection *conn = findAppConn(connId);
 
     if (!conn) {
-        TCPOpenCommand *openCmd = check_and_cast<TCPOpenCommand *>(controlInfo);
+        TCPOpenCommand *openCmd = msgP->getMandatoryTag<TCPOpenCommand>();
 
         TCPDataTransferMode dataTransferMode = (TCPDataTransferMode)(openCmd->getDataTransferMode());
 
@@ -650,32 +650,30 @@ void TCP_lwIP::processAppCommand(TcpLwipConnection& connP, cMessage *msgP)
     printConnBrief(connP);
 
     // first do actions
-    TCPCommand *tcpCommand = check_and_cast<TCPCommand *>(msgP->removeControlInfo());
 
     switch (msgP->getKind()) {
         case TCP_C_OPEN_ACTIVE:
-            process_OPEN_ACTIVE(connP, check_and_cast<TCPOpenCommand *>(tcpCommand), msgP);
+            process_OPEN_ACTIVE(connP, msgP);
             break;
 
         case TCP_C_OPEN_PASSIVE:
-            process_OPEN_PASSIVE(connP, check_and_cast<TCPOpenCommand *>(tcpCommand), msgP);
+            process_OPEN_PASSIVE(connP, msgP);
             break;
 
         case TCP_C_SEND:
-            process_SEND(connP, check_and_cast<TCPSendCommand *>(tcpCommand),
-                check_and_cast<cPacket *>(msgP));
+            process_SEND(connP, check_and_cast<cPacket *>(msgP));
             break;
 
         case TCP_C_CLOSE:
-            process_CLOSE(connP, tcpCommand, msgP);
+            process_CLOSE(connP, msgP);
             break;
 
         case TCP_C_ABORT:
-            process_ABORT(connP, tcpCommand, msgP);
+            process_ABORT(connP, msgP);
             break;
 
         case TCP_C_STATUS:
-            process_STATUS(connP, tcpCommand, msgP);
+            process_STATUS(connP, msgP);
             break;
 
         default:
@@ -683,9 +681,9 @@ void TCP_lwIP::processAppCommand(TcpLwipConnection& connP, cMessage *msgP)
     }
 }
 
-void TCP_lwIP::process_OPEN_ACTIVE(TcpLwipConnection& connP, TCPOpenCommand *tcpCommandP,
-        cMessage *msgP)
+void TCP_lwIP::process_OPEN_ACTIVE(TcpLwipConnection& connP, cMessage *msgP)
 {
+    TCPOpenCommand *tcpCommandP = msgP->getMandatoryTag<TCPOpenCommand>();
     if (tcpCommandP->getRemoteAddr().isUnspecified() || tcpCommandP->getRemotePort() == -1)
         throw cRuntimeError("Error processing command OPEN_ACTIVE: remote address and port must be specified");
 
@@ -701,15 +699,14 @@ void TCP_lwIP::process_OPEN_ACTIVE(TcpLwipConnection& connP, TCPOpenCommand *tcp
     connP.connect(tcpCommandP->getLocalAddr(), localPort,
             tcpCommandP->getRemoteAddr(), tcpCommandP->getRemotePort());
 
-    delete tcpCommandP;
     delete msgP;
 }
 
-void TCP_lwIP::process_OPEN_PASSIVE(TcpLwipConnection& connP, TCPOpenCommand *tcpCommandP,
-        cMessage *msgP)
+void TCP_lwIP::process_OPEN_PASSIVE(TcpLwipConnection& connP, cMessage *msgP)
 {
     ASSERT(pLwipTcpLayerM);
 
+    TCPOpenCommand *tcpCommandP = msgP->getMandatoryTag<TCPOpenCommand>();
     ASSERT(tcpCommandP->getFork() == true);
 
     if (tcpCommandP->getLocalPort() == -1)
@@ -724,48 +721,46 @@ void TCP_lwIP::process_OPEN_PASSIVE(TcpLwipConnection& connP, TCPOpenCommand *tc
 
     connP.listen(tcpCommandP->getLocalAddr(), tcpCommandP->getLocalPort());
 
-    delete tcpCommandP;
     delete msgP;
 }
 
-void TCP_lwIP::process_SEND(TcpLwipConnection& connP, TCPSendCommand *tcpCommandP, cPacket *msgP)
+void TCP_lwIP::process_SEND(TcpLwipConnection& connP, cPacket *msgP)
 {
     EV_INFO << this << ": processing SEND command, len=" << msgP->getByteLength() << endl;
 
-    delete tcpCommandP;
-
+    delete msgP->removeMandatoryTag<TCPCommand>();
     connP.send(msgP);
 }
 
-void TCP_lwIP::process_CLOSE(TcpLwipConnection& connP, TCPCommand *tcpCommandP, cMessage *msgP)
+void TCP_lwIP::process_CLOSE(TcpLwipConnection& connP, cMessage *msgP)
 {
     EV_INFO << this << ": processing CLOSE(" << connP.connIdM << ") command\n";
 
-    delete tcpCommandP;
+    delete msgP->removeMandatoryTag<TCPCommand>();
     delete msgP;
 
     connP.close();
 }
 
-void TCP_lwIP::process_ABORT(TcpLwipConnection& connP, TCPCommand *tcpCommandP, cMessage *msgP)
+void TCP_lwIP::process_ABORT(TcpLwipConnection& connP, cMessage *msgP)
 {
     EV_INFO << this << ": processing ABORT(" << connP.connIdM << ") command\n";
 
-    delete tcpCommandP;
+    delete msgP->removeMandatoryTag<TCPCommand>();
     delete msgP;
 
     connP.abort();
 }
 
-void TCP_lwIP::process_STATUS(TcpLwipConnection& connP, TCPCommand *tcpCommandP, cMessage *msgP)
+void TCP_lwIP::process_STATUS(TcpLwipConnection& connP, cMessage *msgP)
 {
     EV_INFO << this << ": processing STATUS(" << connP.connIdM << ") command\n";
 
-    delete tcpCommandP;    // but we'll reuse msg for reply
+    delete msgP->removeMandatoryTag<TCPCommand>();
 
-    TCPStatusInfo *statusInfo = new TCPStatusInfo();
+    // but we'll reuse msg for reply
+    TCPStatusInfo *statusInfo = msgP->ensureTag<TCPStatusInfo>();
     connP.fillStatusInfo(*statusInfo);
-    msgP->setControlInfo(statusInfo);
     msgP->setKind(TCP_I_STATUS);
     send(msgP, "appOut", connP.appGateIndexM);
 }

@@ -97,7 +97,7 @@ class TCPCommand
 //
 // Currently not in use.
 //
-class TCPErrorInfo extends TCPCommand
+class TCPErrorInfo //extends TCPCommand
 {
     int errorCode @enum(TCPErrorCode);
     string messageText;
@@ -150,7 +150,7 @@ enum TCPDataTransferMode
 //
 // @see ~TcpCommandCode, ~ITCP
 //
-class TCPOpenCommand extends TCPCommand
+class TCPOpenCommand //extends TCPCommand
 {
     L3Address localAddr; // may be left empty
     L3Address remoteAddr;// required for active open
@@ -167,7 +167,7 @@ class TCPOpenCommand extends TCPCommand
 //
 // @see ~TcpCommandCode, ~ITCP
 //
-class TCPSendCommand extends TCPCommand
+class TCPSendCommand //extends TCPCommand
 {
 }
 
@@ -178,7 +178,7 @@ class TCPSendCommand extends TCPCommand
 //
 // @see ~TcpCommandCode, ~ITCP
 //
-class TCPConnectInfo extends TCPCommand
+class TCPConnectInfo //extends TCPCommand
 {
     L3Address localAddr;
     L3Address remoteAddr;
@@ -194,7 +194,7 @@ class TCPConnectInfo extends TCPCommand
 //
 // @see ~TcpStatusInd, ~TcpCommandCode, ~ITCP
 //
-class TCPStatusInfo extends TCPCommand
+class TCPStatusInfo //extends TCPCommand
 {
     int state;
     string stateName;

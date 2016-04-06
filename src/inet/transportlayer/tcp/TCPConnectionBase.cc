@@ -321,7 +321,7 @@ bool TCPConnection::processAppCommand(cMessage *msg)
     printConnBrief();
 
     // first do actions
-    TCPCommand *tcpCommand = (TCPCommand *)(msg->removeControlInfo());
+    TCPCommand *tcpCommand = msg->removeMandatoryTag<TCPCommand>();
     TCPEventCode event = preanalyseAppCommandEvent(msg->getKind());
     EV_INFO << "App command: " << eventName(event) << "\n";
 

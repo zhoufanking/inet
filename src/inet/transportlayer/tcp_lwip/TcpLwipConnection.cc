@@ -133,17 +133,16 @@ void TcpLwipConnection::sendEstablishedMsg()
     cMessage *msg = new cMessage("TCP_I_ESTABLISHED");
     msg->setKind(TCP_I_ESTABLISHED);
 
-    TCPConnectInfo *tcpConnectInfo = new TCPConnectInfo();
+    TCPCommand *tcpCommand = msg->ensureTag<TCPCommand>();
+    TCPConnectInfo *tcpConnectInfo = msg->ensureTag<TCPConnectInfo>();
 
     L3Address localAddr(pcbM->local_ip.addr), remoteAddr(pcbM->remote_ip.addr);
 
-    tcpConnectInfo->setConnId(connIdM);
+    tcpCommand->setConnId(connIdM);
     tcpConnectInfo->setLocalAddr(localAddr);
     tcpConnectInfo->setRemoteAddr(remoteAddr);
     tcpConnectInfo->setLocalPort(pcbM->local_port);
     tcpConnectInfo->setRemotePort(pcbM->remote_port);
-
-    msg->setControlInfo(tcpConnectInfo);
 
     tcpLwipM.send(msg, "appOut", appGateIndexM);
 }
@@ -176,9 +175,8 @@ void TcpLwipConnection::sendIndicationToApp(int code)
     EV_DETAIL << "Notifying app: " << nameOfIndication << "\n";
     cMessage *msg = new cMessage(nameOfIndication);
     msg->setKind(code);
-    TCPCommand *ind = new TCPCommand();
+    TCPCommand *ind = msg->ensureTag<TCPCommand>();
     ind->setConnId(connIdM);
-    msg->setControlInfo(ind);
     tcpLwipM.send(msg, "appOut", appGateIndexM);
 }
 
