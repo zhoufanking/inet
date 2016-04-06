@@ -177,11 +177,12 @@ used controlinfos:
         SCTPStatusInfo
 
         TCPCommand : connId, userId;
-        TCPConnectInfo : connId, userId, localAddr, remoteAddr, localPort, remotePort;
-        TCPOpenCommand : connId, userId, localAddr, remoteAddr, localPort, remotePort, fork, dataTransferMode, tcpAlgorithmClass;
-        TCPSendCommand : connId, userId;
-        TCPStatusInfo : connId, userId, state, stateName, localAddr, remoteAddr, localPort, remotePort, -statusvariables-;
+        TCPConnectInfo : =TCPCommand=, localAddr, remoteAddr, localPort, remotePort;
+        TCPOpenCommand : =TCPCommand=, localAddr, remoteAddr, localPort, remotePort, fork, dataTransferMode, tcpAlgorithmClass;
+        TCPSendCommand : =TCPCommand=;
+        TCPStatusInfo  : =TCPCommand=, state, stateName, localAddr, remoteAddr, localPort, remotePort, -statusvariables-;
 
         TransmissionRequest : power, bitrate, carrierFrequency, bandwidth;
-        RadioFrame
+        RadioFrame : four pointers;
         ReceptionIndication : bitErrorCount, symbolErrorCount, packetErrorRate, bitErrorRate, symbolErrorRate, minRSSI, minSNIR;
+
