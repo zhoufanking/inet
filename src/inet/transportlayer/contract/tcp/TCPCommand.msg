@@ -17,12 +17,14 @@
 
 
 cplusplus {{
+#include "inet/common/Tag_m.h"
 #include "inet/networklayer/common/L3Address.h"
 }}
 
 namespace inet;
 
 class noncobject L3Address;
+class Tag extends cObject;
 
 //
 // TCP command codes, sent by the application to TCP. These constants
@@ -87,7 +89,7 @@ enum TCPErrorCode
 //
 // @see ~TcpCommandCode, ~TcpStatusInd, ~TCPOpenCommand, ~TCPStatusInfo, ~ITCP
 //
-class TCPCommand
+class TCPCommand extends Tag
 {
     int connId = -1;   // identifies the socket within the application
     int userId = -1;   // id than can be freely used by the app
@@ -97,7 +99,7 @@ class TCPCommand
 //
 // Currently not in use.
 //
-class TCPErrorInfo //extends TCPCommand
+class TCPErrorInfo extends Tag
 {
     int errorCode @enum(TCPErrorCode);
     string messageText;
@@ -150,7 +152,7 @@ enum TCPDataTransferMode
 //
 // @see ~TcpCommandCode, ~ITCP
 //
-class TCPOpenCommand //extends TCPCommand
+class TCPOpenCommand extends Tag
 {
     L3Address localAddr; // may be left empty
     L3Address remoteAddr;// required for active open
@@ -167,7 +169,7 @@ class TCPOpenCommand //extends TCPCommand
 //
 // @see ~TcpCommandCode, ~ITCP
 //
-class TCPSendCommand //extends TCPCommand
+class TCPSendCommand extends Tag
 {
 }
 
@@ -178,7 +180,7 @@ class TCPSendCommand //extends TCPCommand
 //
 // @see ~TcpCommandCode, ~ITCP
 //
-class TCPConnectInfo //extends TCPCommand
+class TCPConnectInfo extends Tag
 {
     L3Address localAddr;
     L3Address remoteAddr;
@@ -194,7 +196,7 @@ class TCPConnectInfo //extends TCPCommand
 //
 // @see ~TcpStatusInd, ~TcpCommandCode, ~ITCP
 //
-class TCPStatusInfo //extends TCPCommand
+class TCPStatusInfo extends Tag
 {
     int state;
     string stateName;

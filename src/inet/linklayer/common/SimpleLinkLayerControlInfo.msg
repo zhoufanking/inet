@@ -1,10 +1,12 @@
 cplusplus {{
-    #include "inet/linklayer/common/MACAddress.h"
+#include "inet/common/Tag_m.h"
+#include "inet/linklayer/common/MACAddress.h"
 }}
 
 namespace inet;
 
 class noncobject MACAddress;
+class Tag extends cObject;
 
 //class SimpleLinkLayerControlInfo
 //{
@@ -15,7 +17,7 @@ class noncobject MACAddress;
 
 ////////////////
 
-class LinkLayerAddressTag
+class LinkLayerAddressTag extends Tag
 {
     MACAddress src;  // can be left empty when sending
     MACAddress dest;
@@ -27,7 +29,7 @@ class LinkLayerAddressIndicationTag extends LinkLayerAddressTag {}
 
 ////////////////
 
-class InterfaceIdTag
+class InterfaceIdTag extends Tag
 {
     int interfaceId;
 }

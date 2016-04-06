@@ -17,12 +17,14 @@
 
 
 cplusplus {{
+#include "inet/common/Tag_m.h"
 #include "inet/linklayer/common/MACAddress.h"
 }}
-class noncobject MACAddress;
+
 namespace inet;
 
-
+class noncobject MACAddress;
+class Tag extends cObject;
 
 //
 // Message kind values used with in communication between L3 and IEEE 802 L2
@@ -73,7 +75,7 @@ enum EtherType
 //
 // Control structure for communication between LLC and higher layers
 //
-class Ieee802Ctrl_
+class Ieee802Ctrl_ extends Tag
 {
     int etherType @enum(EtherType);   // used with ~EthernetIIFrame
 //    int interfaceId; // incoming or outgoing interface (not needed everywhere)

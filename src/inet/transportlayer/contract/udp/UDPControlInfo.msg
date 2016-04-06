@@ -18,12 +18,14 @@
 
 
 cplusplus {{
+#include "inet/common/Tag_m.h"
 #include "inet/networklayer/common/L3Address.h"
 }}
 
 namespace inet;
 
 class noncobject L3Address;
+class Tag extends cObject;
 
 
 //
@@ -64,12 +66,12 @@ enum UDPStatusInd
 //
 // @see ~UDPCommandCode
 //
-class UDPControlInfo
+class UDPControlInfo extends Tag
 {
     int sockId = -1;  // must uniquely identify the socket in the ~UDP module
 }
 
-class UDPSocketIdRequestTag
+class UDPSocketIdRequestTag extends Tag
 {
     int sockId = -1;  // must uniquely identify the socket in the ~UDP module
 }
@@ -84,7 +86,7 @@ class UDPSocketIdRequestTag
 //
 // @see ~UDPCommandCode
 //
-class UDPBindCommand
+class UDPBindCommand extends Tag
 {
     L3Address localAddr;
     int localPort = -1;
@@ -100,7 +102,7 @@ class UDPBindCommand
 //
 // @see ~UDPCommandCode
 //
-class UDPConnectCommand
+class UDPConnectCommand extends Tag
 {
     L3Address remoteAddr;
     int remotePort = -1;
@@ -117,7 +119,7 @@ class UDPConnectCommand
 //
 // @see ~UDPCommandCode
 //
-class UDPSendCommand
+class UDPSendCommand extends Tag
 {
     L3Address destAddr; // destination IPv4 or IPv6 address
     int destPort = -1;     // destination port

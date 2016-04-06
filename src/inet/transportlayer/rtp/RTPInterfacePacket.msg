@@ -19,12 +19,14 @@
 
 cplusplus {{
 #include "inet/common/INETDefs.h"
+#include "inet/common/Tag_m.h"
 #include "inet/networklayer/contract/ipv4/IPv4Address.h"
 #include "inet/transportlayer/rtp/RTPSenderControlMessage_m.h"
 #include "inet/transportlayer/rtp/RTPSenderStatusMessage_m.h"
 }}
 
 class noncobject inet::IPv4Address;
+class inet::Tag extends cObject;
 
 namespace inet::rtp;
 
@@ -61,7 +63,7 @@ message RTPControlMsg
 };
 
 // base class
-class RTPControlInfo
+class RTPControlInfo extends Tag
 {
     short type @enum(RTP_IFP_TYPE);
 };
