@@ -164,11 +164,15 @@ UDPSetMulticastSourceFilterCommand -->
 
 used controlinfos:
         ConfigureRadioCommand : radioMode, power, bitrate, modulation, carrierFrequency, bandwidth;
-        INetworkProtocolControlInfo* (type selection based on destAddr.addressType)
         Ieee80211ConfigureRadioCommand : =ConfigureRadioCommand=, opMode, modeSet, mode, band, channel, channelNumber;
         Ieee80211PrimRequest : -empty-;
         Ieee80211PrimConfirm : resultCode;
         Ieee80211Prim_ScanRequest : BSSType, BSSID, SSID, activeScan, probeDelay, channelList[], minChannelTime, maxhannelTime;
+        TransmissionRequest : power, bitrate, carrierFrequency, bandwidth;
+        RadioFrame : four pointers;
+        ReceptionIndication : bitErrorCount, symbolErrorCount, packetErrorRate, bitErrorRate, symbolErrorRate, minRSSI, minSNIR;
+
+        INetworkProtocolControlInfo* (type selection based on destAddr.addressType)
         IPv4ControlInfo : destAddr, srcAddr, interfaceId, multicastLoop, protocol, tos, diffServCodePoint, explicitCongestionNotification, ttl, dontFragment;
         IPv6ControlInfo : protocol, destAddr, srcAddr, trafficClass, diffServCodePoint, explicitCongestionNotification, hopLimit, interfaceId, multicastLoop, extensionHeader[];
         IPv6NDControlInfo : nextHop, interfaceId, fromHL;
@@ -185,8 +189,4 @@ used controlinfos:
         SCTPSendInfo : =SCTPCommand=, prMethod, last, ppid, primary, sackNow;
         SCTPSendQueueAbated : =SCTPCommand=, bytesAvailable, bytesQueued, bytesLimit, queuedForStream[]
         SCTPStatusInfo : =SCTPCommand=, state, stateName, pathId, active;
-
-        TransmissionRequest : power, bitrate, carrierFrequency, bandwidth;
-        RadioFrame : four pointers;
-        ReceptionIndication : bitErrorCount, symbolErrorCount, packetErrorRate, bitErrorRate, symbolErrorRate, minRSSI, minSNIR;
 
