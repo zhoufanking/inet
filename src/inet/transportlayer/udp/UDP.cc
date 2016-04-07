@@ -330,7 +330,7 @@ void UDP::processUDPPacket(UDPPacket *udpPacket)
     int ttl;
     unsigned char tos;
 
-    cObject *ctrl = udpPacket->removeControlInfo();
+    cObject *ctrl = udpPacket->removeControlInfo();     // INetworkProtocolControlInfo
     if (dynamic_cast<IPv4ControlInfo *>(ctrl) != nullptr) {
         IPv4ControlInfo *ctrl4 = (IPv4ControlInfo *)ctrl;
         srcAddr = ctrl4->getSrcAddr();
