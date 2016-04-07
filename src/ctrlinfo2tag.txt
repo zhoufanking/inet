@@ -175,16 +175,16 @@ used controlinfos:
         GenericNetworkProtocolControlInfo : destinationAddress, sourceAddress, interfaceId, protocol, hopLimit;
         SimpleNetworkProtocolControlInfo : destinationAddress, sourceAddress, interfaceId, protocol, hopLimit;
 
-        SCTPCommand*
-        SCTPConnectInfo
-        SCTPInfo
-        SCTPOpenCommand
-        SCTPPathInfo
-        SCTPRcvInfo
-        SCTPResetInfo
-        SCTPSendInfo (this is a cPacket!!!)
-        SCTPSendQueueAbated
-        SCTPStatusInfo
+        SCTPCommand : =cPacket=, assocId, sid, numMsgs, ssn, sendUnordered, prValue, localAddr, remoteAddr, localPort, remotePort, gate
+        SCTPConnectInfo : =SCTPCommand=, remoteAddresses, status, inboundStreams, outboundStreams;
+        SCTPInfo : =SCTPCommand=, text;
+        SCTPOpenCommand : =SCTPCommand=, localAddresses, remoteAddr(duplicated?), remoteAddresses, fork, queueClass, sctpAlgorithmClass, uint32 inboundStreams, outboundStreams, streamReset, prMethod, numRequests, messagesToPush;
+        SCTPPathInfo : =SCTPCommand=, remoteAddress(?);
+        SCTPRcvInfo : =SCTPCommand=, ppid, tsn, cumTsn;
+        SCTPResetInfo : =SCTPCommand=, remoteAddr(?), requestType, streams[];
+        SCTPSendInfo : =SCTPCommand=, prMethod, last, ppid, primary, sackNow;
+        SCTPSendQueueAbated : =SCTPCommand=, bytesAvailable, bytesQueued, bytesLimit, queuedForStream[]
+        SCTPStatusInfo : =SCTPCommand=, state, stateName, pathId, active;
 
         TransmissionRequest : power, bitrate, carrierFrequency, bandwidth;
         RadioFrame : four pointers;
