@@ -55,7 +55,7 @@ enum SCTPErrorCode
 //
 // @see ~SctpCommandCode, ~SctpStatusInd, ~SCTPOpenCommand, ~SCTPStatusInfo, SCTPMain
 //
-packet SCTPCommand
+packet SCTPCommand      //FIXME why using packets for controlinfo?
 {
     int assocId = -1;   // identifies the socket within the application
     int sid = -1;
@@ -108,7 +108,7 @@ message SCTPErrorInfo extends SCTPCommand
 message SCTPOpenCommand extends SCTPCommand
 {
     AddressVector localAddresses;
-    L3Address remoteAddr;            // required for active open
+    L3Address remoteAddr;            // required for active open  //FIXME SCTPCommand has 'remoteAddr' field
     AddressVector remoteAddresses;
     bool fork = false;               // used only for passive open
     string queueClass = "SCTPQueue"; // may be left empty
@@ -182,7 +182,7 @@ message SCTPStatusInfo extends SCTPCommand
 
 message SCTPPathInfo extends SCTPCommand
 {
-    L3Address remoteAddress;
+    L3Address remoteAddress;  //FIXME SCTPCommand has 'remoteAddr' field
 }
 
 message SCTPResetInfo extends SCTPCommand
