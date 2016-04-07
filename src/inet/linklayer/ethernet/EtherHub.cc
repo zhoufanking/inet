@@ -67,6 +67,11 @@ void EtherHub::checkConnections(bool errorWhenAsymmetric)
             continue;
         }
 
+        cModule *partnerModule = ogate->getPathEndGate()->getOwnerModule();
+        bool partnerDuplex = partnerModule->par("duplexMode").boolValue();
+        if (partnerDuplex)
+            throw cRuntimeError("Port %i connected to duplex mode module %s", i, partnerModule->getFullPath().c_str());
+
         numActivePorts++;
         double drate = igate->getIncomingTransmissionChannel()->getNominalDatarate();
 

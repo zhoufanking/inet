@@ -42,6 +42,7 @@ simple EtherHub
         @display("i=device/hub");
         @signal[pk](type=cMessage);
         @statistic[pk](title="packets"; source=pk; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        bool duplexMode = false;    // selects half-duplex (false) operation
     gates:
         inout ethg[] @labels(EtherFrame-conn);  // to stations; each one represents a port
 }

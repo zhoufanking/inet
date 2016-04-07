@@ -46,6 +46,7 @@ simple EtherBus
                            // few values, the distance between the last two positions
                            // is repeated, or 5 meters is used.
         double propagationSpeed @unit("mps") = default(200000000mps); // signal propagation speed on the bus
+        bool duplexMode = false;    // selects half-duplex (false) operation
     gates:
         inout ethg[] @labels(EtherFrame-conn);  // to stations; each one represents a tap
 }

@@ -523,6 +523,13 @@ void EtherMACBase::readChannelParameters(bool errorWhenAsymmetric)
         throw cRuntimeError("The input/output datarates differ (rx=%g bps vs tx=%g bps)", rxRate, txRate);
 
     if (connected) {
+        cModule *partnerModule = physOutGate->getPathEndGate()->getOwnerModule();
+        bool partnerDuplex = partnerModule->par("duplexMode").boolValue();
+        if (duplexMode && !partnerDuplex)
+            throw cRuntimeError("Full duplex port connected to half duplex mode module %s", partnerModule->getFullPath().c_str());
+        if (!duplexMode && partnerDuplex)
+            throw cRuntimeError("Half duplex port connected to full duplex mode module %s", partnerModule->getFullPath().c_str());
+
         // Check valid speeds
         for (auto & etherDescr : etherDescrs) {
             if (txRate == etherDescr.txrate) {

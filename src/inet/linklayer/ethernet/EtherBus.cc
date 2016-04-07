@@ -143,6 +143,11 @@ void EtherBus::checkConnections(bool errorWhenAsymmetric)
             EV << "The output datarate at tap " << i << " differs from datarates of previous taps.\n";
         }
 
+        cModule *partnerModule = ogate->getPathEndGate()->getOwnerModule();
+        bool partnerDuplex = partnerModule->par("duplexMode").boolValue();
+        if (partnerDuplex)
+            throw cRuntimeError("Tap %i connected to duplex mode module %s", i, partnerModule->getFullPath().c_str());
+
         if (!outTrChannel->isSubscribed(POST_MODEL_CHANGE, this))
             outTrChannel->subscribe(POST_MODEL_CHANGE, this);
     }
