@@ -632,7 +632,7 @@ void LMacLayer::findNewSlot()
 cPacket *LMacLayer::decapsMsg(LMacFrame *msg)
 {
     cPacket *m = msg->decapsulate();
-    setUpControlInfo(m, msg->getSrcAddr());
+    setUpTags(m, msg->getSrcAddr());
     // delete the macPkt
     delete msg;
     EV_DETAIL << " message decapsulated " << endl;
@@ -687,7 +687,7 @@ void LMacLayer::attachSignal(LMacFrame *macPkt)
 /**
  * Attaches a "control info" (MacToNetw) structure (object) to the message pMsg.
  */
-void LMacLayer::setUpControlInfo(cMessage *const pMsg, const MACAddress& pSrcAddr)
+void LMacLayer::setUpTags(cMessage *const pMsg, const MACAddress& pSrcAddr)
 {
     LinkLayerAddressIndicationTag *cCtrlInfo = pMsg->ensureTag<LinkLayerAddressIndicationTag>();
     cCtrlInfo->setSrc(pSrcAddr);

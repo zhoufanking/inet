@@ -719,7 +719,7 @@ void BMacLayer::changeDisplayColor(BMAC_COLORS color)
 cPacket *BMacLayer::decapsMsg(BMacFrame *msg)
 {
     cPacket *m = msg->decapsulate();
-    setUpControlInfo(m, msg->getSrcAddr());
+    setUpTags(m, msg->getSrcAddr());
     // delete the macPkt
     delete msg;
     EV_DETAIL << " message decapsulated " << endl;
@@ -749,7 +749,7 @@ BMacFrame *BMacLayer::encapsMsg(cPacket *netwPkt)
 /**
  * Attaches a "control info" (MacToNetw) structure (object) to the message pMsg.
  */
-void BMacLayer::setUpControlInfo(cMessage *const pMsg, const MACAddress& pSrcAddr)
+void BMacLayer::setUpTags(cMessage *const pMsg, const MACAddress& pSrcAddr)
 {
     LinkLayerAddressIndicationTag *cCtrlInfo = pMsg->ensureTag<LinkLayerAddressIndicationTag>();
     cCtrlInfo->setSrc(pSrcAddr);

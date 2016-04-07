@@ -321,7 +321,7 @@ class INET_API CSMA : public MACProtocolBase, public IMACProtocol
     virtual simtime_t scheduleBackoff();
 
     virtual cPacket *decapsMsg(CSMAFrame *macPkt);
-    cObject *setUpControlInfo(cMessage *const pMsg, const MACAddress& pSrcAddr);
+    cObject *setUpTags(cMessage *const pMsg, const MACAddress& pSrcAddr);
 //  cObject* setDownControlInfo(cMessage * const pMsg, Signal * const pSignal);
 
     CSMAFrame *ackMessage;

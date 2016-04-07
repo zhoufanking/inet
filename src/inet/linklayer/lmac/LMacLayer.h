@@ -117,7 +117,7 @@ class INET_API LMacLayer : public MACProtocolBase, public IMACProtocol
     /** @brief Encapsulate the NetwPkt into an MacPkt */
     virtual LMacFrame *encapsMsg(cPacket *);
     virtual cPacket *decapsMsg(LMacFrame *);
-    void setUpControlInfo(cMessage *const pMsg, const MACAddress& pSrcAddr);
+    void setUpTags(cMessage *const pMsg, const MACAddress& pSrcAddr);
 
   protected:
     /** @brief Generate new interface address*/
