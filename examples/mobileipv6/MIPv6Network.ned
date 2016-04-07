@@ -23,8 +23,8 @@
 
 package inet.examples.mobileipv6;
 
-import inet.linklayer.ethernet.EtherHub;
 import inet.networklayer.configurator.ipv6.FlatNetworkConfigurator6;
+import inet.node.ethernet.EtherSwitch;
 import inet.node.ipv6.Router6;
 import inet.node.wireless.AccessPoint;
 import inet.node.xmipv6.CorrespondentNode6;
@@ -89,9 +89,9 @@ network mIPv6Network
             parameters:
                 @display("p=566,172;i=device/accesspoint_s");
         }
-        hub: EtherHub {
+        switch: EtherSwitch {
             parameters:
-                @display("p=406,412;i=device/hub_s");
+                @display("p=406,412;i=device/switch_s");
         }
     connections allowunconnected:
 
@@ -107,11 +107,11 @@ network mIPv6Network
         Home_Agent.ethg$i++ <-- ethernetline <-- R_2.ethg$o++;
 
         for i=0..total_cn-1 {
-            CN[i].ethg$o++ --> ethernetline --> hub.ethg$i++;
-            CN[i].ethg$i++ <-- ethernetline <-- hub.ethg$o++;
+            CN[i].ethg$o++ --> ethernetline --> switch.ethg$i++;
+            CN[i].ethg$i++ <-- ethernetline <-- switch.ethg$o++;
         }
 
-        hub.ethg++ <--> ethernetline <--> R_2.ethg++;
+        switch.ethg++ <--> ethernetline <--> R_2.ethg++;
 
                                                     //R_1.ethOut++ --> ethernetline --> CN.ethIn++;
                                                     //R_1.ethIn++ <-- ethernetline <-- CN.ethOut++;

@@ -4,8 +4,8 @@
 package inet.examples.ospfv2.fulltest;
 
 import inet.common.misc.ThruputMeteringChannel;
-import inet.linklayer.ethernet.EtherHub;
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.ethernet.EtherSwitch;
 import inet.node.inet.StandardHost;
 import inet.node.ospfv2.OSPFRouter;
 
@@ -20,12 +20,12 @@ channel C extends ThruputMeteringChannel
 module OspfLan
 {
     parameters:
-        int h; // number of hosts on the hub
+        int h; // number of hosts on the switch
         @display("i=old/cloud");
     gates:
         inout ethg[];
     submodules:
-        hub: EtherHub {
+        switch: EtherSwitch {
             @display("is=s");
         }
         host[h]: StandardHost {
@@ -33,10 +33,10 @@ module OspfLan
         }
     connections:
         for i=0..sizeof(ethg)-1 {
-            hub.ethg++ <--> ethg[i];
+            switch.ethg++ <--> ethg[i];
         }
         for i=0..h-1 {
-            hub.ethg++ <--> C <--> host[i].ethg++;
+            switch.ethg++ <--> C <--> host[i].ethg++;
         }
 }
 

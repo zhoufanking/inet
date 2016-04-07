@@ -1,7 +1,7 @@
 
 package inet.examples.ospfv2.areas;
 
-import inet.linklayer.ethernet.EtherHub;
+import inet.node.ethernet.EtherSwitch;
 import inet.node.inet.StandardHost;
 import inet.node.ospfv2.OSPFRouter;
 import ned.DatarateChannel;
@@ -26,13 +26,13 @@ module TwoNetsArea
             gates:
                 ethg[3];
         }
-        N1: EtherHub {
+        N1: EtherSwitch {
             parameters:
                 @display("p=156,72");
             gates:
                 ethg[2];
         }
-        N2: EtherHub {
+        N2: EtherSwitch {
             parameters:
                 @display("p=160,284");
             gates:

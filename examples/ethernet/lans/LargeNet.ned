@@ -44,7 +44,7 @@ module SmallLAN
 {
     parameters:
         int h; // number of hosts on the hub
-        @display("i=old/cloud_s");
+        @display("i=old/cloud_s;bgl=9");
     gates:
         inout ethg;
     submodules:

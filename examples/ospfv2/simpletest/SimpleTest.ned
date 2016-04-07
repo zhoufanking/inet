@@ -4,8 +4,8 @@ package inet.examples.ospfv2.simpletest;
 import inet.common.lifecycle.LifecycleController;
 import inet.common.misc.ThruputMeteringChannel;
 import inet.common.scenario.ScenarioManager;
-import inet.linklayer.ethernet.EtherHub;
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.ethernet.EtherSwitch;
 import inet.node.inet.StandardHost;
 import inet.node.ospfv2.OSPFRouter;
 
@@ -28,7 +28,7 @@ network SimpleTest
             gates:
                 ethg[1];
         }
-        N1: EtherHub {
+        N1: EtherSwitch {
             parameters:
                 @display("p=184,92");
             gates:
@@ -48,7 +48,7 @@ network SimpleTest
             gates:
                 ethg[2];
         }
-        N2: EtherHub {
+        N2: EtherSwitch {
             parameters:
                 @display("p=532,92");
             gates:
