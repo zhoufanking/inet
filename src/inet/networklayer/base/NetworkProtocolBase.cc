@@ -15,6 +15,8 @@
 //
 
 #include "inet/networklayer/base/NetworkProtocolBase.h"
+
+#include "inet/common/INETUtils.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/networklayer/contract/NetworkProtocolCommand_m.h"
 
@@ -63,9 +65,7 @@ void NetworkProtocolBase::sendDown(cMessage *message, int interfaceId)
             InterfaceEntry *interfaceEntry = interfaceTable->getInterface(i);
             if (interfaceEntry && !interfaceEntry->isLoopback())
             {
-                cMessage* duplicate = message->dup();
-                if (message->getControlInfo())
-                    duplicate->setControlInfo(message->getControlInfo()->dup());
+                cMessage* duplicate = utils::dupPacketAndControlInfo(message);
                 send(duplicate, "lowerLayerOut", interfaceEntry->getNetworkLayerGateIndex());
             }
         }

@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "inet/common/INETUtils.h"
 #include "inet/networklayer/multi/MultiNetworkLayerUpperMultiplexer.h"
 #include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
 #include "inet/networklayer/contract/ipv6/IPv6ControlInfo.h"
@@ -59,10 +60,7 @@ void MultiNetworkLayerUpperMultiplexer::handleMessage(cMessage *message)
         else {
             // sending down commands
             for (int i = 0; i < getProtocolCount(); i++) {
-                cMessage *duplicate = message->dup();
-                cObject *controlInfo = message->getControlInfo();
-                if (controlInfo)
-                    duplicate->setControlInfo(controlInfo->dup());
+                cMessage *duplicate = utils::dupPacketAndControlInfo(message);
                 send(duplicate, "transportLowerOut", getProtocolCount() * arrivalGate->getIndex() + i);
             }
             delete message;
