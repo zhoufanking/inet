@@ -233,6 +233,7 @@ void PPP::refreshOutGateConnection(bool connected)
 
 void PPP::startTransmitting(cPacket *msg)
 {
+    ASSERT(msg->getControlInfo() == nullptr);
     // if there's any control info, remove it; then encapsulate the packet
     delete msg->removeControlInfo();
     PPPFrame *pppFrame = encapsulate(msg);

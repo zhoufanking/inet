@@ -387,6 +387,7 @@ void ARP::processARPPacket(ARPPacket *arp)
                 arp->setSrcIPAddress(origDestAddress);
                 arp->setSrcMACAddress(myMACAddress);
                 arp->setOpcode(ARP_REPLY);
+                ASSERT(arp->getControlInfo() == nullptr);
                 delete arp->removeControlInfo();
                 sendPacketToNIC(arp, ie, srcMACAddress, ETHERTYPE_ARP);
                 numRepliesSent++;
