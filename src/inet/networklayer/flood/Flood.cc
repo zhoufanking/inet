@@ -164,7 +164,7 @@ void Flood::handleLowerPacket(cPacket *m)
                    << " > 1 -> rebroadcast msg & send to upper\n";
                 msg->setTtl(msg->getTtl() - 1);
                 dMsg = msg->dup();
-                setDownControlInfo(dMsg, MACAddress::BROADCAST_ADDRESS);
+                setDownTags(dMsg, MACAddress::BROADCAST_ADDRESS);
                 sendDown(dMsg);
                 nbDataPacketsForwarded++;
             }
@@ -187,7 +187,7 @@ void Flood::handleLowerPacket(cPacket *m)
                 cObject *const pCtrlInfo = msg->removeControlInfo();
                 if (pCtrlInfo != nullptr)
                     delete pCtrlInfo;
-                setDownControlInfo(msg, MACAddress::BROADCAST_ADDRESS);
+                setDownTags(msg, MACAddress::BROADCAST_ADDRESS);
                 sendDown(msg);
                 nbDataPacketsForwarded++;
             }
@@ -297,16 +297,16 @@ FloodDatagram *Flood::encapsMsg(cPacket *appPkt)
        << " -> set destMac=L2BROADCAST" << endl;
 
     pkt->encapsulate(appPkt);
-    setDownControlInfo(pkt, MACAddress::BROADCAST_ADDRESS);
+    setDownTags(pkt, MACAddress::BROADCAST_ADDRESS);
 
     EV << " pkt encapsulated\n";
     return pkt;
 }
 
 /**
- * Attaches a "control info" structure (object) to the down message pMsg.
+ * Attaches Tag structure(s) (object) to the down message pMsg.
  */
-cObject *Flood::setDownControlInfo(cMessage *const pMsg, const MACAddress& pDestAddr)
+cObject *Flood::setDownTags(cMessage *const pMsg, const MACAddress& pDestAddr)
 {
     LinkLayerAddressRequestTag *cCtrlInfo = pMsg->ensureTag<LinkLayerAddressRequestTag>();
     cCtrlInfo->setDest(pDestAddr);

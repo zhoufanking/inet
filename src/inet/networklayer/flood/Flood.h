@@ -135,14 +135,12 @@ class INET_API Flood : public NetworkProtocolBase, public INetworkProtocol
      * This is most useful when passing packets between protocol layers
      * of a protocol stack, the control info will contain the destination MAC address.
      *
-     * The "control info" object will be deleted when the message is deleted.
-     * Only one "control info" structure can be attached (the second
-     * setL3ToL2ControlInfo() call throws an error).
+     * The "Tag" object will be deleted when the message is deleted.
      *
      * @param pMsg      The message where the "control info" shall be attached.
      * @param pDestAddr The MAC address of the message receiver.
      */
-    virtual cObject *setDownControlInfo(cMessage *const pMsg, const MACAddress& pDestAddr);
+    virtual cObject *setDownTags(cMessage *const pMsg, const MACAddress& pDestAddr);
 };
 
 } // namespace inet

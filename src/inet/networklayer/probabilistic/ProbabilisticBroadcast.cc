@@ -88,7 +88,7 @@ void ProbabilisticBroadcast::handleLowerPacket(cPacket *msg)
         // Unknown message. Insert message in queue with random backoff broadcast delay.
         // Because we got the message from lower layer, we need to create and add a new
         // control info with the MAC destination address = broadcast address.
-        setDownControlInfo(m, MACAddress::BROADCAST_ADDRESS);
+        setDownTags(m, MACAddress::BROADCAST_ADDRESS);
         // before inserting message, update source address (for this hop, not the initial source)
         m->setSrcAddr(myNetwAddr);
         insertNewMessage(m);
@@ -132,7 +132,7 @@ void ProbabilisticBroadcast::handleSelfMessage(cMessage *msg)
                 // queue, it will be considered as dead and discarded.
                 pktCopy = pkt->dup();
                 // control info is not duplicated with the message, so we have to re-create one here.
-                setDownControlInfo(pktCopy, MACAddress::BROADCAST_ADDRESS);
+                setDownTags(pktCopy, MACAddress::BROADCAST_ADDRESS);
                 // it the copy that is re-inserted into the queue so update the container accordingly
                 msgDesc->pkt = pktCopy;
                 // increment nbBcast field of the descriptor because at this point, it is sure that
@@ -286,7 +286,7 @@ cPacket *ProbabilisticBroadcast::encapsMsg(cPacket *msg)
     pkt->setTransportProtocol(networkControlInfo->getTransportProtocol());
 
     pkt->encapsulate(msg);
-    setDownControlInfo(pkt, MACAddress::BROADCAST_ADDRESS);
+    setDownTags(pkt, MACAddress::BROADCAST_ADDRESS);
 
     // clean-up
     delete controlInfo;
@@ -343,7 +343,7 @@ cPacket *ProbabilisticBroadcast::decapsMsg(ProbabilisticBroadcastDatagram *msg)
 /**
  * Attaches a "control info" structure (object) to the down message pMsg.
  */
-void ProbabilisticBroadcast::setDownControlInfo(cMessage *const pMsg, const MACAddress& pDestAddr)
+void ProbabilisticBroadcast::setDownTags(cMessage *const pMsg, const MACAddress& pDestAddr)
 {
     LinkLayerAddressRequestTag *cCtrlInfo = pMsg->ensureTag<LinkLayerAddressRequestTag>();
     cCtrlInfo->setDest(pDestAddr);

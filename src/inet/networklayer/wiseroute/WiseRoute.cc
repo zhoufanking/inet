@@ -112,7 +112,7 @@ void WiseRoute::handleSelfMessage(cMessage *msg)
         pkt->setSeqNum(floodSeqNumber);
         floodSeqNumber++;
         pkt->setIsFlood(1);
-        setDownControlInfo(pkt, MACAddress::BROADCAST_ADDRESS);
+        setDownTags(pkt, MACAddress::BROADCAST_ADDRESS);
         sendDown(pkt);
         nbFloodsSent++;
         nbRouteFloodsSent++;
@@ -162,9 +162,10 @@ void WiseRoute::handleLowerPacket(cPacket *msg)
                 // local hop source address.
                 msgCopy = check_and_cast<WiseRouteDatagram *>(netwMsg->dup());
                 netwMsg->setSrcAddr(myNetwAddr);
+                ASSERT(netwMsg->getControlInfo() == nullptr);
                 delete netwMsg->removeControlInfo();
                 delete netwMsg->removeTag<LinkLayerAddressIndicationTag>();   //TODO or use clearTags() ???
-                setDownControlInfo(netwMsg, MACAddress::BROADCAST_ADDRESS);
+                setDownTags(netwMsg, MACAddress::BROADCAST_ADDRESS);
                 netwMsg->setNbHops(netwMsg->getNbHops() + 1);
                 sendDown(netwMsg);
                 nbDataPacketsForwarded++;
@@ -185,9 +186,10 @@ void WiseRoute::handleLowerPacket(cPacket *msg)
             // not for me. if flood, forward as flood. else select a route
             if (floodType == FORWARD) {
                 netwMsg->setSrcAddr(myNetwAddr);
+                ASSERT(netwMsg->getControlInfo() == nullptr);
                 delete netwMsg->removeControlInfo();
                 delete netwMsg->removeTag<LinkLayerAddressIndicationTag>();   //TODO or use clearTags() ???
-                setDownControlInfo(netwMsg, MACAddress::BROADCAST_ADDRESS);
+                setDownTags(netwMsg, MACAddress::BROADCAST_ADDRESS);
                 netwMsg->setNbHops(netwMsg->getNbHops() + 1);
                 sendDown(netwMsg);
                 nbDataPacketsForwarded++;
@@ -207,7 +209,7 @@ void WiseRoute::handleLowerPacket(cPacket *msg)
                 MACAddress nextHopMacAddr = arp->resolveL3Address(nextHop, nullptr);    //FIXME interface entry pointer needed
                 if (nextHopMacAddr.isUnspecified())
                     throw cRuntimeError("Cannot immediately resolve MAC address. Please configure a GenericARP module.");
-                setDownControlInfo(netwMsg, nextHopMacAddr);
+                setDownTags(netwMsg, nextHopMacAddr);
                 netwMsg->setNbHops(netwMsg->getNbHops() + 1);
                 sendDown(netwMsg);
                 nbDataPacketsForwarded++;
@@ -270,7 +272,7 @@ void WiseRoute::handleUpperPacket(cPacket *msg)
             throw cRuntimeError("Cannot immediately resolve MAC address. Please configure a GenericARP module.");
     }
     pkt->encapsulate(static_cast<cPacket *>(msg));
-    setDownControlInfo(pkt, nextHopMacAddr);
+    setDownTags(pkt, nextHopMacAddr);
     sendDown(pkt);
     nbDataPacketsSent++;
 }
@@ -385,7 +387,7 @@ WiseRoute::tFloodTable::key_type WiseRoute::getRoute(const tFloodTable::key_type
 /**
  * Attaches a "control info" structure (object) to the down message pMsg.
  */
-cObject *WiseRoute::setDownControlInfo(cMessage *const pMsg, const MACAddress& pDestAddr)
+cObject *WiseRoute::setDownTags(cMessage *const pMsg, const MACAddress& pDestAddr)
 {
     LinkLayerAddressRequestTag *cCtrlInfo = pMsg->ensureTag<LinkLayerAddressRequestTag>();
     cCtrlInfo->setDest(pDestAddr);
