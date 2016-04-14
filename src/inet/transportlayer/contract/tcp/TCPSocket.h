@@ -327,7 +327,7 @@ class INET_API TCPSocket
 
     /**
      * Causes TCP to reply with a fresh TCPStatusInfo, attached to a dummy
-     * message as getControlInfo(). The reply message can be recognized by its
+     * message as getTag(). The reply message can be recognized by its
      * message kind TCP_I_STATUS, or (if a callback object is used)
      * the socketStatusArrived() method of the callback object will be
      * called.
@@ -358,7 +358,7 @@ class INET_API TCPSocket
     //@{
     /**
      * Returns true if the message belongs to this socket instance (message
-     * has a TCPCommand as getControlInfo(), and the connId in it matches
+     * has a TCPCommand as getTag(), and the connId in it matches
      * that of the socket.)
      */
     bool belongsToSocket(cMessage *msg);
@@ -366,7 +366,7 @@ class INET_API TCPSocket
     /**
      * Returns true if the message belongs to any TCPSocket instance.
      * (This basically checks if the message has a TCPCommand attached to
-     * it as getControlInfo().)
+     * it as getTag().)
      */
     static bool belongsToAnyTCPSocket(cMessage *msg);
 
