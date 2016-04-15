@@ -596,7 +596,8 @@ cPacket *RadioMedium::receivePacket(const IRadio *radio, IRadioFrame *radioFrame
     const IReceptionResult *result = getReceptionResult(radio, listening, transmission);
     communicationCache->removeCachedReceptionResult(radio, transmission);
     cPacket *macFrame = const_cast<cPacket *>(result->getMacFrame()->dup());
-    macFrame->setControlInfo(const_cast<ReceptionIndication *>(result->getIndication()));
+    ReceptionIndication *ind = macFrame->ensureTag<ReceptionIndication>();
+    *ind = *result->getIndication();
     if (mediumVisualizer != nullptr)
         mediumVisualizer->receivePacket(result);
     delete result;

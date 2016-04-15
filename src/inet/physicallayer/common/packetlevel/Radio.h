@@ -53,7 +53,7 @@ namespace physicallayer {
  * corresponds to an attempted reception, then the radio determines the
  * reception decision. Independently of whether the reception is successful or
  * not, the encapsulated packet is sent up to the higher layer. The radio also
- * attaches a ReceptionIndication as a control info object. Finally, the radio
+ * attaches a ReceptionIndication as a Tag object. Finally, the radio
  * changes its receiver state to the appropriate value, and emits a receiver
  * state changed signal.
  */

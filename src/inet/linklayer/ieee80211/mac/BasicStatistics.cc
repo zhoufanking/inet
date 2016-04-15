@@ -151,7 +151,7 @@ void BasicStatistics::frameReceived(Ieee80211Frame *frame)
     }
 
     if (rateControl) {
-        auto receptionIndication = check_and_cast<Ieee80211ReceptionIndication*>(frame->getControlInfo());
+        auto receptionIndication = check_and_cast<Ieee80211ReceptionIndication *>(frame->getMandatoryTag<ReceptionIndication>());
         rateControl->frameReceived(frame, receptionIndication);
     }
 }
