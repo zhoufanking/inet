@@ -500,7 +500,7 @@ void Radio::captureReception(cMessage *timer)
 
 void Radio::sendUp(cPacket *macFrame)
 {
-    auto indication = macFrame->getMandatoryTag<ReceptionIndication>();
+    auto indication = check_and_cast<const ReceptionIndication *>(macFrame->getControlInfo());
     emit(minSNIRSignal, indication->getMinSNIR());
     if (!std::isnan(indication->getPacketErrorRate()))
         emit(packetErrorRateSignal, indication->getPacketErrorRate());
