@@ -173,11 +173,11 @@ used controlinfos:
         ReceptionIndication : bitErrorCount, symbolErrorCount, packetErrorRate, bitErrorRate, symbolErrorRate, minRSSI, minSNIR;
 
         INetworkProtocolControlInfo* (type selection based on destAddr.addressType)
-        IPv4ControlInfo : destAddr, srcAddr, interfaceId, multicastLoop, protocol, tos, diffServCodePoint, explicitCongestionNotification, ttl, dontFragment;
-        IPv6ControlInfo : protocol, destAddr, srcAddr, trafficClass, diffServCodePoint, explicitCongestionNotification, hopLimit, interfaceId, multicastLoop, extensionHeader[];
+        IPv4ControlInfo : interfaceId, destAddr, srcAddr, protocol, ttl, tos, diffServCodePoint, explicitCongestionNotification, multicastLoop, dontFragment;
+        IPv6ControlInfo : interfaceId, destAddr, srcAddr, protocol, hopLimit, trafficClass, diffServCodePoint, explicitCongestionNotification, multicastLoop, extensionHeader[];
         IPv6NDControlInfo : nextHop, interfaceId, fromHL;
-        GenericNetworkProtocolControlInfo : destinationAddress, sourceAddress, interfaceId, protocol, hopLimit;
-        SimpleNetworkProtocolControlInfo : destinationAddress, sourceAddress, interfaceId, protocol, hopLimit;
+        GenericNetworkProtocolControlInfo : interfaceId, destinationAddress, sourceAddress, protocol, hopLimit;
+        SimpleNetworkProtocolControlInfo : interfaceId, destinationAddress, sourceAddress, protocol, hopLimit;
 
         SCTPCommand : =cPacket=, assocId, sid, numMsgs, ssn, sendUnordered, prValue, localAddr, remoteAddr, localPort, remotePort, gate
         SCTPConnectInfo : =SCTPCommand=, remoteAddresses, status, inboundStreams, outboundStreams;
