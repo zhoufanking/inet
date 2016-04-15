@@ -33,6 +33,8 @@
 
 #include "inet/applications/pingapp/PingPayload_m.h"
 
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
+
 namespace inet {
 
 Define_Module(ICMPv6);
@@ -139,7 +141,7 @@ void ICMPv6::processEchoRequest(ICMPv6EchoRequestMsg *request)
 
     if (ctrl->getDestAddr().isMulticast()    /*TODO check for anycast too*/) {
         IInterfaceTable *it = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
-        IPv6InterfaceData *ipv6Data = it->getInterfaceById(ctrl->getInterfaceId())->ipv6Data();
+        IPv6InterfaceData *ipv6Data = it->getInterfaceById(request->getMandatoryTag<InterfaceIdIndicationTag>()->getInterfaceId())->ipv6Data();
         replyCtrl->setSrcAddr(ipv6Data->getPreferredAddress());
         // TODO implement default address selection properly.
         //      According to RFC 3484, the source address to be used

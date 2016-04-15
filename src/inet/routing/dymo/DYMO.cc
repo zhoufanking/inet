@@ -30,6 +30,7 @@
 #include "inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h"
 #endif // ifdef WITH_IEEE80211
 
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "inet/networklayer/contract/INetworkProtocolControlInfo.h"
 #include "inet/transportlayer/contract/udp/UDPControlInfo.h"
@@ -424,14 +425,16 @@ void DYMO::sendDYMOPacket(DYMOPacket *packet, const InterfaceEntry *interfaceEnt
     networkProtocolControlInfo->setHopLimit(255);
     networkProtocolControlInfo->setDestinationAddress(nextHop);
     networkProtocolControlInfo->setSourceAddress(getSelfAddress());
-    if (interfaceEntry)
-        networkProtocolControlInfo->setInterfaceId(interfaceEntry->getInterfaceId());
     UDPPacket *udpPacket = new UDPPacket(packet->getName());
     udpPacket->encapsulate(packet);
     // In its default mode of operation, AODVv2 uses the UDP port 269 [RFC5498] to carry protocol packets.
     udpPacket->setSourcePort(DYMO_UDP_PORT);
     udpPacket->setDestinationPort(DYMO_UDP_PORT);
     udpPacket->setControlInfo(dynamic_cast<cObject *>(networkProtocolControlInfo));
+    if (interfaceEntry) {
+        auto ifTag = udpPacket->ensureTag<InterfaceIdRequestTag>();
+        ifTag->setInterfaceId(interfaceEntry->getInterfaceId());
+    }
     sendUDPPacket(udpPacket, delay);
 }
 
@@ -951,6 +954,7 @@ void DYMO::processRERR(RERR *rerrIncoming)
         return;
     else {
         INetworkProtocolControlInfo *networkProtocolControlInfo = check_and_cast<INetworkProtocolControlInfo *>(rerrIncoming->getControlInfo());
+        auto incomingIfTag = rerrIncoming->getMandatoryTag<InterfaceIdIndicationTag>();
         // Otherwise, for each UnreachableNode.Address, HandlingRtr searches its
         // route table for a route using longest prefix matching.  If no such
         // Route is found, processing is complete for that UnreachableNode.Address.
@@ -972,7 +976,7 @@ void DYMO::processRERR(RERR *rerrIncoming)
                     if (unreachableAddress.isUnicast() &&
                         unreachableAddress == route->getDestinationAsGeneric() &&
                         route->getNextHopAsGeneric() == networkProtocolControlInfo->getSourceAddress() &&
-                        route->getInterface()->getInterfaceId() == networkProtocolControlInfo->getInterfaceId() &&
+                        route->getInterface()->getInterfaceId() == incomingIfTag->getInterfaceId() &&
                         (!addressBlock.getHasSequenceNumber() || routeData->getSequenceNumber() <= addressBlock.getSequenceNumber()))
                     {
                         // If the route satisfies all of the above conditions, HandlingRtr sets
@@ -1148,7 +1152,7 @@ void DYMO::updateRoute(RteMsg *rteMsg, AddressBlock& addressBlock, IRoute *route
     // note that DYMO packets are not routed on the IP level, so we can use the source address here
     route->setNextHop(networkProtocolControlInfo->getSourceAddress());
     // Route.NextHopInterface is set to the interface on which RteMsg was received
-    InterfaceEntry *interfaceEntry = interfaceTable->getInterfaceById(networkProtocolControlInfo->getInterfaceId());
+    InterfaceEntry *interfaceEntry = interfaceTable->getInterfaceById((rteMsg->getMandatoryTag<InterfaceIdIndicationTag>())->getInterfaceId());
     if (interfaceEntry)
         route->setInterface(interfaceEntry);
     // Route.Broken flag := FALSE

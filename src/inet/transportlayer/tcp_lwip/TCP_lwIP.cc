@@ -37,6 +37,7 @@
 
 #include "inet/common/serializer/tcp/headers/tcphdr.h"
 #include "lwip/lwip_tcp.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/transportlayer/contract/tcp/TCPCommand_m.h"
 #include "inet/common/serializer/TCPIPchecksum.h"
 #include "inet/transportlayer/tcp_lwip/TcpLwipConnection.h"
@@ -153,7 +154,7 @@ void TCP_lwIP::handleIpInputMessage(TCPSegment *tcpsegP)
     INetworkProtocolControlInfo *controlInfo = check_and_cast<INetworkProtocolControlInfo *>(ctrl);
     srcAddr = controlInfo->getSourceAddress();
     destAddr = controlInfo->getDestinationAddress();
-    interfaceId = controlInfo->getInterfaceId();
+    interfaceId = (tcpsegP->getMandatoryTag<InterfaceIdIndicationTag>())->getInterfaceId();
     delete ctrl;
 
     // process segment

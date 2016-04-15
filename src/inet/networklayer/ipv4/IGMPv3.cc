@@ -26,6 +26,7 @@
 #include "inet/networklayer/ipv4/IPv4InterfaceData.h"
 #include "inet/networklayer/ipv4/IPv4RoutingTable.h"
 #include "inet/common/ModuleAccess.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 
 #include <algorithm>
 #include <bitset>
@@ -659,7 +660,8 @@ void IGMPv3::sendReportToIP(IGMPv3Report *msg, InterfaceEntry *ie, IPv4Address d
 
     IPv4ControlInfo *controlInfo = new IPv4ControlInfo();
     controlInfo->setProtocol(IP_PROT_IGMP);
-    controlInfo->setInterfaceId(ie->getInterfaceId());
+    auto ifTag = msg->ensureTag<InterfaceIdRequestTag>();
+    ifTag->setInterfaceId(ie->getInterfaceId());
     controlInfo->setTimeToLive(1);
     controlInfo->setDestAddr(dest);
     msg->setControlInfo(controlInfo);
@@ -673,7 +675,8 @@ void IGMPv3::sendQueryToIP(IGMPv3Query *msg, InterfaceEntry *ie, IPv4Address des
 
     IPv4ControlInfo *controlInfo = new IPv4ControlInfo();
     controlInfo->setProtocol(IP_PROT_IGMP);
-    controlInfo->setInterfaceId(ie->getInterfaceId());
+    auto ifTag = msg->ensureTag<InterfaceIdRequestTag>();
+    ifTag->setInterfaceId(ie->getInterfaceId());
     controlInfo->setTimeToLive(1);
     controlInfo->setDestAddr(dest);
     msg->setControlInfo(controlInfo);
@@ -853,7 +856,8 @@ void IGMPv3::multicastSourceListChanged(InterfaceEntry *ie, IPv4Address group, c
 void IGMPv3::processQuery(IGMPv3Query *msg)
 {
     IPv4ControlInfo *controlInfo = (IPv4ControlInfo *)msg->getControlInfo();
-    InterfaceEntry *ie = ift->getInterfaceById(controlInfo->getInterfaceId());
+    auto ifTag = msg->ensureTag<InterfaceIdIndicationTag>();
+    InterfaceEntry *ie = ift->getInterfaceById(ifTag->getInterfaceId());
     IPv4Address groupAddr = msg->getGroupAddress();
     IPv4AddressVector& queriedSources = msg->getSourceList();
     double maxRespTime = decodeTime(msg->getMaxRespCode());
@@ -993,7 +997,8 @@ void IGMPv3::sendGroupReport(InterfaceEntry *ie, const vector<GroupRecord>& reco
 void IGMPv3::processReport(IGMPv3Report *msg)
 {
     IPv4ControlInfo *controlInfo = (IPv4ControlInfo *)msg->getControlInfo();
-    InterfaceEntry *ie = ift->getInterfaceById(controlInfo->getInterfaceId());
+    auto ifTag = msg->getMandatoryTag<InterfaceIdIndicationTag>();
+    InterfaceEntry *ie = ift->getInterfaceById(ifTag->getInterfaceId());
     ASSERT(ie->isMulticast());
 
     EV_INFO << "Received IGMPv3 Membership Report on interface '" << ie->getName() << "'.\n";

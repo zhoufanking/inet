@@ -43,6 +43,7 @@
 #include "inet/networklayer/contract/IInterfaceTable.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/lifecycle/NodeStatus.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 
 #ifdef WITH_xMIPv6
 #include "inet/networklayer/xmipv6/xMIPv6.h"
@@ -465,7 +466,7 @@ void IPv6Tunneling::encapsulateDatagram(IPv6Datagram *dgram)
     controlInfo->setProtocol(IP_PROT_IPv6);
     controlInfo->setSrcAddr(tunnels[vIfIndex].entry);
     controlInfo->setDestAddr(tunnels[vIfIndex].exit);
-    controlInfo->setInterfaceId(-1);
+    //controlInfo->setInterfaceId(-1);
 
     dgram->setControlInfo(controlInfo);
     send(dgram, "upperLayerOut");
@@ -514,7 +515,9 @@ void IPv6Tunneling::decapsulateDatagram(IPv6Datagram *dgram)
 #ifdef WITH_xMIPv6
     // Alain Tigyo, 21.03.2008
     // The following code is used for triggering RO to a CN
-    InterfaceEntry *ie = ift->getInterfaceById(controlInfo->getInterfaceId());
+    auto ifTag = dgram->getMandatoryTag<InterfaceIdIndicationTag>();
+
+    InterfaceEntry *ie = ift->getInterfaceById(ifTag->getInterfaceId());
     if (rt->isMobileNode() && (controlInfo->getSrcAddr() == ie->ipv6Data()->getHomeAgentAddress())
         && (dgram->getTransportProtocol() != IP_PROT_IPv6EXT_MOB))
     {

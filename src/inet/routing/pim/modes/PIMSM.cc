@@ -23,6 +23,7 @@
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/NotifierConsts.h"
 #include "inet/routing/pim/modes/PIMSM.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 
 namespace inet {
 Define_Module(PIMSM);
@@ -342,8 +343,9 @@ void PIMSM::processJoinPrunePacket(PIMJoinPrune *pkt)
 
     emit(rcvdJoinPrunePkSignal, pkt);
 
-    IPv4ControlInfo *ctrl = check_and_cast<IPv4ControlInfo *>(pkt->getControlInfo());
-    InterfaceEntry *inInterface = ift->getInterfaceById(ctrl->getInterfaceId());
+    //IPv4ControlInfo *ctrl = check_and_cast<IPv4ControlInfo *>(pkt->getControlInfo());
+    auto ifTag = pkt->getMandatoryTag<InterfaceIdIndicationTag>();
+    InterfaceEntry *inInterface = ift->getInterfaceById(ifTag->getInterfaceId());
     int holdTime = pkt->getHoldTime();
     IPv4Address upstreamNeighbor = pkt->getUpstreamNeighborAddress();
 
@@ -673,7 +675,8 @@ void PIMSM::processRegisterStopPacket(PIMRegisterStop *pkt)
 void PIMSM::processAssertPacket(PIMAssert *pkt)
 {
     IPv4ControlInfo *ctrlInfo = check_and_cast<IPv4ControlInfo *>(pkt->getControlInfo());
-    int incomingInterfaceId = ctrlInfo->getInterfaceId();
+    auto ifTag = pkt->getMandatoryTag<InterfaceIdIndicationTag>();
+    int incomingInterfaceId = ifTag->getInterfaceId();
     IPv4Address source = pkt->getSourceAddress();
     IPv4Address group = pkt->getGroupAddress();
     AssertMetric receivedMetric = AssertMetric(pkt->getR(), pkt->getMetricPreference(), pkt->getMetric(), ctrlInfo->getSrcAddr());
@@ -1540,7 +1543,7 @@ void PIMSM::sendToIP(PIMPacket *packet, IPv4Address srcAddr, IPv4Address destAdd
     ctrl->setDestAddr(destAddr);
     ctrl->setProtocol(IP_PROT_PIM);
     ctrl->setTimeToLive(ttl);
-    ctrl->setInterfaceId(outInterfaceId);
+    packet->ensureTag<InterfaceIdRequestTag>()->setInterfaceId(outInterfaceId);
     packet->setControlInfo(ctrl);
     send(packet, "ipOut");
 }
@@ -1563,7 +1566,7 @@ void PIMSM::forwardMulticastData(IPv4Datagram *datagram, int outInterfaceId)
     IPv4ControlInfo *ctrl = new IPv4ControlInfo();
     ctrl->setDestAddr(datagram->getDestAddress());
     // XXX ctrl->setSrcAddr(datagram->getSrcAddress()); // FIXME IP won't accept if the source is non-local
-    ctrl->setInterfaceId(outInterfaceId);
+    data->ensureTag<InterfaceIdRequestTag>()->setInterfaceId(outInterfaceId);
     ctrl->setTimeToLive(MAX_TTL - 2);    //one minus for source DR router and one for RP router // XXX specification???
     ctrl->setProtocol(datagram->getTransportProtocol());
     data->setControlInfo(ctrl);

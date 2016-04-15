@@ -314,7 +314,8 @@ void IPv4::handlePacketFromHL(cPacket *packet)
     }
 
     // extract requested interface and next hop
-    const InterfaceEntry *destIE = controlInfo ? const_cast<const InterfaceEntry *>(ift->getInterfaceById(controlInfo->getInterfaceId())) : nullptr;
+    auto ifTag = datagram->getTag<InterfaceIdRequestTag>();
+    const InterfaceEntry *destIE = ifTag ? const_cast<const InterfaceEntry *>(ift->getInterfaceById(ifTag->getInterfaceId())) : nullptr;
 
     if (controlInfo)
         datagram->setControlInfo(controlInfo); //FIXME ne rakjuk bele a cntrInfot!!!!! de kell :( kulonben a hook queue-ban elveszik a multicastloop flag
@@ -646,7 +647,6 @@ cPacket *IPv4::decapsulate(IPv4Datagram *datagram)
     controlInfo->setSrcAddr(datagram->getSrcAddress());
     controlInfo->setDestAddr(datagram->getDestAddress());
     controlInfo->setTypeOfService(datagram->getTypeOfService());
-    controlInfo->setInterfaceId(fromIE ? fromIE->getInterfaceId() : -1);
     controlInfo->setTimeToLive(datagram->getTimeToLive());
 
     // original IPv4 datagram might be needed in upper layers to send back ICMP error message
@@ -654,6 +654,8 @@ cPacket *IPv4::decapsulate(IPv4Datagram *datagram)
 
     // attach control info
     packet->setControlInfo(controlInfo);
+    auto ifTag = packet->ensureTag<InterfaceIdIndicationTag>();
+    ifTag->setInterfaceId(fromIE ? fromIE->getInterfaceId() : -1);
 
     return packet;
 }

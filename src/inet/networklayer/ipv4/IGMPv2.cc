@@ -23,6 +23,7 @@
 #include "inet/common/ModuleAccess.h"
 #include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
 #include "inet/networklayer/ipv4/IPv4InterfaceData.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 
 #include <algorithm>
 
@@ -604,7 +605,8 @@ void IGMPv2::sendToIP(IGMPMessage *msg, InterfaceEntry *ie, const IPv4Address& d
 
     IPv4ControlInfo *controlInfo = new IPv4ControlInfo();
     controlInfo->setProtocol(IP_PROT_IGMP);
-    controlInfo->setInterfaceId(ie->getInterfaceId());
+    auto ifTag = msg->ensureTag<InterfaceIdRequestTag>();
+    ifTag->setInterfaceId(ie->getInterfaceId());
     controlInfo->setTimeToLive(1);
     controlInfo->setDestAddr(dest);
     msg->setControlInfo(controlInfo);
@@ -615,7 +617,8 @@ void IGMPv2::sendToIP(IGMPMessage *msg, InterfaceEntry *ie, const IPv4Address& d
 void IGMPv2::processIgmpMessage(IGMPMessage *msg)
 {
     IPv4ControlInfo *controlInfo = (IPv4ControlInfo *)msg->getControlInfo();
-    InterfaceEntry *ie = ift->getInterfaceById(controlInfo->getInterfaceId());
+    auto ifTag = msg->getMandatoryTag<InterfaceIdIndicationTag>();
+    InterfaceEntry *ie = ift->getInterfaceById(ifTag->getInterfaceId());
     switch (msg->getType()) {
         case IGMP_MEMBERSHIP_QUERY:
             processQuery(ie, controlInfo->getSrcAddr(), check_and_cast<IGMPQuery *>(msg));

@@ -20,6 +20,7 @@
 #include "inet/networklayer/ipv4/IPv4Datagram.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/routing/pim/modes/PIMDM.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 
 namespace inet {
 Define_Module(PIMDM);
@@ -211,8 +212,9 @@ void PIMDM::processJoinPrunePacket(PIMJoinPrune *pkt)
 
     emit(rcvdJoinPrunePkSignal, pkt);
 
-    IPv4ControlInfo *ctrlInfo = check_and_cast<IPv4ControlInfo *>(pkt->getControlInfo());
-    InterfaceEntry *incomingInterface = ift->getInterfaceById(ctrlInfo->getInterfaceId());
+    //IPv4ControlInfo *ctrlInfo = check_and_cast<IPv4ControlInfo *>(pkt->getControlInfo());
+    auto ifTag = pkt->getMandatoryTag<InterfaceIdIndicationTag>();
+    InterfaceEntry *incomingInterface = ift->getInterfaceById(ifTag->getInterfaceId());
 
     if (!incomingInterface) {
         delete pkt;
@@ -382,8 +384,9 @@ void PIMDM::processGraftPacket(PIMGraft *pkt)
     emit(rcvdGraftPkSignal, pkt);
 
     IPv4ControlInfo *ctrlInfo = check_and_cast<IPv4ControlInfo *>(pkt->getControlInfo());
+    auto ifTag = pkt->getMandatoryTag<InterfaceIdIndicationTag>();
     IPv4Address sender = ctrlInfo->getSrcAddr();
-    InterfaceEntry *incomingInterface = ift->getInterfaceById(ctrlInfo->getInterfaceId());
+    InterfaceEntry *incomingInterface = ift->getInterfaceById(ifTag->getInterfaceId());
 
     // does packet belong to this router?
     if (pkt->getUpstreamNeighborAddress() != incomingInterface->ipv4Data()->getIPAddress()) {
@@ -592,8 +595,9 @@ void PIMDM::processStateRefreshPacket(PIMStateRefresh *pkt)
 
     // check if State Refresh msg has came from RPF neighbor
     IPv4ControlInfo *ctrlInfo = check_and_cast<IPv4ControlInfo *>(pkt->getControlInfo());
+    auto ifTag = pkt->getMandatoryTag<InterfaceIdIndicationTag>();
     UpstreamInterface *upstream = route->upstreamInterface;
-    if (ctrlInfo->getInterfaceId() != upstream->getInterfaceId() || upstream->rpfNeighbor() != ctrlInfo->getSrcAddr()) {
+    if (ifTag->getInterfaceId() != upstream->getInterfaceId() || upstream->rpfNeighbor() != ctrlInfo->getSrcAddr()) {
         delete pkt;
         return;
     }
@@ -678,7 +682,8 @@ void PIMDM::processStateRefreshPacket(PIMStateRefresh *pkt)
 void PIMDM::processAssertPacket(PIMAssert *pkt)
 {
     IPv4ControlInfo *ctrlInfo = check_and_cast<IPv4ControlInfo *>(pkt->getControlInfo());
-    int incomingInterfaceId = ctrlInfo->getInterfaceId();
+    auto ifTag = pkt->getMandatoryTag<InterfaceIdIndicationTag>();
+    int incomingInterfaceId = ifTag->getInterfaceId();
     IPv4Address source = pkt->getSourceAddress();
     IPv4Address group = pkt->getGroupAddress();
     AssertMetric receivedMetric = AssertMetric(pkt->getMetricPreference(), pkt->getMetric(), ctrlInfo->getSrcAddr());
@@ -1579,10 +1584,12 @@ void PIMDM::sendGraftAckPacket(PIMGraft *graftPacket)
     EV_INFO << "Sending GraftAck message.\n";
 
     IPv4ControlInfo *oldCtrl = check_and_cast<IPv4ControlInfo *>(graftPacket->removeControlInfo());
+    auto ifTag = graftPacket->removeMandatoryTag<InterfaceIdIndicationTag>();
     IPv4Address destAddr = oldCtrl->getSrcAddr();
     IPv4Address srcAddr = oldCtrl->getDestAddr();
-    int outInterfaceId = oldCtrl->getInterfaceId();
+    int outInterfaceId = ifTag->getInterfaceId();
     delete oldCtrl;
+    delete ifTag;
 
     PIMGraftAck *msg = new PIMGraftAck();
     *((PIMGraft *)msg) = *graftPacket;
@@ -1647,8 +1654,8 @@ void PIMDM::sendToIP(PIMPacket *packet, IPv4Address srcAddr, IPv4Address destAdd
     ctrl->setDestAddr(destAddr);
     ctrl->setProtocol(IP_PROT_PIM);
     ctrl->setTimeToLive(1);
-    ctrl->setInterfaceId(outInterfaceId);
     packet->setControlInfo(ctrl);
+    packet->ensureTag<InterfaceIdRequestTag>()->setInterfaceId(outInterfaceId);
     send(packet, "ipOut");
 }
 

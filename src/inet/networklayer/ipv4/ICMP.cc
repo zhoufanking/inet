@@ -29,6 +29,7 @@
 #include "inet/networklayer/ipv4/IPv4InterfaceData.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
 #include "inet/common/ModuleAccess.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 
 namespace inet {
 
@@ -144,7 +145,8 @@ void ICMP::sendErrorMessage(cPacket *transportPacket, IPv4ControlInfo *ctrl, ICM
     Enter_Method("sendErrorMessage(transportPacket, ctrl, type=%d, code=%d)", type, code);
 
     IPv4Datagram *datagram = ctrl->removeOrigDatagram();
-    int inputInterfaceId = ctrl->getInterfaceId();
+    auto ifTag = transportPacket->getMandatoryTag<InterfaceIdIndicationTag>();
+    int inputInterfaceId = ifTag->getInterfaceId();
     delete ctrl;
     take(transportPacket);
     take(datagram);
@@ -238,7 +240,7 @@ void ICMP::processEchoRequest(ICMPMessage *request)
     IPv4Address src = ctrl->getSrcAddr();
     IPv4Address dest = ctrl->getDestAddr();
     // A. Ariza Modification 5/1/2011 clean the interface id, this forces the use of routing table in the IPv4 layer
-    ctrl->setInterfaceId(-1);
+    //ctrl->setInterfaceId(-1);
     ctrl->setSrcAddr(dest);
     ctrl->setDestAddr(src);
 

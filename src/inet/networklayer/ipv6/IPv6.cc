@@ -247,9 +247,10 @@ void IPv6::handleMessageFromHL(cPacket *msg)
     }
 
     IPv6ControlInfo *controlInfo = check_and_cast<IPv6ControlInfo *>(msg->removeControlInfo());
+    auto ifTag = msg->getTag<InterfaceIdRequestTag>();
     // encapsulate upper-layer packet into IPv6Datagram
     // IPV6_MULTICAST_IF option, but allow interface selection for unicast packets as well
-    const InterfaceEntry *destIE = ift->getInterfaceById(controlInfo->getInterfaceId());
+    const InterfaceEntry *destIE = ifTag ? ift->getInterfaceById(ifTag->getInterfaceId()) : nullptr;
     IPv6Datagram *datagram = encapsulate(msg, controlInfo);
     delete controlInfo;
 
@@ -685,7 +686,8 @@ cPacket *IPv6::decapsulate(IPv6Datagram *datagram)
     controlInfo->setDestAddr(datagram->getDestAddress());
     controlInfo->setTrafficClass(datagram->getTrafficClass());
     controlInfo->setHopLimit(datagram->getHopLimit());
-    controlInfo->setInterfaceId(fromIE ? fromIE->getInterfaceId() : -1);
+    auto ifTag = packet->ensureTag<InterfaceIdIndicationTag>();
+    ifTag->setInterfaceId(fromIE ? fromIE->getInterfaceId() : -1);
 
     // original IP datagram might be needed in upper layers to send back ICMP error message
     controlInfo->setOrigDatagram(datagram);

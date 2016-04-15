@@ -24,6 +24,7 @@
 #include "inet/common/ModuleAccess.h"
 #include "inet/networklayer/contract/NetworkProtocolCommand_m.h"
 #include "inet/routing/pim/PIMSplitter.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 
 namespace inet {
 using namespace std;
@@ -84,8 +85,9 @@ void PIMSplitter::handleMessage(cMessage *msg)
 
 void PIMSplitter::processPIMPacket(PIMPacket *pkt)
 {
-    IPv4ControlInfo *ctrlInfo = check_and_cast<IPv4ControlInfo *>(pkt->getControlInfo());
-    InterfaceEntry *ie = ift->getInterfaceById(ctrlInfo->getInterfaceId());
+    //IPv4ControlInfo *ctrlInfo = check_and_cast<IPv4ControlInfo *>(pkt->getControlInfo());
+    auto ifTag = pkt->getMandatoryTag<InterfaceIdIndicationTag>();
+    InterfaceEntry *ie = ift->getInterfaceById(ifTag->getInterfaceId());
     ASSERT(ie);
 
     EV_INFO << "Received packet on interface '" << ie->getName() << "'" << endl;

@@ -20,6 +20,8 @@
 #include "inet/networklayer/ipv4/ICMPMessage.h"
 #include "inet/networklayer/ipv4/IPv4Route.h"
 
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
+
 #ifdef WITH_IDEALWIRELESS
 #include "inet/linklayer/ideal/IdealMacFrame_m.h"
 #endif // ifdef WITH_IDEALWIRELESS
@@ -737,15 +739,16 @@ void AODVRouting::sendAODVPacket(AODVControlPacket *packet, const L3Address& des
     networkProtocolControlInfo->setDestinationAddress(destAddr);
     networkProtocolControlInfo->setSourceAddress(getSelfIPAddress());
 
-    // TODO: Implement: support for multiple interfaces
-    InterfaceEntry *ifEntry = interfaceTable->getInterfaceByName("wlan0");
-    networkProtocolControlInfo->setInterfaceId(ifEntry->getInterfaceId());
-
     UDPPacket *udpPacket = new UDPPacket(packet->getName());
     udpPacket->encapsulate(packet);
     udpPacket->setSourcePort(aodvUDPPort);
     udpPacket->setDestinationPort(aodvUDPPort);
     udpPacket->setControlInfo(dynamic_cast<cObject *>(networkProtocolControlInfo));
+
+    // TODO: Implement: support for multiple interfaces
+    InterfaceEntry *ifEntry = interfaceTable->getInterfaceByName("wlan0");
+    InterfaceIdRequestTag *ifTag = udpPacket->ensureTag<InterfaceIdRequestTag>();
+    ifTag->setInterfaceId(ifEntry->getInterfaceId());
 
     if (destAddr.isBroadcast())
         lastBroadcastTime = simTime();

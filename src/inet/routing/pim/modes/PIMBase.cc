@@ -25,6 +25,7 @@
 #include "inet/networklayer/contract/ipv4/IPv4Address.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/routing/pim/modes/PIMBase.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 
 namespace inet {
 
@@ -177,7 +178,7 @@ void PIMBase::sendHelloPacket(PIMInterface *pimInterface)
     ctrl->setDestAddr(ALL_PIM_ROUTERS_MCAST);
     ctrl->setProtocol(IP_PROT_PIM);
     ctrl->setTimeToLive(1);
-    ctrl->setInterfaceId(pimInterface->getInterfaceId());
+    msg->ensureTag<InterfaceIdRequestTag>()->setInterfaceId(pimInterface->getInterfaceId());
     msg->setControlInfo(ctrl);
 
     msg->setByteLength(byteLength);
@@ -190,7 +191,8 @@ void PIMBase::sendHelloPacket(PIMInterface *pimInterface)
 void PIMBase::processHelloPacket(PIMHello *packet)
 {
     IPv4ControlInfo *ctrl = check_and_cast<IPv4ControlInfo *>(packet->getControlInfo());
-    int interfaceId = ctrl->getInterfaceId();
+    auto ifTag = packet->getMandatoryTag<InterfaceIdIndicationTag>();
+    int interfaceId = ifTag->getInterfaceId();
     IPv4Address address = ctrl->getSrcAddr();
     int version = packet->getVersion();
 
