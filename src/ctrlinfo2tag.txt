@@ -171,13 +171,18 @@ used controlinfos:
         TransmissionRequest : power, bitrate, carrierFrequency, bandwidth;
         RadioFrame : four pointers;
         ReceptionIndication : bitErrorCount, symbolErrorCount, packetErrorRate, bitErrorRate, symbolErrorRate, minRSSI, minSNIR;
+        Ieee80211ReceptionIndication: =ReceptionIndication=, ...
 
         INetworkProtocolControlInfo* (type selection based on destAddr.addressType)
-        IPv4ControlInfo : interfaceId, destAddr, srcAddr, protocol, ttl, tos, diffServCodePoint, explicitCongestionNotification, multicastLoop, dontFragment;
-        IPv6ControlInfo : interfaceId, destAddr, srcAddr, protocol, hopLimit, trafficClass, diffServCodePoint, explicitCongestionNotification, multicastLoop, extensionHeader[];
+        IPv4ControlInfo : [interfaceId], destAddr, srcAddr, protocol, ttl, tos, diffServCodePoint, explicitCongestionNotification, multicastLoop, dontFragment;
+                interfaceId --> InterfaceIdRequestTag / InterfaceIdIndicationTag
+        IPv6ControlInfo : [interfaceId], destAddr, srcAddr, protocol, hopLimit, trafficClass, diffServCodePoint, explicitCongestionNotification, multicastLoop, extensionHeader[];
+                interfaceId --> InterfaceIdRequestTag / InterfaceIdIndicationTag
         IPv6NDControlInfo : nextHop, interfaceId, fromHL;
-        GenericNetworkProtocolControlInfo : interfaceId, destinationAddress, sourceAddress, protocol, hopLimit;
-        SimpleNetworkProtocolControlInfo : interfaceId, destinationAddress, sourceAddress, protocol, hopLimit;
+        GenericNetworkProtocolControlInfo : [interfaceId], destinationAddress, sourceAddress, protocol, hopLimit;
+                interfaceId --> InterfaceIdRequestTag / InterfaceIdIndicationTag
+        SimpleNetworkProtocolControlInfo : [interfaceId], destinationAddress, sourceAddress, protocol, hopLimit;
+                interfaceId --> InterfaceIdRequestTag / InterfaceIdIndicationTag
 
         SCTPCommand : =cPacket=, assocId, sid, numMsgs, ssn, sendUnordered, prValue, localAddr, remoteAddr, localPort, remotePort, gate
         SCTPConnectInfo : =SCTPCommand=, remoteAddresses, status, inboundStreams, outboundStreams;
