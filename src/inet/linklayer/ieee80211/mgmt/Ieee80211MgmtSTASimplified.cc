@@ -17,6 +17,7 @@
 
 #include "inet/linklayer/ieee80211/mgmt/Ieee80211MgmtSTASimplified.h"
 #include "inet/linklayer/common/Ieee802Ctrl.h"
+#include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 
 namespace inet {
 
@@ -66,9 +67,10 @@ Ieee80211DataFrame *Ieee80211MgmtSTASimplified::encapsulate(cPacket *msg)
     frame->setReceiverAddress(accessPointAddress);
 
     // destination address is in address3
-    Ieee802Ctrl *ctrl = check_and_cast<Ieee802Ctrl *>(msg->removeControlInfo());
-    ASSERT(!ctrl->getDest().isUnspecified());
-    frame->setAddress3(ctrl->getDest());
+    SimpleLinkLayerControlInfo *cInfo = msg->getTag<SimpleLinkLayerControlInfo>();
+    Ieee802Ctrl *ctrl = msg->getTag<Ieee802Ctrl>();
+    ASSERT(!cInfo->getDest().isUnspecified());
+    frame->setAddress3(cInfo->getDest());
     frame->setEtherType(ctrl->getEtherType());
     int up = ctrl->getUserPriority();
     if (up >= 0) {
@@ -77,7 +79,6 @@ Ieee80211DataFrame *Ieee80211MgmtSTASimplified::encapsulate(cPacket *msg)
         frame->addBitLength(QOSCONTROL_BITS);
         frame->setTid(up);
     }
-    delete ctrl;
 
     frame->encapsulate(msg);
     return frame;
@@ -87,9 +88,10 @@ cPacket *Ieee80211MgmtSTASimplified::decapsulate(Ieee80211DataFrame *frame)
 {
     cPacket *payload = frame->decapsulate();
 
-    Ieee802Ctrl *ctrl = new Ieee802Ctrl();
-    ctrl->setSrc(frame->getAddress3());
-    ctrl->setDest(frame->getReceiverAddress());
+    Ieee802Ctrl *ctrl = payload->ensureTag<Ieee802Ctrl>();
+    SimpleLinkLayerControlInfo *cInfo = payload->ensureTag<SimpleLinkLayerControlInfo>();
+    cInfo->setSrc(frame->getAddress3());
+    cInfo->setDest(frame->getReceiverAddress());
     if (frame->getType() == ST_DATA_WITH_QOS) {
         int tid = frame->getTid();
         if (tid < 8)
@@ -98,7 +100,6 @@ cPacket *Ieee80211MgmtSTASimplified::decapsulate(Ieee80211DataFrame *frame)
     Ieee80211DataFrameWithSNAP *frameWithSNAP = dynamic_cast<Ieee80211DataFrameWithSNAP *>(frame);
     if (frameWithSNAP)
         ctrl->setEtherType(frameWithSNAP->getEtherType());
-    payload->setControlInfo(ctrl);
 
     delete frame;
     return payload;
