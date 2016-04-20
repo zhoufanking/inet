@@ -311,7 +311,7 @@ void TCP_NSC::handleIpInputMessage(TCPSegment *tcpsegP)
     // get src/dest addresses
     TCP_NSC_Connection::SockPair nscSockPair, inetSockPair, inetSockPairAny;
 
-    cObject *ctrl = tcpsegP->removeControlInfo();
+    cObject *ctrl = tcpsegP->removeControlInfo();       // INetworkProtocolControlInfo
     if (!ctrl)
         throw cRuntimeError("(%s)%s arrived without control info", tcpsegP->getClassName(), tcpsegP->getName());
 

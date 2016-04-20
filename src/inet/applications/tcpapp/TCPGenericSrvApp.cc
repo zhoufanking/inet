@@ -128,7 +128,7 @@ void TCPGenericSrvApp::handleMessage(cMessage *msg)
             delete msg;
         }
         else {
-            delete appmsg->removeControlInfo();
+            ASSERT(appmsg->getControlInfo() == nullptr);
             appmsg->clearTags();
             TCPCommand *cmd = appmsg->ensureTag<TCPCommand>();
             TCPSendCommand *sendCmd = appmsg->ensureTag<TCPSendCommand>();

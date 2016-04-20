@@ -147,7 +147,7 @@ void TCP::handleMessage(cMessage *msg)
             // get src/dest addresses
             L3Address srcAddr, destAddr;
 
-            cObject *ctrl = tcpseg->removeControlInfo();
+            cObject *ctrl = tcpseg->removeControlInfo();        // INetworkProtocolControlInfo
             if (!ctrl)
                 throw cRuntimeError("(%s)%s arrived without control info", tcpseg->getClassName(), tcpseg->getName());
 

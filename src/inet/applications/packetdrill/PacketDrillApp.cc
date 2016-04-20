@@ -175,16 +175,16 @@ void PacketDrillApp::handleMessage(cMessage *msg)
                     if (listenSet) {
                         if (acceptSet) {
                             tcpSocket.setState(TCPSocket::CONNECTED);
-                            tcpConnId = check_and_cast<TCPCommand *>(msg->getControlInfo())->getConnId();
+                            tcpConnId = msg->getMandatoryTag<TCPCommand>()->getConnId();
                             listenSet = false;
                             acceptSet = false;
                         } else {
-                            tcpConnId = check_and_cast<TCPCommand *>(msg->getControlInfo())->getConnId();
+                            tcpConnId = msg->getMandatoryTag<TCPCommand>()->getConnId();
                             establishedPending = true;
                         }
                     } else {
                         tcpSocket.setState(TCPSocket::CONNECTED);
-                        tcpConnId = check_and_cast<TCPCommand *>(msg->getControlInfo())->getConnId();
+                        tcpConnId = msg->getMandatoryTag<TCPCommand>()->getConnId();
                     }
                     delete msg;
                     break;
@@ -196,9 +196,8 @@ void PacketDrillApp::handleMessage(cMessage *msg)
                     {
                         cMessage *msg = new cMessage("data request");
                         msg->setKind(TCP_C_READ);
-                        TCPCommand *cmd = new TCPCommand();
+                        TCPCommand *cmd = msg->ensureTag<TCPCommand>();
                         cmd->setConnId(tcpConnId);
-                        msg->setControlInfo(cmd);
                         send(msg, "tcpOut");
                         recvFromSet = false;
                         // send a receive request to TCP
@@ -635,13 +634,12 @@ int PacketDrillApp::syscallRead(PacketDrillEvent *event, struct syscall_spec *sy
                 case IP_PROT_TCP: {
                     cMessage *msg = new cMessage("dataRequest");
                     msg->setKind(TCP_C_READ);
-                    TCPCommand *tcpcmd = new TCPCommand();
+                    TCPCommand *tcpcmd = msg->ensureTag<TCPCommand>();
                     tcpcmd->setConnId(tcpConnId);
-                    msg->setControlInfo(tcpcmd);
                     send(msg, "tcpOut");
                     break;
                 }
-                default: EV_INFO << "Protoocl not supported for this system call.";
+                default: EV_INFO << "Protocol not supported for this system call.";
             }
             msgArrived = false;
             expectedMessageSize = syscall->result->getNum();
@@ -734,9 +732,8 @@ int PacketDrillApp::syscallClose(struct syscall_spec *syscall, cQueue *args, cha
         case IP_PROT_TCP: {
             cMessage *msg = new cMessage("close");
             msg->setKind(TCP_C_CLOSE);
-            TCPCommand *cmd = new TCPCommand();
+            TCPCommand *cmd = msg->ensureTag<TCPCommand>();
             cmd->setConnId(tcpConnId);
-            msg->setControlInfo(cmd);
             send(msg, "tcpOut");
             break;
         }

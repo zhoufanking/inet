@@ -60,7 +60,7 @@ void HttpBrowser::handleMessage(cMessage *msg)
     else {
         EV_DEBUG << "Message received: " << msg->getName() << endl;
 
-        TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
+        TCPCommand *ind = msg->getTag<TCPCommand>();
         if (!ind) {
             EV_DEBUG << "No control info for the message" << endl;
         }

@@ -54,7 +54,8 @@ void TCPGenericSrvThread::dataArrived(cMessage *msg, bool)
     }
     else {
         appmsg->setByteLength(requestedBytes);
-        delete appmsg->removeControlInfo();
+        ASSERT(appmsg->getControlInfo() == nullptr);
+        appmsg->clearTags();    //FIXME is it needed?
         getSocket()->send(appmsg);
     }
 

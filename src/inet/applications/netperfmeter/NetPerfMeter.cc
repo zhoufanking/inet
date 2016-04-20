@@ -469,9 +469,7 @@ void NetPerfMeter::handleMessage(cMessage* msg)
           break;
          // ------ Queue indication -----------------------------------------
          case TCP_I_SEND_MSG: {
-            const TCPCommand* tcpCommand =
-               check_and_cast<TCPCommand*>(msg->getControlInfo());
-            assert(tcpCommand != nullptr);
+            const TCPCommand* tcpCommand = msg->getMandatoryTag<TCPCommand>();
             // Queue is underfull again -> give it more data.
             if(SocketTCP != nullptr) {   // T.D. 16.11.2011: Ensure that there is still a TCP socket!
                SendingAllowed = true;
@@ -582,7 +580,7 @@ void NetPerfMeter::successfullyEstablishedConnection(cMessage*          msg,
          IncomingSocketTCP->readDataTransferModePar(*this);
       }
 
-      TCPCommand* connectInfo = check_and_cast<TCPCommand*>(msg->getControlInfo());
+      TCPCommand* connectInfo = msg->getMandatoryTag<TCPCommand>();
       ConnectionID = connectInfo->getConnId();
       sendTCPQueueRequest(QueueSize);   // Limit the send queue as given.
    }
@@ -1216,13 +1214,12 @@ void NetPerfMeter::sendTCPQueueRequest(const unsigned int queueSize)
    // When the queue is able accept more data again, it will be indicated by
    // TCP_I_SEND_MSG!
 
-   TCPCommand* queueInfo = new TCPCommand();
-   queueInfo->setUserId(queueSize);
-   queueInfo->setConnId(ConnectionID);
 
    cPacket* cmsg = new cPacket("QueueRequest");
+   TCPCommand* queueInfo = cmsg->ensureTag<TCPCommand>();
    cmsg->setKind(TCP_C_QUEUE_BYTES_LIMIT);
-   cmsg->setControlInfo(queueInfo);
+   queueInfo->setUserId(queueSize);             //FIXME queueSize move to a new Tag
+   queueInfo->setConnId(ConnectionID);
    if(IncomingSocketTCP) {
       IncomingSocketTCP->sendCommand(cmsg);
    }

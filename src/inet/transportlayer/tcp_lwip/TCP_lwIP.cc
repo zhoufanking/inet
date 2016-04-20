@@ -146,7 +146,7 @@ void TCP_lwIP::handleIpInputMessage(TCPSegment *tcpsegP)
     L3Address srcAddr, destAddr;
     int interfaceId = -1;
 
-    cObject *ctrl = tcpsegP->removeControlInfo();
+    cObject *ctrl = tcpsegP->removeControlInfo();       // INetworkProtocolControlInfo
     if (!ctrl)
         throw cRuntimeError("(%s)%s arrived without control info", tcpsegP->getClassName(), tcpsegP->getName());
 
