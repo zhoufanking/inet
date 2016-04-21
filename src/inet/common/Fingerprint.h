@@ -20,11 +20,11 @@
 
 namespace inet {
 
-class INET_API Fingerprint : public cSingleFingerprint
+class INET_API Fingerprint : public cSingleFingerprintCalculator
 {
   public:
-    virtual cFingerprint *dup() const override { return new Fingerprint(); }
-    virtual bool addEventCategory(cEvent *event, FingprintCategory category) override;
+    virtual Fingerprint *dup() const override { return new Fingerprint(); }
+    virtual bool addEventIngredient(cEvent *event, FingerprintIngredient category) override;
 };
 
 } // namespace inet

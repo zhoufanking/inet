@@ -22,7 +22,7 @@ Register_Class(Fingerprint);
 
 using namespace inet::serializer;
 
-bool Fingerprint::addEventCategory(cEvent *event, FingprintCategory category)
+bool Fingerprint::addEventIngredient(cEvent *event, FingerprintIngredient category)
 {
     if (category == MESSAGE_DATA) {
         cMessage *message = event->isMessage() ? static_cast<cMessage *>(event) : nullptr;
