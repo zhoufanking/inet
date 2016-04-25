@@ -43,11 +43,11 @@ class INET_API MessageDispatcher : public cSimpleModule, public IProtocolRegistr
 
     protected:
         virtual void initialize() override;
-        virtual void handleMessage(cMessage *message) override;
-        virtual void handleUpperLayerPacket(cMessage *message);
-        virtual void handleLowerLayerPacket(cMessage *message);
-        virtual void handleUpperLayerCommand(cMessage *message);
-        virtual void handleLowerLayerCommand(cMessage *message);
+        virtual void arrived(cMessage *message, cGate *inGate, simtime_t t) override;
+        virtual cGate *handleUpperLayerPacket(cMessage *message, cGate *inGate);
+        virtual cGate *handleLowerLayerPacket(cMessage *message, cGate *inGate);
+        virtual cGate *handleUpperLayerCommand(cMessage *message, cGate *inGate);
+        virtual cGate *handleLowerLayerCommand(cMessage *message, cGate *inGate);
 
         virtual int computeSocketId(cMessage *message);
         virtual int computeInterfaceId(cMessage *message);
