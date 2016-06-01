@@ -252,7 +252,7 @@ void SCTP::handleMessage(cMessage *msg)
                 appGateIndex = controlInfo->getGate();
             else
                 appGateIndex = msg->getArrivalGate()->getIndex();
-            int32 assocId = controlInfo->getAssocId();
+            int32 assocId = controlInfo->getSocketId();
             if (assocId == -1) {
                 int32 fd = controlInfo->getFd();
                 assocId = findAssocForFd(fd);
