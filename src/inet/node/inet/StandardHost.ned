@@ -111,11 +111,11 @@ module StandardHost extends NodeBase
         udp.ipIn <-- networkLayer.transportOut++ if hasUdp;
 
         for i=0..numSctpApps-1 {
-            sctpApp[i].sctpOut --> sctp.from_appl++;
-            sctp.to_appl++ --> sctpApp[i].sctpIn;
+            sctpApp[i].sctpOut --> sctp.appIn++;
+            sctp.appOut++ --> sctpApp[i].sctpIn;
         }
-        sctp.to_ip --> networkLayer.transportIn++ if hasSctp;
-        networkLayer.transportOut++ --> sctp.from_ip if hasSctp;
+        sctp.ipOut --> networkLayer.transportIn++ if hasSctp;
+        networkLayer.transportOut++ --> sctp.ipIn if hasSctp;
 
         for i=0..numPingApps-1 {
             networkLayer.pingOut++ --> pingApp[i].pingIn;

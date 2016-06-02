@@ -69,8 +69,8 @@ module NetPerfMeterHost extends NodeBase
         for i=0..numNetPerfMeterApps-1 {
             netPerfMeterApp[i].tcpOut --> tcp.appIn++;
             netPerfMeterApp[i].tcpIn <-- tcp.appOut++;
-            netPerfMeterApp[i].sctpOut --> sctp.from_appl++;
-            netPerfMeterApp[i].sctpIn <-- sctp.to_appl++;
+            netPerfMeterApp[i].sctpOut --> sctp.appIn++;
+            netPerfMeterApp[i].sctpIn <-- sctp.appOut++;
             netPerfMeterApp[i].udpOut --> udp.appIn++;
             netPerfMeterApp[i].udpIn <-- udp.appOut++;
         }
@@ -79,6 +79,6 @@ module NetPerfMeterHost extends NodeBase
         tcp.ipIn <-- networkLayer.transportOut++ if (numNetPerfMeterApps > 0);
         udp.ipOut --> networkLayer.transportIn++ if (numNetPerfMeterApps > 0);
         udp.ipIn <-- networkLayer.transportOut++ if (numNetPerfMeterApps > 0);
-        sctp.to_ip --> networkLayer.transportIn++ if (numNetPerfMeterApps > 0);
-        networkLayer.transportOut++ --> sctp.from_ip if (numNetPerfMeterApps > 0);
+        sctp.ipOut --> networkLayer.transportIn++ if (numNetPerfMeterApps > 0);
+        networkLayer.transportOut++ --> sctp.ipIn if (numNetPerfMeterApps > 0);
 }
