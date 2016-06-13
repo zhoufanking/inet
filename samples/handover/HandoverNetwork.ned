@@ -32,10 +32,10 @@ network HandoverNetwork
             parameters:
                 @display("p=480,30");
         }
-        configurator: IPv4NetworkConfigurator {
-            parameters:
-                @display("p=580,30");
-        }
+//        configurator: IPv4NetworkConfigurator {
+//            parameters:
+//                @display("p=580,30");
+//        }
         radioMedium: Ieee80211ScalarRadioMedium {
             parameters:
                 @display("p=380,30");
