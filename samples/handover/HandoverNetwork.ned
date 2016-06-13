@@ -16,7 +16,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-package inet.examples.wireless.handover;
+package inet.samples.handover;
 
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.inet.WirelessHost;
@@ -26,18 +26,19 @@ import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
 network HandoverNetwork
 {
+    @display("bgb=640,270");
     submodules:
         visualizer: IntegratedCanvasVisualizer {
             parameters:
-                @display("p=100,50");
+                @display("p=480,30");
         }
         configurator: IPv4NetworkConfigurator {
             parameters:
-                @display("p=100,150");
+                @display("p=580,30");
         }
         radioMedium: Ieee80211ScalarRadioMedium {
             parameters:
-                @display("p=100,250");
+                @display("p=380,30");
         }
         host: WirelessHost {
             parameters:
