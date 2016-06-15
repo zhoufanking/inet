@@ -26,31 +26,27 @@ import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
 network HandoverNetwork
 {
-    @display("bgb=640,270");
+    @display("bgb=640,370");
     submodules:
         visualizer: IntegratedCanvasVisualizer {
             parameters:
-                @display("p=480,30");
+                @display("p=71,100");
         }
-//        configurator: IPv4NetworkConfigurator {
-//            parameters:
-//                @display("p=580,30");
-//        }
         radioMedium: Ieee80211ScalarRadioMedium {
             parameters:
-                @display("p=380,30");
+                @display("p=70,30");
         }
         host: WirelessHost {
             parameters:
-                @display("p=50,130;r=,,#707070");
+                @display("p=50,230;r=,,#707070");
         }
         ap1: AccessPoint {
             parameters:
-                @display("p=100,200;r=,,#707070");
+                @display("p=100,300;r=,,#707070");
         }
         ap2: AccessPoint {
             parameters:
-                @display("p=500,200;r=,,#707070");
+                @display("p=500,300;r=,,#707070");
         }
 }
 
