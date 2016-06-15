@@ -11,7 +11,7 @@
 
 	<p>
 		This example simulation demonstrates the handover between two access points 
-		(APs) in the 802.11 wireless LAN. The network will consist of two 
+		(APs) in the 802.11 wireless LAN in infrastructure mode. The network will consist of two 
 		APs, placed 400 meters apart, and a wireless host moving out of range
 		of one access point and into the range of the other. The goal is to show 
 		how the handover happens between the two APs.
@@ -20,7 +20,7 @@
 	<p><h2>The model</h2></p>
 
 <p>
-	In the 802.11 Wireless Standard, wireless hosts need to be associated
+	In the 802.11 wireless standard infrastructure mode, wireless hosts need to be associated
 	with an access point before any data exchange can occur. The hosts can find an
 	access point in two ways. One is active scanning, where the hosts transmit Probe Request frames,
 	and the APs reply to these with Probe Response frames. The other is passive scanning,
@@ -29,17 +29,11 @@
 	In this simulation, the host uses active scanning.
 </p>
 
-<p>
-	Once the hosts wants to join an AP, the authentication process begins.
-	The AP checks if the host has the neccessary privileges, ie. the host knows the password
-	for the AP.
-</p>
-
-<p>
-	After the host is authenticated, comes the association process. During the process,
-	the capabilities of the AP and the host are exchanged. When it is complete, the data
-	exchange can begin.
-</p>
+<p>     Once the hosts wants to join an AP, the authentication process begins.
+The AP checks if the host has the neccessary privileges, ie. the host knows the
+password     for the AP.     After the host is authenticated, comes the
+association process. During the process,     the capabilities of the AP and the
+host are exchanged. When it is complete, the data     exchange can begin. </p>
 
 <p>
 	In this simulation there will be no data exchange, the host will just be associated to the
@@ -51,11 +45,6 @@
 	<p>The example simulation uses to following network:</p>
 
 	<p><center><img src="network.png"></center></p>
-
-<p>
-		Note that there is no <tt>configurator</tt> module in the network. It is not needed because there is no transport layer
-		communication, only physical and link layer.
-</p>
 
 <p><b>Configuration</b></p>
 
@@ -104,6 +93,10 @@ shown in the packet log below. </p>
 <p>
 When the host is in range of ap1, the only communication is the host receiving ap1's beacon frames. This is indicated by the olive arrows, which only go from the AP to the host.
 </p>
+
+<p>This animation shows the handover</p>
+
+<center><img src="handover4.gif"></center>
 
 <p>
 The host remains associated to ap1 until it is in communication range with it, even though it is also in communication range of ap2 when it enters the
