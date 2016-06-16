@@ -24,9 +24,11 @@ import inet.node.wireless.AccessPoint;
 import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
 import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
+// TODO: rename this module to HandoverExample, all example networks should be called SomethingExample to make searching for examples easy
 network HandoverNetwork
 {
-    @display("bgb=640,370");
+    parameters:
+	    @display("bgb=640,370");
     submodules:
         visualizer: IntegratedCanvasVisualizer {
             parameters:
@@ -34,10 +36,13 @@ network HandoverNetwork
         }
         radioMedium: Ieee80211ScalarRadioMedium {
             parameters:
+                // TODO: y positions should be a multiply of 100, it makes displaying two status text lines above the submodule possible
+                // TODO: x positions should be 100 for consistency
                 @display("p=70,30");
         }
         host: WirelessHost {
             parameters:
+                // TODO: update vertical positions to avoid overlapping
                 @display("p=50,230;r=,,#707070");
         }
         ap1: AccessPoint {

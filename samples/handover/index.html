@@ -11,8 +11,8 @@
 
 	<p>
 		This example simulation demonstrates the handover between two access points 
-		(APs) in the 802.11 wireless LAN in infrastructure mode. The network will consist of two 
-		APs, placed 400 meters apart, and a wireless host moving out of range
+		(APs) in an 802.11 wireless LAN using infrastructure mode. The network contains two 
+		APs, placed 400 meters apart, and a wireless host. The host moves out of range
 		of one access point and into the range of the other. The goal is to show 
 		how the handover happens between the two APs.
 	</p>
@@ -20,21 +20,23 @@
 	<p><h2>The model</h2></p>
 
 <p>
-	In the 802.11 wireless standard infrastructure mode, wireless hosts need to be associated
+	In the 802.11 infrastructure mode, wireless hosts need to be associated
 	with an access point before any data exchange can occur. The hosts can find an
 	access point in two ways. One is active scanning, where the hosts transmit Probe Request frames,
 	and the APs reply to these with Probe Response frames. The other is passive scanning,
 	where the hosts locate APs by receiving the Beacon frames sent by the APs.
-	APs emit Beacon frames periodically, anouncing their presence (unless configured to be hidden).
+	APs emit Beacon frames periodically, announcing their presence (unless configured to be hidden).
 	In this simulation, the host uses active scanning.
 </p>
 
+TODO: When the host discovered the available APs, it can decides which BSS to join and the authentication process begins.
 <p>     Once the hosts wants to join an AP, the authentication process begins.
-The AP checks if the host has the neccessary privileges, ie. the host knows the
-password     for the AP.     After the host is authenticated, comes the
-association process. During the process,     the capabilities of the AP and the
+The AP checks if the host has the necessary privileges, ie. the host knows the
+password     for the AP.     After the host is authenticated, it starts the
+association process. During the association process,     the capabilities of the AP and the
 host are exchanged. When it is complete, the data     exchange can begin. </p>
 
+TODO: explain that there's no data exchange, because there are no applications configured in the simulation
 <p>
 	In this simulation there will be no data exchange, the host will just be associated to the
 	APs, and keep receiving beacon frames.
@@ -53,12 +55,14 @@ The two access points are set to use the channels 2 and 3. The management module
 it will scan channels 0 to 4.
 </p>
 
+TODO: delete this paragraph, because it's not strictly related to the example (in fact, it's a random weirdness :)
 <p>
 The entry <i>**.networkConfiguratorModule = ""</i> is needed because by default, <tt>wirelessHost</tt>s look for a IPv4NetworkConfigurator module
 in the network. Since this network has no configurator, it must be specified in the host not to use any. Otherwise, the simulation
 would give an error.
 </p>
 
+TODO: delete this paragraph, because it's not strictly related to the example (in fact, it's a random weirdness :)
 <p>
 Note that another way of dealing with the error would be to just add a configurator module, which would not do anything.
 to keep the network simpler, this model uses the former method.
@@ -68,11 +72,11 @@ to keep the network simpler, this model uses the former method.
 
 <p>
 At the beginning of the simulation, the host starts to scan the channels, looking for an access point to associate with.
-This is triggered by the host's agent module, as it is set to active scanning.
+This process is started by the host's agent module, as it is set to active scanning.
 </p>
 
 <p>
-During the scanning process, the host send a Probe Request frame in each channel starting from channel 0, until it receives a Probe Response.
+During the scanning process, the host sends a Probe Request frame in each channel starting from channel 0, until it receives a Probe Response.
 As ap1 is on channel 2, the host sends out three Probe Requests before it gets a Probe Response. This is shown in the following packet log.
 </p>
 
@@ -88,10 +92,12 @@ becomes associated with ap1, a text bubble appears at the host indicating that
 it is associated with the AP. The authentication and association processes are
 shown in the packet log below. </p>
 
+TODO: why is there multiple Auth exchanges, I guess because the authentication is a multi step process? 
+
 <center><img src="assoc.png"></center>
 
 <p>
-When the host is in range of ap1, the only communication is the host receiving ap1's beacon frames. This is indicated by the olive arrows, which only go from the AP to the host.
+When the host is in range of ap1, the only communication is the host receiving ap1's beacon frames. This is indicated by the olive arrow, which only goes from the AP to the host.
 </p>
 
 <p>This animation shows the handover</p>
@@ -99,15 +105,16 @@ When the host is in range of ap1, the only communication is the host receiving a
 <center><img src="handover4.gif"></center>
 
 <p>
-The host remains associated to ap1 until it is in communication range with it, even though it is also in communication range of ap2 when it enters the
-area where the two APs' communication range circles intersect. As it leaves ap1's range, the host detects that it no longer receives ap1's beacon frames. 
-A text bubble appears at the host indicating that it has lost the beacon. The scanning process is triggered by the host's agent module.
+The host remains associated to ap1 as long as it's within communication range, even though it is also within the communication range of ap2 when it enters the
+area where the two APs' communication range circles overlap. As it leaves ap1's range, the host detects that it no longer receives ap1's beacon frames. 
+A text bubble appears at the host indicating that it has lost the beacon. The scanning process is restarted by the host's agent module.
 This is triggered when 4 consecutive Beacon frames are not received.
 </p>
 This time it takes four Probe Request frames to get a response, because ap2 is on channel 3.
 </p>
 
 <p>
+TODO: using the same authentication and association processes
 The host is handed over to ap2, and will remain so until it leaves ap2's communication range.
 </p>
 
