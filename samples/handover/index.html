@@ -67,7 +67,7 @@ During the scanning process, the host sends a Probe Request frame in each channe
 As ap1 is on channel 2, the host sends out three Probe Requests before it gets a Probe Response. This is shown in the following packet log.
 </p>
 
-<center><img src="scan.png"></center>
+<p><center><img src="scan.png"></center></p>
 
 The olive arrows indicate recent successful physical layer transmissions. In this example, they will be used to visualize that the host is associated with an AP.
 The APs send out beacon frames periodically, which is now configured to be 100 ms. These frames are received by the host, which constantly reinforce the physical
@@ -81,7 +81,7 @@ shown in the packet log below. Note that there are 4 authentication steps, as it
 configured by default in the <tt>AccessPoint</tt> module's management submodule.
 This 4 step authentication process corresponds to the Wired Equivalent Privacy (WEP) encryption.</p>
 
-<center><img src="assoc.png"></center>
+<p><center><img src="assoc.png"></center></p>
 
 <p>
 When the host is in range of ap1, the only communication is the host receiving ap1's beacon frames. This is indicated by the olive arrow, which only goes from the AP to the host.
@@ -89,7 +89,7 @@ When the host is in range of ap1, the only communication is the host receiving a
 
 <p>This animation shows the handover</p>
 
-<center><img src="handover4.gif"></center>
+<p><center><img src="handover4.gif"></center></p>
 
 <p>
 The host remains associated to ap1 as long as it's within communication range, even though it is also within the communication range of ap2 when it enters the
@@ -104,9 +104,22 @@ This time it takes four Probe Request frames to get a response, because ap2 is o
 The host is handed over to ap2 using the same authentication and association process discussed earlier. It will remain associated to ap2 until it leaves ap2's communication range.
 </p>
 
+<p>
+The host's <tt>mgmt</tt> module contains a variable that indicates which access point the host is associated to.
+</p>
+
+<p><center><img src="assocap2.png"></center></p>
+
+<p>
+The <tt>mgmt</tt> modules of access points maintain a list of hosts that are associated with them.
+</p>
+
+<p><center><img src="stalist1.png"></p>
+<p><img src="stalist2.png"></center></p>
+
 Here is an animation showing the host moving across the playground.
 
-<center><img src="handover2.gif">
+<p><center><img src="handover2.gif"></center></p>
 
 </body>
 </html>
