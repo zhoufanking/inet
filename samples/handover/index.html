@@ -14,14 +14,14 @@
 		(APs) in an 802.11 wireless LAN using infrastructure mode. The network contains two 
 		APs, placed 400 meters apart, and a wireless host. The host moves out of range
 		of one access point and into the range of the other. The goal is to show 
-		how the handover happens between the two APs.
+		how the handover takes place between the two APs.
 	</p>
 
 	<p><h2>The model</h2></p>
 
 <p>
-	In the 802.11 infrastructure mode, wireless hosts need to be associated
-	with an access point before any data exchange can occur. The hosts can find an
+	In 802.11 infrastructure mode, wireless hosts need to be associated
+	with an access point before data exchange can occur. The hosts can find an
 	access point in two ways. One is active scanning, where the hosts transmit Probe Request frames,
 	and the APs reply to these with Probe Response frames. The other is passive scanning,
 	where the hosts locate APs by receiving the Beacon frames sent by the APs.
@@ -69,33 +69,30 @@ As ap1 is on channel 2, the host sends out three Probe Requests before it gets a
 
 <p><center><img src="scan.png"></center></p>
 
-The olive arrows indicate recent successful physical layer transmissions. In this example, they will be used to visualize that the host is associated with an AP.
-The APs send out beacon frames periodically, which is now configured to be 100 ms. These frames are received by the host, which constantly reinforce the physical
-link visualizer arrows.
-
 <p>     When the host gets the Probe Response, it initiates the authentication
-process. After that is completed, it starts the association process.     When it
-becomes associated with ap1, a text bubble appears at the host indicating that
+process. After that is completed, it starts the association process. The authentication process consists of several steps. 
+When it becomes associated with ap1, a text bubble appears at the host indicating that
 it is associated with the AP. The authentication and association processes are
-shown in the packet log below. Note that there are 4 authentication steps, as it is
-configured by default in the <tt>AccessPoint</tt> module's management submodule.
-This 4 step authentication process corresponds to the Wired Equivalent Privacy (WEP) encryption.</p>
+shown in the packet log below.</p>
 
 <p><center><img src="assoc.png"></center></p>
 
-<p>
-When the host is in range of ap1, the only communication is the host receiving ap1's beacon frames. This is indicated by the olive arrow, which only goes from the AP to the host.
-</p>
-
-<p>This animation shows the handover</p>
+<p>This animation shows the handover.</p>
 
 <p><center><img src="handover4.gif"></center></p>
+
+<p>
+	The dotted arrows indicate recent successful physical layer transmissions. In this example, they will be used to visualize that the host is associated with an AP.
+The APs send out beacon frames periodically, which is now configured to be 100 ms. These frames are received by the host, which constantly reinforce the physical
+link visualizer arrows. When the host is in range of ap1, the only communication is the host receiving ap1's beacon frames. This is indicated by the dotted arrow, which only goes from the AP to the host.
+
+</p>
 
 <p>
 The host remains associated to ap1 as long as it's within communication range, even though it is also within the communication range of ap2 when it enters the
 area where the two APs' communication range circles overlap. As it leaves ap1's range, the host detects that it no longer receives ap1's beacon frames. 
 A text bubble appears at the host indicating that it has lost the beacon. The scanning process is restarted by the host's agent module.
-This is triggered when 4 consecutive Beacon frames are not received.
+This is triggered when several consecutive beacon frames are not received.
 </p>
 This time it takes four Probe Request frames to get a response, because ap2 is on channel 3.
 </p>
