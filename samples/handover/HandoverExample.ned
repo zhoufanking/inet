@@ -25,7 +25,7 @@ import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
 import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
 // TODO: rename this module to HandoverExample, all example networks should be called SomethingExample to make searching for examples easy
-network HandoverNetwork
+network HandoverExample
 {
     parameters:
 	    @display("bgb=640,370");
