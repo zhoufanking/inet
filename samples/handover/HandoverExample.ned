@@ -35,13 +35,10 @@ network HandoverExample
         }
         radioMedium: Ieee80211ScalarRadioMedium {
             parameters:
-                // TODO: y positions should be a multiply of 100, it makes displaying two status text lines above the submodule possible
-                // TODO: x positions should be 100 for consistency
                 @display("p=100,100");
         }
         host: WirelessHost {
             parameters:
-                // TODO: update vertical positions to avoid overlapping
                 @display("p=50,280;r=,,#707070");
         }
         ap1: AccessPoint {
