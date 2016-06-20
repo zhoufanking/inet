@@ -29,18 +29,18 @@
 	In this simulation, the host uses active scanning.
 </p>
 
-TODO: When the host discovered the available APs, it can decides which BSS to join and the authentication process begins.
-<p>     Once the hosts wants to join an AP, the authentication process begins.
-The AP checks if the host has the necessary privileges, ie. the host knows the
-password     for the AP.     After the host is authenticated, it starts the
-association process. During the association process,     the capabilities of the AP and the
+<p>When the host has discovered the available APs, it decides which one to join.
+In the INET 802.11 model, it chooses the one which has the strongest signal.
+Once the hosts wants to join an AP, the authentication process begins. The AP
+checks if the host has the necessary privileges, ie. the host knows the password
+for the AP.     After the host is authenticated, it starts the association
+process. During the association process,     the capabilities of the AP and the
 host are exchanged. When it is complete, the data     exchange can begin. </p>
 
-TODO: explain that there's no data exchange, because there are no applications configured in the simulation
-<p>
-	In this simulation there will be no data exchange, the host will just be associated to the
-	APs, and keep receiving beacon frames.
-</p>
+<p>     In this simulation there will be no data
+exchange, because there are no applications (ie. UDPApp) configured in the hosts
+to send or receive data. The host will just be associated to the     APs, and
+keep receiving beacon frames. </p>
 
 <p><b>The network</b></p>
 
@@ -53,19 +53,6 @@ TODO: explain that there's no data exchange, because there are no applications c
 <p>
 The two access points are set to use the channels 2 and 3. The management module is set to scan 5 channels, so
 it will scan channels 0 to 4.
-</p>
-
-TODO: delete this paragraph, because it's not strictly related to the example (in fact, it's a random weirdness :)
-<p>
-The entry <i>**.networkConfiguratorModule = ""</i> is needed because by default, <tt>wirelessHost</tt>s look for a IPv4NetworkConfigurator module
-in the network. Since this network has no configurator, it must be specified in the host not to use any. Otherwise, the simulation
-would give an error.
-</p>
-
-TODO: delete this paragraph, because it's not strictly related to the example (in fact, it's a random weirdness :)
-<p>
-Note that another way of dealing with the error would be to just add a configurator module, which would not do anything.
-to keep the network simpler, this model uses the former method.
 </p>
 
 <p><h2>Results</h2></p>
@@ -90,9 +77,9 @@ link visualizer arrows.
 process. After that is completed, it starts the association process.     When it
 becomes associated with ap1, a text bubble appears at the host indicating that
 it is associated with the AP. The authentication and association processes are
-shown in the packet log below. </p>
-
-TODO: why is there multiple Auth exchanges, I guess because the authentication is a multi step process? 
+shown in the packet log below. Note that there are 4 authentication steps, as it is
+configured by default in the <tt>AccessPoint</tt> module's management submodule.
+This 4 step authentication process corresponds to the Wired Equivalent Privacy (WEP) encryption.</p>
 
 <center><img src="assoc.png"></center>
 
@@ -114,8 +101,7 @@ This time it takes four Probe Request frames to get a response, because ap2 is o
 </p>
 
 <p>
-TODO: using the same authentication and association processes
-The host is handed over to ap2, and will remain so until it leaves ap2's communication range.
+The host is handed over to ap2 using the same authentication and association process discussed earlier. It will remain associated to ap2 until it leaves ap2's communication range.
 </p>
 
 Here is an animation showing the host moving across the playground.
