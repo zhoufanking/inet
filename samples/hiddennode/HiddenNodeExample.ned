@@ -22,7 +22,7 @@ import inet.common.figures.DelegateSignalConfigurator;
 import inet.environment.common.PhysicalEnvironment;
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.inet.WirelessHost;
-import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
+import inet.physicallayer.idealradio.IdealRadioMedium;
 import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
 
@@ -45,7 +45,7 @@ network HiddenNodeExample
         hostC: WirelessHost {
             @display("p=600,272");
         }
-        radioMedium: Ieee80211ScalarRadioMedium {
+        radioMedium: IdealRadioMedium {
             @display("p=100,100");
         }
         configurator: IPv4NetworkConfigurator {
