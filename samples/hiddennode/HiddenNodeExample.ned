@@ -18,6 +18,7 @@
 
 package inet.samples.hiddennode;
 
+import inet.common.figures.DelegateSignalConfigurator;
 import inet.environment.common.PhysicalEnvironment;
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.inet.WirelessHost;
@@ -28,16 +29,20 @@ import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 network HiddenNodeExample
 {
     parameters:
-        @display("b=297,203;bgb=737,504");
+        @display("b=297,203;bgb=736.6,557.784");
+        @figure[rcvdPkText](type=indicatorText; pos=420,20; anchor=w; font=,20; textFormat="packets received: %g"; initialValue=0);
+        @statistic[rcvdPk](source=hostB_rcvdPk; record=figure(count); targetFigure=rcvdPkText);
+        @signal[hostB_rcvdPk];
+        @delegatesignal[rcvdPk](source=hostB.udpApp[0].rcvdPk; target=hostB_rcvdPk);
     submodules:
 
-        A: WirelessHost {
+        hostA: WirelessHost {
             @display("p=300,272");
         }
-        B: WirelessHost {
+        hostB: WirelessHost {
             @display("p=450,100");
         }
-        C: WirelessHost {
+        hostC: WirelessHost {
             @display("p=600,272");
         }
         radioMedium: Ieee80211ScalarRadioMedium {
@@ -51,6 +56,9 @@ network HiddenNodeExample
         }
         physicalEnvironment: PhysicalEnvironment {
             @display("p=100,400");
+        }
+        figureHelper: DelegateSignalConfigurator {
+            @display("p=100,500");
         }
 }
 
