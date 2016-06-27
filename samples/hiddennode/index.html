@@ -28,28 +28,30 @@
 		The solution that is empoyed in 802.11 networks are the Request to send/Clear to send frames (RTS/CTS).
 		Before transmitting a frame, hosts send an RTS frame addressed to the target node. The target node then replies
 		with a CTS frame. The transmitting node sends and ACK, and transmits
-		the frame that it originally wanted.
+		the frame that it originally wanted to transmit.
 </p>
 
 <p>
 		Nearby hidden nodes can only receive the CTS, but not the RTS, which indicates to them
 		that there is another node out of range, about to transmit. It defers from transmitting, until
-		the ongoing transmission is over. It knows the exact time from the duration field. The CTS, RTS and ACK frames each have a duration field, which indicate how much time is left until the
+		the ongoing transmission is over. It knows the exact time from the duration field of the CTS frame. The CTS, RTS and ACK frames each have a duration field, which indicate how much time is left until the
 		entire packet exchange (RTS,CTS,ACK,payload frame,ACK) is completed. This way, any node that receives one of the frames
 		knows when the channel will become available for transmission.
 </p>
 
+<p><b>Demonstrating the hidden node problem</b></p>
+
 <p>
 	The simulation contains 3 models. The first one doesn't use the RTS/CTS mechanism, so effectively the hidden node problem is
-	not addressed here. The second one adds the RTS/CTS mechanism, which addresses the problem, also adding some overhead to the
-	transmissions. The third one is for reference, showing what would happen if there was no hidden node in the first place.
+	not addressed here. The second one adds the RTS/CTS mechanism, which addresses the problem, adding some overhead to the
+	transmissions in the process. The third one is for reference, showing what would happen if there was no hidden node in the first place.
 </p>
 
 <p><h2>The model</h2></p>
 
 	<p>
 		The network in the simulation contains 3 hosts, arranged in a triangle.
-		Host A and C are separated by a wall, and thus cannot transmit to each other.
+		Host A and C are separated by a wall which blocks transmissions, and thus the nodes cannot transmit to each other.
 		They are both sending UDP packets to Host B, which can receive the transmissions
 		of both.
 	</p>
