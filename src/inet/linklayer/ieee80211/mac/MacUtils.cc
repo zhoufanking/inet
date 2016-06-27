@@ -97,7 +97,7 @@ Ieee80211CTSFrame *MacUtils::buildCtsFrame(Ieee80211RTSFrame *rtsFrame) const
     Ieee80211CTSFrame *frame = new Ieee80211CTSFrame("CTS");
     frame->setReceiverAddress(rtsFrame->getTransmitterAddress());
     frame->setDuration(rtsFrame->getDuration() - params->getSifsTime() - rateSelection->getResponseControlFrameMode()->getDuration(LENGTH_CTS));
-    setFrameMode(rtsFrame, rateSelection->getModeForControlFrame(rtsFrame));
+    setFrameMode(frame, rateSelection->getModeForControlFrame(frame));
     return frame;
 }
 

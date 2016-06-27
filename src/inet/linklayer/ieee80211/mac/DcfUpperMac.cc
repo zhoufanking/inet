@@ -179,7 +179,8 @@ void DcfUpperMac::lowerFrameReceived(Ieee80211Frame *frame)
                 delete frame;
         }
         else if (Ieee80211RTSFrame *rtsFrame = dynamic_cast<Ieee80211RTSFrame *>(frame)) {
-            sendCts(rtsFrame);
+            if (rx->isMediumFree())
+                sendCts(rtsFrame);
             delete rtsFrame;
         }
         else if (Ieee80211DataOrMgmtFrame *dataOrMgmtFrame = dynamic_cast<Ieee80211DataOrMgmtFrame *>(frame)) {
