@@ -35,7 +35,7 @@
 		Nearby hidden nodes can only receive the CTS, but not the RTS, which indicates to them
 		that there is another node out of range, about to transmit. It defers from transmitting, until
 		the ongoing transmission is over. It knows the exact time from the duration field of the CTS frame. The CTS, RTS and ACK frames each have a duration field, which indicate how much time is left until the
-		entire packet exchange (RTS,CTS,ACK,payload frame,ACK) is completed. This way, any node that receives one of the frames
+		entire packet exchange (RTS,CTS,payload frame,ACK) is completed. This way, any node that receives one of the frames
 		knows when the channel will become available for transmission.
 </p>
 
@@ -57,5 +57,14 @@
 	</p>
 
 		<p><center><img src="network.png"></center></p>
+
+		<p>The RTS/CTS mechanism can be enabled or disabled by setting the <tt>rtsThresholdBytes</tt> parameter in the <tt>mac</tt> module of hosts. The RTS/CTS mechanism is used
+			before packets that exceed the size of the threshold.
+
+		<p>In the first configuration (<i>hiddennode1</i>), the RTS/CTS mechanism is disabled. Host A and C will likely transmit at the same time very often. This will result in
+			collisions at Host B. In <i>hiddennode2</i> configuration, the RTS/CTS mechanism is enabled. This is expected to reduce the number of collisions, and Host B will receive
+			more packets correctly than in the previous configuration. In the third model the wall is removed, and CTS/RTS is disabled. This model will indicate the effect of the
+			RTS/CTS overhead. This way the three models can be compared
+			by the number of packets received at Host B.
 		<p><h2>Results</h2></p>
 </body>
