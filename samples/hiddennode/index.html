@@ -27,7 +27,7 @@
 <p>
 		The solution that is empoyed in 802.11 networks are the Request to send/Clear to send frames (RTS/CTS).
 		Before transmitting a frame, hosts send an RTS frame addressed to the target node. The target node then replies
-		with a CTS frame. The transmitting node sends an ACK, and transmits
+		with a CTS frame. The transmitting node transmits
 		the frame that it originally wanted to transmit.
 </p>
 
@@ -67,4 +67,14 @@
 			RTS/CTS overhead. This way the three models can be compared
 			by the number of packets received at Host B.
 		<p><h2>Results</h2></p>
+
+		<p><b>hiddennode1 - RTS/CTS disabled</b></p>
+
+		<p>
+			As expected, there are a high number of collisions.
+		</p>
+
+		<p><center><img src="hiddennode1.gif"></center></p>
+
+		<p><center><img src="collision.png"></center></p>
 </body>
