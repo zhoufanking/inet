@@ -21,6 +21,7 @@
 		transmit to an intermediate node that is in transmission range of both of them. Since
 		they don't know when the other is transmitting, normal collision detection and avoidance
 		is not effective, and often their transmissions will interfere at the intermediate node.
+		Note that this is the simplest hidden node problem, there can be more hidden nodes.
 		(see <a href="https://en.wikipedia.org/wiki/Hidden_node_problem" target="blank">Hidden node problem</a> on wikipedia).
 	</p>
 
@@ -71,10 +72,37 @@
 		<p><b>hiddennode1 - RTS/CTS disabled</b></p>
 
 		<p>
-			As expected, there are a high number of collisions.
+			Both Host A and C frequently transmit simultaneously, thus the number of collisions at Host B is high.
 		</p>
 
-		<p><center><img src="hiddennode1.gif"></center></p>
+		<p>
+			The animation above depicts such a collision. Host A starts transmitting, and Host C starts transmitting as well, before Host A's transmission is over.
+			As neither packet can be received correctly by Host B (and thus they are not ACKes), Hosts A and C retry transmitting the same packet multiple times.
+			The retransmitted packets also collide. Finally, Host A manages to send its packet without interference.
+
+		<p><center><img src="hiddennode4.gif"></center></p>
+
+		<p>Here is what a collision looks like in the log:</p>
 
 		<p><center><img src="collision.png"></center></p>
+
+		<p>The number of packets received by Host B: 849</p>
+
+		<p><b>hiddennode2 - RTS/CTS enabled</b></p>
+
+		<p>
+			With RTS/CTS enabled, there are no more collisions, except for between RTS frames.
+		</p>
+
+		<p><center><img src="rtscollision.png"></center></p>
+
+		<p>The following animation shows the RTS/CTS and data frame exchange</p>
+
+		<p><center><img src="hiddennode11.gif"></center></p>
+
+		<p><center><img src="rts-seq.png" width=900px></center></p>
+
+		<p>The number of received packets at Host B: 1712</p>
+
+		<p><b>hiddennode3 - Wall removed, RTS/CTS disabled</b></p>
 </body>
