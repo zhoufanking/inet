@@ -42,13 +42,20 @@
 		<i>generationInterval</i> and <i>sleepInterval</i> parameters. These are set to a random value with a mean of 10s.
 	</p>
 
-	<p>
-		Host 0 will act as the target for the ping target for all the other hosts.<!remove>
-	</p>
-
 	<p><h2>Results</h2></p>
 
 	<p>
+		Each host (except host 0) transmits a ping request frame every every second. Host 0 acts as the target for the ping target for all the other hosts.
+		Host 0 replies with a ping reply frame. Both the ping request and the ping reply frames are followed by an ACK from the receiving host.
+	</p>
+
+	<p>
+		After a while, the energy storage in hosts gets depleted, and the host shuts down. This is indicated by a red x on the host's symbol.
+	</p>
+
+	<p><center><img src="depleted.png"></center></p>
+
+	<p><center><img src="residualcapacity.png" width=900px></center></p>
 
 
 </body>
