@@ -21,7 +21,7 @@
 		transmit to an intermediate node that is in transmission range of both. Since
 		they don't know when the other is transmitting, normal collision avoidance
 		is not effective, and their transmissions will often interfere at the intermediate node.
-		Note that this is the simplest hidden node problem, there are more complicated ones.
+		Note that this is the simplest hidden node problem, there are more complicated ones
 		(see <a href="https://en.wikipedia.org/wiki/Hidden_node_problem" target="blank">Hidden node problem</a> on wikipedia).
 	</p>
 
@@ -62,14 +62,14 @@
 		<p>The RTS/CTS mechanism can be enabled or disabled by setting the <tt>rtsThresholdBytes</tt> parameter in the <tt>mac</tt> module of hosts. The RTS/CTS mechanism is used
 			before packets that exceed the size of the threshold.
 
-		<p>In the first configuration (<i>hiddennode1</i>), the RTS/CTS mechanism is disabled. Host A and C will likely transmit at the same time very often. This will result in
-			collisions at Host B. In <i>hiddennode2</i> configuration, the RTS/CTS mechanism is enabled. This is expected to reduce the number of collisions, and Host B will receive
+		<p>In the first configuration (<i>WallOnRTSoff</i>), the RTS/CTS mechanism is disabled. Host A and C will likely transmit at the same time very often. This will result in
+			collisions at Host B. In <i>WallOnRTSoff</i> configuration, the RTS/CTS mechanism is enabled. This is expected to reduce the number of collisions, and Host B will receive
 			more packets correctly than in the previous configuration. In the third model the wall is removed, and RTS/CTS is disabled. This model will highlight the effect of the
 			RTS/CTS overhead. This way the three models can be compared
 			by the number of packets received at Host B.
 		<p><h2>Results</h2></p>
 
-		<p><b>hiddennode1 - RTS/CTS disabled</b></p>
+		<p><b>RTS/CTS disabled</b></p>
 
 		<p>
 			Both Host A and C frequently transmit simultaneously, thus the number of collisions at Host B is high.
@@ -88,12 +88,15 @@
 
 		<p>The number of packets received by Host B: 849</p>
 
-		<p><b>hiddennode2 - RTS/CTS enabled</b></p>
+		<p><b>RTS/CTS enabled</b></p>
 
 		<p>
 			With RTS/CTS enabled, there are no more collisions, except for between RTS frames.
 			
 			TODO: explain that RTS/CTS frames are much shorter than data frames, so the collision probability is less then it was for data frames
+
+			RTS and CTS frames are much shorter than data frames (about 50ns vs 2ms), thus the probability of RTS frames colliding is less than it is for data frames.
+			The result is that a low number of RTS frames collide, and since they are short, the collision doesn't take up much time.
 		</p>
 
 		<p><center><img src="rtscollision.png"></center></p>
@@ -102,16 +105,21 @@
 
 		<p><center><img src="hiddennode11.gif"></center></p>
 
+		<p>
+			The following sequence chart illustrates that the RTS/CTS mechanism makes the communication more orderly, as the nodes know when to transmit
+			in order to avoid collisions. It also illustrates that the RTS and CTS frames are much shorter than the data frames.
+		</p>
+
 		<p><center><img src="rts-seq.png" width=900px></center></p>
 
 		<p>The number of received packets at Host B: 1712</p>
 
-		<p><b>hiddennode3 - Wall removed, RTS/CTS disabled</b></p>
+		<p><b>Wall removed, RTS/CTS disabled</b></p>
 
 		<p>
 			With the wall removed, hidden nodes are no longer a problem, because the collision avoidance mechanisms can work.
 			The number of collisions is low.
 		</p>
 
-		<p>The number of received packets at Host B: TODO</p>
+		<p>The number of received packets at Host B: 1918</p>
 </body>
