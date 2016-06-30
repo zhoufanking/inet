@@ -5,4 +5,50 @@
 </head>
 <body>
 	<h1><center>Power Consumption Example</center></h1>
+
+	<p><h2>Goals</h2></p>
+
+	<p>
+		This example demonstrates consumption, storage and generation of power in mobile wireless nodes.
+		The hosts will send out ping requests, which will deplete their power storage, while their power generators will charge them.
+	</p>
+
+	<p><h2>The model</h2></p>
+
+	<p><b>The network</b></p>
+
+	<p>
+		The simulation contains mobile hosts (type <tt>adhochost</tt>), the number of which can be specified in <i>omnetpp.ini</i>.
+		The default number specified is 20. They are randomly placed on the playground, and don't move around.
+	</p>
+
+	<p><center><img src="network2.png"></center></p>
+
+	<p><b>Configuration and behavior</b></p>
+
+	<p>
+		The hosts 1 through 20 are set to periodically send out ping requests to host 0. The radio transmissions will deplete the hosts' energy storage.
+	</p>
+
+	<p>
+		Each host has a nominal energy storage capacity of 0.05 Joules. The charge they contain at the beginning of the simulation is randomly selected between
+		0 and the nominal capacity. Hosts shut down when their energy storage reaches 0, and restart when their energy storage charges to half of the nominal capacity,
+		that is 0.025 Joules.
+	</p>
+
+	<p>
+		The hosts contain an <tt>AlternatingEnergyGenerator</tt>. This alternates between generation and sleep modes. It starts in generation mode, and generates the amount of power
+		that is specified by its <i>powerGeneration</i> parameter (now set to 1 mW). Sleep mode, it generates no power. It stays in each mode for the duration specified by the
+		<i>generationInterval</i> and <i>sleepInterval</i> parameters. These are set to a random value with a mean of 10s.
+	</p>
+
+	<p>
+		Host 0 will act as the target for the ping target for all the other hosts.<!remove>
+	</p>
+
+	<p><h2>Results</h2></p>
+
+	<p>
+
+
 </body>
