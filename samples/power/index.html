@@ -43,7 +43,16 @@
 	</p>
 
 	<p>
-		The <tt>SimpleEnergyStorage</tt> models energy storage by integrating the difference of absorbed and provided power over time.<!TODO more on this>
+		The <tt>SimpleEnergyStorage</tt> models energy storage by integrating the difference of absorbed and provided power over time.
+		It does not simulate other effect that real batteries have. It is used in this model because the emphasis is on the power that transmissions use, not how the batteries
+		store the energy.<!TODO more on this>
+	</p>
+
+	<p><b>Energy consumption of radios</b></p>
+
+	<p>
+		Radios in the simulation have the <tt>StateBasedEnergyConsumer</tt> energy consumer model. In this model, energy consumption is based on power consumption values for various
+		radio states and the time the radio spends in these states. For example, radios consume a small amount of power when they are idle in receive mode. This is when they are listening for transmissions. They consume more when they are receiving a transmission, and even more when they are transmitting.
 	</p>
 
 	<p><h2>Results</h2></p>
@@ -69,14 +78,14 @@
 		They continue sending ping requests, until they get depleted again.
 	</p>
 
-	<p><center><img src="residualcapacity.png" width=900px></center></p>
+	<p><center><img src="residualcapacity.png" width=850></center></p>
 
 	<p>
 		The following chart shows the energy storage level (red curve) and the energy generator output (blue curve) of Host 14. The intervals when the generator is charging the energy storage
 		can be discerned on the energy storage graph as varying slopes. When the host is transmitting and the generator is charging, the energy levels don't decrease as fast.
 	</p>
 
-	<p><center><img src="host14.png" width=900px></center></p>
+	<p><center><img src="host14.png" width=850></center></p>
 
 	<p>
 		Host 0 is different from the other hosts in that it doesn't generate ping requests, but sends replies to all the ping requests it receives. Therefore it consumes energy
@@ -84,7 +93,13 @@
 		as more rapidly decreasing curve.
 	</p>
 
-	<p><center><img src="consumption.png" width=900px></center></p>
+	<p>
+		Host 0 transmits around 20 times more than the other hosts, thus it consumes 20 times more energy when it is transmitting. The curve doesn't decrease 20 times as fast
+		because most of the time the hosts are listening. Transmissions are rare, and the time hosts spend transmitting is far less then they spend listening. Energy consumtion is
+		dominated by reception.
+	</p>
+
+	<p><center><img src="consumption.png" width=850px></center></p>
 
 
 </body>
