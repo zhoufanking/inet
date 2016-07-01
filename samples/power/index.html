@@ -18,7 +18,7 @@
 	<p><b>The network</b></p>
 
 	<p>
-		The simulation contains mobile hosts (type <tt>AdhocHost</tt>), the number of which can be specified in <i>omnetpp.ini</i>.
+		The network contains mobile hosts (type <tt>AdhocHost</tt>), the number of which can be specified in <i>omnetpp.ini</i>.
 		The default number specified is 20. They are randomly placed on the playground, and they're static (they don't move around).
 	</p>
 
@@ -46,23 +46,21 @@
 
 	<p>
 		Each host (except host 0) transmits a ping request frame every second. The time when they start sending them is a random value for each host, between 0 and 1 seconds. 
-		This means that they don't start sending the requests simultaneously. Host 0 acts as the target for the ping requests of all the other hosts.
+		This means that they don't start sending the requests simultaneously. Also, ping packets are short, and hosts send them very infrequently. This greatly decreases the 
+		probability of collisions. Host 0 acts as the target for the ping requests of all the other hosts.
 		Host 0 replies with a ping reply frame. Both the ping request and the ping reply frames are followed by an ACK from the receiving host.
 	</p>
 
 	<p>
-		After a while, the energy storage in hosts gets depleted, and the hosts shut down. This is indicated by a red x on the host's symbol.
-	</p>
-
-	<p>
-		The energy generator charges hosts regardless of whether they are depleted or not.
+		After a while, the energy storage in hosts get depleted, and the hosts shut down. This is indicated by a red x on the host's symbol.
+		The energy generator charges hosts regardless of whether they are depleted or not (as if they were charged by a solar panel).
 	</p>
 
 	<p><center><img src="depleted.png"></center></p>
 
 	<p>
 		The following chart shows the energy storage levels (<i>residualCapacity</i>) of all the hosts through the course of the simulation.
-		It can be seen that in general, hosts start from a given charge level, and their energy storage level depletes, and reaches zero charge.
+		In general, hosts start from a given charge level, and their energy storage level depletes, and reaches zero.
 		When that happens, the hosts shut down. Then they start to charge, and when their charge level reaches the 0.025J threshold, they turn back on.
 		They continue sending ping requests, until they get depleted again.
 	</p>
