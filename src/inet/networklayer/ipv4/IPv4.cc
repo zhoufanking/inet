@@ -35,9 +35,11 @@
 #include "inet/common/lifecycle/NodeOperations.h"
 #include "inet/common/lifecycle/NodeStatus.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
+#include "inet/networklayer/common/NetworkProtocolTag_m.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/ProtocolTag_m.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
+#include "inet/linklayer/common/MACAddressTag_m.h"
 
 namespace inet {
 
@@ -768,6 +770,7 @@ void IPv4::sendDatagramToOutput(IPv4Datagram *datagram, const InterfaceEntry *ie
             SimpleLinkLayerControlInfo *controlInfo = new SimpleLinkLayerControlInfo();
             controlInfo->setProtocol(ETHERTYPE_IPv4);
             datagram->ensureTag<InterfaceReq>()->setInterfaceId(ie->getInterfaceId());
+            datagram->ensureTag<ProtocolInd>()->setProtocol(&Protocol::ipv4);
             datagram->setControlInfo(controlInfo);
             sendPacketToNIC(datagram, ie);
         }
@@ -858,7 +861,9 @@ void IPv4::sendPacketToIeee802NIC(cPacket *packet, const InterfaceEntry *ie, con
     Ieee802Ctrl *controlInfo = new Ieee802Ctrl();
     controlInfo->setDest(macAddress);
     controlInfo->setEtherType(etherType);
+    packet->ensureTag<MACAddressReq>()->setDestinationAddress(macAddress);
     packet->ensureTag<InterfaceReq>()->setInterfaceId(ie->getInterfaceId());
+    packet->ensureTag<ProtocolInd>()->setProtocol(&Protocol::ipv4);
     packet->setControlInfo(controlInfo);
 
     sendPacketToNIC(packet, ie);

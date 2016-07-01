@@ -33,11 +33,12 @@
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/ProtocolTag_m.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
-#include "inet/linklayer/contract/IMACProtocolControlInfo.h"
 #include "inet/common/FindModule.h"
 #include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/linklayer/csma/CSMAFrame_m.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
+#include "inet/linklayer/common/MACAddressTag_m.h"
+#include "inet/networklayer/common/NetworkProtocolTag_m.h"
 
 namespace inet {
 
@@ -209,12 +210,11 @@ void CSMA::handleUpperPacket(cPacket *msg)
     //MacPkt*macPkt = encapsMsg(msg);
     CSMAFrame *macPkt = new CSMAFrame(msg->getName());
     macPkt->setBitLength(headerLength);
-    IMACProtocolControlInfo *const cInfo = check_and_cast<IMACProtocolControlInfo *>(msg->removeControlInfo());
-    EV_DETAIL << "CSMA received a message from upper layer, name is " << msg->getName() << ", CInfo removed, mac addr=" << cInfo->getDestinationAddress() << endl;
-    macPkt->setNetworkProtocol(cInfo->getNetworkProtocol());
-    MACAddress dest = cInfo->getDestinationAddress();
+    MACAddress dest = msg->getMandatoryTag<MACAddressReq>()->getDestinationAddress();
+    EV_DETAIL << "CSMA received a message from upper layer, name is " << msg->getName() << ", CInfo removed, mac addr=" << dest << endl;
+    macPkt->setNetworkProtocol(msg->getMandatoryTag<NetworkProtocolInd>()->getNetworkProtocol());
     macPkt->setDestAddr(dest);
-    delete cInfo;
+    delete msg->removeControlInfo();
     macPkt->setSrcAddr(address);
 
     if (useMACAcks) {

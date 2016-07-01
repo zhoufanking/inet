@@ -18,10 +18,11 @@
 #include "inet/common/ProtocolTag_m.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
 #include "inet/common/ModuleAccess.h"
-#include "inet/linklayer/contract/IMACProtocolControlInfo.h"
 #include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/linklayer/bmac/BMacLayer.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
+#include "inet/linklayer/common/MACAddressTag_m.h"
+#include "inet/networklayer/common/NetworkProtocolTag_m.h"
 
 namespace inet {
 
@@ -740,13 +741,13 @@ BMacFrame *BMacLayer::encapsMsg(cPacket *netwPkt)
 
     // copy dest address from the Control Info attached to the network
     // message by the network layer
-    IMACProtocolControlInfo *cInfo = check_and_cast<IMACProtocolControlInfo *>(netwPkt->removeControlInfo());
-    EV_DETAIL << "CInfo removed, mac addr=" << cInfo->getDestinationAddress() << endl;
-    pkt->setNetworkProtocol(cInfo->getNetworkProtocol());
-    pkt->setDestAddr(cInfo->getDestinationAddress());
+    auto dest = netwPkt->getMandatoryTag<MACAddressReq>()->getDestinationAddress();
+    EV_DETAIL << "CInfo removed, mac addr=" << dest << endl;
+    pkt->setNetworkProtocol(netwPkt->getMandatoryTag<NetworkProtocolInd>()->getNetworkProtocol());
+    pkt->setDestAddr(dest);
 
     //delete the control info
-    delete cInfo;
+    delete netwPkt->removeControlInfo();
 
     //set the src address to own mac address (nic module getId())
     pkt->setSrcAddr(address);

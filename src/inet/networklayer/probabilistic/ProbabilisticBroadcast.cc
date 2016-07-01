@@ -13,6 +13,7 @@
 #include "inet/networklayer/contract/generic/GenericNetworkProtocolControlInfo.h"
 #include "inet/networklayer/contract/IL3AddressType.h"
 #include "inet/linklayer/common/MACAddress.h"
+#include "inet/linklayer/common/MACAddressTag_m.h"
 
 namespace inet {
 
@@ -63,10 +64,10 @@ void ProbabilisticBroadcast::handleLowerPacket(cPacket *msg)
 {
     MACAddress macSrcAddr;
     ProbabilisticBroadcastDatagram *m = check_and_cast<ProbabilisticBroadcastDatagram *>(msg);
-    IMACProtocolControlInfo *cInfo = check_and_cast<IMACProtocolControlInfo *>(m->removeControlInfo());
+    auto macAddressReq = m->getMandatoryTag<MACAddressReq>();
     m->setNbHops(m->getNbHops() + 1);
-    macSrcAddr = cInfo->getSourceAddress();
-    delete cInfo;
+    macSrcAddr = macAddressReq->getSourceAddress();
+    delete m->getControlInfo();
     ++nbDataPacketsReceived;
     nbHops = nbHops + m->getNbHops();
     oneHopLatencies.record(SIMTIME_DBL(simTime() - m->getTimestamp()));

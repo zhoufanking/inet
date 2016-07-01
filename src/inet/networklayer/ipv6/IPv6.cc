@@ -40,6 +40,7 @@
 
 #include "inet/common/lifecycle/NodeStatus.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
+#include "inet/linklayer/common/MACAddressTag_m.h"
 
 namespace inet {
 
@@ -828,7 +829,9 @@ void IPv6::sendDatagramToOutput(IPv6Datagram *datagram, const InterfaceEntry *de
     Ieee802Ctrl *controlInfo = new Ieee802Ctrl();
     controlInfo->setDest(macAddr);
     controlInfo->setEtherType(ETHERTYPE_IPv6);
+    datagram->ensureTag<MACAddressReq>()->setDestinationAddress(macAddr);
     datagram->ensureTag<InterfaceReq>()->setInterfaceId(destIE->getInterfaceId());
+    datagram->ensureTag<ProtocolInd>()->setProtocol(&Protocol::ipv6);
     datagram->setControlInfo(controlInfo);
     send(datagram, "queueOut");
 }

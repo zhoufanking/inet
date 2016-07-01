@@ -14,8 +14,8 @@ class TagBase extends cObject;
 
 class MACAddressTag extends TagBase
 {
-    MACAddress source;
-    MACAddress destination;
+    MACAddress sourceAddress;
+    MACAddress destinationAddress;
 }
 
 class MACAddressReq extends MACAddressTag

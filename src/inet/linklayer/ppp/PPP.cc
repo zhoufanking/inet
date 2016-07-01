@@ -30,6 +30,7 @@
 #include "inet/linklayer/common/InterfaceTag_m.h"
 #include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
+#include "inet/networklayer/common/NetworkProtocolTag_m.h"
 
 namespace inet {
 
@@ -414,9 +415,8 @@ void PPP::updateDisplayString()
 
 PPPFrame *PPP::encapsulate(cPacket *msg)
 {
-    IMACProtocolControlInfo *controlInfo = check_and_cast<IMACProtocolControlInfo *>(msg->getControlInfo());
     PPPFrame *pppFrame = new PPPFrame(msg->getName());
-    pppFrame->setProtocol(controlInfo->getNetworkProtocol());
+    pppFrame->setProtocol(ProtocolGroup::ethertype.getProtocolNumber(msg->getMandatoryTag<ProtocolInd>()->getProtocol()));
     pppFrame->setByteLength(PPP_OVERHEAD_BYTES);
     pppFrame->encapsulate(msg);
     return pppFrame;

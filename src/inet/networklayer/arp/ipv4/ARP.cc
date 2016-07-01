@@ -30,6 +30,8 @@
 #include "inet/common/lifecycle/NodeOperations.h"
 #include "inet/common/lifecycle/NodeStatus.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
+#include "inet/linklayer/common/MACAddressTag_m.h"
+#include "inet/common/ProtocolTag_m.h"
 
 namespace inet {
 
@@ -212,7 +214,9 @@ void ARP::sendPacketToNIC(cMessage *msg, const InterfaceEntry *ie, const MACAddr
     Ieee802Ctrl *controlInfo = new Ieee802Ctrl();
     controlInfo->setDest(macAddress);
     controlInfo->setEtherType(etherType);
+    msg->ensureTag<MACAddressReq>()->setDestinationAddress(macAddress);
     msg->ensureTag<InterfaceReq>()->setInterfaceId(ie->getInterfaceId());
+    msg->ensureTag<ProtocolInd>()->setProtocol(&Protocol::arp);
     msg->setControlInfo(controlInfo);
 
     // send out
@@ -297,9 +301,8 @@ void ARP::processARPPacket(ARPPacket *arp)
     dumpARPPacket(arp);
 
     // extract input port
-    IMACProtocolControlInfo *ctrl = check_and_cast<IMACProtocolControlInfo *>(arp->removeControlInfo());
     InterfaceEntry *ie = ift->getInterfaceById(arp->getMandatoryTag<InterfaceInd>()->getInterfaceId());
-    delete ctrl;
+    delete arp->removeControlInfo();
 
     //
     // Recipe a'la RFC 826:
