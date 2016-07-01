@@ -240,7 +240,6 @@ void ICMP::processEchoRequest(ICMPMessage *request)
     reply->clearTags();
     reply->setName((std::string(request->getName()) + "-reply").c_str());
     reply->setType(ICMP_ECHO_REPLY);
-    reply->ensureTag<ProtocolReq>()->setProtocol(&Protocol::ipv4);
 
     // swap src and dest
     // TBD check what to do if dest was multicast etc?
@@ -268,6 +267,7 @@ void ICMP::sendToIP(ICMPMessage *msg)
 {
     // assumes IPv4ControlInfo is already attached
     EV_INFO << "Sending " << msg << " to lower layer.\n";
+    msg->ensureTag<ProtocolReq>()->setProtocol(&Protocol::ipv4);
     send(msg, "ipOut");
 }
 
