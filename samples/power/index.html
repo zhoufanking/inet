@@ -9,7 +9,7 @@
 	<p><h2>Goals</h2></p>
 
 	<p>
-		This example demonstrates consumption, storage and generation of power in mobile wireless nodes.
+		This example demonstrates consumption, storage and generation of power in mobile wireless hosts.
 		The hosts will send out ping requests, which will deplete their power storage, while their power generators will charge them.
 	</p>
 
@@ -18,8 +18,8 @@
 	<p><b>The network</b></p>
 
 	<p>
-		The simulation contains mobile hosts (type <tt>adhochost</tt>), the number of which can be specified in <i>omnetpp.ini</i>.
-		The default number specified is 20. They are randomly placed on the playground, and don't move around.
+		The simulation contains mobile hosts (type <tt>AdhocHost</tt>), the number of which can be specified in <i>omnetpp.ini</i>.
+		The default number specified is 20. They are randomly placed on the playground, and they're static (they don't move around).
 	</p>
 
 	<p><center><img src="network2.png"></center></p>
@@ -27,7 +27,7 @@
 	<p><b>Configuration and behavior</b></p>
 
 	<p>
-		The hosts 1 through 20 are set to periodically send out ping requests to host 0. The radio transmissions will deplete the hosts' energy storage.
+		All hosts will send ping requests to Host 0. Host 0 doesn't send ping requests, just replies to the requests that it receives. The radio transmissions will deplete the hosts' energy storage.
 	</p>
 
 	<p>
@@ -38,19 +38,20 @@
 
 	<p>
 		The hosts contain an <tt>AlternatingEnergyGenerator</tt>. This alternates between generation and sleep modes. It starts in generation mode, and generates the amount of power
-		that is specified by its <i>powerGeneration</i> parameter (now set to 1 mW). Sleep mode, it generates no power. It stays in each mode for the duration specified by the
+		that is specified by its <i>powerGeneration</i> parameter (now set to 1 mW). In sleep mode, it generates no power. It stays in each mode for the duration specified by the
 		<i>generationInterval</i> and <i>sleepInterval</i> parameters. These are set to a random value with a mean of 10s.
 	</p>
 
 	<p><h2>Results</h2></p>
 
 	<p>
-		Each host (except host 0) transmits a ping request frame every every second. Host 0 acts as the target for the ping target for all the other hosts.
+		Each host (except host 0) transmits a ping request frame every second. The time when they start sending them is a random value for each host, between 0 and 1 seconds. 
+		This means that they don't start sending the requests simultaneously. Host 0 acts as the target for the ping requests of all the other hosts.
 		Host 0 replies with a ping reply frame. Both the ping request and the ping reply frames are followed by an ACK from the receiving host.
 	</p>
 
 	<p>
-		After a while, the energy storage in hosts gets depleted, and the host shuts down. This is indicated by a red x on the host's symbol.
+		After a while, the energy storage in hosts gets depleted, and the hosts shut down. This is indicated by a red x on the host's symbol.
 	</p>
 
 	<p>
@@ -61,16 +62,27 @@
 
 	<p>
 		The following chart shows the energy storage levels (<i>residualCapacity</i>) of all the hosts through the course of the simulation.
+		It can be seen that in general, hosts start from a given charge level, and their energy storage level depletes, and reaches zero charge.
+		When that happens, the hosts shut down. Then they start to charge, and when their charge level reaches the 0.025J threshold, they turn back on.
+		They continue sending ping requests, until they get depleted again.
 	</p>
 
 	<p><center><img src="residualcapacity.png" width=900px></center></p>
 
 	<p>
-		The following chart shows the energy storage level and the energy generator output of host 14. The intervals when the generator is charging the energy storage
+		The following chart shows the energy storage level (red curve) and the energy generator output (blue curve) of Host 14. The intervals when the generator is charging the energy storage
 		can be discerned on the energy storage graph as varying slopes. When the host is transmitting and the generator is charging, the energy levels don't decrease as fast.
 	</p>
 
 	<p><center><img src="host14.png" width=900px></center></p>
+
+	<p>
+		Host 0 is different from the other hosts in that it doesn't generate ping requests, but sends replies to all the ping requests it receives. Therefore it consumes energy
+		faster. As other hosts just send one ping request as second, Host 0 has to reply to 20 each second. This increased consumption is seen on the energy consumption graph
+		as more rapidly decreasing curve.
+	</p>
+
+	<p><center><img src="consumption.png" width=900px></center></p>
 
 
 </body>
