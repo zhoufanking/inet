@@ -18,7 +18,7 @@ class TagBase extends cObject;
 
 class ProtocolTag extends TagBase
 {
-    ProtocolPtr protocol = nullptr;
+    ProtocolPtr protocol @tostring("->info()") = nullptr;
 }
 
 class ProtocolReq extends ProtocolTag
