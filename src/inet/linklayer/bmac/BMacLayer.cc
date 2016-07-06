@@ -743,7 +743,7 @@ BMacFrame *BMacLayer::encapsMsg(cPacket *netwPkt)
     // message by the network layer
     auto dest = netwPkt->getMandatoryTag<MACAddressReq>()->getDestinationAddress();
     EV_DETAIL << "CInfo removed, mac addr=" << dest << endl;
-    pkt->setNetworkProtocol(netwPkt->getMandatoryTag<NetworkProtocolInd>()->getNetworkProtocol());
+    pkt->setNetworkProtocol(ProtocolGroup::ethertype.getProtocolNumber(netwPkt->getMandatoryTag<ProtocolInd>()->getProtocol()));
     pkt->setDestAddr(dest);
 
     //delete the control info

@@ -212,7 +212,7 @@ void CSMA::handleUpperPacket(cPacket *msg)
     macPkt->setBitLength(headerLength);
     MACAddress dest = msg->getMandatoryTag<MACAddressReq>()->getDestinationAddress();
     EV_DETAIL << "CSMA received a message from upper layer, name is " << msg->getName() << ", CInfo removed, mac addr=" << dest << endl;
-    macPkt->setNetworkProtocol(msg->getMandatoryTag<NetworkProtocolInd>()->getNetworkProtocol());
+    macPkt->setNetworkProtocol(ProtocolGroup::ethertype.getProtocolNumber(msg->getMandatoryTag<ProtocolInd>()->getProtocol()));
     macPkt->setDestAddr(dest);
     delete msg->removeControlInfo();
     macPkt->setSrcAddr(address);
