@@ -22,7 +22,6 @@
 #include "inet/linklayer/bmac/BMacLayer.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
 #include "inet/linklayer/common/MACAddressTag_m.h"
-#include "inet/networklayer/common/NetworkProtocolTag_m.h"
 
 namespace inet {
 

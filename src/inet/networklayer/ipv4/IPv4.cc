@@ -35,7 +35,6 @@
 #include "inet/common/lifecycle/NodeOperations.h"
 #include "inet/common/lifecycle/NodeStatus.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
-#include "inet/networklayer/common/NetworkProtocolTag_m.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/ProtocolTag_m.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"

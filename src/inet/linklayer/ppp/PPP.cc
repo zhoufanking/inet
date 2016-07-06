@@ -30,7 +30,6 @@
 #include "inet/linklayer/common/InterfaceTag_m.h"
 #include "inet/linklayer/common/SimpleLinkLayerControlInfo.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
-#include "inet/networklayer/common/NetworkProtocolTag_m.h"
 
 namespace inet {
 
