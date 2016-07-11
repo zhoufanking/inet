@@ -45,15 +45,23 @@
 
 	<p>
 		The <tt>SimpleEnergyStorage</tt> models energy storage by integrating the difference of absorbed and provided power over time.
-		It does not simulate other effect that real batteries have. It is used in this model because the emphasis is on the power that transmissions use, not how the batteries
+		It does not simulate other effects that real batteries have. It is used in this model because the emphasis is on the energy that transmissions use, not how the batteries
 		store the energy.<!TODO more on this>
+	</p>
+
+	<p><b>Radio modes and states</b></p>
+
+	<p>
+		In the <tt>Ieee80211ScalarRadio</tt> model used in this simulation (and in other radio models), there are different modes in which radios operate, such as off, sleep, receiver, transmitter. The mode is set by the model, and does not depend on external effects. In addition to mode, radios have states, which depend on what they are doing in the given mode - ie. 
+		listening, receiving a transmission, or transmitting. This depends on external factors, such as if there are transmissions going on in the medium.
+		Optionally, each mode and state has a certain power consumption.
 	</p>
 
 	<p><b>Energy consumption of radios</b></p>
 
 	<p>
 		Radios in the simulation have the <tt>StateBasedEnergyConsumer</tt> energy consumer model. In this model, energy consumption is based on power consumption values for various
-		radio states and the time the radio spends in these states. For example, radios consume a small amount of power when they are idle in receive mode. This is when they are listening for transmissions. They consume more when they are receiving a transmission, and even more when they are transmitting.
+		radio modes and states, and the time the radio spends in these states. For example, radios consume a small amount of power when they are idle in receive mode. This is when they are listening for transmissions. They consume more when they are receiving a transmission, and even more when they are transmitting.
 	</p>
 
 	<p><h2>Results</h2></p>
@@ -62,7 +70,7 @@
 		Each host (except host 0) transmits a ping request frame every second. The time when they start sending them is a random value for each host, between 0 and 1 seconds. 
 		This means that they don't start sending the requests simultaneously. Also, ping packets are short, and hosts send them very infrequently. This greatly decreases the 
 		probability of collisions. Host 0 acts as the target for the ping requests of all the other hosts.
-		Host 0 replies with a ping reply frame. Both the ping request and the ping reply frames are followed by an ACK from the receiving host.
+		Host 0 replies to ping requests with a ping reply frame. Both the ping request and the ping reply frames are followed by an ACK from the receiving host.
 	</p>
 
 	<p>
@@ -76,16 +84,18 @@
 		The following chart shows the energy storage levels (<i>residualCapacity</i>) of all the hosts through the course of the simulation.
 		In general, hosts start from a given charge level, and their energy storage level depletes, and reaches zero.
 		When that happens, the hosts shut down. Then they start to charge, and when their charge level reaches the 0.025J threshold, they turn back on.
-		They continue sending ping requests, until they get depleted again. The energy generators provide more power than hosts consume when they are online,
+		They continue sending ping requests, until they get depleted again. The energy generators provide more power than hosts consume when they are online (on average),
 		thus they often get fully charged, and maintain the maximum charge level while their generators are charging.
 	</p>
 
 	<p><center><img src="residualcapacity.png"></center></p>
 
 	<p>
-		The following chart shows the energy storage level (red curve) and the energy generator output (blue curve) of Host 18. The intervals when the generator is charging the energy storage
+		The chart below shows the energy storage level (red curve) and the energy generator output (blue curve) of Host 18. The intervals when the generator is charging the energy storage
 		can be discerned on the energy storage graph as increasing slopes. When the host is transmitting and the generator is charging, the energy levels don't increase as fast.
 		However, the generators provide much more power than the amount hosts consume when online, so this difference in the slope of the curve is subtle.
+		Note that the generators provide more power on average, when hosts are actually transmitting or receiving, they consume more energy than the generator provides.
+		However, this is only the fraction of the time (most of the time they are listening), so it is not visible on this graph.
 	</p>
 
 	<p><center><img src="host18.png" width=850></center></p>
@@ -98,16 +108,33 @@
 	<p>
 		Host 0 is different from the other hosts in that it doesn't generate ping requests, but sends replies to all the ping requests it receives. Therefore it consumes energy
 		faster. As other hosts just send one ping request as second, Host 0 has to reply to 20 each second. This increased consumption can be seen on the following energy consumption graph
-		as more rapidly decreasing curve.
+		as more rapidly decreasing curve (host 0 is the blue curve).
 	</p>
 
 	<p>
 		Host 0 transmits around 20 times more than the other hosts, thus it consumes 20 times more energy when it is transmitting. The curve doesn't decrease 20 times as fast
-		because most of the time the hosts are listening. Transmissions are rare, and the time hosts spend transmitting is far less then they spend listening. Energy consumtion is
+		because most of the time the hosts are listening. Transmissions are rare, and the time hosts spend transmitting is far less than they spend listening. Energy consumtion is
 		dominated by reception.
 	</p>
 
-	<p><center><img src="consumption.png" width=850px></center></p>
+	<p><center><img src="consumption2.png"></center></p>
+
+	<p>
+		Note the decrease in the curve at around 70s. This is when host 0 charges to 0.025J and comes online. When it turns off, the ARP table contents are lost, and host 0
+		has to send ARP requests after it recevies ping requests. It has to send 20 arp requests, and this is visible in the energy consumption chart. The following image shows
+		this increased consumption.
+	</p>
+
+	<p><center><img src="arp.png"></center></p>
+
+	<p>
+		The following chart shows a ping request-ACK-ping reply-ACK exchange between hosts 0 and 3 on the sequence chart and the corresponding changes in energy levels of host 0.
+		Note that host 0 consumes less energy receiving than transmitting. The interval between the ping request-ACK and the ping reply-ACK, the curve is increasing, because the
+		generator is charging host 0. This image shows that hosts indeed consume more power when transmitting than the generator provides. However, transmissions are very short and
+		very rare, so one needs to zoom in on the graph to see this effect.
+	</p>
+
+	<p><center><img src="ping-ack.png"></center></p>
 
 
 </body>
