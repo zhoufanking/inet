@@ -76,17 +76,24 @@
 		The following chart shows the energy storage levels (<i>residualCapacity</i>) of all the hosts through the course of the simulation.
 		In general, hosts start from a given charge level, and their energy storage level depletes, and reaches zero.
 		When that happens, the hosts shut down. Then they start to charge, and when their charge level reaches the 0.025J threshold, they turn back on.
-		They continue sending ping requests, until they get depleted again.
+		They continue sending ping requests, until they get depleted again. The energy generators provide more power than hosts consume when they are online,
+		thus they often get fully charged, and maintain the maximum charge level while their generators are charging.
 	</p>
 
-	<p><center><img src="residualcapacity.png" width=850></center></p>
+	<p><center><img src="residualcapacity.png"></center></p>
 
 	<p>
-		The following chart shows the energy storage level (red curve) and the energy generator output (blue curve) of Host 14. The intervals when the generator is charging the energy storage
-		can be discerned on the energy storage graph as varying slopes. When the host is transmitting and the generator is charging, the energy levels don't decrease as fast.
+		The following chart shows the energy storage level (red curve) and the energy generator output (blue curve) of Host 18. The intervals when the generator is charging the energy storage
+		can be discerned on the energy storage graph as increasing slopes. When the host is transmitting and the generator is charging, the energy levels don't increase as fast.
+		However, the generators provide much more power than the amount hosts consume when online, so this difference in the slope of the curve is subtle.
 	</p>
 
-	<p><center><img src="host14.png" width=850></center></p>
+	<p><center><img src="host18.png" width=850></center></p>
+
+	<p>The following image shows a fraction of the above curve, where the difference in the slope of the curve is more marked. The host comes online when it reaches the
+		0.025J threshold, and it starts transmitting. The curve is not as steep after that.</p>
+
+		<p><center><img src="host18_2.png"></center></p>
 
 	<p>
 		Host 0 is different from the other hosts in that it doesn't generate ping requests, but sends replies to all the ping requests it receives. Therefore it consumes energy
