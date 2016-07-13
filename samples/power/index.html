@@ -81,7 +81,7 @@
 
 	<p>
 		The following chart shows the energy storage levels (<i>residualCapacity</i>) of all the hosts through the course of the simulation.
-		In general, hosts start from a given charge level, and if they are not charged for some time, their energy level decreases to zero.
+		In general, hosts start from a given charge level, and their energy storage level depletes, and reaches zero.
 		When that happens, the hosts shut down. Then they start to charge, and when their charge level reaches the 0.025J threshold, they turn back on.
 		They continue sending ping requests, until they get depleted again. The generator generates more power than hosts consume when they are idle, but not when they are receiving or transmitting.
 		This appears on the graph as increasing curves when the generator is charging, with tiny zigzags associated with receptions and transmissions. When hosts get
