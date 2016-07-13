@@ -81,10 +81,11 @@
 
 	<p>
 		The following chart shows the energy storage levels (<i>residualCapacity</i>) of all the hosts through the course of the simulation.
-		In general, hosts start from a given charge level, and their energy storage level depletes, and reaches zero.
+		In general, hosts start from a given charge level, and if they are not charged for some time, their energy level decreases to zero.
 		When that happens, the hosts shut down. Then they start to charge, and when their charge level reaches the 0.025J threshold, they turn back on.
-		They continue sending ping requests, until they get depleted again. The energy generators generate more power than hosts consume when they are turned on and charging (on average),
-		thus they often get fully charged, and maintain the maximum charge level while they are charging.<!TODO rephrase>
+		They continue sending ping requests, until they get depleted again. The generator generates more power than hosts consume when they are idle, but not when they are receiving or transmitting.
+		This appears on the graph as increasing curves when the generator is charging, with tiny zigzags associated with receptions and transmissions. When hosts get
+		fully charged, they maintain the maximum charge level while the generator is charging.
 	</p>
 
 	<p><center><img src="residualcapacity.png"></center></p>
@@ -99,7 +100,7 @@
 	</p>
 
 	<p>
-		When hosts are turned on, they transmit occasionally. <!TODO rephrase>This results in tiny zigzags in the graph because of temporary increase in power consumption associated with
+		When hosts are turned on, they occasionally transmit. This results in tiny zigzags in the graph because of temporary increase in power consumption associated with
 		transmissions (the power requirement of transmissions is 100 mW). In the intervals when the host is turned off, the host doesn't transmit, and the curve is smooth. Note that the zigzag on the image is a drawing artifact. The lines are thicker at various intervals because each data point is represented by a finite size symbol.
 	</p>
 
@@ -124,14 +125,6 @@
 	</p>
 
 	<p><center><img src="consumption3.png"></center></p>
-
-	<p>
-		Note the decrease in the curve at around 70s. This is when host 0 charges to 0.025J and turns on. When it turned off, the ARP table contents are lost, and host 0
-		has to send ARP requests after it recevies ping requests. It has to send 20 arp requests, and this is visible in the energy consumption chart. The following image shows
-		this increased consumption.
-	</p>
-
-	<p><center><img src="arp.png"></center></p>
 
 	<p>
 		The following chart shows a ping request-ACK-ping reply-ACK exchange between hosts 0 and 3 on the sequence chart and the corresponding changes in energy levels of host 0.
