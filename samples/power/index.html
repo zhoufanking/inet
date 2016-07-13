@@ -39,13 +39,13 @@
 
 	<p>
 		The hosts contain an <tt>AlternatingEnergyGenerator</tt>. This alternates between generation and sleep modes. It starts in generation mode, and generates the amount of power
-		that is specified by its <i>powerGeneration</i> parameter (now set to 1 mW). In sleep mode, it generates no power. It stays in each mode for the duration specified by the
+		that is specified by its <i>powerGeneration</i> parameter (now set to 4 mW). In sleep mode, it generates no power. It stays in each mode for the duration specified by the
 		<i>generationInterval</i> and <i>sleepInterval</i> parameters. These are set to a random value with a mean of 25s.
 	</p>
 
 	<p>
 		The <tt>SimpleEnergyStorage</tt> models energy storage by integrating the difference of absorbed and provided power over time.
-		It does not simulate other effects that real batteries have, such as temperature dependency and histeresis. It is used in this model because the emphasis is on the energy that transmissions use, not how the batteries
+		It does not simulate other effects that real batteries have, such as temperature dependency and hysteresis. It is used in this model because the emphasis is on the energy that transmissions use, not how the batteries
 		store the energy.
 	</p>
 
@@ -59,7 +59,7 @@
 	<p><b>Energy consumption of radios</b></p>
 
 	<p>
-		Radios in the simulation have the <tt>StateBasedEnergyConsumer</tt> energy consumer model. In this model, energy consumption is based on power consumption values for various
+		Radios in the simulation have the <tt>StateBasedEnergyConsumer</tt> module. In this model, energy consumption is based on power consumption values for various
 		radio modes and states, and the time the radio spends in these states. For example, radios consume a small amount of power when they are idle in receive mode. This is when they are listening for transmissions. They consume more when they are receiving a transmission, and even more when they are transmitting.
 	</p>
 
@@ -94,20 +94,21 @@
 		The chart below shows the energy storage level (red curve) and the energy generator output (blue curve) of Host 12. The intervals when the generator is charging the energy storage
 		can be discerned on the energy storage graph as increasing slopes. When the host is transmitting and the generator is charging, the energy levels don't increase as fast.
 		The generator generates 4 mW of power, and radios consume 2 mW when they are idle in receiver mode. Radios are in idle state most of the time, thus their power
-		consumption on average is 2 mW. When the host is turned on and it is being charged, the net charge is 2 mW (4 mW provided by the generator and 2 mW consumed by the radio).
+		consumption is roughly 2 mW. When the host is turned on and it is being charged, the net charge is 2 mW (4 mW provided by the generator and 2 mW consumed by the radio).
 		When the host is turned off and being charged, the net charge is 4 mW. The latter corresponds to the most steeply increasing curve sections.
 		When the host is turned on but not charging, the consumption is 2 mW, and the curve is decreasing.
 	</p>
 
 	<p>
 		When hosts are turned on, they occasionally transmit. This results in tiny zigzags in the graph because of temporary increase in power consumption associated with
-		transmissions (the power requirement of transmissions is 100 mW). In the intervals when the host is turned off, the host doesn't transmit, and the curve is smooth. Note that the zigzag on the image is a drawing artifact. The lines are thicker at various intervals because each data point is represented by a finite size symbol.
+		transmissions (the power requirement of transmissions is 100 mW). In the intervals when the host is turned off, the host doesn't transmit, and the curve is smooth (note
+		that there are drawing artifacts due to multiple line segments).
 	</p>
 
 	<p><center><img src="host12.png"></center></p>
 
 	<p>
-		The following chart shows how the energy level of host 12 changes during a transmission (the host is currently charging).
+		The following chart shows how the energy level of host 12 changes during some transmission (the host is currently charging).
 	</p>
 
 	<p><center><img src="host12-2.png"></center></p>
@@ -127,8 +128,8 @@
 	<p><center><img src="consumption3.png"></center></p>
 
 	<p>
-		The following chart shows a ping request-ACK-ping reply-ACK exchange between hosts 0 and 3 on the sequence chart and the corresponding changes in energy levels of host 0.
-		Note that host 0 consumes less energy receiving than transmitting. The interval between the ping request-ACK and the ping reply-ACK, the curve is increasing, because the
+		The following chart shows a ping request-ping reply exchange (with the associated ACKs) between hosts 0 and 3 on the sequence chart and the corresponding changes in energy levels of host 0.
+		Note that host 0 consumes less energy receiving than transmitting. In the intervals between the transmissions, the curve is increasing, because the
 		generator is charging host 0. This image shows that hosts indeed consume more power when transmitting than the generator generates. However, transmissions are very short and
 		very rare, so one needs to zoom in on the graph to see this effect.
 	</p>
