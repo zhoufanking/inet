@@ -16,20 +16,20 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-package inet.examples.wireless.scaling;
+package inet.samples.scaling;
 
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.inet.WirelessHost;
 import inet.physicallayer.contract.packetlevel.IRadioMedium;
 import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
-network TestRadioScaling
+network ScalingExampleNetwork
 {
     parameters:
         int numHosts;
         string radioMediumType;
         @signal[dummy];
-        @statistic[a](source=dummy;record=elapsedTime);
+        @statistic[a](source=dummy; record=elapsedTime);
     submodules:
         visualizer: IntegratedCanvasVisualizer {
             parameters:
