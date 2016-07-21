@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
+  <inputs>
+    <inputs name="/inet/samples/scaling/results/ScalarRadioMedium-*.sca"/>
+    <inputs name="/inet/samples/scaling/results/ScalarRadioMediumUDP-*.sca"/>
+    <inputs name="/inet/samples/scaling/results/IdealRadioMedium-*.sca"/>
+    <inputs name="/inet/samples/scaling/results/IdealRadioMediumUDP-*.sca"/>
+  </inputs>
+  <datasets>
+    <datasets name="ScalarRadio-UDP vs Ping">
+      <items xsi:type="scave:Add" filterPattern="name(a:elapsedTime) AND file(/inet/samples/scaling/results/ScalarRadioMedium*.sca) "/>
+      <items xsi:type="scave:Add" filterPattern="name(count) "/>
+      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(.) AND name(count)">
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="X.Axis.Log" value="true"/>
+        <isoDataPattern>attr:configname(*)</isoDataPattern>
+      </items>
+    </datasets>
+    <datasets name="All">
+      <items xsi:type="scave:Add" filterPattern="name(a:elapsedTime)"/>
+      <items xsi:type="scave:Add" filterPattern="name(count)"/>
+      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(.) AND name(count)">
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="X.Axis.Log" value="true"/>
+        <isoDataPattern>attr:configname(*)</isoDataPattern>
+      </items>
+    </datasets>
+    <datasets name="IdealRadio - UDP vs Ping">
+      <items xsi:type="scave:Add" filterPattern="name(a:elapsedTime) AND file(/inet/samples/scaling/results/IdealRadioMedium*.sca)  "/>
+      <items xsi:type="scave:Add" filterPattern="name(count)"/>
+      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(.) AND name(count)">
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="X.Axis.Log" value="true"/>
+        <isoDataPattern>attr:configname(*)</isoDataPattern>
+      </items>
+    </datasets>
+  </datasets>
+  <chartSheets>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.2 //@datasets/@datasets.2/@items.2"/>
+  </chartSheets>
+</scave:Analysis>
