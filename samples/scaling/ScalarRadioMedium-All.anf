@@ -10,7 +10,7 @@
     <datasets name="ScalarRadio-UDP vs Ping">
       <items xsi:type="scave:Add" filterPattern="name(a:elapsedTime) AND file(/inet/samples/scaling/results/ScalarRadioMedium*.sca) "/>
       <items xsi:type="scave:Add" filterPattern="name(count) "/>
-      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(.) AND name(count)">
+      <items xsi:type="scave:ScatterChart" name="ScalarRadio" xDataPattern="module(.) AND name(count)">
         <properties name="Y.Axis.Log" value="true"/>
         <properties name="X.Axis.Log" value="true"/>
         <isoDataPattern>attr:configname(*)</isoDataPattern>
@@ -19,7 +19,7 @@
     <datasets name="All">
       <items xsi:type="scave:Add" filterPattern="name(a:elapsedTime)"/>
       <items xsi:type="scave:Add" filterPattern="name(count)"/>
-      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(.) AND name(count)">
+      <items xsi:type="scave:ScatterChart" name="All" xDataPattern="module(.) AND name(count)">
         <properties name="Y.Axis.Log" value="true"/>
         <properties name="X.Axis.Log" value="true"/>
         <isoDataPattern>attr:configname(*)</isoDataPattern>
@@ -28,7 +28,25 @@
     <datasets name="IdealRadio - UDP vs Ping">
       <items xsi:type="scave:Add" filterPattern="name(a:elapsedTime) AND file(/inet/samples/scaling/results/IdealRadioMedium*.sca)  "/>
       <items xsi:type="scave:Add" filterPattern="name(count)"/>
+      <items xsi:type="scave:ScatterChart" name="IdealRadio" xDataPattern="module(.) AND name(count)">
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="X.Axis.Log" value="true"/>
+        <isoDataPattern>attr:configname(*)</isoDataPattern>
+      </items>
+    </datasets>
+    <datasets name="Ideal vs Scalar ping">
+      <items xsi:type="scave:Add" filterPattern="name(a:elapsedTime)"/>
+      <items xsi:type="scave:Add" filterPattern="name(count)"/>
       <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(.) AND name(count)">
+        <properties name="Y.Axis.Log" value="true"/>
+        <properties name="X.Axis.Log" value="true"/>
+        <isoDataPattern>attr:configname(*)</isoDataPattern>
+      </items>
+    </datasets>
+    <datasets name="ideal scalar ping">
+      <items xsi:type="scave:Add" filterPattern="name(a:elapsedTime) AND attr:configname(*Medium)  "/>
+      <items xsi:type="scave:Add" filterPattern="name(count)"/>
+      <items xsi:type="scave:ScatterChart" name="IdealRadio vs ScalarRadio - Ping" xDataPattern="module(.) AND name(count)">
         <properties name="Y.Axis.Log" value="true"/>
         <properties name="X.Axis.Log" value="true"/>
         <isoDataPattern>attr:configname(*)</isoDataPattern>
@@ -36,6 +54,6 @@
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.2 //@datasets/@datasets.2/@items.2"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.2 //@datasets/@datasets.2/@items.2 //@datasets/@datasets.3/@items.2 //@datasets/@datasets.4/@items.2"/>
   </chartSheets>
 </scave:Analysis>
