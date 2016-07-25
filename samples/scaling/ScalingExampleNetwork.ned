@@ -31,10 +31,6 @@ network ScalingExampleNetwork
         @signal[dummy];
         @statistic[a](source=dummy; record=elapsedTime);
     submodules:
-        visualizer: IntegratedCanvasVisualizer {
-            parameters:
-                @display("p=100,50");
-        }
         configurator: IPv4NetworkConfigurator {
             parameters:
                 @display("p=100,150");
