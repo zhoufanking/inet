@@ -18,70 +18,12 @@
 
 package inet.samples.ratecontrol;
 
-import inet.applications.ethernet.EtherAppCli;
-import inet.common.queue.Sink;
 import inet.environment.common.PhysicalEnvironment;
-import inet.linklayer.ieee80211.Ieee80211Nic;
-import inet.mobility.single.RectangleMobility;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.inet.WirelessHost;
 import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
+import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
-
-module SinkClient
-{
-    parameters:
-        @networkNode();
-        @labels(node);
-        @display("i=device/cellphone");
-        *.interfaceTableModule = default("");
-    gates:
-        input radioIn @directIn;
-    submodules:
-        sink: Sink {
-            parameters:
-                @display("p=169,124");
-        }
-        wlan: Ieee80211Nic {
-            parameters:
-                @display("p=89,225;q=queue");
-                mgmtType = default("Ieee80211MgmtAdhoc");
-        }
-        mobility: RectangleMobility {
-            parameters:
-                @display("p=71,121");
-        }
-    connections allowunconnected:
-        radioIn --> { @display("m=s"); } --> wlan.radioIn;
-        wlan.upperLayerOut --> sink.in++;
-}
-
-module Client
-{
-    parameters:
-        @display("i=device/wifilaptop");
-        @networkNode();
-        *.interfaceTableModule = "";
-    gates:
-        input radioIn @directIn;
-
-    submodules:
-        cli: EtherAppCli {
-            parameters:
-                registerSAP = false;
-                @display("b=40,24;p=180,60,col");
-        }
-        wlan: Ieee80211Nic {
-            parameters:
-                @display("p=112,134;q=queue");
-                mgmtType = default("Ieee80211MgmtAdhoc");
-        }
-        mobility: RectangleMobility {
-            parameters:
-                @display("p=50,141");
-        }
-    connections allowunconnected:
-        wlan.radioIn <-- radioIn;
-        cli.out --> wlan.upperLayerIn;
-}
 
 network RateControlExample
 {
@@ -89,21 +31,27 @@ network RateControlExample
         int numCli;
         @display("b=297,203;bgb=1300,460");
     submodules:
-        cliHost[numCli]: Client {
+        Host[numCli]: WirelessHost {
             parameters:
                 @display("r=,,#707070");
         }
-        sinkClient: SinkClient {
+        sinkHost: WirelessHost {
             parameters:
                 @display("p=200,200;r=,,#707070");
         }
         physicalEnvironment: PhysicalEnvironment {
             parameters:
-                @display("p=50,50");
+                @display("p=101.06,55.42");
         }
         radioMedium: Ieee80211ScalarRadioMedium {
             parameters:
-                @display("p=61,46");
+                @display("p=99.42999,156.48");
+        }
+        configurator: IPv4NetworkConfigurator {
+            @display("p=114.1,268.94998");
+        }
+        visualizer: IntegratedCanvasVisualizer {
+            @display("p=104.31999,371.63998");
         }
 }
 
