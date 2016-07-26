@@ -110,13 +110,15 @@ void ThroughputFilter::receiveSignal(cResultFilter *prev, simtime_t_cref t, cObj
 {
     if (auto packet = dynamic_cast<cPacket *>(object)) {
         const simtime_t now = simTime();
-        if (now - lastSignal >= 0.1) {
+        if (now - lastSignal >= 0.1 || packets >= 50) {
             double throughput = 8 * bytes / (now - lastSignal).dbl();
             lastSignal = now;
             bytes = 0;
+            packets = 0;
             fire(this, now, throughput DETAILS_ARG_NAME);
         }
         bytes += packet->getByteLength();
+        packets++;
     }
 }
 

@@ -108,6 +108,7 @@ class INET_API ThroughputFilter : public cObjectResultFilter
   protected:
     simtime_t lastSignal = 0;
     double bytes = 0;
+    int packets = 0;
 
   public:
     virtual void receiveSignal(cResultFilter *prev, simtime_t_cref t, cObject *object DETAILS_ARG) override;
