@@ -41,14 +41,14 @@ module WirelessNic like IWirelessNic
             parameters:
                 @display("p=150,100");
         }
-        radio: <radioType> like IRadio {
+        radio: <radioType> like IRadio if radioType != "" {
             parameters:
                 @display("p=150,200");
         }
-    connections:
-        radioIn --> { @display("m=s"); } --> radio.radioIn;
-        radio.upperLayerIn <-- mac.lowerLayerOut;
-        radio.upperLayerOut --> mac.lowerLayerIn;
+    connections allowunconnected:
+        radioIn --> { @display("m=s"); } --> radio.radioIn if radioType != "";
+        radio.upperLayerIn <-- mac.lowerLayerOut if radioType != "";
+        radio.upperLayerOut --> mac.lowerLayerIn if radioType != "";
         upperLayerIn --> { @display("m=n"); } --> mac.upperLayerIn;
         upperLayerOut <-- { @display("m=n"); } <-- mac.upperLayerOut;
 }
