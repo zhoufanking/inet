@@ -193,31 +193,7 @@ void Radio::handleMessageWhenDown(cMessage *message)
     if (message->getArrivalGate() == radioIn || isReceptionTimer(message))
         delete message;
     else
-        OperationalBase::handleMessageWhenDown(message);
-}
-
-void Radio::handleMessageWhenUp(cMessage *message)
-{
-    if (message->isSelfMessage())
-        handleSelfMessage(message);
-    else if (message->getArrivalGate() == upperLayerIn) {
-        if (!message->isPacket()) {
-            handleUpperCommand(message);
-            delete message;
-        }
-        else
-            handleUpperPacket(check_and_cast<cPacket *>(message));
-    }
-    else if (message->getArrivalGate() == radioIn) {
-        if (!message->isPacket()) {
-            handleLowerCommand(message);
-            delete message;
-        }
-        else
-            handleLowerPacket(check_and_cast<RadioFrame *>(message));
-    }
-    else
-        throw cRuntimeError("Unknown arrival gate '%s'.", message->getArrivalGate()->getFullName());
+        PhysicalLayerBase::handleMessageWhenDown(message);
 }
 
 void Radio::handleSelfMessage(cMessage *message)
@@ -297,9 +273,9 @@ void Radio::handleUpperPacket(cPacket *packet)
     }
 }
 
-void Radio::handleLowerPacket(RadioFrame *radioFrame)
+void Radio::handleLowerPacket(cPacket *packet)
 {
-    auto receptionTimer = createReceptionTimer(radioFrame);
+    auto receptionTimer = createReceptionTimer(check_and_cast<RadioFrame *>(packet));
     if (separateReceptionParts)
         startReception(receptionTimer, IRadioSignal::SIGNAL_PART_PREAMBLE);
     else

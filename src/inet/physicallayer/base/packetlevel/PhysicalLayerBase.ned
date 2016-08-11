@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2013 OpenSim Ltd
+// Copyright (C) OpenSim Ltd
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -14,26 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
-// author: Zoltan Bojthe
-//
 
-cplusplus {{
-#include "inet/common/INETDefs.h"
-#include "inet/linklayer/common/MACAddress.h"
-}}
+package inet.physicallayer.base.packetlevel;
 
-namespace inet;
-
-class noncobject MACAddress;
+import inet.common.LayeredProtocolBase;
 
 //
-// Packet for ~MaMac. Packet size is configurable in the MAC layer. 
+// Module base for different physical layers.
 //
-packet MaMacFrame
+simple PhysicalLayerBase extends LayeredProtocolBase
 {
-    MACAddress src;     // source address
-    MACAddress dest;    // destination address
-    int srcModuleId;    // technical data, uses instead of sending back an ACK packet
-    int networkProtocol = -1;
+    parameters:
+        @display("i=block/wrxtx");
+    gates:
+        input upperLayerIn @labels(ILinkLayerFrame/down);
+        output upperLayerOut @labels(ILinkLayerFrame/up);
+        input radioIn @labels(IRadioFrame);
 }
-

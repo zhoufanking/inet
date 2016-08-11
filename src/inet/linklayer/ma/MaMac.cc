@@ -84,15 +84,14 @@ void MaMac::initialize(int stage)
         // find queueModule
         cGate *queueOut = gate("upperLayerIn")->getPathStartGate();
         queueModule = dynamic_cast<IPassiveQueue *>(queueOut->getOwnerModule());
-        if (!queueModule)
-            throw cRuntimeError("Missing queueModule");
 
         initializeMACAddress();
     }
     else if (stage == INITSTAGE_LINK_LAYER) {
         radio->setRadioMode(fullDuplex ? IRadio::RADIO_MODE_TRANSCEIVER : IRadio::RADIO_MODE_RECEIVER);
         ackTimeoutMsg = new cMessage("link-break");
-        getNextMsgFromHL();
+        if (queueModule != nullptr)
+            getNextMsgFromHL();
         registerInterface();
     }
 }
@@ -142,7 +141,7 @@ void MaMac::receiveSignal(cComponent *source, simsignal_t signalID, long value D
         IRadio::TransmissionState newRadioTransmissionState = (IRadio::TransmissionState)value;
         if (transmissionState == IRadio::TRANSMISSION_STATE_TRANSMITTING && newRadioTransmissionState == IRadio::TRANSMISSION_STATE_IDLE) {
             radio->setRadioMode(fullDuplex ? IRadio::RADIO_MODE_TRANSCEIVER : IRadio::RADIO_MODE_RECEIVER);
-            if (!lastSentPk)
+            if (!lastSentPk && queueModule != nullptr)
                 getNextMsgFromHL();
         }
         transmissionState = newRadioTransmissionState;
@@ -241,7 +240,8 @@ void MaMac::acked(MaMacFrame *frame)
         cancelEvent(ackTimeoutMsg);
         delete lastSentPk;
         lastSentPk = nullptr;
-        getNextMsgFromHL();
+        if (queueModule != nullptr)
+            getNextMsgFromHL();
     }
     else
         EV_DEBUG << "unaccepted\n";

@@ -21,20 +21,20 @@ package inet.linklayer.ma;
 
 import inet.linklayer.base.MACProtocolBase;
 import inet.linklayer.contract.ILinkLayer;
-
+import inet.linklayer.contract.IMACProtocol;
 
 //
-// Implements a trivial MAC layer for use in ~MaWirelessNic.
+// This module implements a trivial multiple access MAC protocol for use in ~MaWirelessNic.
 //
 // This module only provides encapsulation/decapsulation (into MaMacFrame),
-// but no real medium access protocol.
+// with a really simple medium access protocol using acknowledgment.
 //
 // Higher layer packets should have Ieee802Ctrl attached to them as
 // control info.
 //
 // See ~MaWirelessNic for rationale and details.
 //
-simple MaMac extends MACProtocolBase like ILinkLayer
+simple MaMac extends MACProtocolBase like ILinkLayer, IMACProtocol
 {
     parameters:
         string address = default("auto");   // MAC address as hex string (12 hex digits), or
