@@ -33,7 +33,7 @@
 #include "inet/transportlayer/contract/udp/UDPControlInfo.h"
 
 #ifdef WITH_IDEALWIRELESS
-#include "inet/linklayer/ideal/IdealMacFrame_m.h"
+#include "inet/linklayer/ma/MaMacFrame_m.h"
 #endif // ifdef WITH_IDEALWIRELESS
 
 #ifdef WITH_IEEE80211
@@ -1456,7 +1456,7 @@ void DYMO::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj 
             || dynamic_cast<ieee80211::Ieee80211Frame *>(frame)
 #endif // ifdef WITH_IEEE80211
 #ifdef WITH_IDEALWIRELESS
-            || dynamic_cast<IdealMacFrame *>(frame)
+            || dynamic_cast<MaMacFrame *>(frame)
 #endif // ifdef WITH_IDEALWIRELESS
             )
         {

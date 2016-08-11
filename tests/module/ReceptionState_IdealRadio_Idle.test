@@ -42,7 +42,7 @@ ned-path = .;../../../../src
 *.host2.mobility.initialX = 900m
 
 # nic
-*.host*.wlan[*].typename = "IdealWirelessNic"
+*.host*.wlan[*].typename = "MaWirelessNic"
 *.host*.wlan[*].bitrate = 2Mbps
 *.host*.wlan[*].mac.headerLength = 10B
 *.host*.wlan[*].mac.fullDuplex = false

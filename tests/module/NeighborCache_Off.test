@@ -76,7 +76,7 @@ cmdenv-status-frequency = 1000s
 ned-path = .;../../../../src;../../lib
 
 # channel physical parameters
-**.wlan[*].typename = "IdealWirelessNic"
+**.wlan[*].typename = "MaWirelessNic"
 **.wlan[*].bitrate = 2Mbps
 **.wlan[*].mac.address = "auto"
 **.wlan[*].mac.headerLength = 20B

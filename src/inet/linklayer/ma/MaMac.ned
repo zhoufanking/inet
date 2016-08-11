@@ -17,24 +17,24 @@
 // author: Zoltan Bojthe
 //
 
-package inet.linklayer.ideal;
+package inet.linklayer.ma;
 
 import inet.linklayer.base.MACProtocolBase;
 import inet.linklayer.contract.ILinkLayer;
 
 
 //
-// Implements a trivial MAC layer for use in ~IdealWirelessNic.
+// Implements a trivial MAC layer for use in ~MaWirelessNic.
 //
-// This module only provides encapsulation/decapsulation (into IdealMacFrame),
+// This module only provides encapsulation/decapsulation (into MaMacFrame),
 // but no real medium access protocol.
 //
 // Higher layer packets should have Ieee802Ctrl attached to them as
 // control info.
 //
-// See ~IdealWirelessNic for rationale and details.
+// See ~MaWirelessNic for rationale and details.
 //
-simple IdealMac extends MACProtocolBase like ILinkLayer
+simple MaMac extends MACProtocolBase like ILinkLayer
 {
     parameters:
         string address = default("auto");   // MAC address as hex string (12 hex digits), or
@@ -42,14 +42,14 @@ simple IdealMac extends MACProtocolBase like ILinkLayer
                                             // a generated MAC address in init stage 0.
         double bitrate @unit("bps");
         int mtu @unit("B") = default(4470B);
-        int headerLength @unit("B") = default(0B);       // IdealMacFrame.byteLength = headerLength + packetFromUpperLayer.byteLength
+        int headerLength @unit("B") = default(0B);       // MaMacFrame.byteLength = headerLength + packetFromUpperLayer.byteLength
         bool promiscuous = default(false);
         bool fullDuplex = default(true);    // allows transmitting and receiving simultaneously (transceiver radio mode)
         double ackTimeout @unit("s") = default(100ms);
 
-        @class(IdealMac);
-        @signal[dropPkNotForUs](type=IdealMacFrame);
-        @signal[NF_LINK_BREAK](type=IdealMacFrame);
+        @class(MaMac);
+        @signal[dropPkNotForUs](type=MaMacFrame);
+        @signal[NF_LINK_BREAK](type=MaMacFrame);
         @statistic[passedUpPk](title="packets passed to higher layer"; source=packetSentToUpper; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
         @statistic[sentDownPk](title="packets sent to lower layer"; source=packetSentToLower; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
         @statistic[rcvdPkFromHL](title="packets received from higher layer"; source=packetReceivedFromUpper; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);

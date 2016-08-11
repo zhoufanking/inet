@@ -18,7 +18,7 @@
 //
 
 
-package inet.linklayer.ideal;
+package inet.linklayer.ma;
 
 import inet.common.queue.IOutputQueue;
 import inet.linklayer.contract.IWirelessNic;
@@ -38,7 +38,7 @@ import inet.physicallayer.contract.packetlevel.IRadio;
 //
 // This module requires an ~IdealRadioMedium instance in the network.
 //
-module IdealWirelessNic like IWirelessNic
+module MaWirelessNic like IWirelessNic
 {
     parameters:
         @nic;
@@ -60,7 +60,7 @@ module IdealWirelessNic like IWirelessNic
             parameters:
                 @display("p=23,125;q=l2queue");
         }
-        mac: IdealMac {
+        mac: MaMac {
             parameters:
                 @display("p=98,207");
         }

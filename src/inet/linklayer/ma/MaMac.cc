@@ -20,34 +20,34 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "inet/linklayer/ideal/IdealMac.h"
+#include "inet/linklayer/ma/MaMac.h"
 
 #include "inet/common/INETUtils.h"
 #include "inet/common/queue/IPassiveQueue.h"
 #include "inet/linklayer/common/Ieee802Ctrl.h"
 #include "inet/linklayer/common/MACAddressTag_m.h"
-#include "inet/linklayer/ideal/IdealMacFrame_m.h"
+#include "inet/linklayer/ma/MaMacFrame_m.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
 #include "inet/common/ProtocolTag_m.h"
 
 namespace inet {
 
-Define_Module(IdealMac);
+Define_Module(MaMac);
 
-simsignal_t IdealMac::dropPkNotForUsSignal = registerSignal("dropPkNotForUs");
+simsignal_t MaMac::dropPkNotForUsSignal = registerSignal("dropPkNotForUs");
 
-IdealMac::IdealMac()
+MaMac::MaMac()
 {
 }
 
-IdealMac::~IdealMac()
+MaMac::~MaMac()
 {
     delete lastSentPk;
     cancelAndDelete(ackTimeoutMsg);
 }
 
-void IdealMac::flushQueue()
+void MaMac::flushQueue()
 {
     ASSERT(queueModule);
     while (!queueModule->isEmpty()) {
@@ -58,13 +58,13 @@ void IdealMac::flushQueue()
     queueModule->clear();    // clear request count
 }
 
-void IdealMac::clearQueue()
+void MaMac::clearQueue()
 {
     ASSERT(queueModule);
     queueModule->clear();
 }
 
-void IdealMac::initialize(int stage)
+void MaMac::initialize(int stage)
 {
     MACProtocolBase::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
@@ -97,7 +97,7 @@ void IdealMac::initialize(int stage)
     }
 }
 
-void IdealMac::initializeMACAddress()
+void MaMac::initializeMACAddress()
 {
     const char *addrstr = par("address");
 
@@ -113,7 +113,7 @@ void IdealMac::initializeMACAddress()
     }
 }
 
-InterfaceEntry *IdealMac::createInterfaceEntry()
+InterfaceEntry *MaMac::createInterfaceEntry()
 {
     InterfaceEntry *e = new InterfaceEntry(this);
 
@@ -135,7 +135,7 @@ InterfaceEntry *IdealMac::createInterfaceEntry()
     return e;
 }
 
-void IdealMac::receiveSignal(cComponent *source, simsignal_t signalID, long value DETAILS_ARG)
+void MaMac::receiveSignal(cComponent *source, simsignal_t signalID, long value DETAILS_ARG)
 {
     Enter_Method_Silent();
     if (signalID == IRadio::transmissionStateChangedSignal) {
@@ -149,13 +149,13 @@ void IdealMac::receiveSignal(cComponent *source, simsignal_t signalID, long valu
     }
 }
 
-void IdealMac::startTransmitting(cPacket *msg)
+void MaMac::startTransmitting(cPacket *msg)
 {
     // if there's any control info, remove it; then encapsulate the packet
     if (lastSentPk)
         throw cRuntimeError("Model error: unacked send");
     MACAddress dest = msg->getMandatoryTag<MACAddressReq>()->getDestinationAddress();
-    IdealMacFrame *frame = encapsulate(msg);
+    MaMacFrame *frame = encapsulate(msg);
 
     if (!dest.isBroadcast() && !dest.isMulticast() && !dest.isUnspecified()) {    // unicast
         lastSentPk = frame->dup();
@@ -170,7 +170,7 @@ void IdealMac::startTransmitting(cPacket *msg)
     sendDown(frame);
 }
 
-void IdealMac::getNextMsgFromHL()
+void MaMac::getNextMsgFromHL()
 {
     ASSERT(outStandingRequests >= queueModule->getNumPendingRequests());
     if (outStandingRequests == 0) {
@@ -180,7 +180,7 @@ void IdealMac::getNextMsgFromHL()
     ASSERT(outStandingRequests <= 1);
 }
 
-void IdealMac::handleUpperPacket(cPacket *msg)
+void MaMac::handleUpperPacket(cPacket *msg)
 {
     outStandingRequests--;
     if (radio->getTransmissionState() == IRadio::TRANSMISSION_STATE_TRANSMITTING) {
@@ -194,9 +194,9 @@ void IdealMac::handleUpperPacket(cPacket *msg)
     }
 }
 
-void IdealMac::handleLowerPacket(cPacket *msg)
+void MaMac::handleLowerPacket(cPacket *msg)
 {
-    IdealMacFrame *frame = check_and_cast<IdealMacFrame *>(msg);
+    MaMacFrame *frame = check_and_cast<MaMacFrame *>(msg);
     if (frame->hasBitError()) {
         EV << "Received " << frame << " contains bit errors or collision, dropping it\n";
         delete frame;
@@ -205,7 +205,7 @@ void IdealMac::handleLowerPacket(cPacket *msg)
 
     if (!dropFrameNotForUs(frame)) {
         int senderModuleId = frame->getSrcModuleId();
-        IdealMac *senderMac = dynamic_cast<IdealMac *>(getSimulation()->getModule(senderModuleId));
+        MaMac *senderMac = dynamic_cast<MaMac *>(getSimulation()->getModule(senderModuleId));
         if (senderMac)
             senderMac->acked(frame);
         // decapsulate and attach control info
@@ -215,10 +215,10 @@ void IdealMac::handleLowerPacket(cPacket *msg)
     }
 }
 
-void IdealMac::handleSelfMessage(cMessage *message)
+void MaMac::handleSelfMessage(cMessage *message)
 {
     if (message == ackTimeoutMsg) {
-        EV_DETAIL << "IdealMac: timeout: " << lastSentPk->getFullName() << " is lost\n";
+        EV_DETAIL << "MaMac: timeout: " << lastSentPk->getFullName() << " is lost\n";
         // packet lost
         emit(NF_LINK_BREAK, lastSentPk);
         delete lastSentPk;
@@ -230,11 +230,11 @@ void IdealMac::handleSelfMessage(cMessage *message)
     }
 }
 
-void IdealMac::acked(IdealMacFrame *frame)
+void MaMac::acked(MaMacFrame *frame)
 {
     Enter_Method_Silent();
 
-    EV_DEBUG << "IdealMac::acked(" << frame->getFullName() << ") is ";
+    EV_DEBUG << "MaMac::acked(" << frame->getFullName() << ") is ";
 
     if (lastSentPk && lastSentPk->getTreeId() == frame->getTreeId()) {
         EV_DEBUG << "accepted\n";
@@ -247,10 +247,10 @@ void IdealMac::acked(IdealMacFrame *frame)
         EV_DEBUG << "unaccepted\n";
 }
 
-IdealMacFrame *IdealMac::encapsulate(cPacket *msg)
+MaMacFrame *MaMac::encapsulate(cPacket *msg)
 {
     Ieee802Ctrl *ctrl = check_and_cast<Ieee802Ctrl *>(msg->removeControlInfo());
-    IdealMacFrame *frame = new IdealMacFrame(msg->getName());
+    MaMacFrame *frame = new MaMacFrame(msg->getName());
     frame->setByteLength(headerLength);
     auto macAddressReq = msg->getMandatoryTag<MACAddressReq>();
     frame->setSrc(macAddressReq->getSourceAddress());
@@ -262,7 +262,7 @@ IdealMacFrame *IdealMac::encapsulate(cPacket *msg)
     return frame;
 }
 
-bool IdealMac::dropFrameNotForUs(IdealMacFrame *frame)
+bool MaMac::dropFrameNotForUs(MaMacFrame *frame)
 {
     // Current implementation does not support the configuration of multicast
     // MAC address groups. We rather accept all multicast frames (just like they were
@@ -286,7 +286,7 @@ bool IdealMac::dropFrameNotForUs(IdealMacFrame *frame)
     return true;
 }
 
-cPacket *IdealMac::decapsulate(IdealMacFrame *frame)
+cPacket *MaMac::decapsulate(MaMacFrame *frame)
 {
     // decapsulate and attach control info
     cPacket *packet = frame->decapsulate();

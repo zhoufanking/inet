@@ -29,7 +29,7 @@ sim-time-limit = 3s
 **.mobility.initialZ = 0m
 
 # nic
-*.host*.wlan[*].typename = "IdealWirelessNic"
+*.host*.wlan[*].typename = "MaWirelessNic"
 *.host.wlan[*].bitrate = 54Mbps
 *.host*.wlan[*].mac.headerLength = 10B
 *.host*.wlan[*].mac.fullDuplex = false

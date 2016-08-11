@@ -19,7 +19,7 @@ package inet.linklayer.ieee802154;
 
 import inet.common.queue.IOutputQueue;
 import inet.linklayer.contract.IWirelessNic;
-import inet.linklayer.ideal.IdealMac;
+import inet.linklayer.ma.MaMac;
 import inet.physicallayer.contract.packetlevel.IRadio;
 
 module Ieee802154UWBIRNic like IWirelessNic
@@ -40,7 +40,7 @@ module Ieee802154UWBIRNic like IWirelessNic
             parameters:
                 @display("p=100,50;q=l2queue");
         }
-        mac: IdealMac {
+        mac: MaMac {
             parameters:
                 @display("p=100,150");
         }

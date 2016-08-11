@@ -27,7 +27,7 @@
 #include "inet/linklayer/common/InterfaceTag_m.h"
 
 #ifdef WITH_IDEALWIRELESS
-#include "inet/linklayer/ideal/IdealMacFrame_m.h"
+#include "inet/linklayer/ma/MaMacFrame_m.h"
 #endif // ifdef WITH_IDEALWIRELESS
 
 #ifdef WITH_IEEE80211
@@ -1003,7 +1003,7 @@ void AODVRouting::receiveSignal(cComponent *source, simsignal_t signalID, cObjec
     Enter_Method("receiveChangeNotification");
     if (signalID == NF_LINK_BREAK) {
         EV_DETAIL << "Received link break signal" << endl;
-        // XXX: This is a hack for supporting both IdealMac and Ieee80211Mac. etc
+        // XXX: This is a hack for supporting both MaMaMac and Ieee80211Mac. etc
         cPacket *frame = check_and_cast<cPacket *>(obj);
         INetworkDatagram *datagram = nullptr;
         if (false
@@ -1011,7 +1011,7 @@ void AODVRouting::receiveSignal(cComponent *source, simsignal_t signalID, cObjec
             || dynamic_cast<ieee80211::Ieee80211Frame *>(frame)
 #endif // ifdef WITH_IEEE80211
 #ifdef WITH_IDEALWIRELESS
-            || dynamic_cast<IdealMacFrame *>(frame)
+            || dynamic_cast<MaMacFrame *>(frame)
 #endif // ifdef WITH_IDEALWIRELESS
 #ifdef WITH_CSMA
             || dynamic_cast<CSMAFrame *>(frame)

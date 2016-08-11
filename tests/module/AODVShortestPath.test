@@ -98,7 +98,7 @@ sim-time-limit = 100s
 **.sender.app[0].destAddr = "receiver(ipv4)"
 
 # nic settings
-**.wlan[*].typename = "IdealWirelessNic"
+**.wlan[*].typename = "MaWirelessNic"
 **.wlan[*].radio.transmitter.maxCommunicationRange = 240m
 **.wlan[*].bitrate = 2Mbps
 **.wlan[*].mac.address = "auto"

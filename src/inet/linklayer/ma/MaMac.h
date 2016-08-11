@@ -17,8 +17,8 @@
 // author: Zoltan Bojthe
 //
 
-#ifndef __INET_IDEALMAC_H
-#define __INET_IDEALMAC_H
+#ifndef __INET_MAMAC_H
+#define __INET_MAMAC_H
 
 #include "inet/common/INETDefs.h"
 #include "inet/physicallayer/contract/packetlevel/IRadio.h"
@@ -29,22 +29,22 @@ namespace inet {
 
 using namespace physicallayer;
 
-class IdealMacFrame;
+class MaMacFrame;
 class InterfaceEntry;
 class IPassiveQueue;
 
 /**
- * Implements a simplified ideal MAC.
+ * Implements a simplified MAC.
  *
  * See the NED file for details.
  */
-class INET_API IdealMac : public MACProtocolBase
+class INET_API MaMac : public MACProtocolBase
 {
   protected:
     static simsignal_t dropPkNotForUsSignal;
 
     // parameters
-    int headerLength = 0;    // IdealMacFrame header length in bytes
+    int headerLength = 0;    // MaMacFrame header length in bytes
     double bitrate = 0;    // [bits per sec]
     bool promiscuous = false;    // promiscuous mode
     MACAddress address;    // MAC address
@@ -68,11 +68,11 @@ class INET_API IdealMac : public MACProtocolBase
     //@}
 
     virtual void startTransmitting(cPacket *msg);
-    virtual bool dropFrameNotForUs(IdealMacFrame *frame);
-    virtual IdealMacFrame *encapsulate(cPacket *msg);
-    virtual cPacket *decapsulate(IdealMacFrame *frame);
+    virtual bool dropFrameNotForUs(MaMacFrame *frame);
+    virtual MaMacFrame *encapsulate(cPacket *msg);
+    virtual cPacket *decapsulate(MaMacFrame *frame);
     virtual void initializeMACAddress();
-    virtual void acked(IdealMacFrame *frame);    // called by other IdealMac module, when receiving a packet with my moduleID
+    virtual void acked(MaMacFrame *frame);    // called by other MaMac module, when receiving a packet with my moduleID
 
     // get MSG from queue
     virtual void getNextMsgFromHL();
@@ -88,8 +88,8 @@ class INET_API IdealMac : public MACProtocolBase
     //@}
 
   public:
-    IdealMac();
-    virtual ~IdealMac();
+    MaMac();
+    virtual ~MaMac();
 
   protected:
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
@@ -98,5 +98,5 @@ class INET_API IdealMac : public MACProtocolBase
 
 } // namespace inet
 
-#endif // ifndef __INET_IDEALMAC_H
+#endif // ifndef __INET_MAMAC_H
 

@@ -27,10 +27,10 @@ namespace inet;
 class noncobject MACAddress;
 
 //
-// Packet for ~IdealMac. Packet size is configurable
+// Packet for ~MaMac. Packet size is configurable
 // in the MAC layer. 
 //
-packet IdealMacFrame
+packet MaMacFrame
 {
     MACAddress src;     // source address
     MACAddress dest;    // destination address
