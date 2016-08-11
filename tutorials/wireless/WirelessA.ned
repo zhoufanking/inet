@@ -22,7 +22,7 @@ import inet.physicallayer.contract.packetlevel.IRadioMedium;
 
 // - create a network and specify the size to 500x500
 // - drop an IPv4NetworkConfigurator and rename it to "configurator"
-// - drop an IdealRadioMedium module and rename to "radioMedium"
+// - drop an UnitDiskRadioMedium module and rename to "radioMedium"
 // - drop two standardhosts at the 100,100 and 400,400 position and
 //   rename them to hostA and hostB
 network WirelessA
@@ -30,7 +30,7 @@ network WirelessA
     @display("bgb=500,500");
     @figure[thruputInstrument](type=gauge; pos=370,90; size=120,120; maxValue=2500; tickSize=500; colorStrip=green 0.75 yellow 0.9 red;label=Number of packets received; moduleName=hostB.app[0]; signalName=rcvdPk);
     string hostType = default("WirelessHost");
-    string mediumType = default("IdealRadioMedium");
+    string mediumType = default("UnitDiskRadioMedium");
     submodules:
         configurator: IPv4NetworkConfigurator {
             @display("p=149,29");

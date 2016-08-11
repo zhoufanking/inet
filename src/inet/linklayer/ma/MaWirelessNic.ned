@@ -36,7 +36,7 @@ import inet.physicallayer.contract.packetlevel.IRadio;
 // affected at all. There are no collisions -- a radio can simultaneously
 // receive any number of frames, and also transmit a single frame at the same time.
 //
-// This module requires an ~IdealRadioMedium instance in the network.
+// This module requires an ~UnitDiskRadioMedium instance in the network.
 //
 module MaWirelessNic like IWirelessNic
 {
@@ -47,14 +47,14 @@ module MaWirelessNic like IWirelessNic
         string energySourceModule = default("");
         double bitrate @unit("bps");
         string queueType = default("DropTailQueue");    // DropTailQueue, a Diffserv queue, etc.
-        string radioType = default("IdealRadio");
+        string radioType = default("UnitDiskRadio");
         *.interfaceTableModule = default(absPath(interfaceTableModule));
         *.energySourceModule = default(absPath(energySourceModule));
         **.bitrate = bitrate;
     gates:
         input upperLayerIn;
         output upperLayerOut;
-        input radioIn @labels(IdealRadioFrame);
+        input radioIn @labels(UnitDiskRadioFrame);
     submodules:
         queue: <queueType> like IOutputQueue {
             parameters:

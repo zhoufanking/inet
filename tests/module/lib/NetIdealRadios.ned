@@ -1,10 +1,10 @@
 
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.inet.AdhocHost;
-import inet.physicallayer.idealradio.IdealRadioMedium;
+import inet.physicallayer.unitdiskradio.UnitDiskRadioMedium;
 
 
-network NetIdealRadios
+network NetUnitDiskRadios
 {
     parameters:
         int numHosts;
@@ -14,7 +14,7 @@ network NetIdealRadios
             parameters:
                 @display("r=,,#707070;p=250,58");
         }
-        radioMedium: IdealRadioMedium {
+        radioMedium: UnitDiskRadioMedium {
             parameters:
                 @display("p=60,50");
         }

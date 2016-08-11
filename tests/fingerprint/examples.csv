@@ -397,22 +397,22 @@
 # /examples/wireless/nic/,             -f omnetpp.ini -c AbstractLMac -r 0,           ---100s,         0000-0000   # AbstractLMac extended
 # /examples/wireless/nic/,             -f omnetpp.ini -c AbstractCSMA -r 0,           ---100s,         0000-0000   # AbstractCSMA extended
 # /examples/wireless/nic/,             -f omnetpp.ini -c AbstractIeee80211Mac -r 0,   ---100s,         0000-0000   # AbstractIeee80211Mac extended
-# /examples/wireless/nic/,             -f omnetpp.ini -c AbstractIdealRadio -r 0,     ---100s,         0000-0000   # AbstractIdealRadio extended
+# /examples/wireless/nic/,             -f omnetpp.ini -c AbstractUnitDiskRadio -r 0,  ---100s,         0000-0000   # AbstractUnitDiskRadio extended
 # /examples/wireless/nic/,             -f omnetpp.ini -c AbstractAPSKScalarRadio -r 0, ---100s,        0000-0000   # AbstractAPSKScalarRadio extended
 # /examples/wireless/nic/,             -f omnetpp.ini -c AbstractAPSKDimensionalRadio -r 0, ---100s,   0000-0000   # AbstractAPSKDimensionalRadio extended
-/examples/wireless/nic/,             -f omnetpp.ini -c MaMacWithIdealRadio -r 0,                  100s,             220c-31c2 0dc9-7df7/tplx
+/examples/wireless/nic/,             -f omnetpp.ini -c MaMacWithUnitDiskRadio -r 0,               100s,             220c-31c2 0dc9-7df7/tplx
 /examples/wireless/nic/,             -f omnetpp.ini -c MaMacWithAPSKScalarRadio -r 0,             100s,             9c6b-27e3 0dc9-7df7/tplx
 /examples/wireless/nic/,             -f omnetpp.ini -c MaMacWithAPSKDimensionalRadio -r 0,        100s,             9c6b-27e3 0dc9-7df7/tplx
-/examples/wireless/nic/,             -f omnetpp.ini -c LMacWithIdealRadio -r 0,                   100s,             3366-caa1 fc3e-a4cf/tplx
+/examples/wireless/nic/,             -f omnetpp.ini -c LMacWithUnitDiskRadio -r 0,                100s,             3366-caa1 fc3e-a4cf/tplx
 /examples/wireless/nic/,             -f omnetpp.ini -c LMacWithAPSKScalarRadio -r 0,              100s,             46ad-62a6 fc3e-a4cf/tplx
 /examples/wireless/nic/,             -f omnetpp.ini -c LMacWithAPSKDimensionalRadio -r 0,         100s,             46ad-62a6 fc3e-a4cf/tplx
-/examples/wireless/nic/,             -f omnetpp.ini -c CSMAWithIdealRadio -r 0,                   100s,             2ebe-aa8a 1ee6-6932/tplx
+/examples/wireless/nic/,             -f omnetpp.ini -c CSMAWithUnitDiskRadio -r 0,                100s,             2ebe-aa8a 1ee6-6932/tplx
 /examples/wireless/nic/,             -f omnetpp.ini -c CSMAWithAPSKScalarRadio -r 0,              100s,             7c0d-ca03 1ee6-6932/tplx
 /examples/wireless/nic/,             -f omnetpp.ini -c CSMAWithAPSKDimensionalRadio -r 0,         100s,             7c0d-ca03 1ee6-6932/tplx
-/examples/wireless/nic/,             -f omnetpp.ini -c BMacWithIdealRadio -r 0,                   100s,             4656-18b8 a6bf-92f4/tplx
+/examples/wireless/nic/,             -f omnetpp.ini -c BMacWithUnitDiskRadio -r 0,                100s,             4656-18b8 a6bf-92f4/tplx
 /examples/wireless/nic/,             -f omnetpp.ini -c BMacWithAPSKScalarRadio -r 0,              100s,             f2d8-7751 a6bf-92f4/tplx
 /examples/wireless/nic/,             -f omnetpp.ini -c BMacWithAPSKDimensionalRadio -r 0,         100s,             f2d8-7751 a6bf-92f4/tplx
-/examples/wireless/nic/,             -f omnetpp.ini -c Ieee80211MacWithIdealRadio -r 0,           100s,             0a2a-8d5f ec4f-3854/tplx
+/examples/wireless/nic/,             -f omnetpp.ini -c Ieee80211MacWithUnitDiskRadio -r 0,        100s,             0a2a-8d5f ec4f-3854/tplx
 /examples/wireless/nic/,             -f omnetpp.ini -c Ieee80211MacWithIeee80211ScalarRadio -r 0, 100s,             b817-18f0 b32a-7f17/tplx
 
 /examples/wireless/obstacle/,        -f omnetpp.ini -c Outdoor -r 0,                100s,            6f68-4a73 6666-3f52/tplx
