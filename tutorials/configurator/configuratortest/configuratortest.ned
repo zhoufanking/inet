@@ -13,23 +13,18 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package inet.examples.configuratortest;
+package inet.tutorials.configurator.configuratortest;
 
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.ethernet.Eth100M;
 import inet.node.ethernet.EtherSwitch;
+import inet.node.inet.Router;
 import inet.node.inet.StandardHost;
 import inet.visualizer.networklayer.RoutingTableCanvasVisualizer;
 network ConfiguratorTest
 {
     @display("bgb=739,400");
     submodules:
-        etherSwitch: EtherSwitch {
-            @display("p=199,186");
-        }
-        etherSwitch1: EtherSwitch {
-            @display("p=497,175");
-        }
         Host0: StandardHost {
             @display("p=77,317");
         }
@@ -52,11 +47,17 @@ network ConfiguratorTest
         visualizer: RoutingTableCanvasVisualizer {
             @display("p=69,128");
         }
+        router: Router {
+            @display("p=181,187");
+        }
+        router1: Router {
+            @display("p=505,191");
+        }
     connections:
-        Host0.ethg++ <--> Eth100M <--> etherSwitch.ethg++;
-        Host1.ethg++ <--> Eth100M <--> etherSwitch.ethg++;
-        Host2.ethg++ <--> Eth100M <--> etherSwitch.ethg++;
-        Host3.ethg++ <--> Eth100M <--> etherSwitch1.ethg++;
-        Host4.ethg++ <--> Eth100M <--> etherSwitch1.ethg++;
-        etherSwitch.ethg++ <--> Eth100M <--> etherSwitch1.ethg++;
+        Host0.ethg++ <--> Eth100M <--> router.ethg++;
+        Host1.ethg++ <--> Eth100M <--> router.ethg++;
+        Host2.ethg++ <--> Eth100M <--> router.ethg++;
+        Host3.ethg++ <--> Eth100M <--> router1.ethg++;
+        Host4.ethg++ <--> Eth100M <--> router1.ethg++;
+        router.ethg++ <--> Eth100M <--> router1.ethg++;
 }
