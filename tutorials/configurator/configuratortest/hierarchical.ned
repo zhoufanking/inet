@@ -22,46 +22,58 @@ import inet.node.inet.StandardHost;
 import inet.visualizer.networklayer.RoutingTableCanvasVisualizer;
 
 
-network Topology
+network Hierarchical
 {
-    @display("bgb=988,400");
+    @display("bgb=1045,532");
     submodules:
-        Host0: StandardHost {
-            @display("p=254,146");
-        }
-        Host1: StandardHost {
-            @display("p=315,299");
-        }
-        Host2: StandardHost {
-            @display("p=516,185");
-        }
-        Host3: StandardHost {
-            @display("p=863,310");
-        }
-        Host4: StandardHost {
-            @display("p=883,82");
-        }
-        Router0: Router {
-            @display("p=380,201");
-        }
-        Router1: Router {
-            @display("p=771,191");
-        }
-        Router2: Router {
-            @display("p=574,332");
-        }
         configurator: IPv4NetworkConfigurator {
             @display("p=100,100");
         }
         visualizer: RoutingTableCanvasVisualizer {
             @display("p=100,200");
         }
+        Host0: StandardHost {
+            @display("p=422,60");
+        }
+        Host1: StandardHost {
+            @display("p=593,60");
+        }
+        Host2: StandardHost {
+            @display("p=873,83");
+        }
+        Router0: Router {
+            @display("p=511,185");
+        }
+        Router1: Router {
+            @display("p=756,184");
+        }
+        Router2: Router {
+            @display("p=638,280");
+        }
+        Host3: StandardHost {
+            @display("p=568,441");
+        }
+        Router3: Router {
+            @display("p=440,350");
+        }
+        Host4: StandardHost {
+            @display("p=251,251");
+        }
+        Host5: StandardHost {
+            @display("p=257,441");
+        }
+        Host6: StandardHost {
+            @display("p=774,441");
+        }
     connections:
-        Host1.ethg++ <--> Eth100M <--> Router0.ethg++;
-        Host0.ethg++ <--> Eth100M <--> Router0.ethg++;
-        Host2.ethg++ <--> Eth100M <--> Router0.ethg++;
-        Router0.ethg++ <--> Eth100M <--> Router2.ethg++;
+        Host5.ethg++ <--> Eth100M <--> Router3.ethg++;
+        Host4.ethg++ <--> Eth100M <--> Router3.ethg++;
+        Router3.ethg++ <--> Eth100M <--> Router2.ethg++;
+        Router2.ethg++ <--> Eth100M <--> Router0.ethg++;
+        Router0.ethg++ <--> Eth100M <--> Host0.ethg++;
+        Router0.ethg++ <--> Eth100M <--> Host1.ethg++;
         Router2.ethg++ <--> Eth100M <--> Router1.ethg++;
-        Router1.ethg++ <--> Eth100M <--> Host3.ethg++;
-        Router1.ethg++ <--> Eth100M <--> Host4.ethg++;
+        Router1.ethg++ <--> Eth100M <--> Host2.ethg++;
+        Router2.ethg++ <--> Eth100M <--> Host6.ethg++;
+        Router2.ethg++ <--> Eth100M <--> Host3.ethg++;
 }

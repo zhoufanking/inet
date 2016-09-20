@@ -17,51 +17,45 @@ package inet.tutorials.configurator.configuratortest;
 
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.ethernet.Eth100M;
+import inet.node.ethernet.EtherSwitch;
 import inet.node.inet.Router;
 import inet.node.inet.StandardHost;
 import inet.visualizer.networklayer.RoutingTableCanvasVisualizer;
 
 
-network Topology
+network Simple
 {
-    @display("bgb=988,400");
+    @display("bgb=1028,400");
     submodules:
-        Host0: StandardHost {
-            @display("p=254,146");
-        }
-        Host1: StandardHost {
-            @display("p=315,299");
-        }
-        Host2: StandardHost {
-            @display("p=516,185");
-        }
-        Host3: StandardHost {
-            @display("p=863,310");
-        }
-        Host4: StandardHost {
-            @display("p=883,82");
-        }
-        Router0: Router {
-            @display("p=380,201");
-        }
-        Router1: Router {
-            @display("p=771,191");
-        }
-        Router2: Router {
-            @display("p=574,332");
-        }
         configurator: IPv4NetworkConfigurator {
             @display("p=100,100");
         }
         visualizer: RoutingTableCanvasVisualizer {
             @display("p=100,200");
         }
+        Host0: StandardHost {
+            @display("p=274,69");
+        }
+        Host1: StandardHost {
+            @display("p=266,294");
+        }
+        Host2: StandardHost {
+            @display("p=957,294");
+        }
+        Host3: StandardHost {
+            @display("p=957,62");
+        }
+        Switch0: EtherSwitch {
+            @display("p=453,186");
+        }
+        Switch1: EtherSwitch {
+            @display("p=798,186");
+        }
     connections:
-        Host1.ethg++ <--> Eth100M <--> Router0.ethg++;
-        Host0.ethg++ <--> Eth100M <--> Router0.ethg++;
-        Host2.ethg++ <--> Eth100M <--> Router0.ethg++;
-        Router0.ethg++ <--> Eth100M <--> Router2.ethg++;
-        Router2.ethg++ <--> Eth100M <--> Router1.ethg++;
-        Router1.ethg++ <--> Eth100M <--> Host3.ethg++;
-        Router1.ethg++ <--> Eth100M <--> Host4.ethg++;
+
+        Host1.ethg++ <--> Eth100M <--> Switch0.ethg++;
+        Host0.ethg++ <--> Eth100M <--> Switch0.ethg++;
+        Switch0.ethg++ <--> Eth100M <--> Switch1.ethg++;
+        Switch1.ethg++ <--> Eth100M <--> Host3.ethg++;
+        Switch1.ethg++ <--> Eth100M <--> Host2.ethg++;
 }
