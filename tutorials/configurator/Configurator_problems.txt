@@ -14,3 +14,11 @@ Error in module (inet::IPv4NetworkConfigurator) Simple.configurator (id=2) durin
 Assignment for Host3 has no effect
 
 4.	All-ones host addresses should not be assigned to hosts (they are usually used for local broadcast)
+
+5.	Cannot add manual route
+*.configurator.config = xml("<config><route hosts='*.Router0' destination='10.0.0.13' netmask='255.255.255.x' gateway='10.0.0.22' interface='eth3' metric='x'/></config>")
+
+Error in module (inet::IPv4NetworkConfigurator) Routes.configurator (id=2) during network initialization: Error in XML <route> element at content:1: Invalid IPv4 address string `255.255.255.x'.
+
+Should be able to specify certain manual routes and the configurator should add the rest automatically
+Or is this supposed to be done by dumping the config and rewriting the routes?
