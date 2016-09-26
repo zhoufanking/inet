@@ -70,3 +70,17 @@ network Routes4
         etherSwitch2: EtherSwitch {
             @display("p=897.39996,439.085");
         }
+    connections:
+        Host1.ethg++ <--> Eth100M <--> etherSwitch.ethg++;
+        Host0.ethg++ <--> Eth100M <--> etherSwitch.ethg++;
+        etherSwitch.ethg++ <--> Eth100M <--> Router0.ethg++;
+        Router0.ethg++ <--> Eth100M <--> Router2.ethg++;
+        Router2.ethg++ <--> Eth100M <--> etherSwitch1.ethg++;
+        etherSwitch1.ethg++ <--> Eth100M <--> Host4.ethg++;
+        etherSwitch1.ethg++ <--> Eth100M <--> Host5.ethg++;
+        Router2.ethg++ <--> Eth100M <--> Router1.ethg++;
+        Router1.ethg++ <--> Eth100M <--> etherSwitch2.ethg++;
+        etherSwitch2.ethg++ <--> Eth100M <--> Host3.ethg++;
+        etherSwitch2.ethg++ <--> Eth100M <--> Host2.ethg++;
+        Router0.ethg++ <--> Eth10M <--> Router1.ethg++;
+}
