@@ -32,61 +32,61 @@ network MoreLevels_2
         visualizer: RoutingTableCanvasVisualizer {
             @display("p=112,167");
         }
-        router: Router {
+        Area1router: Router {
             @display("p=390,205");
         }
-        router1: Router {
+        Area2router: Router {
             @display("p=376,375");
         }
-        router2: Router {
+        Router1: Router {
             @display("p=512,268");
         }
-        router3: Router {
+        Router2: Router {
             @display("p=634,268");
         }
-        router4: Router {
+        Area3router: Router {
             @display("p=755,194");
         }
-        router5: Router {
+        Area4router: Router {
             @display("p=748,375");
         }
-        standardHost0: StandardHost {
+        Area1_Host1: StandardHost {
             @display("p=280,124");
         }
-        standardHost1: StandardHost {
+        Area1_Host2: StandardHost {
             @display("p=271,263");
         }
-        standardHost2: StandardHost {
+        Area2_Host1: StandardHost {
             @display("p=263,377");
         }
-        standardHost3: StandardHost {
+        Area2_Host2: StandardHost {
             @display("p=260,479");
         }
-        standardHost4: StandardHost {
+        Area3_Host1: StandardHost {
             @display("p=841,121");
         }
-        standardHost5: StandardHost {
+        Area3_Host2: StandardHost {
             @display("p=849,226");
         }
-        standardHost6: StandardHost {
+        Area4_Host1: StandardHost {
             @display("p=833,343");
         }
-        standardHost7: StandardHost {
+        Area4_Host2: StandardHost {
             @display("p=831,470");
         }
     connections:
 
-        standardHost3.ethg++ <--> Eth100M <--> router1.ethg++;
-        standardHost2.ethg++ <--> Eth100M <--> router1.ethg++;
-        standardHost1.ethg++ <--> Eth100M <--> router.ethg++;
-        standardHost0.ethg++ <--> Eth100M <--> router.ethg++;
-        router.ethg++ <--> Eth100M <--> router2.ethg++;
-        router1.ethg++ <--> Eth100M <--> router2.ethg++;
-        router2.ethg++ <--> Eth100M <--> router3.ethg++;
-        router3.ethg++ <--> Eth100M <--> router4.ethg++;
-        router4.ethg++ <--> Eth100M <--> standardHost4.ethg++;
-        router4.ethg++ <--> Eth100M <--> standardHost5.ethg++;
-        router5.ethg++ <--> Eth100M <--> standardHost6.ethg++;
-        router5.ethg++ <--> Eth100M <--> standardHost7.ethg++;
-        router3.ethg++ <--> Eth100M <--> router5.ethg++;
+        Area2_Host2.ethg++ <--> Eth100M <--> Area2router.ethg++;
+        Area2_Host1.ethg++ <--> Eth100M <--> Area2router.ethg++;
+        Area1_Host2.ethg++ <--> Eth100M <--> Area1router.ethg++;
+        Area1_Host1.ethg++ <--> Eth100M <--> Area1router.ethg++;
+        Area1router.ethg++ <--> Eth100M <--> Router1.ethg++;
+        Area2router.ethg++ <--> Eth100M <--> Router1.ethg++;
+        Router1.ethg++ <--> Eth100M <--> Router2.ethg++;
+        Router2.ethg++ <--> Eth100M <--> Area3router.ethg++;
+        Area3router.ethg++ <--> Eth100M <--> Area3_Host1.ethg++;
+        Area3router.ethg++ <--> Eth100M <--> Area3_Host2.ethg++;
+        Area4router.ethg++ <--> Eth100M <--> Area4_Host1.ethg++;
+        Area4router.ethg++ <--> Eth100M <--> Area4_Host2.ethg++;
+        Router2.ethg++ <--> Eth100M <--> Area4router.ethg++;
 }

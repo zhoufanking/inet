@@ -62,3 +62,11 @@ We need:
  fully specified
  half specified/half unspecified
 
+Step 7 (hierarchical topology)
+a, non optimized, fully automatic IP address assignment and static routes
+b, optimized, same as above
+c, optimized, hierarchically assigned IP addresses
+
+Compare the number or routes
+
+Olyan példa kell ami b->c többet javít mint a->b
