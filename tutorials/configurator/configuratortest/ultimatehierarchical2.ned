@@ -25,18 +25,15 @@ import inet.node.inet.StandardHost;
 import inet.visualizer.networklayer.RoutingTableCanvasVisualizer;
 
 
-network ultimatehierarchical
+network ultimatehierarchical2
 {
-    @display("bgb=1028,698");
+    @display("bgb=1398,793");
     submodules:
         Area1Router: Router {
             @display("p=290,275");
         }
-        Backbonerouter1: Router {
-            @display("p=398,180;i=abstract/router2");
-        }
         Area3Router: Router {
-            @display("p=741,275");
+            @display("p=806,254");
         }
         Area1Subnet2Router: Router {
             @display("p=176,395");
@@ -50,20 +47,17 @@ network ultimatehierarchical
         Area2Subnet2Router: Router {
             @display("p=605,614");
         }
-        Area3Subnet1Router: Router {
+        Area3Subnet2Router: Router {
             @display("p=878,154");
         }
-        Area3Subnet2Router: Router {
+        Area3Subnet1Router: Router {
             @display("p=865,373");
         }
         Backbonerouter2: Router {
-            @display("p=398,373;i=abstract/router2");
-        }
-        Backbonerouter3: Router {
-            @display("p=587,180;i=abstract/router2");
+            @display("p=463,309;i=abstract/router2");
         }
         Backbonerouter4: Router {
-            @display("p=587,373;i=abstract/router2");
+            @display("p=661,309;i=abstract/router2");
         }
         Switch0: EtherSwitch {
             @display("p=100,182");
@@ -163,19 +157,14 @@ network ultimatehierarchical
         Area2Router.ethg++ <--> Eth100M <--> Area2Subnet2Router.ethg++;
         Area3Subnet1Host1.ethg++ <--> Eth100M <--> Switch3.ethg++;
         Area3Subnet1Host2.ethg++ <--> Eth100M <--> Switch3.ethg++;
-        Area3Subnet2Router.ethg++ <--> Eth100M <--> Switch3.ethg++;
-        Area3Subnet2Router.ethg++ <--> Eth100M <--> Area3Router.ethg++;
-        Area3Router.ethg++ <--> Eth100M <--> Area3Subnet1Router.ethg++;
-        Area3Subnet1Router.ethg++ <--> Eth100M <--> Switch2.ethg++;
+        Area3Subnet1Router.ethg++ <--> Eth100M <--> Switch3.ethg++;
+        Area3Subnet1Router.ethg++ <--> Eth100M <--> Area3Router.ethg++;
+        Area3Router.ethg++ <--> Eth100M <--> Area3Subnet2Router.ethg++;
+        Area3Subnet2Router.ethg++ <--> Eth100M <--> Switch2.ethg++;
         Switch2.ethg++ <--> Eth100M <--> Area3Subnet2Host2.ethg++;
         Switch2.ethg++ <--> Eth100M <--> Area3Subnet2Host1.ethg++;
-        Area1Router.ethg++ <--> Eth1G <--> Backbonerouter1.ethg++;
         Area1Router.ethg++ <--> Eth1G <--> Backbonerouter2.ethg++;
-        Backbonerouter3.ethg++ <--> Eth1G <--> Area3Router.ethg++;
         Backbonerouter4.ethg++ <--> Eth1G <--> Area3Router.ethg++;
-        Backbonerouter1.ethg++ <--> Eth10G <--> Backbonerouter3.ethg++;
         Backbonerouter2.ethg++ <--> Eth10G <--> Backbonerouter4.ethg++;
-        Backbonerouter2.ethg++ <--> Eth10G <--> Backbonerouter1.ethg++;
-        Backbonerouter3.ethg++ <--> Eth10G <--> Backbonerouter4.ethg++;
         Area2Router.ethg++ <--> Eth1G <--> Backbonerouter2.ethg++;
 }
