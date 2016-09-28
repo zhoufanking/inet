@@ -27,97 +27,97 @@ import inet.visualizer.networklayer.RoutingTableCanvasVisualizer;
 
 network nineteen
 {
-    @display("bgb=1398,793");
+    @display("bgb=2504.3225,1393.2375");
     submodules:
         Area1Subnet1Host0: StandardHost {
-            @display("p=25,98");
+            @display("p=380.2925,376.7875");
         }
         Area1Subnet1Host1: StandardHost {
-            @display("p=98,101");
+            @display("p=380.2925,227.82501");
         }
         Area1Subnet1Host2: StandardHost {
-            @display("p=191,96");
+            @display("p=380.2925,59.585003");
         }
         Area1Switch1: EtherSwitch {
-            @display("p=100,182");
+            @display("p=676.465,257.61752");
         }
         Area2Subnet1Host1: StandardHost {
-            @display("p=176,659");
+            @display("p=953.36005,1307.3651");
         }
         Area2Subnet1Host2: StandardHost {
-            @display("p=268,667");
+            @display("p=718.525,1307.3651");
         }
         Area2Subnet1Host3: StandardHost {
-            @display("p=344,670");
+            @display("p=476.68002,1307.3651");
         }
         Area2Switch1: EtherSwitch {
-            @display("p=308,607");
+            @display("p=807.9025,1100.5701");
         }
         Area3Subnet1Host1: StandardHost {
-            @display("p=830,448");
+            @display("p=2216.9126,986.65753");
         }
         Area3Subnet1Host2: StandardHost {
-            @display("p=922,470");
+            @display("p=2244.9526,755.3275");
         }
         Area3Subnet1Host3: StandardHost {
-            @display("p=1079.54,455.65002");
+            @display("p=2265.9827,601.10754");
         }
         Area3Switch1: EtherSwitch {
-            @display("p=936,378");
+            @display("p=1838.3726,623.89");
         }
         Area1Subnet2Host1: StandardHost {
-            @display("p=39,482");
+            @display("p=368.02502,601.10754");
         }
         Area1Subnet2Host2: StandardHost {
-            @display("p=123,482");
+            @display("p=368.02502,730.79254");
         }
         Area1Subnet2Host3: StandardHost {
-            @display("p=215,485");
+            @display("p=332.975,914.80505");
         }
         Area1Switch2: EtherSwitch {
-            @display("p=104,391");
+            @display("p=608.11755,765.8425");
         }
         Area2Subnet2Host1: StandardHost {
-            @display("p=667,527");
+            @display("p=1961.0476,1281.0775");
         }
         Area2Subnet2Host2: StandardHost {
-            @display("p=775,556");
+            @display("p=1659.6176,1281.0775");
         }
         Area2Subnet2Host3: StandardHost {
-            @display("p=799,644");
+            @display("p=1377.4651,1307.3651");
         }
         Area2Switch2: EtherSwitch {
-            @display("p=680,613");
+            @display("p=1659.6176,1055.005");
         }
         Area3Subnet2Host1: StandardHost {
-            @display("p=790,70");
+            @display("p=2080.2175,117.4175");
         }
         Area3Subnet2Host2: StandardHost {
-            @display("p=928,74");
+            @display("p=2197.635,212.0525");
         }
         Area3Subnet2Host3: StandardHost {
-            @display("p=1100.5701,73.605");
+            @display("p=2216.9126,336.48");
         }
         Area3Switch2: EtherSwitch {
-            @display("p=946,154");
+            @display("p=1878.68,346.99503");
         }
         Area1Router: Router {
-            @display("p=290,275");
+            @display("p=1051.5,502.96753");
         }
         Area2Router: Router {
-            @display("p=486,511");
+            @display("p=1309.1176,914.80505");
         }
         Area3Router: Router {
-            @display("p=806,254");
+            @display("p=1591.27,483.69003");
         }
         Backbonerouter: Router {
-            @display("p=531.0075,334.7275;i=abstract/router2");
+            @display("p=1309.1176,686.98004;i=abstract/router2");
         }
         configurator: IPv4NetworkConfigurator {
-            @display("p=308.88,46.332");
+            @display("p=124.427505,89.3775");
         }
         visualizer: RoutingTableCanvasVisualizer {
-            @display("p=494.208,49.14");
+            @display("p=124.427505,282.15253");
         }
     connections:
         Area2Subnet1Host1.ethg++ <--> Eth100M <--> Area2Switch1.ethg++;

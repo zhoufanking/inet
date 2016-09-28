@@ -37,7 +37,7 @@ The topology of wireless networks is unclear in a static analysis. By default, t
 
 Yes.
 
-9. Manually creating a slightly different configuration
+9. Manually creating a slightly different configuration (Manually modifying an automatically created complete configuration)
 
 Sometimes the configuration is just almost right. In such a case one can dump the configuration into a file, update it and use the file in place of the original configuration.
 
