@@ -22,3 +22,15 @@ Error in module (inet::IPv4NetworkConfigurator) Routes.configurator (id=2) durin
 
 Should be able to specify certain manual routes and the configurator should add the rest automatically
 Or is this supposed to be done by dumping the config and rewriting the routes?
+
+6.	Optimizer fails to merge some routes
+
+Node nineteen.Area3Router
+-- Routing table --
+Destination      Netmask          Gateway          Iface                  Metric
+10.3.3.1         255.255.255.255  *                eth2 (10.3.3.2) 0
+10.3.1.0         255.255.255.248  *                eth0 (10.3.1.4) 0
+10.3.2.0         255.255.255.248  *                eth1 (10.3.2.4) 0
+10.0.0.0         255.252.0.0      10.3.3.1         eth2 (10.3.3.2) 0
+
+first could be merged with last one (gw:* gateway is the same as the destination)
