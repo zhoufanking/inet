@@ -45,7 +45,7 @@ void EtherEncap::initialize(int stage)
     if (stage == INITSTAGE_LOCAL) {
         seqNum = 0;
         WATCH(seqNum);
-        totalFromHigherLayer = totalFromMAC = totalPauseSent = 0;
+        totalFromHigherLayer = totalFromMAC = totalPauseSent = droppedUnknownDest = 0;
         useSNAP = par("useSNAP").boolValue();
         WATCH(totalFromHigherLayer);
         WATCH(totalFromMAC);
@@ -161,6 +161,7 @@ void EtherEncap::processFrameFromMAC(EtherFrame *frame)
 {
     // decapsulate and attach control info
     cPacket *higherlayermsg = frame->decapsulate();
+    delete higherlayermsg->removeTag<DispatchProtocolReq>();
 
     // add Ieee802Ctrl to packet
     auto macAddressInd = higherlayermsg->ensureTag<MacAddressInd>();
@@ -182,9 +183,13 @@ void EtherEncap::processFrameFromMAC(EtherFrame *frame)
                 etherType = snapFrame->getLocalcode();
         }
     }
+    bool knownProtocol = false;
     if (etherType != -1) {
         higherlayermsg->ensureTag<EtherTypeInd>()->setEtherType(etherType);
-        higherlayermsg->ensureTag<DispatchProtocolReq>()->setProtocol(ProtocolGroup::ethertype.getProtocol(etherType));
+        if (auto protocol = ProtocolGroup::ethertype.findProtocol(etherType)) {
+            higherlayermsg->ensureTag<DispatchProtocolReq>()->setProtocol(protocol);
+            knownProtocol = true;
+        }
     }
 
     totalFromMAC++;
@@ -196,14 +201,14 @@ void EtherEncap::processFrameFromMAC(EtherFrame *frame)
         for (auto elem: dsapToSocketIds) {
             if (elem.dsap == dSap) {
                 cPacket *packetCopy = higherlayermsg->dup();
-                packetCopy->ensureTag<SocketReq>()->setSocketId(elem.socketId);
+                packetCopy->ensureTag<SocketInd>()->setSocketId(elem.socketId);
                 EV_INFO << "Sending " << packetCopy << " to upper layer for socket " << elem.socketId << ".\n";
                 send(higherlayermsg, "upperLayerOut");
                 sent = true;
             }
         }
     }
-    if (etherType != -1) {
+    if (!sent && knownProtocol) {      //KLUDGE: always send up packet (needed for EtherTrafGen)
         // pass up to higher layers.
         EV_INFO << "Sending " << higherlayermsg << " to upper layer, etherType=" << etherType <<".\n";
         send(higherlayermsg, "upperLayerOut");
@@ -212,6 +217,7 @@ void EtherEncap::processFrameFromMAC(EtherFrame *frame)
     if (!sent) {
         EV << "No higher layer registered for DSAP=" << dSap << " and etherType not specified, discarding frame `" << frame->getName() << "'\n";
         droppedUnknownDest++;
+        delete higherlayermsg;
         delete frame;
         return;
     }

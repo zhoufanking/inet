@@ -99,14 +99,13 @@ void STPTester::dfsVisit(Topology::Node *node)
         // If we found a port which is in state discarding,
         // then we do not expand this link
 
-        if (!isForwarding(node, i))
+        if (!isForwarding(node, linkOut->getLocalGate()))
             continue;
 
         // If we found a port that points to a remote port which is in state
         // discarding, then we also do not expand this link
 
-        int remotePort = linkOut->getRemoteGate()->getIndex();
-        if (!isForwarding(neighbor, remotePort))
+        if (!isForwarding(neighbor, linkOut->getRemoteGate()))
             continue;
 
         if (color[neighbor] == WHITE) {
@@ -146,17 +145,20 @@ int STPTester::getNumOfVisitedNodes()
     return numOfVisitedNodes;
 }
 
-bool STPTester::isForwarding(Topology::Node *node, unsigned int portNum)
+bool STPTester::isForwarding(Topology::Node *node, cGate *gate)
 {
-    cModule *tmpIfTable = node->getModule()->getSubmodule("interfaceTable");
+    cModule *tmpIfTable = node->getModule()->getSubmodule("interfaceTable");    //FIXME par("interfaceTableModule") ?
     IInterfaceTable *ifTable = dynamic_cast<IInterfaceTable *>(tmpIfTable);
 
-    // EtherHost has no InterfaceTable
     if (ifTable == nullptr)
         return true;
 
-    cGate *gate = node->getModule()->gate("ethg$o", portNum);
-    InterfaceEntry *gateIfEntry = ifTable->getInterfaceByNodeOutputGateId(gate->getId());
+    int gateId = gate->getId();
+    InterfaceEntry *gateIfEntry = ifTable->getInterfaceByNodeOutputGateId(gateId);
+    if (!gateIfEntry)
+        gateIfEntry = ifTable->getInterfaceByNodeInputGateId(gateId);
+    if (!gateIfEntry)
+        throw cRuntimeError("in node %s no interface for gate %s in interfacetable", node->getModule()->getFullPath().c_str(), gate->getFullPath().c_str());
     Ieee8021dInterfaceData *portData = gateIfEntry->ieee8021dData();
 
     // If portData does not exist, then it implies that

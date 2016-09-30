@@ -20,10 +20,10 @@ package inet.node.ethernet;
 
 import inet.applications.ethernet.EtherAppCli;
 import inet.applications.ethernet.EtherAppSrv;
+import inet.common.MessageDispatcher;
 import inet.common.lifecycle.NodeStatus;
-import inet.linklayer.contract.IEtherMAC;
-import inet.linklayer.ethernet.EtherLLC;
-import inet.linklayer.ethernet.EtherQoSQueue;
+import inet.linklayer.ethernet.EthernetInterface;
+import inet.networklayer.common.InterfaceTable;
 
 
 //
@@ -42,7 +42,7 @@ module EtherHost
         @networkNode();
         @labels(node,ethernet-node);
         @display("i=device/pc2");
-        *.interfaceTableModule = default("");
+        *.interfaceTableModule = default("^.interfaceTable");
     gates:
         inout ethg @labels(EtherFrame-conn);
     submodules:
@@ -59,34 +59,25 @@ module EtherHost
                 registerSAP = true;
                 @display("p=310,58,col");
         }
-        llc: EtherLLC {
+        ll: MessageDispatcher {
             parameters:
-                @display("p=215,118");
-            gates:
-                upperLayerIn[2];
-                upperLayerOut[2];
+                @display("p=215,152");
         }
-        queue: EtherQoSQueue if queueType != "" {
+        eth0: EthernetInterface {
             parameters:
-                dataQueueType = queueType;
-                @display("p=159,199;q=l2queue");
+                @display("p=215,255;q=l2queue");
         }
-        mac: <macType> like IEtherMAC {
-            parameters:
-                queueModule = (queueType == "" ? "" : "^.queue");
-                @display("p=215,270;q=txQueue");
+        interfaceTable: InterfaceTable {
+            @display("p=50,186");
         }
     connections:
 
-        cli.out --> llc.upperLayerIn[0];
-        cli.in <-- llc.upperLayerOut[0];
-        srv.out --> llc.upperLayerIn[1];
-        srv.in <-- llc.upperLayerOut[1];
+        cli.out --> ll.upperLayerIn++;
+        cli.in <-- ll.upperLayerOut++;
+        srv.out --> ll.upperLayerIn++;
+        srv.in <-- ll.upperLayerOut++;
 
-        llc.lowerLayerOut --> queue.in if queueType != "";
-        queue.out --> mac.upperLayerIn if queueType != "";
-        llc.lowerLayerOut --> mac.upperLayerIn if queueType == "";
-        mac.upperLayerOut --> llc.lowerLayerIn;
-
-        mac.phys <--> ethg;
+        ll.lowerLayerOut++ --> eth0.upperLayerIn;
+        eth0.upperLayerOut --> ll.lowerLayerIn++;
+        eth0.phys <--> ethg;
 }

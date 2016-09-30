@@ -20,9 +20,11 @@
 
 #include "inet/applications/ethernet/EtherAppSrv.h"
 
+#include "inet/applications/common/SocketTag_m.h"
 #include "inet/applications/ethernet/EtherApp_m.h"
 #include "inet/linklayer/common/Ieee802Ctrl.h"
 #include "inet/linklayer/common/Ieee802SapTag_m.h"
+#include "inet/linklayer/common/InterfaceTag_m.h"
 #include "inet/linklayer/common/MACAddressTag_m.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/lifecycle/NodeOperations.h"
@@ -50,6 +52,8 @@ void EtherAppSrv::initialize(int stage)
     }
     else if (stage == INITSTAGE_APPLICATION_LAYER) {
         nodeStatus = dynamic_cast<NodeStatus *>(findContainingNode(this)->getSubmodule("status"));
+
+        socketId = getEnvir()->getUniqueNumber();
 
         if (isNodeUp())
             startApp();
@@ -128,6 +132,8 @@ void EtherAppSrv::registerDSAP(int dsap)
     auto *etherctrl = new Ieee802RegisterDsapCommand();
     etherctrl->setDsap(dsap);
     cMessage *msg = new cMessage("register_DSAP", IEEE802CTRL_REGISTER_DSAP);
+    msg->ensureTag<SocketReq>()->setSocketId(socketId);
+    msg->ensureTag<InterfaceReq>()->setInterfaceId(100); //KLUDGE should get from parameter
     msg->setControlInfo(etherctrl);
 
     send(msg, "out");

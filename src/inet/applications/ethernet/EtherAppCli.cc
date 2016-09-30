@@ -21,12 +21,15 @@
 
 #include "inet/applications/ethernet/EtherAppCli.h"
 
+#include "inet/applications/common/SocketTag_m.h"
 #include "inet/applications/ethernet/EtherApp_m.h"
+#include "inet/common/ModuleAccess.h"
+#include "inet/common/lifecycle/NodeOperations.h"
 #include "inet/linklayer/common/Ieee802Ctrl.h"
 #include "inet/linklayer/common/Ieee802SapTag_m.h"
+#include "inet/linklayer/common/InterfaceTag_m.h"
 #include "inet/linklayer/common/MACAddressTag_m.h"
-#include "inet/common/lifecycle/NodeOperations.h"
-#include "inet/common/ModuleAccess.h"
+#include "inet/networklayer/common/L3AddressResolver.h"
 
 namespace inet {
 
@@ -70,6 +73,8 @@ void EtherAppCli::initialize(int stage)
             timerMsg = new cMessage("generateNextPacket");
 
         nodeStatus = dynamic_cast<NodeStatus *>(findContainingNode(this)->getSubmodule("status"));
+
+        socketId = getEnvir()->getUniqueNumber();
 
         if (isNodeUp() && isGenerator())
             scheduleNextPacket(true);
@@ -155,18 +160,8 @@ MACAddress EtherAppCli::resolveDestMACAddress()
     MACAddress destMACAddress;
     const char *destAddress = par("destAddress");
     if (destAddress[0]) {
-        // try as mac address first, then as a module
-        if (!destMACAddress.tryParse(destAddress)) {
-            cModule *destStation = getModuleByPath(destAddress);
-            if (!destStation)
-                throw cRuntimeError("cannot resolve MAC address '%s': not a 12-hex-digit MAC address or a valid module path name", destAddress);
-
-            cModule *destMAC = destStation->getSubmodule("mac");
-            if (!destMAC)
-                throw cRuntimeError("module '%s' has no 'mac' submodule", destAddress);
-
-            destMACAddress.setAddress(destMAC->par("address"));
-        }
+        L3Address addr = L3AddressResolver().resolve(par("destAddress"), L3AddressResolver::ADDR_MAC);
+        destMACAddress = addr.toMAC();
     }
     return destMACAddress;
 }
@@ -178,6 +173,8 @@ void EtherAppCli::registerDSAP(int dsap)
     Ieee802RegisterDsapCommand *etherctrl = new Ieee802RegisterDsapCommand();
     etherctrl->setDsap(dsap);
     cMessage *msg = new cMessage("register_DSAP", IEEE802CTRL_REGISTER_DSAP);
+    msg->ensureTag<SocketReq>()->setSocketId(socketId);
+    msg->ensureTag<InterfaceReq>()->setInterfaceId(100); //KLUDGE should get from parameter
     msg->setControlInfo(etherctrl);
 
     send(msg, "out");
@@ -202,6 +199,7 @@ void EtherAppCli::sendPacket()
     datapacket->setResponseBytes(respLen);
 
     datapacket->ensureTag<MacAddressReq>()->setDestAddress(destMACAddress);
+    datapacket->ensureTag<InterfaceReq>()->setInterfaceId(100); //KLUDGE
     auto ieee802SapReq = datapacket->ensureTag<Ieee802SapReq>();
     ieee802SapReq->setSsap(localSAP);
     ieee802SapReq->setDsap(remoteSAP);

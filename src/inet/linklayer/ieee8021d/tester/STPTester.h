@@ -62,7 +62,7 @@ class INET_API STPTester : public cSimpleModule
 
   protected:
     void dfsVisit(Topology::Node *node);
-    bool isForwarding(Topology::Node *node, unsigned int portNum);
+    bool isForwarding(Topology::Node *node, cGate *gate);
 
     // Analyzes the network graph
     void depthFirstSearch();

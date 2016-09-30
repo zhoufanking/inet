@@ -42,6 +42,7 @@ class INET_API EtherAppCli : public cSimpleModule, public ILifecycle
 
     int localSAP = -1;
     int remoteSAP = -1;
+    unsigned long socketId;
     MACAddress destMACAddress;
     NodeStatus *nodeStatus = nullptr;
 

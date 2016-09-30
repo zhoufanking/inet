@@ -36,6 +36,7 @@ class INET_API EtherAppSrv : public cSimpleModule, public ILifecycle
 {
   protected:
     int localSAP = 0;
+    unsigned long socketId = 0;
     NodeStatus *nodeStatus = nullptr;
 
     // statistics
