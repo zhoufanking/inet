@@ -47,10 +47,10 @@ Configuring the whole network is not always desirable, because some part of the 
 
 11. Optimizing the size of routing tables
 
-12.	Wireless + errorrate (nem kell mixed?)
 
 Yes.
 
+12.	Wireless + errorrate (nem kell mixed?)
 
 We need:
  fully automatic
@@ -64,7 +64,7 @@ We need:
  fully specified
  half specified/half unspecified
 
-Step 7 (hierarchical topology)(optimization)
+Step 7 (hierarchical topology)
 a, non optimized, fully automatic IP address assignment and static routes
 b, optimized, same as above
 c, optimized, hierarchically assigned IP addresses
