@@ -20,6 +20,9 @@
 
 #include "inet/common/INETDefs.h"
 
+#include "inet/common/lifecycle/ILifecycle.h"
+#include "inet/common/lifecycle/LifecycleOperation.h"
+#include "inet/common/lifecycle/NodeStatus.h"
 #include "inet/linklayer/ethernet/Ethernet.h"
 
 namespace inet {
@@ -30,19 +33,31 @@ class EtherFrame;
 /**
  * Performs Ethernet II encapsulation/decapsulation. More info in the NED file.
  */
-class INET_API EtherEncap : public cSimpleModule
+class INET_API EtherEncap : public cSimpleModule, public ILifecycle
 {
+  public:
+    struct DsapAndSocketId {
+        int dsap;
+        int socketId;
+        DsapAndSocketId(int dsap, int socketId) : dsap(dsap), socketId(socketId) {}
+        bool operator==(const DsapAndSocketId& o) const { return dsap == o.dsap && socketId == o.socketId; }
+    };
   protected:
     int seqNum;
+    std::vector<DsapAndSocketId> dsapToSocketIds;    // DSAP registration table
+    bool useSNAP;    //TODO needed per packet setting // true: generate EtherFrameWithSNAP, false: generate EthernetIIFrame
+
+    // lifecycle
+    bool isUp;
 
     // statistics
     long totalFromHigherLayer;    // total number of packets received from higher layer
     long totalFromMAC;    // total number of frames received from MAC
     long totalPauseSent;    // total number of PAUSE frames sent
+    long droppedUnknownDest;    // frames dropped because no such DSAP was registered here
     static simsignal_t encapPkSignal;
     static simsignal_t decapPkSignal;
     static simsignal_t pauseSentSignal;
-    bool useSNAP;    // true: generate EtherFrameWithSNAP, false: generate EthernetIIFrame
 
   protected:
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
@@ -51,10 +66,24 @@ class INET_API EtherEncap : public cSimpleModule
 
     virtual void processPacketFromHigherLayer(cPacket *msg);
     virtual void processFrameFromMAC(EtherFrame *msg);
+    virtual void handleRegisterSAP(cMessage *msg);
+    virtual void handleDeregisterSAP(cMessage *msg);
     virtual void handleSendPause(cMessage *msg);
 
+    // lifecycle
+    virtual void start();
+    virtual void stop();
+    virtual bool handleOperationStage(LifecycleOperation *operation, int stage, IDoneCallback *doneCallback) override;
+
+    // utility function
     virtual void refreshDisplay() const override;
 };
+
+inline std::ostream& operator<<(std::ostream& o, const EtherEncap::DsapAndSocketId& i)
+{
+    o << "dsap=" << i.dsap << ", socket=" << i.socketId;
+    return o;
+}
 
 } // namespace inet
 

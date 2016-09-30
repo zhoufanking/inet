@@ -17,17 +17,20 @@
 
 #include <stdio.h>
 
+#include "inet/linklayer/ethernet/EtherEncap.h"
+
+#include "inet/applications/common/SocketTag_m.h"
 #include "inet/common/INETUtils.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/ProtocolTag_m.h"
-#include "inet/linklayer/ethernet/EtherEncap.h"
-
-#include "inet/linklayer/ethernet/EtherFrame.h"
-#include "inet/networklayer/contract/IInterfaceTable.h"
+#include "inet/common/lifecycle/NodeOperations.h"
 #include "inet/linklayer/common/EtherTypeTag_m.h"
 #include "inet/linklayer/common/Ieee802Ctrl.h"
+#include "inet/linklayer/common/Ieee802SapTag_m.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
 #include "inet/linklayer/common/MACAddressTag_m.h"
+#include "inet/linklayer/ethernet/EtherFrame.h"
+#include "inet/networklayer/contract/IInterfaceTable.h"
 
 namespace inet {
 
@@ -47,6 +50,15 @@ void EtherEncap::initialize(int stage)
         WATCH(totalFromHigherLayer);
         WATCH(totalFromMAC);
         WATCH(totalPauseSent);
+//FIXME        WATCH(dsapToSocketIds);
+        WATCH(droppedUnknownDest);
+    }
+    else if (stage == INITSTAGE_LINK_LAYER) {
+        // lifecycle
+        NodeStatus *nodeStatus = dynamic_cast<NodeStatus *>(findContainingNode(this)->getSubmodule("status"));
+        isUp = !nodeStatus || nodeStatus->getState() == NodeStatus::UP;
+        if (isUp)
+            start();
     }
 }
 
@@ -65,6 +77,16 @@ void EtherEncap::handleMessage(cMessage *msg)
                 processPacketFromHigherLayer(PK(msg));
                 break;
 
+            case IEEE802CTRL_REGISTER_DSAP:
+                // higher layer registers itself
+                handleRegisterSAP(msg);
+                break;
+
+            case IEEE802CTRL_DEREGISTER_DSAP:
+                // higher layer deregisters itself
+                handleDeregisterSAP(msg);
+                break;
+
             case IEEE802CTRL_SENDPAUSE:
                 // higher layer want MAC to send PAUSE frame
                 handleSendPause(msg);
@@ -78,8 +100,12 @@ void EtherEncap::handleMessage(cMessage *msg)
 
 void EtherEncap::refreshDisplay() const
 {
-    char buf[80];
+    char buf[180];
     sprintf(buf, "passed up: %ld\nsent: %ld", totalFromMAC, totalFromHigherLayer);
+    if (droppedUnknownDest > 0) {
+        sprintf(buf + strlen(buf), "\ndropped (wrong DSAP): %ld", droppedUnknownDest);
+    }
+
     getDisplayString().setTagArg("t", 0, buf);
 }
 
@@ -140,28 +166,96 @@ void EtherEncap::processFrameFromMAC(EtherFrame *frame)
     auto macAddressInd = higherlayermsg->ensureTag<MacAddressInd>();
     macAddressInd->setSrcAddress(frame->getSrc());
     macAddressInd->setDestAddress(frame->getDest());
+
     int etherType = -1;
+    int dSap = -1;
     if (auto eth2frame = dynamic_cast<EthernetIIFrame *>(frame)) {
         etherType = eth2frame->getEtherType();
     }
-    else if (auto snapframe = dynamic_cast<EtherFrameWithSNAP *>(frame)) {
-        etherType = snapframe->getLocalcode();
+    else if (EtherFrameWithLLC *llcFrame = dynamic_cast<EtherFrameWithLLC *>(frame)) {
+        dSap = llcFrame->getDsap();
+        auto ieee802SapInd = higherlayermsg->ensureTag<Ieee802SapInd>();
+        ieee802SapInd->setSsap(llcFrame->getSsap());
+        ieee802SapInd->setDsap(llcFrame->getDsap());
+        if (auto snapFrame = dynamic_cast<EtherFrameWithSNAP *>(llcFrame)) {
+            if (llcFrame->getSsap() == 0xAA && llcFrame->getDsap() == 0xAA && llcFrame->getControl() == 0)
+                etherType = snapFrame->getLocalcode();
+        }
     }
     if (etherType != -1) {
         higherlayermsg->ensureTag<EtherTypeInd>()->setEtherType(etherType);
         higherlayermsg->ensureTag<DispatchProtocolReq>()->setProtocol(ProtocolGroup::ethertype.getProtocol(etherType));
     }
 
-    EV_DETAIL << "Decapsulating frame `" << frame->getName() << "', passing up contained packet `"
-              << higherlayermsg->getName() << "' to higher layer\n";
-
     totalFromMAC++;
     emit(decapPkSignal, higherlayermsg);
+    EV_DETAIL << "Decapsulating frame `" << frame->getName() << "', contained packet is `" << higherlayermsg->getName() << "'\n";
 
-    // pass up to higher layers.
-    EV_INFO << "Sending " << higherlayermsg << " to upper layer.\n";
-    send(higherlayermsg, "upperLayerOut");
+    bool sent = false;
+    if (dSap != -1) {
+        for (auto elem: dsapToSocketIds) {
+            if (elem.dsap == dSap) {
+                cPacket *packetCopy = higherlayermsg->dup();
+                packetCopy->ensureTag<SocketReq>()->setSocketId(elem.socketId);
+                EV_INFO << "Sending " << packetCopy << " to upper layer for socket " << elem.socketId << ".\n";
+                send(higherlayermsg, "upperLayerOut");
+                sent = true;
+            }
+        }
+    }
+    if (etherType != -1) {
+        // pass up to higher layers.
+        EV_INFO << "Sending " << higherlayermsg << " to upper layer, etherType=" << etherType <<".\n";
+        send(higherlayermsg, "upperLayerOut");
+        sent = true;
+    }
+    if (!sent) {
+        EV << "No higher layer registered for DSAP=" << dSap << " and etherType not specified, discarding frame `" << frame->getName() << "'\n";
+        droppedUnknownDest++;
+        delete frame;
+        return;
+    }
     delete frame;
+}
+
+void EtherEncap::handleRegisterSAP(cMessage *msg)
+{
+    Ieee802RegisterDsapCommand *etherctrl = dynamic_cast<Ieee802RegisterDsapCommand *>(msg->getControlInfo());
+    if (!etherctrl)
+        throw cRuntimeError("packet `%s' from higher layer received without Ieee802RegisterDsapCommand", msg->getName());
+
+    DsapAndSocketId newSap(etherctrl->getDsap(), msg->getMandatoryTag<SocketReq>()->getSocketId());
+
+    EV << "Registering higher layer with DSAP=" << newSap.dsap << " for socket " << newSap.socketId << endl;
+
+    for (auto &elem: dsapToSocketIds) {
+        if (elem == newSap)
+            throw cRuntimeError("DSAP=%d already registered with socket %d", newSap.dsap, newSap.socketId);
+    }
+
+    dsapToSocketIds.push_back(newSap);
+    delete msg;
+}
+
+void EtherEncap::handleDeregisterSAP(cMessage *msg)
+{
+    Ieee802DeregisterDsapCommand *etherctrl = dynamic_cast<Ieee802DeregisterDsapCommand *>(msg->getControlInfo());
+    if (!etherctrl)
+        throw cRuntimeError("packet `%s' from higher layer received without Ieee802DeregisterDsapCommand", msg->getName());
+
+    DsapAndSocketId oldSap(etherctrl->getDsap(), msg->getMandatoryTag<SocketReq>()->getSocketId());
+
+    EV << "Deregistering higher layer with DSAP=" << oldSap.dsap << " and socket " << oldSap.socketId << endl;
+
+    // delete from table (don't care if it's not in there)
+    for (auto it = dsapToSocketIds.begin(); it != dsapToSocketIds.end(); ++it) {
+        if (*it == oldSap) {
+            dsapToSocketIds.erase(it);
+            delete msg;
+            return;
+        }
+    }
+    throw cRuntimeError("DSAP=%d did not registered with socket %d", oldSap.dsap, oldSap.socketId);
 }
 
 void EtherEncap::handleSendPause(cMessage *msg)
@@ -191,6 +285,36 @@ void EtherEncap::handleSendPause(cMessage *msg)
 
     emit(pauseSentSignal, pauseUnits);
     totalPauseSent++;
+}
+
+bool EtherEncap::handleOperationStage(LifecycleOperation *operation, int stage, IDoneCallback *doneCallback)
+{
+    Enter_Method_Silent();
+    if (dynamic_cast<NodeStartOperation *>(operation)) {
+        if ((NodeStartOperation::Stage)stage == NodeStartOperation::STAGE_NETWORK_LAYER)
+            start();
+    }
+    else if (dynamic_cast<NodeShutdownOperation *>(operation)) {
+        if ((NodeShutdownOperation::Stage)stage == NodeShutdownOperation::STAGE_NETWORK_LAYER)
+            stop();
+    }
+    else if (dynamic_cast<NodeCrashOperation *>(operation)) {
+        if ((NodeCrashOperation::Stage)stage == NodeCrashOperation::STAGE_CRASH)
+            stop();
+    }
+    return true;
+}
+
+void EtherEncap::start()
+{
+    dsapToSocketIds.clear();
+    isUp = true;
+}
+
+void EtherEncap::stop()
+{
+    dsapToSocketIds.clear();
+    isUp = false;
 }
 
 } // namespace inet
