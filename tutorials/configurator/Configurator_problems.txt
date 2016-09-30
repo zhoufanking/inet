@@ -34,3 +34,5 @@ Destination      Netmask          Gateway          Iface                  Metric
 10.0.0.0         255.252.0.0      10.3.3.1         eth2 (10.3.3.2) 0
 
 first could be merged with last one (gw:* gateway is the same as the destination)
+
+7.	Az auto route element feldolgozása nem veszi figyelembe a már létező route-okat, így pl az errorRate metric egy mixed wireless/wired networkben teljes útvonalra hat, beleértve a wired részt is.

@@ -22,32 +22,33 @@
    <multicast-group hosts="mixed.standardHost1" interfaces="eth0" address="224.0.0.1"/>
    <multicast-group hosts="mixed.router1" interfaces="eth0" address="224.0.0.1 224.0.0.2"/>
    <wireless interfaces="mixed.wirelessHost%wlan0 mixed.wirelessHost1%wlan0 mixed.wirelessHost2%wlan0"/>
-   <route hosts="mixed.router" destination="10.0.0.6" netmask="255.255.255.255" gateway="*" interface="eth1" metric="0"/>
-   <route hosts="mixed.router" destination="10.0.0.10" netmask="255.255.255.255" gateway="10.0.0.6" interface="eth1" metric="0"/>
-   <route hosts="mixed.router" destination="10.0.0.20" netmask="255.255.255.255" gateway="10.0.0.2" interface="eth0" metric="0"/>
-   <route hosts="mixed.router" destination="10.0.0.8" netmask="255.255.255.248" gateway="10.0.0.6" interface="eth1" metric="0"/>
-   <route hosts="mixed.router" destination="10.0.0.16" netmask="255.255.255.248" gateway="10.0.0.2" interface="eth0" metric="0"/>
-   <route hosts="mixed.wirelessHost" destination="10.0.0.8" netmask="255.255.255.248" gateway="*" interface="wlan0" metric="0"/>
-   <route hosts="mixed.wirelessHost" destination="10.0.0.8" netmask="255.255.255.248" gateway="*" interface="wlan0" metric="0"/>
-   <route hosts="mixed.wirelessHost" destination="*" netmask="*" gateway="10.0.0.10" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost" destination="10.0.0.1" netmask="255.255.255.255" gateway="10.0.0.11" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost" destination="10.0.0.2" netmask="255.255.255.255" gateway="10.0.0.11" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost" destination="10.0.0.5" netmask="255.255.255.255" gateway="10.0.0.11" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost" destination="10.0.0.6" netmask="255.255.255.255" gateway="10.0.0.11" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost" destination="10.0.0.10" netmask="255.255.255.255" gateway="10.0.0.11" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost" destination="10.0.0.11" netmask="255.255.255.255" gateway="*" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost" destination="10.0.0.17" netmask="255.255.255.255" gateway="10.0.0.11" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost" destination="10.0.0.18" netmask="255.255.255.255" gateway="10.0.0.11" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost" destination="10.0.0.19" netmask="255.255.255.255" gateway="10.0.0.11" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost" destination="10.0.0.20" netmask="255.255.255.255" gateway="10.0.0.11" interface="wlan0" metric="0"/>
    <route hosts="mixed.wirelessHost1" destination="10.0.0.1" netmask="255.255.255.255" gateway="10.0.0.5" interface="eth0" metric="0"/>
+   <route hosts="mixed.wirelessHost1" destination="10.0.0.2" netmask="255.255.255.255" gateway="10.0.0.5" interface="eth0" metric="0"/>
+   <route hosts="mixed.wirelessHost1" destination="10.0.0.5" netmask="255.255.255.255" gateway="*" interface="eth0" metric="0"/>
+   <route hosts="mixed.wirelessHost1" destination="10.0.0.9" netmask="255.255.255.255" gateway="10.0.0.11" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost1" destination="10.0.0.11" netmask="255.255.255.255" gateway="*" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost1" destination="10.0.0.17" netmask="255.255.255.255" gateway="10.0.0.5" interface="eth0" metric="0"/>
+   <route hosts="mixed.wirelessHost1" destination="10.0.0.18" netmask="255.255.255.255" gateway="10.0.0.5" interface="eth0" metric="0"/>
+   <route hosts="mixed.wirelessHost1" destination="10.0.0.19" netmask="255.255.255.255" gateway="10.0.0.5" interface="eth0" metric="0"/>
    <route hosts="mixed.wirelessHost1" destination="10.0.0.20" netmask="255.255.255.255" gateway="10.0.0.5" interface="eth0" metric="0"/>
-   <route hosts="mixed.wirelessHost1" destination="10.0.0.8" netmask="255.255.255.248" gateway="10.0.0.11" interface="wlan0" metric="0"/>
-   <route hosts="mixed.wirelessHost1" destination="10.0.0.8" netmask="255.255.255.248" gateway="*" interface="wlan0" metric="0"/>
-   <route hosts="mixed.wirelessHost1" destination="10.0.0.16" netmask="255.255.255.248" gateway="10.0.0.5" interface="eth0" metric="0"/>
-   <route hosts="mixed.standardHost" destination="10.0.0.16" netmask="255.255.255.248" gateway="*" interface="eth0" metric="0"/>
-   <route hosts="mixed.standardHost" destination="10.0.0.16" netmask="255.255.255.248" gateway="*" interface="eth0" metric="0"/>
-   <route hosts="mixed.standardHost" destination="*" netmask="*" gateway="10.0.0.20" interface="eth0" metric="0"/>
-   <route hosts="mixed.standardHost1" destination="10.0.0.16" netmask="255.255.255.248" gateway="*" interface="eth0" metric="0"/>
-   <route hosts="mixed.standardHost1" destination="10.0.0.16" netmask="255.255.255.248" gateway="*" interface="eth0" metric="0"/>
-   <route hosts="mixed.standardHost1" destination="*" netmask="*" gateway="10.0.0.20" interface="eth0" metric="0"/>
-   <route hosts="mixed.standardHost2" destination="10.0.0.16" netmask="255.255.255.248" gateway="*" interface="eth0" metric="0"/>
-   <route hosts="mixed.standardHost2" destination="10.0.0.16" netmask="255.255.255.248" gateway="*" interface="eth0" metric="0"/>
-   <route hosts="mixed.standardHost2" destination="*" netmask="*" gateway="10.0.0.20" interface="eth0" metric="0"/>
-   <route hosts="mixed.router1" destination="10.0.0.1" netmask="255.255.255.255" gateway="*" interface="eth1" metric="0"/>
-   <route hosts="mixed.router1" destination="10.0.0.6" netmask="255.255.255.255" gateway="10.0.0.1" interface="eth1" metric="0"/>
-   <route hosts="mixed.router1" destination="10.0.0.16" netmask="255.255.255.248" gateway="*" interface="eth0" metric="0"/>
-   <route hosts="mixed.wirelessHost2" destination="10.0.0.8" netmask="255.255.255.248" gateway="*" interface="wlan0" metric="0"/>
-   <route hosts="mixed.wirelessHost2" destination="10.0.0.8" netmask="255.255.255.248" gateway="*" interface="wlan0" metric="0"/>
-   <route hosts="mixed.wirelessHost2" destination="*" netmask="*" gateway="10.0.0.10" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost2" destination="10.0.0.1" netmask="255.255.255.255" gateway="10.0.0.10" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost2" destination="10.0.0.2" netmask="255.255.255.255" gateway="10.0.0.10" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost2" destination="10.0.0.5" netmask="255.255.255.255" gateway="10.0.0.10" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost2" destination="10.0.0.6" netmask="255.255.255.255" gateway="10.0.0.10" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost2" destination="10.0.0.9" netmask="255.255.255.255" gateway="*" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost2" destination="10.0.0.10" netmask="255.255.255.255" gateway="*" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost2" destination="10.0.0.17" netmask="255.255.255.255" gateway="10.0.0.10" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost2" destination="10.0.0.18" netmask="255.255.255.255" gateway="10.0.0.10" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost2" destination="10.0.0.19" netmask="255.255.255.255" gateway="10.0.0.10" interface="wlan0" metric="0"/>
+   <route hosts="mixed.wirelessHost2" destination="10.0.0.20" netmask="255.255.255.255" gateway="10.0.0.10" interface="wlan0" metric="0"/>
 </config>

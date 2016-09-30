@@ -3,8 +3,6 @@
     <autoroute metric="hopCount" sourceHosts="**" destinationInterfaces="*.eth0">
         <link interfaces="*.wlan0" cost="infinite"/>
     </autoroute>
-    <autoroute metric="errorRate" sourceHosts="**" destinationInterfaces="*.wlan0">
-        <node hosts="standard*" cost="infinite"/>
-        <node hosts="router*" cost="infinite"/>
+    <autoroute metric="errorRate" sourceHosts="*.wirelessHost*">
     </autoroute>
 </config>

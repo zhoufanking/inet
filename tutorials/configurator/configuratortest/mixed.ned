@@ -39,6 +39,9 @@ network mixed
         wirelessHost1: WirelessHost {
             @display("p=262,265");
         }
+        wirelessHost2: WirelessHost {
+            @display("p=228.9375,176.96251");
+        }
         standardHost: StandardHost {
             @display("p=745,497");
         }
@@ -62,9 +65,6 @@ network mixed
         }
         visualizer: IntegratedCanvasVisualizer {
             @display("p=276,46");
-        }
-        wirelessHost2: WirelessHost {
-            @display("p=228.9375,176.96251");
         }
     connections:
         standardHost2.ethg++ <--> Eth100M <--> etherSwitch.ethg++;
