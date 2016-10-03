@@ -119,6 +119,8 @@ void EtherAppSrv::sendPacket(cPacket *datapacket, const MACAddress& destAddr, in
     auto ieee802SapReq = datapacket->ensureTag<Ieee802SapReq>();
     ieee802SapReq->setSsap(localSAP);
     ieee802SapReq->setDsap(destSap);
+    datapacket->ensureTag<SocketReq>()->setSocketId(socketId);
+    datapacket->ensureTag<InterfaceReq>()->setInterfaceId(100); //KLUDGE should get from parameter
 
     emit(sentPkSignal, datapacket);
     send(datapacket, "out");

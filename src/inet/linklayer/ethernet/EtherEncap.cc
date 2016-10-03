@@ -124,28 +124,38 @@ void EtherEncap::processPacketFromHigherLayer(cPacket *msg)
     EV_DETAIL << "Encapsulating higher layer packet `" << msg->getName() << "' for MAC\n";
 
     auto macAddressReq = msg->getMandatoryTag<MacAddressReq>();
+    auto ieee802SapReq = msg->getTag<Ieee802SapReq>();
     auto etherTypeTag = msg->getTag<EtherTypeReq>();
     EtherFrame *frame = nullptr;
 
+    //FIXME get the kind of ethernet frame from Tags instead of module parameter
     if (useSNAP) {
-        EtherFrameWithSNAP *snapFrame = new EtherFrameWithSNAP(msg->getName());
+        auto *snapFrame = new EtherFrameWithSNAP(msg->getName());
 
-        snapFrame->setSrc(macAddressReq->getSrcAddress());    // if blank, will be filled in by MAC
-        snapFrame->setDest(macAddressReq->getDestAddress());
         snapFrame->setOrgCode(0);
         if (etherTypeTag)
             snapFrame->setLocalcode(etherTypeTag->getEtherType());
         frame = snapFrame;
     }
-    else {
-        EthernetIIFrame *eth2Frame = new EthernetIIFrame(msg->getName());
+    else if (ieee802SapReq != nullptr){
+        auto *llcFrame = new EtherFrameWithLLC(msg->getName());
 
-        eth2Frame->setSrc(macAddressReq->getSrcAddress());    // if blank, will be filled in by MAC
-        eth2Frame->setDest(macAddressReq->getDestAddress());
+        llcFrame->setControl(0);
+        llcFrame->setSsap(ieee802SapReq->getSsap());
+        llcFrame->setDsap(ieee802SapReq->getDsap());
+
+        frame = llcFrame;
+    }
+    else {
+        auto *eth2Frame = new EthernetIIFrame(msg->getName());
+
         if (etherTypeTag)
             eth2Frame->setEtherType(etherTypeTag->getEtherType());
         frame = eth2Frame;
     }
+
+    frame->setSrc(macAddressReq->getSrcAddress());    // if blank, will be filled in by MAC
+    frame->setDest(macAddressReq->getDestAddress());
 
     ASSERT(frame->getByteLength() > 0); // length comes from msg file
 
@@ -183,12 +193,12 @@ void EtherEncap::processFrameFromMAC(EtherFrame *frame)
                 etherType = snapFrame->getLocalcode();
         }
     }
-    bool knownProtocol = false;
+    int protocolId = -1;
     if (etherType != -1) {
         higherlayermsg->ensureTag<EtherTypeInd>()->setEtherType(etherType);
         if (auto protocol = ProtocolGroup::ethertype.findProtocol(etherType)) {
             higherlayermsg->ensureTag<DispatchProtocolReq>()->setProtocol(protocol);
-            knownProtocol = true;
+            protocolId = protocol->getId();
         }
     }
 
@@ -203,12 +213,12 @@ void EtherEncap::processFrameFromMAC(EtherFrame *frame)
                 cPacket *packetCopy = higherlayermsg->dup();
                 packetCopy->ensureTag<SocketInd>()->setSocketId(elem.socketId);
                 EV_INFO << "Sending " << packetCopy << " to upper layer for socket " << elem.socketId << ".\n";
-                send(higherlayermsg, "upperLayerOut");
+                send(packetCopy, "upperLayerOut");
                 sent = true;
             }
         }
     }
-    if (!sent && knownProtocol) {      //KLUDGE: always send up packet (needed for EtherTrafGen)
+    if (!sent && mapping.findOutputGateForProtocol(protocolId)) {
         // pass up to higher layers.
         EV_INFO << "Sending " << higherlayermsg << " to upper layer, etherType=" << etherType <<".\n";
         send(higherlayermsg, "upperLayerOut");
@@ -309,6 +319,12 @@ bool EtherEncap::handleOperationStage(LifecycleOperation *operation, int stage, 
             stop();
     }
     return true;
+}
+
+void EtherEncap::handleRegisterProtocol(const Protocol& protocol, cGate *gate)
+{
+    Enter_Method("handleRegisterProtocol");
+    mapping.addProtocolMapping(ProtocolGroup::ipprotocol.getProtocolNumber(&protocol), gate->getIndex());
 }
 
 void EtherEncap::start()

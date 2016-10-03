@@ -20,6 +20,8 @@
 
 #include "inet/common/INETDefs.h"
 
+#include "inet/common/IProtocolRegistrationListener.h"
+#include "inet/common/ProtocolMap.h"
 #include "inet/common/lifecycle/ILifecycle.h"
 #include "inet/common/lifecycle/LifecycleOperation.h"
 #include "inet/common/lifecycle/NodeStatus.h"
@@ -33,7 +35,7 @@ class EtherFrame;
 /**
  * Performs Ethernet II encapsulation/decapsulation. More info in the NED file.
  */
-class INET_API EtherEncap : public cSimpleModule, public ILifecycle
+class INET_API EtherEncap : public cSimpleModule, public ILifecycle, public IProtocolRegistrationListener
 {
   public:
     struct DsapAndSocketId {
@@ -44,6 +46,7 @@ class INET_API EtherEncap : public cSimpleModule, public ILifecycle
     };
   protected:
     int seqNum;
+    ProtocolMapping mapping;    // where to send packets after decapsulation
     std::vector<DsapAndSocketId> dsapToSocketIds;    // DSAP registration table
     bool useSNAP;    //TODO needed per packet setting // true: generate EtherFrameWithSNAP, false: generate EthernetIIFrame
 
@@ -74,6 +77,9 @@ class INET_API EtherEncap : public cSimpleModule, public ILifecycle
     virtual void start();
     virtual void stop();
     virtual bool handleOperationStage(LifecycleOperation *operation, int stage, IDoneCallback *doneCallback) override;
+
+    // IProtocolRegistrationListener
+    virtual void handleRegisterProtocol(const Protocol& protocol, cGate *gate) override;
 
     // utility function
     virtual void refreshDisplay() const override;
