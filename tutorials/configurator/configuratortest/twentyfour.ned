@@ -13,7 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package inet.tutorials.configurator;
+package inet.tutorials.configurator.configuratortest;
 
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.ethernet.Eth100M;
@@ -26,7 +26,7 @@ import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
 import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
 
-network ConfiguratorC
+network twentyfour
 {
     @display("bgb=2504.3225,1393.2375");
     submodules:
