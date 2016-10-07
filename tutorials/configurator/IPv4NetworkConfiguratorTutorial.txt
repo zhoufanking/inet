@@ -77,3 +77,8 @@ Olyan példa kell ami b->c többet javít mint a->b
 2. leaving some part unconfigured (so an adhoc protocol could configure it)
 3. completely wireless
 4. leaving all of it unconfigured
+
+Lehetne olyan, hogy egy linket kikapcsolunk
+<autoroute metric="hopCount">
+	<link interfaces="somehost.eth0" cost="infinite"/>
+</autoroute>
