@@ -96,3 +96,5 @@ network ConfiguratorA
         Switch1.ethg++ <--> Eth100M <--> Host8.ethg++;
         Router0.ethg++ <--> Eth10M <--> Router2.ethg++;
 }
+
+//##### (marker for doxygen)

@@ -37,7 +37,8 @@ defined in separate .NED files.
 The goal of this step is to demonstrate that in many scenarios, the configurator can adequatelly configure the network with its default settings, without
 any user input. This is useful when it is irrelevant what the nodes' actual IP addresses are in a simulation, because the goal is to study wireless
 transmission ranges, for example. The default settings will result in a network where routing 'just works'.
-In this step, we will show that the configurator's automatic IP address assignment is adequate for the example network.
+In this step, we will show that the configurator's automatic IP address assignment is adequate for the example network
+(this step deals with IP addresses only, routes will be discussed in later steps).
 
 @section s1model The model
 
@@ -45,7 +46,7 @@ In this step, we will show that the configurator's automatic IP address assignme
 
 In INET simulations, configurator modules are responsible for assigning IP addresses to network nodes, and for setting up their
 routing tables. Essentially, the configurator modules simulate a real life network administrator. There are various configurator
-models in INET (IPv4NetworkConfigurator, FlatNetworkConfigurator, etc.), but this tutorial is about the features of the <tt>IPv4NetworkConfigurator</tt>, 
+models in INET (<tt>IPv4NetworkConfigurator</tt>, <tt>FlatNetworkConfigurator</tt>, etc.), but this tutorial is about the features of the <tt>IPv4NetworkConfigurator</tt>, 
 which we will refer to as <strong>configurator</strong>. The following is a broad review of the configurator's features and operation,
 these and others will be discussed in detail in the following steps.
 
@@ -60,11 +61,19 @@ will be configured automatically by the configurator. The configurator's various
 
 @subsection s1configuration The configuration
 
-This step uses the following network, defined in ConfiguratorA.ned:
+The configuration for this step uses the <i>ConfiguratorA</i> network, defined in <i>ConfiguratorA.ned</i>.
+Here is the NED source for that network:
+
+@dontinclude ConfiguratorA.ned
+@skipline ConfiguratorA
+@until ####
 
 <img src="step1network.png">
 
 The network contains 3 routers, each connected to the other two. There are 3 subnetworks with <tt>standardHosts</tt>, connected to the routers by ethernet switches.
+It also contains an instance of <tt>RoutingTableCanvasVisualizer</tt> and <tt>IPv4NetworkConfigurator</tt>.
+
+The <tt>RoutingTableCanvasVisualizer</tt> will be used in later steps to visualize routes in the network.
 
 The ini file:
 
@@ -74,7 +83,10 @@ The ini file:
 @skip Step1
 @until ####
 
-The line in the general configuration turns off adding netmask routes that come from interfaces <!TODO: more on this - how does it work?>
+The line in the general configuration turns off adding netmask routes that come from interfaces. These routes are not added by the
+configurator, but by the routingTable module. Since these routes are added by the configurator as well, to keep things simpler,
+we instruct the routingTable not to add any routes. This is added to the general configuration so it applies to the config of all steps.
+<!TODO: more on this - how does it work?>
 The configuration for Step 1 is empty. The configurator configures addresses according to the default configuration.
 
 @section Results
@@ -84,5 +96,7 @@ The IP addresses assigned to interfaces by the configurator are shown on the ima
 The addresses are from the 10.0.0.0/29 range, and all nodes are on the same subnet. Adequate for basic networking.
 
 <img src="step1addresses.png" width=850px>
+
+@fixupini
 
 */
