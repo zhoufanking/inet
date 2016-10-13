@@ -41,13 +41,13 @@ In this step, we will show that the configurator's automatic IP address assignme
 
 @section s1model The model
 
-<strong>About the configurator</strong>
+@subsection s1about  About the configurator
 
 In INET simulations, configurator modules are responsible for assigning IP addresses to network nodes, and for setting up their
 routing tables. Essentially, the configurator modules simulate a real life network administrator. There are various configurator
 models in INET (IPv4NetworkConfigurator, FlatNetworkConfigurator, etc.), but this tutorial is about the features of the <tt>IPv4NetworkConfigurator</tt>, 
 which we will refer to as <strong>configurator</strong>. The following is a broad review of the configurator's features and operation,
-these will be discussed in detail in the following steps.
+these and others will be discussed in detail in the following steps.
 
 The configurator assigns IP addresses to interfaces, and sets up static routing in IPv4 networks.
 It doesn't configure IP addresses and routes directly, but stores the configuration in its internal data structures.
@@ -57,5 +57,32 @@ based on information contained in the global <tt>IPv4NetworkConfigurator</tt> mo
 The configurator supports automatic and manual network configuration, and their combination. By default,
 the configuration is fully automatic, but the user can specify parts (or all) of the configuration manually, and the rest
 will be configured automatically by the configurator. The configurator's various features can be turned on and off with NED parameters, and the details of the configuration can be specified in an xml configuration file.
+
+@subsection s1configuration The configuration
+
+This step uses the following network, defined in ConfiguratorA.ned:
+
+<img src="step1network.png">
+
+The network contains 3 routers, each connected to the other two. There are 3 subnetworks with <tt>standardHosts</tt>, connected to the routers by ethernet switches.
+
+The ini file:
+
+@dontinclude omnetpp.ini
+@skip [General]
+@until ####
+@skip Step1
+@until ####
+
+The line in the general configuration turns off adding netmask routes that come from interfaces <!TODO: more on this - how does it work?>
+The configuration for Step 1 is empty. The configurator configures addresses according to the default configuration.
+
+@section Results
+
+<!TODO rewrite - draft>
+The IP addresses assigned to interfaces by the configurator are shown on the image below.
+The addresses are from the 10.0.0.0/29 range, and all nodes are on the same subnet. Adequate for basic networking.
+
+<img src="step1addresses.png" width=850px>
 
 */
