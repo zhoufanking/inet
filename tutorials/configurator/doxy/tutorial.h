@@ -9,7 +9,7 @@ This is an advanced tutorial, and assumes that the reader is familiar with creat
 the <a href="https://omnetpp.org/doc/omnetpp/tictoc-tutorial/"
 target="_blank">TicToc Tutorial</a> is a good starting point to get started with @opp. The <a
 href="../../../doc/walkthrough/tutorial.html" target="_blank">INET Walkthrough</a> is an introduction to INET and how to work with protocols.
-The <a href="https://omnetpp.org/doc/inet/api-current/tutorials/wireless/" target="_blank">Wireless Tutorial</a> is another advanced tutorial, and deals with wireless features of the INET framework. There is a detailed description of the configurator's features in the <a href="https://omnetpp.org/doc/inet/api-current/neddoc/index.html?p=inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator.html" target="_blank"><tt>IPv4NetworkConfigurator</tt> NED documentation</a>
+The <a href="https://omnetpp.org/doc/inet/api-current/tutorials/wireless/" target="_blank">Wireless Tutorial</a> is another advanced tutorial, and deals with wireless features of the INET framework. There is a comprehensive description of the configurator's features in the <a href="https://omnetpp.org/doc/inet/api-current/neddoc/index.html?p=inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator.html" target="_blank"><tt>IPv4NetworkConfigurator</tt> NED documentation</a>
 in the INET reference.
 
 For additional information, the following documentation should be useful:
@@ -25,6 +25,8 @@ defined in separate .NED files.
 @section contents Contents
 
  - @ref step1
+ - @ref step2
+ - @ref step3
 
 @nav{index,step1}
 
@@ -83,8 +85,7 @@ The ini file:
 @skip Step1
 @until ####
 
-The line in the general configuration turns off adding netmask routes that come from interfaces. These routes are not added by the
-configurator, but by the routingTable module. Since these routes are added by the configurator as well, to keep things simpler,
+The line in the general configuration keeps the routingTable from adding netmask routes that come from interfaces. Since these routes are added by the configurator as well, to keep things simpler,
 we instruct the routingTable not to add any routes. This is added to the general configuration so it applies to the config of all steps.
 <!TODO: more on this - how does it work?>
 The configuration for Step 1 is empty. The configurator configures addresses according to the default configuration.
@@ -97,6 +98,11 @@ The addresses are from the 10.0.0.0/29 range, and all nodes are on the same subn
 
 <img src="step1addresses.png" width=850px>
 
+@nav{index,step2}
 @fixupini
+
+@page step2 Step 2 - Manually overriding individual IP addresses
+
+@nav{step1,step3}
 
 */
