@@ -43,7 +43,19 @@ In this step, we will show that the configurator's automatic IP address assignme
 
 <strong>About the configurator</strong>
 
-In INET simulations, configurator modules are responsible for assigning IP addresses to network nodes, and for creating their
-routing tables. Essentially, the configurator simulates a real life network administrator.
+In INET simulations, configurator modules are responsible for assigning IP addresses to network nodes, and for setting up their
+routing tables. Essentially, the configurator modules simulate a real life network administrator. There are various configurator
+models in INET (IPv4NetworkConfigurator, FlatNetworkConfigurator, etc.), but this tutorial is about the features of the <tt>IPv4NetworkConfigurator</tt>, 
+which we will refer to as <strong>configurator</strong>. The following is a broad review of the configurator's features and operation,
+these will be discussed in detail in the following steps.
+
+The configurator assigns IP addresses to interfaces, and sets up static routing in IPv4 networks.
+It doesn't configure IP addresses and routes directly, but stores the configuration in its internal data structures.
+Network nodes contain an instance of <tt>IPv4NodeConfigurator</tt>, which configures the corresponding node's interface table and routing table
+based on information contained in the global <tt>IPv4NetworkConfigurator</tt> module.
+
+The configurator supports automatic and manual network configuration, and their combination. By default,
+the configuration is fully automatic, but the user can specify parts (or all) of the configuration manually, and the rest
+will be configured automatically by the configurator. The configurator's various features can be turned on and off with NED parameters, and the details of the configuration can be specified in an xml configuration file.
 
 */
