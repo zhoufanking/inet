@@ -26,25 +26,25 @@ network ConfiguratorD
     @display("bgb=1013,653");
     submodules:
         aodvRouter: AODVRouter {
-            @display("p=154,309");
+            @display("p=307.47598,274.626");
         }
         aodvRouter1: AODVRouter {
-            @display("p=342,365");
+            @display("p=495.378,329.814");
         }
         aodvRouter2: AODVRouter {
-            @display("p=246,206");
+            @display("p=399.456,170.81999");
         }
         aodvRouter3: AODVRouter {
-            @display("p=473,246");
+            @display("p=625.464,211.554");
         }
         aodvRouter4: AODVRouter {
-            @display("p=588,399;b=7,5");
+            @display("p=741.096,363.978;b=7,5");
         }
         aodvRouter5: AODVRouter {
-            @display("p=443,504");
+            @display("p=596.55597,469.098");
         }
         aodvRouter6: AODVRouter {
-            @display("p=213,453");
+            @display("p=366.606,417.852");
         }
         configurator: IPv4NetworkConfigurator {
             @display("p=59,58");

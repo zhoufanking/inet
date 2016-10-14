@@ -18,6 +18,7 @@ package inet.tutorials.configurator;
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.ethernet.Eth100M;
 import inet.node.ethernet.EtherSwitch;
+import inet.node.inet.AdhocHost;
 import inet.node.inet.Router;
 import inet.node.inet.StandardHost;
 import inet.node.inet.WirelessHost;
@@ -33,13 +34,13 @@ network ConfiguratorE
         Area1Router: Router {
             @display("p=519.75,535.8375");
         }
-        Area1wirelessHost1: WirelessHost {
+        Area1wirelessHost1: AdhocHost {
             @display("p=246.26251,368.775");
         }
-        Area1wirelessHost3: WirelessHost {
+        Area1wirelessHost3: AdhocHost {
             @display("p=404.6625,506.1375");
         }
-        Area1wirelessHost2: WirelessHost {
+        Area1wirelessHost2: AdhocHost {
             @display("p=377.4375,409.61252");
         }
         Area3Host3: StandardHost {
