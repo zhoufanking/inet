@@ -7,7 +7,7 @@ tasks with the configurator.
 
 This is an advanced tutorial, and assumes that the reader is familiar with creating and running simulations in @opp and INET. If that wasn't the case,
 the <a href="https://omnetpp.org/doc/omnetpp/tictoc-tutorial/"
-target="_blank">TicToc Tutorial</a> is a good starting point to get started with @opp. The <a
+target="_blank">TicToc Tutorial</a> is a good starting point to get familiar with @opp. The <a
 href="../../../doc/walkthrough/tutorial.html" target="_blank">INET Walkthrough</a> is an introduction to INET and how to work with protocols.
 The <a href="https://omnetpp.org/doc/inet/api-current/tutorials/wireless/" target="_blank">Wireless Tutorial</a> is another advanced tutorial, and deals with wireless features of the INET framework. There is a comprehensive description of the configurator's features in the <a href="https://omnetpp.org/doc/inet/api-current/neddoc/index.html?p=inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator.html" target="_blank"><tt>IPv4NetworkConfigurator</tt> NED documentation</a>
 in the INET reference.
@@ -69,6 +69,8 @@ Here is the NED source for that network:
 @dontinclude ConfiguratorA.ned
 @skipline ConfiguratorA
 @until ####
+
+The network looks like this:
 
 <img src="step1network.png">
 
