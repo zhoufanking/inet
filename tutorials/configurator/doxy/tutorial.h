@@ -152,8 +152,9 @@ The xml configuration can be supplied to the <i>config</i> parameter in one of t
 In this step, the xml configuration is supplied to the configurator as inline xml. Xml configurations contain one <i><config></i> element. Under this root element there can be
 multiple configuration elements, such as the <i><interface></i> elements here.
 The <interface> element can contain selector attributes, which limit the scope of what interfaces are affected by the <interface> element.
+Multiple interfaces can be selected with one <interface> element using the * wildcard.
 They can also contain parameter attributes, which deal with what parameters those selected interfaces will have, like IP addresses and
-netmasks. The 'x' in the IP address and netmask signify that the value is not fixed, but the configurator should choose it automatically.
+netmasks. Address templates can be specified with one more 'x' in the address. The 'x' in the IP address and netmask signify that the value is not fixed, but the configurator should choose it automatically.
 With these address templates it is possible to leave everything to the configurator or specify everything, and anything in between.
 
 In the XML configuration for this step, the first two rules state that host3's interface named 'eth0' should get the IP address 10.0.0.100, and host1's interface 'eth0' should get IP 10.0.0.50.
@@ -215,11 +216,14 @@ The xml configuration is supplied in an external file (step3.xml), using the xml
 
 - The first 3 lines assign IP addresses with different network prefixes to hosts in the 3 different subnets.
 
-- The <i>towards</i> selector can be used to easily select the interfaces that are connected towards a certain host (or set of hosts?)
+- The <i>towards</i> selector can be used to easily select the interfaces that are connected towards a certain host (or set of hosts using wildcards).
 The next 3 entries specify that each router's interface that connects to the subnet should belong to the subnet.
 
 - The last entry sets the network network prefix of interfaces of all routers to be 10.1. Since the addresses for the interfaces
 connected towards the hosts are already specified by a previous entry, this effects only the rest of interfaces, those facing the other routers.
+
+The same effect can be achieved in more than one way. Here is an alternative xml configuration (step3alt.xml) that results in the same address assignment:
+<! not possible to merge 'towards' entries into the first 3>
 
 @section s3results Results
 
@@ -240,7 +244,7 @@ The addresses are assigned as intended.
 
 @section s4goals Goals
 
-Just as with IP addresses, in many cases the configurator configures routes in a network adequatelly without any user input.
+Just as with IP addresses, in many cases the configurator configures routes in a network properly without any user input.
 This step demonstrates the default configuration for routing.
 
 @section s4model The model
@@ -266,11 +270,17 @@ A ping app in <i>host0</i> is configured to send ping packets to <i>host7</i>, w
 This should aid in visualizing routing.
 
 The <i>RoutingTableCanvasVisualizer</i> module can be used to visualize routes in the network.
-Routes to be visualized are selected with its <i>destinationFilter</i> parameter.
+Routes are visualized with arrows. In general, an arrow signifies an entry in the source host's routing table. It points
+to the host that is the next hop or gateway for that routing table entry.
+Routes to be visualized are selected with the visualizer's <i>destinationFilter</i> parameter.
 All routes leading towards that destination are indicated by arrows.
 The default setting is <tt>""</tt>, which means no routes are visualized. The <tt>"*.*"</tt> setting visualizes all routes
 going from every node to every other node, which can make the screen cluttered.
 In this step the <i>destinationFilter</i> is set to visualize all routes heading towards <i>host7</i>.
+
+The <i>RoutingTableCanvasVisualizer</i> module can be used to visualize routes in the network.
+Routes are visualized with arrows. An arrow signifies an entry in the source host's routing table. It points
+to the host that is the next hop or gateway for that routing table entry.
 
 The IP address assignment is fully automatic, and the resulting addresses should be the same as in Step 1.
 
@@ -297,7 +307,8 @@ is not used if <i>addStaticRoutes = false</i>.
 - <i>optimizeRoutes</i>: Optimize routing tables by matching entries where possible. Not used if <i>addStaticRoutes = false</i>.
 
 Additionally, the <i>dumpTopology</i>, <i>dumpLinks</i> and <i>dumpRoutes</i> parameters are set to true in the <i>General</i> configuration.
-These set the configurator to print to the module output the topology of the network, the recognized network links, and the routing tables of all nodes, respectively.
+These instruct the configurator to print to the module output the topology of the network, the recognized network links, and the routing tables of all nodes, respectively. Topology describes which nodes are connected to which nodes. Hosts that can directly reach each other (i.e. the next hop is the destination), they
+are considered to be on the same link.
 
 @dontinclude omnetpp.ini
 @skip General
@@ -319,29 +330,23 @@ Note that routes from all nodes to host7 are visualized.
 The routing tables are the following:
 
 @verbatim
-Node ConfiguratorB.host0
+Node ConfiguratorB.host0 (hosts 1-2 similar)
 -- Routing table --
 Destination      Netmask          Gateway          Iface           Metric
 10.0.0.0         255.255.255.248  *                eth0 (10.0.0.1) 0
 *                *                10.0.0.4         eth0 (10.0.0.1) 0
 
-Node ConfiguratorB.host1
--- Routing table --
-Destination      Netmask          Gateway          Iface           Metric
-10.0.0.0         255.255.255.248  *                eth0 (10.0.0.3) 0
-*                *                10.0.0.4         eth0 (10.0.0.3) 0
-
-Node ConfiguratorB.host2
--- Routing table --
-Destination      Netmask          Gateway          Iface           Metric
-10.0.0.0         255.255.255.248  *                eth0 (10.0.0.2) 0
-*                *                10.0.0.4         eth0 (10.0.0.2) 0
-
-Node ConfiguratorB.host3
+Node ConfiguratorB.host3 (hosts 4-5 similar)
 -- Routing table --
 Destination      Netmask          Gateway          Iface           Metric
 10.0.0.8         255.255.255.248  *                eth0 (10.0.0.9) 0
 *                *                10.0.0.10        eth0 (10.0.0.9) 0
+
+Node ConfiguratorB.host6 (hosts 7-8 similar)
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.32        255.255.255.248  *                eth0 (10.0.0.34) 0
+*                *                10.0.0.33        eth0 (10.0.0.34) 0
 
 Node ConfiguratorB.router0
 -- Routing table --
@@ -373,35 +378,6 @@ Destination      Netmask          Gateway          Iface            Metric
 10.0.0.32        255.255.255.248  10.0.0.25        eth2 (10.0.0.26) 0
 10.0.0.0         255.255.255.224  10.0.0.17        eth0 (10.0.0.18) 0
 
-Node ConfiguratorB.host4
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.8         255.255.255.248  *                eth0 (10.0.0.11) 0
-*                *                10.0.0.10        eth0 (10.0.0.11) 0
-
-Node ConfiguratorB.host5
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.8         255.255.255.248  *                eth0 (10.0.0.12) 0
-*                *                10.0.0.10        eth0 (10.0.0.12) 0
-
-Node ConfiguratorB.host6
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.32        255.255.255.248  *                eth0 (10.0.0.34) 0
-*                *                10.0.0.33        eth0 (10.0.0.34) 0
-
-Node ConfiguratorB.host7
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.32        255.255.255.248  *                eth0 (10.0.0.35) 0
-*                *                10.0.0.33        eth0 (10.0.0.35) 0
-
-Node ConfiguratorB.host8
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.32        255.255.255.248  *                eth0 (10.0.0.36) 0
-*                *                10.0.0.33        eth0 (10.0.0.36) 0
 @endverbatim
 
 @fixupini
