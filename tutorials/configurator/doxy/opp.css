@@ -5,3 +5,7 @@ div#titlearea {
 div.contents {
    background-color: white; max-width: 900px; margin-left: 0; padding-left: 20px; padding-right: 20px;
 }
+
+.marker {
+	background-color: red;
+}
