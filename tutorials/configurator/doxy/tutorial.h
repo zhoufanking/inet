@@ -36,13 +36,10 @@ defined in separate .NED files.
 
 @section s1goals Goals
 
-The goal of this step is to demonstrate that in many scenarios, the configurator can adequatelly configure IP addresses in a network with its default settings, without
+The goal of this step is to demonstrate that in many scenarios, the configurator can properly configure IP addresses in a network with its default settings, without
 any user input. This is useful when it is irrelevant what the nodes' actual IP addresses are in a simulation, because the goal is to study wireless
-transmission ranges, for example.
-In this step, we will show that the configurator's automatic IP address assignment is adequate for the example network
+transmission ranges, for example
 (this step deals with IP addresses only, routing will be discussed in later steps).
-
-<!the configurator's automatic IP address assignment assigns addresses correctly for the example network?>
 
 @section s1model The model
 
@@ -66,12 +63,6 @@ will be configured automatically by the configurator. The configurator's various
 @subsection s1configuration The configuration
 
 The configuration for this step uses the <i>ConfiguratorA</i> network, defined in <i>ConfiguratorA.ned</i>.
-Here is the NED source for that network:
-
-@dontinclude ConfiguratorA.ned
-@skipline ConfiguratorA
-@until ####
-
 The network looks like this:
 
 <img src="step1network.png">
@@ -85,7 +76,7 @@ The configuration for this step in omnetpp.ini is the following:
 @skip Step1
 @until ####
 
-The configuration for Step 1 is empty. The configurator configures addresses according to its default parameters, and using the default xml configuration.
+The configuration for Step 1 is basically empty. The configurator configures addresses according to its default parameters, and using the default xml configuration.
 
 The default parameters pertaining to IP address assignment are the following:
 
@@ -158,12 +149,12 @@ The xml configuration can be supplied to the <i>config</i> parameter in one of t
 - Inline xml using the <i>xml()</i> function. The argument of the function is the xml code.
 - External xml file using the <i>xmldoc()</i> function. The argument of the function is the name of the xml configuration file.
 
-The xml configuration is supplied to the configurator as inline xml in this step. Xml configurations contain one <i><config></i> element. Under this root element there can be
-multiple configuration elements, such as the <i><interface></i> element here.
+In this step, the xml configuration is supplied to the configurator as inline xml. Xml configurations contain one <i><config></i> element. Under this root element there can be
+multiple configuration elements, such as the <i><interface></i> elements here.
 The <interface> element can contain selector attributes, which limit the scope of what interfaces are affected by the <interface> element.
 They can also contain parameter attributes, which deal with what parameters those selected interfaces will have, like IP addresses and
 netmasks. The 'x' in the IP address and netmask signify that the value is not fixed, but the configurator should choose it automatically.
-With these address templates it is possible to leave everything to the configurator or specify everything, and anything in between. <!this last one is not clear, rewrite>
+With these address templates it is possible to leave everything to the configurator or specify everything, and anything in between.
 
 In the XML configuration for this step, the first two rules state that host3's interface named 'eth0' should get the IP address 10.0.0.100, and host1's interface 'eth0' should get IP 10.0.0.50.
 The third rule is the default configuration, which tells the configurator to assign the rest of the addresses automatically.
@@ -172,6 +163,15 @@ Note that the configuration is processed sequentially, thus the order of the con
 Also, when there is a supplied configuration, and it doesnt specify all the addresses, the entry for the default configuration must be included in order for the configurator to assign addresses to all interfaces. For the manual address assignment rules to take effect,
 the default configuration should be after the manual entries. This way the configurator first assigns the manually specified addresses,
 and then automatically assigns the rest.
+
+Note that the order of configuration elements is important. The configurator doesn't assign addresses in the order of the xml statements, but the
+statements that are positioned earlier in the configuration take precedence over those that come later.
+
+Note that the order of configuration elements is important. The configurator iterates the interfaces in an unspecified order, not in the order of the
+statements in the xml configuration. However, the statements that are positioned earlier in the configuration take precedence over those that come later. 
+
+Note that the order of configuration elements is important, but the configurator doesn't assign addresses in the order of xml statements. It iterates
+interfaces, and for each interface the first matching rule in the xml configuration will take effect.
 
 @section s2results Results
 
