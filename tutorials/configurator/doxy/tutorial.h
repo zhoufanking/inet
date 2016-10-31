@@ -27,6 +27,8 @@ defined in separate .NED files.
  - @ref step1
  - @ref step2
  - @ref step3
+ - @ref step4
+ - @ref step5
 
 @nav{index,step1}
 
@@ -380,6 +382,48 @@ Destination      Netmask          Gateway          Iface            Metric
 
 @endverbatim
 
+Hosts have a routing table entry to reach other nodes which are the same subnet directly. They also have a default route with the router as
+the gateway for packets sent to outside-of-subnet addresses. Routers have 3 rules in their routing tables for reaching the other routers,
+specifically, those interfaces of the other routers that are not facing the hosts.
+
+Routers have entries with netmask of 255.255.255.255 for reaching those interfaces of the other routers that are not facing the hosts.
+They also have 3 entries for reaching the 3 subnets.
+
+@nav{step3,step5}
 @fixupini
+
+<!-------------------------------------------------------------------------------------------------------->
+
+@page step5 Step 5 - Manually overriding individual routes
+
+@nav{step4,step6}
+
+@section s5goals Goals
+
+The automatic configuration can configure routes properly, but sometimes the user might want to manually override some of the routes.
+This step has two parts:
+
+- In the <strong>A</strong> part we will override the routes to just one specific host
+- In the <strong>B</strong> part we will override routes to a set of hosts
+
+@section s5a Part A - Overriding routes to a specific host
+
+In this part we will override the routes going from the subnet of <i>router0</i> to <i>host7</i>. With the automatic configuration, packets
+from router0's subnet would go through router2 to reach host7 (as in the previous step). We want them to go through router1 instead.
+
+@subsection s5aconfig Configuration
+
+This configuration uses the same network as the previous step, ConfiguratorB. The configuration in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step5
+@until ####
+
+The XML configuration in step5a.xml:
+
+@include step5a.xml
+
+@fixupini
+
 
 */
