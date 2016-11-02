@@ -411,6 +411,8 @@ This step has two parts:
 In this part we will override the routes going from the subnet of <i>router0</i> to <i>host7</i>. With the automatic configuration, packets
 from router0's subnet would go through router2 to reach host7 (as in the previous step). We want them to go through router1 instead.
 
+<img src="step1network.png">
+
 @subsection s5aconfig Configuration
 
 This configuration uses the same network as the previous step, ConfiguratorB. The configuration in omnetpp.ini is the following:
@@ -419,9 +421,20 @@ This configuration uses the same network as the previous step, ConfiguratorB. Th
 @skipline Step5
 @until ####
 
-The XML configuration in step5a.xml:
+For the routes to go through <i>router1</i>, the routing table of <i>router0</i> has to be altered.
+The new rules should dictate that packets with the destination of host7 (10.0.0.35) should be routed
+towards <i>router2</i>. The XML configuration in step5a.xml:
 
 @include step5a.xml
+
+The <route> element describes routing table entries for one or more nodes in the network.
+As with <interface>, selector attributes specify which nodes are affected by the <route> element,
+and parameter attributes specify the details of the routing table entry.
+
+The <route> element in this XML configuration adds the following rule to <i>router0's</i> routing table:
+Packets with the destination of 10.0.0.35/32 should use the interface 'eth1' and the gateway 10.0.0.18 (router2).
+
+<!do we need metric here? should be introduced when using metric for autoroute>
 
 @fixupini
 
