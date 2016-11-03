@@ -331,6 +331,8 @@ Note that routes from all nodes to host7 are visualized.
 
 The routing tables are the following (routes visualized in the image above are highlighted with red):
 
+@htmlonly
+<div class="fragment">
 <pre class="monospace">
 Node ConfiguratorB.host0 (hosts 1-2 similar)
 -- Routing table --
@@ -379,8 +381,9 @@ Destination      Netmask          Gateway          Iface            Metric
 10.0.0.8         255.255.255.248  10.0.0.26        eth0 (10.0.0.25) 0
 <span class="marker">10.0.0.32        255.255.255.248  *                eth1 (10.0.0.33) 0</span>
 10.0.0.0         255.255.255.224  10.0.0.21        eth2 (10.0.0.22) 0
-
 </pre>
+</div>
+@endhtmlonly
 
 Hosts have a routing table entry to reach other nodes which are the same subnet directly. They also have a default route with the router as
 the gateway for packets sent to outside-of-subnet addresses. Routers have 3 rules in their routing tables for reaching the other routers,
@@ -441,7 +444,8 @@ Packets with the destination of 10.0.0.35/32 should use the interface 'eth1' and
 
 The routing table of <i>router0</i>:
 
-@verbatim
+<div class="fragment">
+<pre class="monospace">
 Node ConfiguratorB.router0
 -- Routing table --
 Destination      Netmask          Gateway          Iface            Metric
@@ -452,7 +456,8 @@ Destination      Netmask          Gateway          Iface            Metric
 10.0.0.0         255.255.255.248  *                eth0 (10.0.0.4) 	0
 10.0.0.32        255.255.255.248  10.0.0.22        eth2 (10.0.0.21) 0
 10.0.0.0         255.255.255.224  10.0.0.18        eth1 (10.0.0.17) 0
-@endverbatim
+</pre>
+</div>
 
 The routing table of router0 in the last step had 6 entries. Now it has 7,
 as the rule specified in the XML configuration has been added.
