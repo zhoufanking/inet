@@ -9,3 +9,7 @@ div.contents {
 .marker {
 	background-color: red;
 }
+
+.monospace {
+	font-family: courier;
+}
