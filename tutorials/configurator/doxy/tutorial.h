@@ -111,7 +111,7 @@ config = default(xml("<config><interface hosts='**' address='10.x.x.x' netmask='
 The default xml configuration tells the configurator to assign IP addresses to all interfaces of all hosts, 
 from the IP range 10.0.0.0 - 10.255.255.255 and netmask range 255.0.0.0 - 255.255.255.255.
 
-@section Results
+@section s1results Results
 
 The IP addresses assigned to interfaces by the configurator are shown on the image below.
 The switches and hosts connected to the individual routers are considered to be one the same link.
@@ -321,7 +321,7 @@ so when the simulation begins no ARP exchanges are necessary. The <i>**.routingT
 adding netmask routes to the routing tables. Netmask routes mean that nodes with the same netmask but different IP should reach each other directly.
 There routes are also added by the configurator, so netmaskRoutes are turned off for the sake of simplicity.
 
-@section Results
+@section s4result Results
 
 The visualized routes are displayed on the following image:
 
@@ -329,36 +329,46 @@ The visualized routes are displayed on the following image:
 
 Note that routes from all nodes to host7 are visualized.
 
-The routing tables are the following:
+The routing tables are the following (routes visualized in the image above are highlighted with red):
 
-@verbatim
+<pre class="monospace">
 Node ConfiguratorB.host0 (hosts 1-2 similar)
 -- Routing table --
 Destination      Netmask          Gateway          Iface           Metric
 10.0.0.0         255.255.255.248  *                eth0 (10.0.0.1) 0
-*                *                10.0.0.4         eth0 (10.0.0.1) 0
+<span class="marker">*                *                10.0.0.4         eth0 (10.0.0.1) 0</span>
 
 Node ConfiguratorB.host3 (hosts 4-5 similar)
 -- Routing table --
 Destination      Netmask          Gateway          Iface           Metric
 10.0.0.8         255.255.255.248  *                eth0 (10.0.0.9) 0
-*                *                10.0.0.10        eth0 (10.0.0.9) 0
+<span class="marker">*                *                10.0.0.10        eth0 (10.0.0.9) 0</span>
 
 Node ConfiguratorB.host6 (hosts 7-8 similar)
 -- Routing table --
 Destination      Netmask          Gateway          Iface            Metric
-10.0.0.32        255.255.255.248  *                eth0 (10.0.0.34) 0
-*                *                10.0.0.33        eth0 (10.0.0.34) 0
+<span class="marker">10.0.0.32        255.255.255.248  *                eth0 (10.0.0.34) 0</span>
+<i></i>*                *                10.0.0.33        eth0 (10.0.0.34) 0
 
 Node ConfiguratorB.router0
 -- Routing table --
 Destination      Netmask          Gateway          Iface            Metric
 10.0.0.18        255.255.255.255  *                eth1 (10.0.0.17) 0
 10.0.0.22        255.255.255.255  *                eth2 (10.0.0.21) 0
-10.0.0.25        255.255.255.255  10.0.0.22        eth2 (10.0.0.21) 0
+<span class="marker">10.0.0.25        255.255.255.255  10.0.0.22        eth2 (10.0.0.21) 0</span>
 10.0.0.0         255.255.255.248  *                eth0 (10.0.0.4)  0
-10.0.0.32        255.255.255.248  10.0.0.22        eth2 (10.0.0.21) 0
+<span class="marker">10.0.0.32        255.255.255.248  10.0.0.22        eth2 (10.0.0.21) 0</span>
 10.0.0.0         255.255.255.224  10.0.0.18        eth1 (10.0.0.17) 0
+
+Node ConfiguratorB.router1
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.17        255.255.255.255  *                eth0 (10.0.0.18) 0
+<span class="marker">10.0.0.22        255.255.255.255  10.0.0.25        eth2 (10.0.0.26) 0</span>
+10.0.0.25        255.255.255.255  *                eth2 (10.0.0.26) 0
+10.0.0.8         255.255.255.248  *                eth1 (10.0.0.10) 0
+<span class="marker">10.0.0.32        255.255.255.248  10.0.0.25        eth2 (10.0.0.26) 0</span>
+10.0.0.0         255.255.255.224  10.0.0.17        eth0 (10.0.0.18) 0
 
 Node ConfiguratorB.router2
 -- Routing table --
@@ -367,20 +377,10 @@ Destination      Netmask          Gateway          Iface            Metric
 10.0.0.21        255.255.255.255  *                eth2 (10.0.0.22) 0
 10.0.0.26        255.255.255.255  *                eth0 (10.0.0.25) 0
 10.0.0.8         255.255.255.248  10.0.0.26        eth0 (10.0.0.25) 0
-10.0.0.32        255.255.255.248  *                eth1 (10.0.0.33) 0
+<span class="marker">10.0.0.32        255.255.255.248  *                eth1 (10.0.0.33) 0</span>
 10.0.0.0         255.255.255.224  10.0.0.21        eth2 (10.0.0.22) 0
 
-Node ConfiguratorB.router1
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.17        255.255.255.255  *                eth0 (10.0.0.18) 0
-10.0.0.22        255.255.255.255  10.0.0.25        eth2 (10.0.0.26) 0
-10.0.0.25        255.255.255.255  *                eth2 (10.0.0.26) 0
-10.0.0.8         255.255.255.248  *                eth1 (10.0.0.10) 0
-10.0.0.32        255.255.255.248  10.0.0.25        eth2 (10.0.0.26) 0
-10.0.0.0         255.255.255.224  10.0.0.17        eth0 (10.0.0.18) 0
-
-@endverbatim
+</pre>
 
 Hosts have a routing table entry to reach other nodes which are the same subnet directly. They also have a default route with the router as
 the gateway for packets sent to outside-of-subnet addresses. Routers have 3 rules in their routing tables for reaching the other routers,
@@ -425,7 +425,9 @@ For the routes to go through <i>router1</i>, the routing table of <i>router0</i>
 The new rules should dictate that packets with the destination of host7 (10.0.0.35) should be routed
 towards <i>router2</i>. The XML configuration in step5a.xml:
 
-@include step5a.xml
+@dontinclude step5a.xml
+@skipline <config>
+@until </config>
 
 The <route> element describes routing table entries for one or more nodes in the network.
 As with <interface>, selector attributes specify which nodes are affected by the <route> element,
@@ -433,8 +435,27 @@ and parameter attributes specify the details of the routing table entry.
 
 The <route> element in this XML configuration adds the following rule to <i>router0's</i> routing table:
 Packets with the destination of 10.0.0.35/32 should use the interface 'eth1' and the gateway 10.0.0.18 (router2).
+<!should be more detailed>
 
-<!do we need metric here? should be introduced when using metric for autoroute>
+@subsection s5aresults Results
+
+The routing table of <i>router0</i>:
+
+@verbatim
+Node ConfiguratorB.router0
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.18        255.255.255.255  *                eth1 (10.0.0.17) 0
+10.0.0.22        255.255.255.255  *                eth2 (10.0.0.21) 0
+10.0.0.25        255.255.255.255  10.0.0.22        eth2 (10.0.0.21) 0
+10.0.0.35        255.255.255.255  10.0.0.18        eth1 (10.0.0.17) 0
+10.0.0.0         255.255.255.248  *                eth0 (10.0.0.4) 	0
+10.0.0.32        255.255.255.248  10.0.0.22        eth2 (10.0.0.21) 0
+10.0.0.0         255.255.255.224  10.0.0.18        eth1 (10.0.0.17) 0
+@endverbatim
+
+The routing table of router0 in the last step had 6 entries. Now it has 7,
+as the rule specified in the XML configuration has been added.
 
 @nav{step4,step6}
 @fixupini
