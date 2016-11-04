@@ -436,7 +436,58 @@ Packets with the destination of 10.0.0.35/32 should use the interface 'eth1' and
 
 <!do we need metric here? should be introduced when using metric for autoroute>
 
+@nav{step4,step6}
 @fixupini
 
+<!-------------------------------------------------------------------------------------------------------->
+
+@page step6 Step 6 - Configuring metric for automatic routing table generation
+
+@section s6goals Goals
+
+By default, the network configurator uses the shorthest path algorithm with constant 1 cost function. It produces paths optimized for hop count.
+Other cost functions are also available: bitrate, error rate, etc.???
+
+When setting up routes, the configurator uses the shortest path algorithm. By default, paths are optimized for hop count.
+However, there are other cost functions available, like data rate, error rate, etc. This step demonstrates using the data rate metric
+for automatically setting up routes.
+
+@section s6model The model
+
+When setting up routes, the configurator first builds a graph representing the network topology. It will have vertices for every network device,
+like hosts, routers, and L2 devices like switches, access points, and ethernet hubs. The graphs edges represent network connections. The configurator assigns weights to vertices and
+edges, this is used by the shortest path algorithm to set up routes. Nodes that have IP forwarding disabled get infinite weight, and all others get
+zero. This way routes will not transit nodes that have IP forwarding disabled.
+Edge weights will be chosen according to the configured metric. Routes will be created optimised for this metric. The default metric is hop count, thus each edge gets a weight of 1.
+The available metrics are "hopCount", "delay", "dataRate", and "errorRate".
+When the graph is built and the weights are assigned, the configurator uses Dijkstra's shortest path algorithm to compute the routes.
+
+@subsection s6config Configuration
+
+The configuration for this step extends Step 4, thus it uses the ConfiguratorB network. The configuration in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step6
+@until ####
+
+The XML configuration contains the default rule for IP address assignment, and an <autoroute> element that configures the metric to be used.
+The <autoroute> element specifies parameters for automatic static routing table generation. If no <autoroute> element is specified, the configurator
+assumes a default that affects all routing tables in the network, and computes shortest paths to all interfaces according to the hop count metric.
+Here the <autoroute> element specifies that routes should be added to the routing tables of all hosts (hosts="**") and the metric should be <i>dataRate</i> 
+(metric="dataRate"). The configurator assigns weights to the graph's edges that are inversely proportional to the data rate of the network links.
+This way generation will favor routes with higher data rates.
+
+Note that <i>router0</i> and <i>router2</i> are connected with a 10 Mbit/s ethernet cable, while <i>router1</i> connects to the other routers with
+100 Mbit/s ethernet cables. Since routes are optimized for data rate, packets from router0 to router2 will go via router1 as this path has more bandwidth.
+
+<img src="step4routes_3.png">
+
+@section s6results Results
+
+The following image shows the visualized routes towards <i>host6</i>.
+Routes towards router2 go through router1, as opposed to the routes in Step 4.
+
+<img src="s6routes.png" width=850px>
+@fixupini
 
 */
