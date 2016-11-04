@@ -39,3 +39,6 @@ first could be merged with last one (gw:* gateway is the same as the destination
 
 8. 	const char *NetworkConfiguratorBase::getWirelessId(InterfaceEntry *interfaceEntry) should look for SSID first to determine members a wireless network (swap the two code blocks)
 
+9. 	The Ipv4NetworkConfigurator ned documentation states that the configurator builds a graph with edge weights inversely proportional to the bitrate, so the configurator favors paths
+	with higher bitrate. This is no true, because default the metric is hopcount, so edges get a weight of 1.
+
