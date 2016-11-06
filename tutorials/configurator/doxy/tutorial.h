@@ -452,7 +452,7 @@ Destination      Netmask          Gateway          Iface            Metric
 10.0.0.18        255.255.255.255  *                eth1 (10.0.0.17) 0
 10.0.0.22        255.255.255.255  *                eth2 (10.0.0.21) 0
 10.0.0.25        255.255.255.255  10.0.0.22        eth2 (10.0.0.21) 0
-10.0.0.35        255.255.255.255  10.0.0.18        eth1 (10.0.0.17) 0
+<span class="marker">10.0.0.35        255.255.255.255  10.0.0.18        eth1 (10.0.0.17) 0</span>
 10.0.0.0         255.255.255.248  *                eth0 (10.0.0.4) 	0
 10.0.0.32        255.255.255.248  10.0.0.22        eth2 (10.0.0.21) 0
 10.0.0.0         255.255.255.224  10.0.0.18        eth1 (10.0.0.17) 0
@@ -460,7 +460,8 @@ Destination      Netmask          Gateway          Iface            Metric
 </div>
 
 The routing table of router0 in the last step had 6 entries. Now it has 7,
-as the rule specified in the XML configuration has been added.
+as the rule specified in the XML configuration has been added (highlighted with red).
+<!should be different color than the highlight in the last step because it doesnt signify the visualized routes>
 
 @nav{step4,step6}
 @fixupini
