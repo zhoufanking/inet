@@ -433,9 +433,16 @@ towards <i>router2</i>. The XML configuration in step5a.xml:
 @skipline <config>
 @until </config>
 
+v1
 The <route> element describes routing table entries for one or more nodes in the network.
 As with <interface>, selector attributes specify which nodes are affected by the <route> element,
 and parameter attributes specify the details of the routing table entry.
+
+v2
+The <route> element describes a routing table entry for one or more nodes in the network.
+The hosts selector attribute specifies which hosts' routing tables should contain the entry.
+There are 5 parameter attributes, that are optional. These are the same as in real life routing tables:
+address, netmask, gateway, interface, metric.
 
 The <route> element in this XML configuration adds the following rule to <i>router0's</i> routing table:
 Packets with the destination of 10.0.0.35/32 should use the interface 'eth1' and the gateway 10.0.0.18 (router2).
@@ -476,6 +483,38 @@ The configuration in omnetpp.ini:
 @dontinclude omnetpp.ini
 @skipline Step5B
 @until ####
+
+As in Part A, the routing table of <i>router0</i> has to be altered, so that packets to hosts 6-8 go towards <i>router1</i>. 
+The XML configuration in step5b.xml:
+
+@dontinclude step5b.xml
+@skipline config
+@until config
+
+The <route> element specifies a routing table entry for <i>router0</i>. The destination is 10.0.0.32 with netmask 255.255.255.248,
+which is the address of the subnet for hosts 6-8.
+
+@subsection s5bresults Results
+
+The routing table of <i>router0</i>:
+
+<div class="fragment">
+<pre class="monospace">
+Node ConfiguratorB.router0
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.10        255.255.255.255  10.0.0.18        eth1 (10.0.0.17) 0
+10.0.0.18        255.255.255.255  *                eth1 (10.0.0.17) 0
+10.0.0.22        255.255.255.255  *                eth2 (10.0.0.21) 0
+10.0.0.25        255.255.255.255  10.0.0.22        eth2 (10.0.0.21) 0
+10.0.0.26        255.255.255.255  10.0.0.18        eth1 (10.0.0.17) 0
+10.0.0.33        255.255.255.255  10.0.0.22        eth2 (10.0.0.21) 0
+10.0.0.0         255.255.255.248  *                eth0 (10.0.0.4)  0
+10.0.0.8         255.255.255.248  10.0.0.18        eth1 (10.0.0.17) 0
+<span class="marker">10.0.0.32        255.255.255.248  10.0.0.18        eth1 (10.0.0.17) -1</span>
+10.0.0.32        255.255.255.248  10.0.0.22        eth2 (10.0.0.21) 0
+</pre>
+</div>
 
 @nav{step4,step6}
 @fixupini
