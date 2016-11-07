@@ -464,6 +464,19 @@ The routing table of router0 in the last step had 6 entries. Now it has 7,
 as the rule specified in the XML configuration has been added (highlighted with red).
 <!should be different color than the highlight in the last step because it doesnt signify the visualized routes>
 
+@section s5b Part B - Overriding routes to a set of hosts
+
+In this part, we will override routes going from the subnet of hosts 0-2 to the subnet of hosts 6-8.
+These routes will go through <i>router1</i>, just as in Part A.
+
+@subsection s5bconfig Configuration
+
+The configuration in omnetpp.ini:
+
+@dontinclude omnetpp.ini
+@skipline Step5B
+@until ####
+
 @nav{step4,step6}
 @fixupini
 
@@ -489,6 +502,7 @@ zero. This way routes will not transit nodes that have IP forwarding disabled.
 Edge weights will be chosen according to the configured metric. Routes will be created optimised for this metric. The default metric is hop count, thus each edge gets a weight of 1.
 The available metrics are "hopCount", "delay", "dataRate", and "errorRate".
 When the graph is built and the weights are assigned, the configurator uses Dijkstra's shortest path algorithm to compute the routes.
+<!rewrite>
 
 @subsection s6config Configuration
 
@@ -509,6 +523,8 @@ Note that <i>router0</i> and <i>router2</i> are connected with a 10 Mbit/s ether
 100 Mbit/s ethernet cables. Since routes are optimized for data rate, packets from router0 to router2 will go via router1 as this path has more bandwidth.
 
 <img src="step4routes_3.png">
+<br>
+<img src="step6eth.png">
 
 @section s6results Results
 
