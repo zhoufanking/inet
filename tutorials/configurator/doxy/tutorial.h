@@ -200,6 +200,7 @@ remaining addresses.
 @section s3goals Goals
 
 Complex networks often contain several subnetworks, and the user may want to assign specific IP address ranges for them.
+This can make it easier to tell them apart when looking at the IP addresses.
 This step demonstrates how to assign a range of IP addresses to subnets with xml configuration templates.
 
 @section s3model The model
@@ -287,10 +288,6 @@ The default setting is <tt>""</tt>, which means no routes are visualized. The <t
 going from every node to every other node, which can make the screen cluttered.
 In this step the <i>destinationFilter</i> is set to visualize all routes heading towards <i>host7</i>.
 
-The <i>RoutingTableCanvasVisualizer</i> module can be used to visualize routes in the network.
-Routes are visualized with arrows. An arrow signifies an entry in the source host's routing table. It points
-to the host that is the next hop or gateway for that routing table entry.
-
 The IP address assignment is fully automatic, and the resulting addresses should be the same as in Step 1.
 
 @subsection s4defaults Configurator routing parameters
@@ -316,7 +313,7 @@ is not used if <i>addStaticRoutes = false</i>.
 - <i>optimizeRoutes</i>: Optimize routing tables by merging entries where possible. Not used if <i>addStaticRoutes = false</i>.
 
 Additionally, the <i>dumpTopology</i>, <i>dumpLinks</i> and <i>dumpRoutes</i> parameters are set to true in the <i>General</i> configuration.
-These instruct the configurator to print to the module output the topology of the network, the recognized network links, and the routing tables of all nodes, respectively. Topology describes which nodes are connected to which nodes. Hosts that can directly reach each other (i.e. the next hop is the destination), they
+These instruct the configurator to print to the module output the topology of the network, the recognized network links, and the routing tables of all nodes, respectively. Topology describes which nodes are connected to which nodes. Hosts that can directly reach each other (i.e. the next hop is the destination), 
 are considered to be on the same link.
 
 @dontinclude omnetpp.ini
@@ -326,7 +323,7 @@ are considered to be on the same link.
 The <i>General</i> configuration also sets GlobalARP to keep the packet exchanges simpler. GlobalARP fills the ARP tables of all nodes in advance,
 so when the simulation begins no ARP exchanges are necessary. The <i>**.routingTable.netmaskRoutes = ""</i> keeps the routing table modules from
 adding netmask routes to the routing tables. Netmask routes mean that nodes with the same netmask but different IP should reach each other directly.
-There routes are also added by the configurator, so netmaskRoutes are turned off for the sake of simplicity.
+These routes are also added by the configurator, so netmaskRoutes are turned off for the sake of simplicity.
 
 @section s4result Results
 
@@ -336,7 +333,7 @@ The visualized routes are displayed on the following image:
 
 Note that routes from all nodes to host7 are visualized.
 
-The routing tables are the following (routes visualized in the image above are highlighted with red):
+The routing tables are the following (routes visualized on the image above are highlighted with red):
 
 @htmlonly
 <div class="fragment">
@@ -392,12 +389,9 @@ Destination      Netmask          Gateway          Iface            Metric
 </div>
 @endhtmlonly
 
-Hosts have a routing table entry to reach other nodes which are the same subnet directly. They also have a default route with the router as
+The * for the gateway means that the gateway is the same as the destination. Hosts have a routing table entry to reach other nodes which are on the same subnet directly. They also have a default route with the router as
 the gateway for packets sent to outside-of-subnet addresses. Routers have 3 rules in their routing tables for reaching the other routers,
 specifically, those interfaces of the other routers that are not facing the hosts.
-
-Routers have entries with netmask of 255.255.255.255 for reaching those interfaces of the other routers that are not facing the hosts.
-They also have 3 entries for reaching the 3 subnets.
 
 @nav{step3,step5}
 @fixupini
