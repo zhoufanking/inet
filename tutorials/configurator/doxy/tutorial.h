@@ -60,7 +60,7 @@ based on information contained in the global <tt>IPv4NetworkConfigurator</tt> mo
 
 The configurator supports automatic and manual network configuration, and their combination. By default,
 the configuration is fully automatic, but the user can specify parts (or all) of the configuration manually, and the rest
-will be configured automatically by the configurator. The configurator's various features can be turned on and off with NED parameters, and the details of the configuration can be specified in an xml configuration file.
+will be configured automatically by the configurator. The configurator's various features can be turned on and off with NED parameters. The details of the configuration, such as IP addresses and routes, can be specified in an xml configuration file.
 
 @subsection s1configuration The configuration
 
@@ -158,23 +158,25 @@ Multiple interfaces can be selected with one <interface> element using the * wil
 They can also contain parameter attributes, which deal with what parameters those selected interfaces will have, like IP addresses and
 netmasks. Address templates can be specified with one more 'x' in the address. The 'x' in the IP address and netmask signify that the value is not fixed, but the configurator should choose it automatically.
 With these address templates it is possible to leave everything to the configurator or specify everything, and anything in between.
+<! how about optional selectors and parameters>
 
-In the XML configuration for this step, the first two rules state that host3's interface named 'eth0' should get the IP address 10.0.0.100, and host1's interface 'eth0' should get IP 10.0.0.50.
+In the XML configuration for this step, the first two rules state that host3's (hosts="*.host3") interface named 'eth0' (names="eth0") should get the IP address 10.0.0.100 (address="10.0.0.100"), and host1's interface 'eth0' should get IP 10.0.0.50.
 The third rule is the default configuration, which tells the configurator to assign the rest of the addresses automatically.
 
 Note that the configuration is processed sequentially, thus the order of the configuration elements is important.
 Also, when there is a supplied configuration, and it doesnt specify all the addresses, the entry for the default configuration must be included in order for the configurator to assign addresses to all interfaces. For the manual address assignment rules to take effect,
 the default configuration should be after the manual entries. This way the configurator first assigns the manually specified addresses,
-and then automatically assigns the rest.
-
-Note that the order of configuration elements is important. The configurator doesn't assign addresses in the order of the xml statements, but the
-statements that are positioned earlier in the configuration take precedence over those that come later.
-
-Note that the order of configuration elements is important. The configurator iterates the interfaces in an unspecified order, not in the order of the
-statements in the xml configuration. However, the statements that are positioned earlier in the configuration take precedence over those that come later. 
+and then automatically assigns the rest. 
 
 Note that the order of configuration elements is important, but the configurator doesn't assign addresses in the order of xml statements. It iterates
-interfaces, and for each interface the first matching rule in the xml configuration will take effect.
+interfaces, and for each interface the first matching rule in the xml configuration will take effect. Thus, the statements that are positioned earlier in the configuration take precedence over those that come later. When an xml configuration is supplied, it must contain address assignment statements in order for
+the addresses to be assigned. 
+
+When there is an xml configuration supplied, the configurator will assign addresses according to the address assignment statements in the xml configuration.
+To have the configurator automatically assign addresses, the rule from the default configuration has to be included.
+Even if the xml configuration contains user specified address assignments, the default rule should be included <strong>after</strong> the user defined ones
+(so the user defined ones take effect first, and the rest of the addresses are assigned automatically). This is unless the intention is to leave some
+interfaces unassigned.
 
 @section s2results Results
 
@@ -219,13 +221,18 @@ The xml configuration is supplied in an external file (step3.xml), using the xml
 - The first 3 lines assign IP addresses with different network prefixes to hosts in the 3 different subnets.
 
 - The <i>towards</i> selector can be used to easily select the interfaces that are connected towards a certain host (or set of hosts using wildcards).
-The next 3 entries specify that each router's interface that connects to the subnet should belong to the subnet.
+The next 3 entries specify that each router's interface that connects to the subnet should belong in that subnet.
 
 - The last entry sets the network network prefix of interfaces of all routers to be 10.1. Since the addresses for the interfaces
 connected towards the hosts are already specified by a previous entry, this effects only the rest of interfaces, those facing the other routers.
 
 The same effect can be achieved in more than one way. Here is an alternative xml configuration (step3alt.xml) that results in the same address assignment:
-<! not possible to merge 'towards' entries into the first 3>
+
+@include step3alt.xml
+
+The <i>among</i> selector selects the interfaces of the specified hosts towards the specified hosts (the statement <i>among="X Y Z"</i> is the same as
+<i>host="X Y Z" towards="X Y Z"</i>). The rules containing the towards statements can be merged into the rules that assigns addresses to the hosts in the subnets,
+as they have the same address templates.
 
 @section s3results Results
 
@@ -306,7 +313,7 @@ manual routes.
 This is often the case with hosts, which usually connect to a network via a single interface. This parameter
 is not used if <i>addStaticRoutes = false</i>.
 - <i>addSubnetRoutes</i>: Reach nodes in own subnet directly (ie. the gateway is the same as the destination), rather than with separate destination interface routes. This is only used where applicable, and not used if <i>addStaticRoutes = false</i>.
-- <i>optimizeRoutes</i>: Optimize routing tables by matching entries where possible. Not used if <i>addStaticRoutes = false</i>.
+- <i>optimizeRoutes</i>: Optimize routing tables by merging entries where possible. Not used if <i>addStaticRoutes = false</i>.
 
 Additionally, the <i>dumpTopology</i>, <i>dumpLinks</i> and <i>dumpRoutes</i> parameters are set to true in the <i>General</i> configuration.
 These instruct the configurator to print to the module output the topology of the network, the recognized network links, and the routing tables of all nodes, respectively. Topology describes which nodes are connected to which nodes. Hosts that can directly reach each other (i.e. the next hop is the destination), they
