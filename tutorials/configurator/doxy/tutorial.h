@@ -561,16 +561,133 @@ This way generation will favor routes with higher data rates.
 Note that <i>router0</i> and <i>router2</i> are connected with a 10 Mbit/s ethernet cable, while <i>router1</i> connects to the other routers with
 100 Mbit/s ethernet cables. Since routes are optimized for data rate, packets from router0 to router2 will go via router1 as this path has more bandwidth.
 
+The resulting routes are essentially same as in Step 5B, just realized with a different XML config (the difference is that in this step, no traffic is routed
+between router0 and router2 at all. In Step 5B, packets to router2's eth2 interface were routed that way).
+
+v1
 <img src="step4routes_3.png">
-<br>
+
+v2
 <img src="step6eth.png">
 
 @section s6results Results
 
-The following image shows the visualized routes towards <i>host6</i>.
+The following image shows the visualized routes towards <i>host7</i>.
 Routes towards router2 go through router1, as opposed to the routes in Step 4.
 
 <img src="s6routes.png" width=850px>
+
+The routing tables are as follows:
+
+@htmlonly
+<div class="fragment">
+<pre class="monospace">
+Node ConfiguratorB.host0
+-- Routing table --
+Destination      Netmask          Gateway          Iface           Metric
+10.0.0.0         255.255.255.248  *                eth0 (10.0.0.1) 0
+<i></i>*                *                10.0.0.4         eth0 (10.0.0.1) 0
+
+Node ConfiguratorB.host1
+-- Routing table --
+Destination      Netmask          Gateway          Iface           Metric
+10.0.0.0         255.255.255.248  *                eth0 (10.0.0.3) 0
+<i></i>*                *                10.0.0.4         eth0 (10.0.0.3) 0
+
+Node ConfiguratorB.host2
+-- Routing table --
+Destination      Netmask          Gateway          Iface           Metric
+10.0.0.0         255.255.255.248  *                eth0 (10.0.0.2) 0
+<i></i>*                *                10.0.0.4         eth0 (10.0.0.2) 0
+
+Node ConfiguratorB.host3
+-- Routing table --
+Destination      Netmask          Gateway          Iface           Metric
+10.0.0.8         255.255.255.248  *                eth0 (10.0.0.9) 0
+<i></i>*                *                10.0.0.10        eth0 (10.0.0.9) 0
+
+Node ConfiguratorB.router0
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.18        255.255.255.255  *                eth1 (10.0.0.17) 0
+10.0.0.0         255.255.255.248  *                eth0 (10.0.0.4) 	0
+10.0.0.0         255.255.255.192  10.0.0.18        eth1 (10.0.0.17) 0
+
+Node ConfiguratorB.router2
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.26        255.255.255.255  *                eth0 (10.0.0.25) 0
+10.0.0.32        255.255.255.248  *                eth1 (10.0.0.33) 0
+10.0.0.0         255.255.255.224  10.0.0.26        eth0 (10.0.0.25) 0
+
+Node ConfiguratorB.router1
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.17        255.255.255.255  *                eth0 (10.0.0.18) 0
+10.0.0.22        255.255.255.255  10.0.0.25        eth2 (10.0.0.26) 0
+10.0.0.25        255.255.255.255  *                eth2 (10.0.0.26) 0
+10.0.0.8         255.255.255.248  *                eth1 (10.0.0.10) 0
+10.0.0.32        255.255.255.248  10.0.0.25        eth2 (10.0.0.26) 0
+10.0.0.0         255.255.255.224  10.0.0.17        eth0 (10.0.0.18) 0
+
+Node ConfiguratorB.host4
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.8         255.255.255.248  *                eth0 (10.0.0.11) 0
+<i></i>*                *                10.0.0.10        eth0 (10.0.0.11) 0
+
+Node ConfiguratorB.host5
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.8         255.255.255.248  *                eth0 (10.0.0.12) 0
+<i></i>*                *                10.0.0.10        eth0 (10.0.0.12) 0
+
+Node ConfiguratorB.host6
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.32        255.255.255.248  *                eth0 (10.0.0.34) 0
+<i></i>*                *                10.0.0.33        eth0 (10.0.0.34) 0
+
+Node ConfiguratorB.host7
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.32        255.255.255.248  *                eth0 (10.0.0.35) 0
+<i></i>*                *                10.0.0.33        eth0 (10.0.0.35) 0
+
+Node ConfiguratorB.host8
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.32        255.255.255.248  *                eth0 (10.0.0.36) 0
+<i></i>*                *                10.0.0.33        eth0 (10.0.0.36) 0
+</pre>
+</div>
+@endhtmlonly
+
+<!v2 - only router0's routing table>
+
+The routing table of <i>router0</i> is as follows:
+
+<div class="fragment">
+<pre class="monospace">
+Node ConfiguratorB.router0
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.18        255.255.255.255  *                eth1 (10.0.0.17) 0
+10.0.0.0         255.255.255.248  *                eth0 (10.0.0.4) 	0
+10.0.0.0         255.255.255.192  10.0.0.18        eth1 (10.0.0.17) 0
+</pre>
+</div>
+
+The last rule describes that traffic that is not destined for <i>router0's</i> subnet or <i>router2</i> should be routed towards <i>router2</i>,
+via the 100Mbps link.
+
+One can easily check that no routes are going through the link between router0 and router2 by setting the destination filter to "*.*" in the visualizer.
+This indicates all routes in the network:
+
+<img src="step6allroutes.png" width=850px>
+
+@endhtmlonly
+
 @fixupini
 
 */
