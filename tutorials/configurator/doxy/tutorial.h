@@ -29,6 +29,7 @@ defined in separate .NED files.
  - @ref step3
  - @ref step4
  - @ref step5
+ - @ref step6
 
 @nav{index,step1}
 
@@ -91,7 +92,7 @@ assignDisjunctSubnetAddresses = default(true);
 or the default xml configuration if none is specified. Since no xml configuration is specified in this step, it uses the default configuration.
 
 - <strong>assignDisjunctSubnetAddresses = true</strong> sets that the configurator should assign different address prefixes and netmasks
-to nodes on different links.
+to nodes on different links (nodes are consideret to be one the same link if they can reach each other in one hop).
 
 Additionally, the <strong>dumpAddresses</strong> parameter sets whether the configurator prints assigned IP addresses to the module output.
 This is false by default, but it's set to true in the <i>General</i> configuration at the begining of omnetpp.ini (along with other settings, which
@@ -156,21 +157,23 @@ multiple configuration elements, such as the <i><interface></i> elements here.
 The <interface> element can contain selector attributes, which limit the scope of what interfaces are affected by the <interface> element.
 Multiple interfaces can be selected with one <interface> element using the * wildcard.
 They can also contain parameter attributes, which deal with what parameters those selected interfaces will have, like IP addresses and
-netmasks. Address templates can be specified with one more 'x' in the address. The 'x' in the IP address and netmask signify that the value is not fixed, but the configurator should choose it automatically.
+netmasks. Address templates can be specified with one or more 'x' in the address. The 'x' in the IP address and netmask signify that the value is not fixed, but the configurator should choose it automatically.
 With these address templates it is possible to leave everything to the configurator or specify everything, and anything in between.
-<! how about optional selectors and parameters>
+- The <strong>hosts</strong> selector attribute selects hosts. The selection pattern can be full path (i.e. "*.host0") or a module name anywhere in the hierarchy (i.e. "host0"). Only interfaces in the selected host will be affected by the <interface> element.
+- The <strong>names</strong> selector attribute selects interfaces. Only the interfaces that match the specified names will be selected (i.e. "eth0").
+- The <strong>address</strong> parameter attribute specifies the addresses to be assigned. Address templates can be used, where an 'x' in place of a byte means that the value
+should be selected by the configurator automatically. The value "" means the no address will be assigned. Unconfigured interfaces will still have
+allocated addresses in their subnets, so they can be easily configured later.
+- The <strong>netmask</strong> parameter attribute specified the netmasks to be assigned. Address templetes can be used here as well.
+
+All attributes are optional. Attributes not specified are left for the automatic configuration. There are many other attributes available. For the complete list of attributes of the <interface> element
+(or any other element), please refer to the <a href="https://omnetpp.org/doc/inet/api-current/neddoc/index.html?p=inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator.html" target="_blank"><tt>IPv4NetworkConfigurator</tt></a> NED documentation.
 
 In the XML configuration for this step, the first two rules state that host3's (hosts="*.host3") interface named 'eth0' (names="eth0") should get the IP address 10.0.0.100 (address="10.0.0.100"), and host1's interface 'eth0' should get IP 10.0.0.50.
 The third rule is the default configuration, which tells the configurator to assign the rest of the addresses automatically.
 
-Note that the configuration is processed sequentially, thus the order of the configuration elements is important.
-Also, when there is a supplied configuration, and it doesnt specify all the addresses, the entry for the default configuration must be included in order for the configurator to assign addresses to all interfaces. For the manual address assignment rules to take effect,
-the default configuration should be after the manual entries. This way the configurator first assigns the manually specified addresses,
-and then automatically assigns the rest. 
-
 Note that the order of configuration elements is important, but the configurator doesn't assign addresses in the order of xml statements. It iterates
-interfaces, and for each interface the first matching rule in the xml configuration will take effect. Thus, the statements that are positioned earlier in the configuration take precedence over those that come later. When an xml configuration is supplied, it must contain address assignment statements in order for
-the addresses to be assigned. 
+interfaces, and for each interface the first matching rule in the xml configuration will take effect. Thus, the statements that are positioned earlier in the configuration take precedence over those that come later. When an xml configuration is supplied, it must contain address assignment statements in order for addresses to be assigned. 
 
 When there is an xml configuration supplied, the configurator will assign addresses according to the address assignment statements in the xml configuration.
 To have the configurator automatically assign addresses, the rule from the default configuration has to be included.
