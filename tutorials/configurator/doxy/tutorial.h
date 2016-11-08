@@ -235,7 +235,7 @@ The same effect can be achieved in more than one way. Here is an alternative xml
 @include step3alt.xml
 
 The <i>among</i> selector selects the interfaces of the specified hosts towards the specified hosts (the statement <i>among="X Y Z"</i> is the same as
-<i>host="X Y Z" towards="X Y Z"</i>). The rules containing the towards statements can be merged into the rules that assigns addresses to the hosts in the subnets,
+<i>hosts="X Y Z" towards="X Y Z"</i>). The rules containing the towards statements were merged into the rules that assigns addresses to the hosts in the subnets,
 as they have the same address templates.
 
 @section s3results Results
@@ -528,9 +528,6 @@ Destination      Netmask          Gateway          Iface            Metric
 
 @section s6goals Goals
 
-By default, the network configurator uses the shorthest path algorithm with constant 1 cost function. It produces paths optimized for hop count.
-Other cost functions are also available: bitrate, error rate, etc.???
-
 When setting up routes, the configurator uses the shortest path algorithm. By default, paths are optimized for hop count.
 However, there are other cost functions available, like data rate, error rate, etc. This step demonstrates using the data rate metric
 for automatically setting up routes.
@@ -538,13 +535,14 @@ for automatically setting up routes.
 @section s6model The model
 
 When setting up routes, the configurator first builds a graph representing the network topology. It will have vertices for every network device,
-like hosts, routers, and L2 devices like switches, access points, and ethernet hubs. The graphs edges represent network connections. The configurator assigns weights to vertices and
+like hosts, routers, and L2 devices like switches, access points, and ethernet hubs. The graph's edges represent network connections. The configurator assigns weights to vertices and
 edges, this is used by the shortest path algorithm to set up routes. Nodes that have IP forwarding disabled get infinite weight, and all others get
 zero. This way routes will not transit nodes that have IP forwarding disabled.
-Edge weights will be chosen according to the configured metric. Routes will be created optimised for this metric. The default metric is hop count, thus each edge gets a weight of 1.
-The available metrics are "hopCount", "delay", "dataRate", and "errorRate".
+Edge weights will be chosen according to the configured metric. Routes will be created optimised for this metric. The default metric is "hopCount",
+which means that all edges will have a cost of 1. Other metrics available are "dataRate", "errorRate" and "delay". When one of these are selected as metric,
+edges will get a cost that is inversely proportional to the selected metric (i.e. when dataRate is selected, faster links will be represented by lower cost edges
+in the graph).
 When the graph is built and the weights are assigned, the configurator uses Dijkstra's shortest path algorithm to compute the routes.
-<!rewrite>
 
 @subsection s6config Configuration
 
@@ -559,7 +557,7 @@ The <autoroute> element specifies parameters for automatic static routing table 
 assumes a default that affects all routing tables in the network, and computes shortest paths to all interfaces according to the hop count metric.
 Here the <autoroute> element specifies that routes should be added to the routing tables of all hosts (hosts="**") and the metric should be <i>dataRate</i> 
 (metric="dataRate"). The configurator assigns weights to the graph's edges that are inversely proportional to the data rate of the network links.
-This way generation will favor routes with higher data rates.
+This way route generation will favor routes with higher data rates.
 
 Note that <i>router0</i> and <i>router2</i> are connected with a 10 Mbit/s ethernet cable, while <i>router1</i> connects to the other routers with
 100 Mbit/s ethernet cables. Since routes are optimized for data rate, packets from router0 to router2 will go via router1 as this path has more bandwidth.
@@ -579,94 +577,6 @@ The following image shows the visualized routes towards <i>host7</i>.
 Routes towards router2 go through router1, as opposed to the routes in Step 4.
 
 <img src="s6routes.png" width=850px>
-
-The routing tables are as follows:
-
-@htmlonly
-<div class="fragment">
-<pre class="monospace">
-Node ConfiguratorB.host0
--- Routing table --
-Destination      Netmask          Gateway          Iface           Metric
-10.0.0.0         255.255.255.248  *                eth0 (10.0.0.1) 0
-<i></i>*                *                10.0.0.4         eth0 (10.0.0.1) 0
-
-Node ConfiguratorB.host1
--- Routing table --
-Destination      Netmask          Gateway          Iface           Metric
-10.0.0.0         255.255.255.248  *                eth0 (10.0.0.3) 0
-<i></i>*                *                10.0.0.4         eth0 (10.0.0.3) 0
-
-Node ConfiguratorB.host2
--- Routing table --
-Destination      Netmask          Gateway          Iface           Metric
-10.0.0.0         255.255.255.248  *                eth0 (10.0.0.2) 0
-<i></i>*                *                10.0.0.4         eth0 (10.0.0.2) 0
-
-Node ConfiguratorB.host3
--- Routing table --
-Destination      Netmask          Gateway          Iface           Metric
-10.0.0.8         255.255.255.248  *                eth0 (10.0.0.9) 0
-<i></i>*                *                10.0.0.10        eth0 (10.0.0.9) 0
-
-Node ConfiguratorB.router0
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.18        255.255.255.255  *                eth1 (10.0.0.17) 0
-10.0.0.0         255.255.255.248  *                eth0 (10.0.0.4) 	0
-10.0.0.0         255.255.255.192  10.0.0.18        eth1 (10.0.0.17) 0
-
-Node ConfiguratorB.router2
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.26        255.255.255.255  *                eth0 (10.0.0.25) 0
-10.0.0.32        255.255.255.248  *                eth1 (10.0.0.33) 0
-10.0.0.0         255.255.255.224  10.0.0.26        eth0 (10.0.0.25) 0
-
-Node ConfiguratorB.router1
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.17        255.255.255.255  *                eth0 (10.0.0.18) 0
-10.0.0.22        255.255.255.255  10.0.0.25        eth2 (10.0.0.26) 0
-10.0.0.25        255.255.255.255  *                eth2 (10.0.0.26) 0
-10.0.0.8         255.255.255.248  *                eth1 (10.0.0.10) 0
-10.0.0.32        255.255.255.248  10.0.0.25        eth2 (10.0.0.26) 0
-10.0.0.0         255.255.255.224  10.0.0.17        eth0 (10.0.0.18) 0
-
-Node ConfiguratorB.host4
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.8         255.255.255.248  *                eth0 (10.0.0.11) 0
-<i></i>*                *                10.0.0.10        eth0 (10.0.0.11) 0
-
-Node ConfiguratorB.host5
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.8         255.255.255.248  *                eth0 (10.0.0.12) 0
-<i></i>*                *                10.0.0.10        eth0 (10.0.0.12) 0
-
-Node ConfiguratorB.host6
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.32        255.255.255.248  *                eth0 (10.0.0.34) 0
-<i></i>*                *                10.0.0.33        eth0 (10.0.0.34) 0
-
-Node ConfiguratorB.host7
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.32        255.255.255.248  *                eth0 (10.0.0.35) 0
-<i></i>*                *                10.0.0.33        eth0 (10.0.0.35) 0
-
-Node ConfiguratorB.host8
--- Routing table --
-Destination      Netmask          Gateway          Iface            Metric
-10.0.0.32        255.255.255.248  *                eth0 (10.0.0.36) 0
-<i></i>*                *                10.0.0.33        eth0 (10.0.0.36) 0
-</pre>
-</div>
-@endhtmlonly
-
-<!v2 - only router0's routing table>
 
 The routing table of <i>router0</i> is as follows:
 
@@ -688,6 +598,14 @@ One can easily check that no routes are going through the link between router0 a
 This indicates all routes in the network:
 
 <img src="step6allroutes.png" width=850px>
+
+Testing svg:
+
+<img src="output_2.svg">
+
+Testing gif:
+
+<img src="step4_4.gif" width="850px">
 
 @endhtmlonly
 
