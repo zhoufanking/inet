@@ -40,8 +40,7 @@ defined in separate .NED files.
 @section s1goals Goals
 
 The goal of this step is to demonstrate that in many scenarios, the configurator can properly configure IP addresses in a network with its default settings, without
-any user input. This is useful when it is irrelevant what the nodes' actual IP addresses are in a simulation, because the goal is to study wireless
-transmission ranges, for example
+any user input. This is useful when it is irrelevant what the nodes' actual IP addresses are in a simulation
 (this step deals with IP addresses only, routing will be discussed in later steps).
 
 @section s1model The model
@@ -170,16 +169,12 @@ All attributes are optional. Attributes not specified are left for the automatic
 (or any other element), please refer to the <a href="https://omnetpp.org/doc/inet/api-current/neddoc/index.html?p=inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator.html" target="_blank"><tt>IPv4NetworkConfigurator</tt></a> NED documentation.
 
 In the XML configuration for this step, the first two rules state that host3's (hosts="*.host3") interface named 'eth0' (names="eth0") should get the IP address 10.0.0.100 (address="10.0.0.100"), and host1's interface 'eth0' should get IP 10.0.0.50.
-The third rule is the default configuration, which tells the configurator to assign the rest of the addresses automatically.
+The third rule is the exact copy of the default configuration, which tells the configurator to assign the rest of the addresses automatically.
 
-Note that the order of configuration elements is important, but the configurator doesn't assign addresses in the order of xml statements. It iterates
-interfaces, and for each interface the first matching rule in the xml configuration will take effect. Thus, the statements that are positioned earlier in the configuration take precedence over those that come later. When an xml configuration is supplied, it must contain address assignment statements in order for addresses to be assigned. 
+Note that the order of configuration elements is important, but the configurator doesn't assign addresses in the order of xml interface elements. It iterates
+interfaces in the network, and for each interface the first matching rule in the xml configuration will take effect. Thus, the statements that are positioned earlier in the configuration take precedence over those that come later.
 
-When there is an xml configuration supplied, the configurator will assign addresses according to the address assignment statements in the xml configuration.
-To have the configurator automatically assign addresses, the rule from the default configuration has to be included.
-Even if the xml configuration contains user specified address assignments, the default rule should be included <strong>after</strong> the user defined ones
-(so the user defined ones take effect first, and the rest of the addresses are assigned automatically). This is unless the intention is to leave some
-interfaces unassigned.
+When an xml configuration is supplied, it must contain interface elements in order to assign addresses at all. To make sure the configurator automatically assigns addresses to all interfaces, a rule similar to the one in the default configuration has to be included. Unless the intention is to leave some interfaces unassigned. The default rule should be the <strong>last</strong> one among the interface rules (so the more specific ones override it).
 
 @section s2results Results
 
@@ -188,7 +183,7 @@ The assigned addresses are shown in the following image.
 <img src="step2address.png" width=850px>
 
 As in the previous step, the configurator assigned disjunct subnet addresses. Note that the configurator still assigned addresses sequentially,
-that is after setting the 10.0.0.100 address to <i>host3</i>, it didnt go back to the beginning of the address pool when assigning the
+that is after setting the 10.0.0.100 address to <i>host3</i>, it didn't go back to the beginning of the address pool when assigning the
 remaining addresses.
 
 @nav{step1,step3}
@@ -204,7 +199,7 @@ remaining addresses.
 
 Complex networks often contain several subnetworks, and the user may want to assign specific IP address ranges for them.
 This can make it easier to tell them apart when looking at the IP addresses.
-This step demonstrates how to assign a range of IP addresses to subnets with xml configuration templates.
+This step demonstrates how to assign a range of IP addresses to subnets.
 
 @section s3model The model
 
@@ -218,7 +213,7 @@ The configuration is the following:
 @skipline Step3
 @until ####
 
-The xml configuration is supplied in an external file (step3.xml), using the xmldoc function:
+This time the xml configuration is supplied in an external file (step3.xml), using the xmldoc function:
 
 @include step3.xml
 
@@ -227,7 +222,9 @@ The xml configuration is supplied in an external file (step3.xml), using the xml
 - The <i>towards</i> selector can be used to easily select the interfaces that are connected towards a certain host (or set of hosts using wildcards).
 The next 3 entries specify that each router's interface that connects to the subnet should belong in that subnet.
 
-- The last entry sets the network network prefix of interfaces of all routers to be 10.1. Since the addresses for the interfaces
+- The last entry sets the network prefix of interfaces of all routers to be 10.1.x.x. 
+TODO: very long sentence
+Since the addresses for the interfaces
 connected towards the hosts are already specified by a previous entry, this effects only the rest of interfaces, those facing the other routers
 (since these 3 rules assign addresses to all interfaces in the network, the default address assignment rule is not required).
 
@@ -236,8 +233,7 @@ The same effect can be achieved in more than one way. Here is an alternative xml
 @include step3alt.xml
 
 The <i>among</i> selector selects the interfaces of the specified hosts towards the specified hosts (the statement <i>among="X Y Z"</i> is the same as
-<i>hosts="X Y Z" towards="X Y Z"</i>). The rules containing the towards statements were merged into the rules that assigns addresses to the hosts in the subnets,
-as they have the same address templates.
+<i>hosts="X Y Z" towards="X Y Z"</i>).
 
 @section s3results Results
 
@@ -245,7 +241,7 @@ The assigned addresses are shown on the following image.
 
 <img src="step3address.png" width=850px>
 
-The addresses are assigned as intended.
+The addresses are assigned as intended. TODO: easy to recognize which group a node belongs to just by looking at its address (.e.g. in the log)
 
 @nav{step2,step4}
 @fixupini
@@ -258,7 +254,7 @@ The addresses are assigned as intended.
 
 @section s4goals Goals
 
-Just as with IP addresses, in many cases the configurator configures routes in a network properly without any user input.
+Just as with IP addresses, in many cases the configurator sets up routes in a network properly without any user input.
 This step demonstrates the default configuration for routing.
 
 @section s4model The model
@@ -281,7 +277,7 @@ The configuration for this step in omnetpp.ini is the following:
 @until ####
 
 A ping app in <i>host0</i> is configured to send ping packets to <i>host7</i>, which is on the other side of the network.
-This should aid in visualizing routing.
+This application is suitable for visualizing routing tables.
 
 The <i>RoutingTableCanvasVisualizer</i> module can be used to visualize routes in the network.
 Routes are visualized with arrows. In general, an arrow signifies an entry in the source host's routing table. It points
@@ -296,7 +292,7 @@ The IP address assignment is fully automatic, and the resulting addresses should
 
 @subsection s4defaults Configurator routing parameters
 
-The configurator's default parameters concerning routing are the following:
+The configurator's default parameters concerning static routing are the following:
 
 <pre>
 addStaticRoutes = default(true)
@@ -308,12 +304,17 @@ optimizeRoutes = default(true)
 The configuration for this step didn't set any of these parameters, thus the default values will take effect.
 
 - <i>addStaticRoutes</i>: the configurator adds static routes to the routing table of all nodes in the network, 
-with routes leading to all destination interfaces. This should be turned off when the xml configuration contains
+with routes leading to all destination interfaces. TODO: this is false even though it's in the NED doc :) This should be turned off when the xml configuration contains
 manual routes.
 - <i>addDefaultRoutes</i>: Add a default route if all routes from a node go through the same gateway.
 This is often the case with hosts, which usually connect to a network via a single interface. This parameter
 is not used if <i>addStaticRoutes = false</i>.
-- <i>addSubnetRoutes</i>: Reach nodes in own subnet directly (ie. the gateway is the same as the destination), rather than with separate destination interface routes. This is only used where applicable, and not used if <i>addStaticRoutes = false</i>.
+- <i>addSubnetRoutes</i>: 
+
+TODO: this means something else: instead of adding static routes towards individual interaces, add static routes towards subnets
+Reach nodes in own subnet directly (ie. the gateway is the same as the destination), rather than with separate destination interface routes. 
+
+This is only used where applicable, and not used if <i>addStaticRoutes = false</i>.
 - <i>optimizeRoutes</i>: Optimize routing tables by merging entries where possible. Not used if <i>addStaticRoutes = false</i>.
 
 Additionally, the <i>dumpTopology</i>, <i>dumpLinks</i> and <i>dumpRoutes</i> parameters are set to true in the <i>General</i> configuration.
@@ -393,7 +394,7 @@ Destination      Netmask          Gateway          Iface            Metric
 </div>
 @endhtmlonly
 
-The * for the gateway means that the gateway is the same as the destination. Hosts have a routing table entry to reach other nodes which are on the same subnet directly. They also have a default route with the router as
+The * for the gateway means that the gateway is the same as the destination. Hosts have a routing table entry to reach other nodes on the same subnet directly. They also have a default route with the router as
 the gateway for packets sent to outside-of-subnet addresses. Routers have 3 rules in their routing tables for reaching the other routers,
 specifically, those interfaces of the other routers that are not facing the hosts.
 
