@@ -104,9 +104,11 @@ will be discussed later).
 An XML configuration can be supplied with the <i>config</i> parameter. When the user doesn't specify an xml configuration,
 the configurator will use the following default configuration:
 
+<div class="fragment">
 <code>
 config = default(xml("<config><interface hosts='**' address='10.x.x.x' netmask='255.x.x.x'/></config>"));
 </code>
+</div>
 
 The default xml configuration tells the configurator to assign IP addresses to all interfaces of all hosts, 
 from the IP range 10.0.0.0 - 10.255.255.255 and netmask range 255.0.0.0 - 255.255.255.255.
