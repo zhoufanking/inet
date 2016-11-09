@@ -228,7 +228,8 @@ The xml configuration is supplied in an external file (step3.xml), using the xml
 The next 3 entries specify that each router's interface that connects to the subnet should belong in that subnet.
 
 - The last entry sets the network network prefix of interfaces of all routers to be 10.1. Since the addresses for the interfaces
-connected towards the hosts are already specified by a previous entry, this effects only the rest of interfaces, those facing the other routers.
+connected towards the hosts are already specified by a previous entry, this effects only the rest of interfaces, those facing the other routers
+(since these 3 rules assign addresses to all interfaces in the network, the default address assignment rule is not required).
 
 The same effect can be achieved in more than one way. Here is an alternative xml configuration (step3alt.xml) that results in the same address assignment:
 
@@ -262,7 +263,7 @@ This step demonstrates the default configuration for routing.
 
 @section s4model The model
 
-This step uses the <i>ConfiguratorB</i> network, defined in ConfiguratorB.ned. This extends the previous network, <i>ConfiguratorA</i> with
+This step uses the <i>ConfiguratorB</i> network, defined in ConfiguratorB.ned. This extends the previous network, <i>ConfiguratorA</i>, with
 the addition of a <tt>RoutingTableCanvasVisualizer</tt> module.
 
 @dontinclude ConfiguratorB.ned
@@ -563,7 +564,7 @@ Note that <i>router0</i> and <i>router2</i> are connected with a 10 Mbit/s ether
 100 Mbit/s ethernet cables. Since routes are optimized for data rate, packets from router0 to router2 will go via router1 as this path has more bandwidth.
 
 The resulting routes are essentially same as in Step 5B, just realized with a different XML config (the difference is that in this step, no traffic is routed
-between router0 and router2 at all. In Step 5B, packets to router2's eth2 interface were routed that way).
+between router0 and router2 at all. In Step 5B, packets to router2's eth2 interface were routed through the 10Mbps link).
 
 v1
 <img src="step4routes_3.png">
