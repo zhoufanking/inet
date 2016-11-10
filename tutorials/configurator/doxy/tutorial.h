@@ -122,6 +122,10 @@ as instructed by the <strong>assignDisjunctSubnetAddresses</strong> parameter.
 
 <img src="step1addresses.png" width=850px>
 
+4 interfaces belong to each subnet, 3 host and 1 router interface. A 2 bit netmask would suffice for 4 addresses, but the configurator
+doesn't assign the all-zeros and all-ones subnet addresses (subnet zero and broadcast address). Thus the netmask is 3 bits.
+Similarly, the routers.<!WIP>
+
 @nav{index,step2}
 @fixupini
 
