@@ -409,6 +409,10 @@ The * for the gateway means that the gateway is the same as the destination. Hos
 the gateway for packets sent to outside-of-subnet addresses. Routers have 3 rules in their routing tables for reaching the other routers,
 specifically, those interfaces of the other routers that are not facing the hosts.
 
+Below is an animation of <i>host0</i> pinging <i>host7</i>.
+
+<img src="step4_11.gif" width="850px">
+
 @nav{step3,step5}
 @fixupini
 
@@ -487,6 +491,13 @@ The routing table of router0 in the last step had 6 entries. Now it has 7,
 as the rule specified in the XML configuration has been added (highlighted with red).
 <!should be different color than the highlight in the last step because it doesnt signify the visualized routes>
 
+The following animation depits <i>host0</i> pinging <i>host7</i>, and <i>host1</i> pinging <i>host6</i>.
+
+<img src="step5_1.gif" width="850px">
+
+Note that only routes towards <i>host7</i> are diverted at router0. The ping reply packet uses the original route between <i>router0</i> and <i>router2</i>.
+Ping packets to <i>host6</i> (and back) also use the original route.
+
 @section s5b Part B - Overriding routes to a set of hosts
 
 In this part, we will override routes going from the subnet of hosts 0-2 to the subnet of hosts 6-8.
@@ -508,7 +519,11 @@ The XML configuration in step5b.xml:
 @until config
 
 The <route> element specifies a routing table entry for <i>router0</i>. The destination is 10.0.0.32 with netmask 255.255.255.248,
-which is the address of the subnet for hosts 6-8.
+which is the address of the subnet for hosts 6-8. The gateway is <i>router1's</i> address, the interface is the one connected towards
+<i>router1</i> (eth1). This rule is added to <i>router0's</i> routing table <strong>in addition</strong>
+to the rule added automatically by the configurator. They match the same packets, but the parameters are different (see at the result section
+below). The metric is set to -1 to ensure that the manual route takes precedence.
+<!if the manual route is always before the automatic one, is metric=-1 necessary?>
 
 @subsection s5bresults Results
 
@@ -531,6 +546,13 @@ Destination      Netmask          Gateway          Iface            Metric
 10.0.0.32        255.255.255.248  10.0.0.22        eth2 (10.0.0.21) 0
 </pre>
 </div>
+
+The following is the animation of <i>host0</i> pinging <i>host7</i> and <i>host1</i> pinging <i>host6</i>, similarly
+to Part A.
+
+<img src="step5B_1.gif" width="850px">
+
+This time both packets outbound to hosts 6 and 7 take the diverted route, the replies come back on the original route.
 
 @nav{step4,step6}
 @fixupini
