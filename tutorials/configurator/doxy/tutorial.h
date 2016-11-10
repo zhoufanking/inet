@@ -91,7 +91,7 @@ assignDisjunctSubnetAddresses = default(true);
 or the default xml configuration if none is specified. Since no xml configuration is specified in this step, it uses the default configuration.
 
 - <strong>assignDisjunctSubnetAddresses = true</strong> sets that the configurator should assign different address prefixes and netmasks
-to nodes on different links (nodes are consideret to be one the same link if they can reach each other in one hop).
+to nodes on different links (nodes are considered to be on the same link if they can reach each other directly, or through L2 devices only).
 
 Additionally, the <strong>dumpAddresses</strong> parameter sets whether the configurator prints assigned IP addresses to the module output.
 This is false by default, but it's set to true in the <i>General</i> configuration at the begining of omnetpp.ini (along with other settings, which
@@ -116,7 +116,7 @@ from the IP range 10.0.0.0 - 10.255.255.255 and netmask range 255.0.0.0 - 255.25
 @section s1results Results
 
 The IP addresses assigned to interfaces by the configurator are shown on the image below.
-The switches and hosts connected to the individual routers are considered to be one the same link.
+The switches and hosts connected to the individual routers are considered to be on the same link.
 Note that the configurator assigned addresses sequentially starting from 10.0.0.1, while making sure that different subnets got different address prefixes and netmasks,
 as instructed by the <strong>assignDisjunctSubnetAddresses</strong> parameter.
 
@@ -133,7 +133,7 @@ as instructed by the <strong>assignDisjunctSubnetAddresses</strong> parameter.
 
 @section s2goals Goals
 
-Sometimes the user may want to specify the IP addresses of some nodes with special purpose in the network and leave the rest for the automatic configuration. This helps remembering IP addresses of said nodes. This step demonstrates manually specifying individual IP addresses.
+Sometimes it might be useful to specify the IP addresses of some nodes with special purpose in the network and leave the rest for the automatic configuration. This helps remembering IP addresses of said nodes. This step demonstrates manually specifying individual IP addresses.
 
 @section s2model The model
 
@@ -163,15 +163,17 @@ With these address templates it is possible to leave everything to the configura
 - The <strong>hosts</strong> selector attribute selects hosts. The selection pattern can be full path (i.e. "*.host0") or a module name anywhere in the hierarchy (i.e. "host0"). Only interfaces in the selected host will be affected by the <interface> element.
 - The <strong>names</strong> selector attribute selects interfaces. Only the interfaces that match the specified names will be selected (i.e. "eth0").
 - The <strong>address</strong> parameter attribute specifies the addresses to be assigned. Address templates can be used, where an 'x' in place of a byte means that the value
-should be selected by the configurator automatically. The value "" means the no address will be assigned. Unconfigured interfaces will still have
-allocated addresses in their subnets, so they can be easily configured later.
-- The <strong>netmask</strong> parameter attribute specified the netmasks to be assigned. Address templetes can be used here as well.
+should be selected by the configurator automatically. The value "" means that the no address will be assigned. Unconfigured interfaces will still have
+allocated addresses in their subnets, so they can be easily configured later dynamically.
+- The <strong>netmask</strong> parameter attribute specifies the netmasks to be assigned. Address templetes can be used here as well.
 
 All attributes are optional. Attributes not specified are left for the automatic configuration. There are many other attributes available. For the complete list of attributes of the <interface> element
 (or any other element), please refer to the <a href="https://omnetpp.org/doc/inet/api-current/neddoc/index.html?p=inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator.html" target="_blank"><tt>IPv4NetworkConfigurator</tt></a> NED documentation.
 
-In the XML configuration for this step, the first two rules state that host3's (hosts="*.host3") interface named 'eth0' (names="eth0") should get the IP address 10.0.0.100 (address="10.0.0.100"), and host1's interface 'eth0' should get IP 10.0.0.50.
+In the XML configuration for this step, the first two rules state that host3's (hosts="*.host3") interface named 'eth0' (names="eth0") should get the IP address 10.0.0.100 (address="10.0.0.100"), and host1's interface 'eth0' should get 10.0.0.50.
 The third rule is the exact copy of the default configuration, which tells the configurator to assign the rest of the addresses automatically.
+Note that this is the default rule in two contexts. It is the default rule that the configurator uses when no xml config is specified. Also it is
+the last and least specific among the address assignment rules here, thus it takes effect for interfaces that don't match the previous rules.
 
 Note that the order of configuration elements is important, but the configurator doesn't assign addresses in the order of xml interface elements. It iterates
 interfaces in the network, and for each interface the first matching rule in the xml configuration will take effect. Thus, the statements that are positioned earlier in the configuration take precedence over those that come later.
@@ -206,7 +208,7 @@ This step demonstrates how to assign a range of IP addresses to subnets.
 @section s3model The model
 
 This step uses the <i>ConfiguratorA</i> network, as in the previous two steps.
-The three hosts connected to the router through the switch will be on the same subnet, and there are 3 such groups in the network.
+One switch and the connected hosts as a group will be one the same subnet, and there are 3 such groups in the network.
 
 
 The configuration is the following:
@@ -569,11 +571,7 @@ Note that <i>router0</i> and <i>router2</i> are connected with a 10 Mbit/s ether
 The resulting routes are essentially same as in Step 5B, just realized with a different XML config (the difference is that in this step, no traffic is routed
 between router0 and router2 at all. In Step 5B, packets to router2's eth2 interface were routed through the 10Mbps link).
 
-v1
 <img src="step4routes_3.png">
-
-v2
-<img src="step6eth.png">
 
 @section s6results Results
 
