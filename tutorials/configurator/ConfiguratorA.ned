@@ -69,10 +69,10 @@ network ConfiguratorA
         switch0: EtherSwitch {
             @display("p=518.4975,574.9875");
         }
-        switch1: EtherSwitch {
+        switch2: EtherSwitch {
             @display("p=1162.08,574.9875");
         }
-        switch2: EtherSwitch {
+        switch1: EtherSwitch {
             @display("p=821.1225,225.95999");
         }
     connections:
@@ -81,16 +81,15 @@ network ConfiguratorA
         host0.ethg++ <--> Eth100M <--> switch0.ethg++;
         switch0.ethg++ <--> Eth100M <--> router0.ethg++;
         router0.ethg++ <--> Eth100M <--> router1.ethg++;
-        router1.ethg++ <--> Eth100M <--> switch2.ethg++;
-        switch2.ethg++ <--> Eth100M <--> host3.ethg++;
-        switch2.ethg++ <--> Eth100M <--> host4.ethg++;
-        switch2.ethg++ <--> Eth100M <--> host5.ethg++;
+        router1.ethg++ <--> Eth100M <--> switch1.ethg++;
+        switch1.ethg++ <--> Eth100M <--> host3.ethg++;
+        switch1.ethg++ <--> Eth100M <--> host4.ethg++;
+        switch1.ethg++ <--> Eth100M <--> host5.ethg++;
         router1.ethg++ <--> Eth100M <--> router2.ethg++;
-        router2.ethg++ <--> Eth100M <--> switch1.ethg++;
-        switch1.ethg++ <--> Eth100M <--> host6.ethg++;
-        switch1.ethg++ <--> Eth100M <--> host7.ethg++;
-        switch1.ethg++ <--> Eth100M <--> host8.ethg++;
+        router2.ethg++ <--> Eth100M <--> switch2.ethg++;
+        switch2.ethg++ <--> Eth100M <--> host6.ethg++;
+        switch2.ethg++ <--> Eth100M <--> host7.ethg++;
+        switch2.ethg++ <--> Eth100M <--> host8.ethg++;
         router0.ethg++ <--> Eth10M <--> router2.ethg++;
 }
 
-//##### (marker for doxygen)

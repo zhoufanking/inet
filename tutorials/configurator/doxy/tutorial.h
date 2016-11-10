@@ -227,17 +227,24 @@ This time the xml configuration is supplied in an external file (step3.xml), usi
 The next 3 entries specify that each router's interface that connects to the subnet should belong in that subnet.
 
 - The last entry sets the network prefix of interfaces of all routers to be 10.1.x.x. 
-TODO: very long sentence
-Since the addresses for the interfaces
-connected towards the hosts are already specified by a previous entry, this effects only the rest of interfaces, those facing the other routers
-(since these 3 rules assign addresses to all interfaces in the network, the default address assignment rule is not required).
+The routers' interfaces facing the subnets were assigned addresses by the previous rules, so this rule only effects the interfaces facing the other
+routers. These 7 rules assign addresses to all interfaces in the network, thus a default rule is not required.
 
-The same effect can be achieved in more than one way. Here is an alternative xml configuration (step3alt.xml) that results in the same address assignment:
+The same effect can be achieved in more than one way. Here is an alternative xml configuration (step3alt1.xml) that results in the same address assignment:
 
-@include step3alt.xml
+@include step3alt1.xml
 
 The <i>among</i> selector selects the interfaces of the specified hosts towards the specified hosts (the statement <i>among="X Y Z"</i> is the same as
 <i>hosts="X Y Z" towards="X Y Z"</i>).
+
+Another alternative xml configuration is the following:
+
+@include step3alt2.xml
+
+This assigns an address to one host in each of the 3 subnets. It assigns addresses to the interfaces of the routers facing the other routers, and includes a copy of the default
+configuration. Because <i>assignDisjunctSubnetAddresses=true</i>, the configurator puts the unspecified hosts, and the subnet facing
+router interfaces into the same subnet as the specified host.
+<!is it ok like that?>
 
 @section s3results Results
 
@@ -245,7 +252,8 @@ The assigned addresses are shown on the following image.
 
 <img src="step3address.png" width=850px>
 
-The addresses are assigned as intended. TODO: easy to recognize which group a node belongs to just by looking at its address (.e.g. in the log)
+The addresses are assigned as intended.
+This is useful because it is easy to recognize which group a node belongs to just by looking at its address (e.g. in the logs).
 
 @nav{step2,step4}
 @fixupini
@@ -284,11 +292,11 @@ A ping app in <i>host0</i> is configured to send ping packets to <i>host7</i>, w
 This application is suitable for visualizing routing tables.
 
 The <i>RoutingTableCanvasVisualizer</i> module can be used to visualize routes in the network.
-Routes are visualized with arrows. In general, an arrow signifies an entry in the source host's routing table. It points
+Routes are visualized with arrows. In general, an arrow indicates an entry in the source host's routing table. It points
 to the host that is the next hop or gateway for that routing table entry.
 Routes to be visualized are selected with the visualizer's <i>destinationFilter</i> parameter.
 All routes leading towards that destination are indicated by arrows.
-The default setting is <tt>""</tt>, which means no routes are visualized. The <tt>"*.*"</tt> setting visualizes all routes
+The default setting is <tt>""</tt>, which means no routes are visualized. The <tt>"**"</tt> setting visualizes all routes
 going from every node to every other node, which can make the screen cluttered.
 In this step the <i>destinationFilter</i> is set to visualize all routes heading towards <i>host7</i>.
 
@@ -308,16 +316,11 @@ optimizeRoutes = default(true)
 The configuration for this step didn't set any of these parameters, thus the default values will take effect.
 
 - <i>addStaticRoutes</i>: the configurator adds static routes to the routing table of all nodes in the network, 
-with routes leading to all destination interfaces. TODO: this is false even though it's in the NED doc :) This should be turned off when the xml configuration contains
-manual routes.
+with routes leading to all destination interfaces.
 - <i>addDefaultRoutes</i>: Add a default route if all routes from a node go through the same gateway.
 This is often the case with hosts, which usually connect to a network via a single interface. This parameter
 is not used if <i>addStaticRoutes = false</i>.
-- <i>addSubnetRoutes</i>: 
-
-TODO: this means something else: instead of adding static routes towards individual interaces, add static routes towards subnets
-Reach nodes in own subnet directly (ie. the gateway is the same as the destination), rather than with separate destination interface routes. 
-
+- <i>addSubnetRoutes</i>: Optimize routing tables by adding routes towards subnets instead of individial interfaces. 
 This is only used where applicable, and not used if <i>addStaticRoutes = false</i>.
 - <i>optimizeRoutes</i>: Optimize routing tables by merging entries where possible. Not used if <i>addStaticRoutes = false</i>.
 
@@ -332,7 +335,7 @@ are considered to be on the same link.
 The <i>General</i> configuration also sets GlobalARP to keep the packet exchanges simpler. GlobalARP fills the ARP tables of all nodes in advance,
 so when the simulation begins no ARP exchanges are necessary. The <i>**.routingTable.netmaskRoutes = ""</i> keeps the routing table modules from
 adding netmask routes to the routing tables. Netmask routes mean that nodes with the same netmask but different IP should reach each other directly.
-These routes are also added by the configurator, so netmaskRoutes are turned off for the sake of simplicity.
+These routes are also added by the configurator, so netmaskRoutes are turned off to avoid duplicate routes.
 
 @section s4result Results
 
@@ -370,7 +373,7 @@ Node ConfiguratorB.router0
 Destination      Netmask          Gateway          Iface            Metric
 10.0.0.18        255.255.255.255  *                eth1 (10.0.0.17) 0
 10.0.0.22        255.255.255.255  *                eth2 (10.0.0.21) 0
-<span class="marker">10.0.0.25        255.255.255.255  10.0.0.22        eth2 (10.0.0.21) 0</span>
+10.0.0.25        255.255.255.255  10.0.0.22        eth2 (10.0.0.21) 0
 10.0.0.0         255.255.255.248  *                eth0 (10.0.0.4)  0
 <span class="marker">10.0.0.32        255.255.255.248  10.0.0.22        eth2 (10.0.0.21) 0</span>
 10.0.0.0         255.255.255.224  10.0.0.18        eth1 (10.0.0.17) 0
@@ -379,7 +382,7 @@ Node ConfiguratorB.router1
 -- Routing table --
 Destination      Netmask          Gateway          Iface            Metric
 10.0.0.17        255.255.255.255  *                eth0 (10.0.0.18) 0
-<span class="marker">10.0.0.22        255.255.255.255  10.0.0.25        eth2 (10.0.0.26) 0</span>
+10.0.0.22        255.255.255.255  10.0.0.25        eth2 (10.0.0.26) 0
 10.0.0.25        255.255.255.255  *                eth2 (10.0.0.26) 0
 10.0.0.8         255.255.255.248  *                eth1 (10.0.0.10) 0
 <span class="marker">10.0.0.32        255.255.255.248  10.0.0.25        eth2 (10.0.0.26) 0</span>
