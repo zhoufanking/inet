@@ -301,7 +301,7 @@ The configuration for this step in omnetpp.ini is the following:
 @skip Step4
 @until ####
 
-A ping app in <i>host0</i> is configured to send ping packets to <i>host7</i>, which is on the other side of the network.
+A ping app in <i>host1</i> is configured to send ping packets to <i>host7</i>, which is on the other side of the network.
 This application is suitable for visualizing routing tables.
 
 The <i>RoutingTableCanvasVisualizer</i> module can be used to visualize routes in the network.
@@ -418,7 +418,7 @@ The * for the gateway means that the gateway is the same as the destination. Hos
 the gateway for packets sent to outside-of-subnet addresses. Routers have 3 rules in their routing tables for reaching the other routers,
 specifically, those interfaces of the other routers that are not facing the hosts.
 
-Below is an animation of <i>host0</i> pinging <i>host7</i>.
+Below is an animation of <i>host1</i> pinging <i>host7</i>.
 
 <img src="step4_11.gif" width="850px">
 
@@ -522,7 +522,7 @@ The XML configuration in step5b.xml:
 @until config
 
 The <route> element specifies a routing table entry for <i>router0</i>. The destination is 10.0.0.32 with netmask 255.255.255.248,
-which is the address of the subnet for hosts 6-8. The gateway is <i>router1's</i> address, the interface is the one connected towards
+which designates the addresses of hosts 6-8. The gateway is <i>router1's</i> address, the interface is the one connected towards
 <i>router1</i> (eth1). This rule is added to <i>router0's</i> routing table <strong>in addition</strong>
 to the rule added automatically by the configurator. They match the same packets, but the parameters are different (see at the result section
 below). The metric is set to -1 to ensure that the manual route takes precedence.
@@ -562,15 +562,18 @@ This time both packets outbound to hosts 6 and 7 take the diverted route, the re
 
 <!-------------------------------------------------------------------------------------------------------->
 
-@page step6 Step 6 - Configuring metric for automatic routing table generation
+@page step6 Step 6 - Setting different metric for automatic routing table configuration
 
 @section s6goals Goals
 
 When setting up routes, the configurator uses the shortest path algorithm. By default, paths are optimized for hop count.
-However, there are other cost functions available, like data rate, error rate, etc. This step demonstrates using the data rate metric
-for automatically setting up routes.
+However, there are other cost functions available, like data rate, error rate, etc. This step has two parts:
+- <strong>Part A</strong> demonstrates using the data rate metric for automatically setting up routes.
+- <strong>Part B</strong> demonstrates instructing the configurator not to use a link when setting up routes.
 
-@section s6model The model
+@section s6a Part A: Using the data rate metric for automatically setting up routes
+
+v0
 
 When setting up routes, the configurator first builds a graph representing the network topology. It will have vertices for every network device,
 like hosts, routers, and L2 devices like switches, access points, and ethernet hubs. The graph's edges represent network connections. The configurator assigns weights to vertices and
@@ -582,17 +585,75 @@ edges will get a cost that is inversely proportional to the selected metric (i.e
 in the graph).
 When the graph is built and the weights are assigned, the configurator uses Dijkstra's shortest path algorithm to compute the routes.
 
-@subsection s6config Configuration
+v1
+
+When setting up routes, the configurator builds a graph representing the network topology. The graph's vertices correspond to network devices,
+and the edges correspond to network connections. Costs are assigned to vertices and edges, in the following manner:
+Vertices that represent nodes with IP forwarding disabled get infinite cost, all others get 0. Edge costs are chosen according to the configured metric.
+The configurator uses Dijkstra's algorithm to compute the shortest paths. Based on this, it configures the routing tables.
+
+v2
+
+When setting up routes, the configurator builds a graph representing the network topology. The graph's edges represent network nodes, its
+edges represent network connections. Vertices and edges are assigned costs, which are used by the shortest path algorithm to compute routes. 
+Costs are assigned in the following manner:
+Nodes that have IP forwarding disabled get infinite cost to keep routes from transiting them. All other nodes get a cost of 0.
+Edges are assigned costs according to the configured metric. The configurator uses Dijstra's shortest path algorithm to compute routes.
+
+v3
+
+When setting up routes, the configurator builds a graph representing the network topology. It assigns weights to vertices and edges,
+which are used by the shortest path algorithm to compute routes.
+
+The network topology is represented as a graph in the following manner:
+Vertices represent network nodes, and have a weight of 0. Nodes that have IP address disabled have infinite weight to keep routes
+from going through them. Edges represent network connections, their costs are assigned according to the configured metric.
+<!what about wireless?>Dijkstra's shortest path algorithm is used to compute the routes.
+
+The available metrics are the following:
+- hopCount: configures routing tables optimized for hop count. All edges have a cost of 1. This is the default metric.
+- dataRate: configures routing tables while favoring connections higher bandwidth. Edge costs are inversely proportional to the data rate of the connection.
+- delay: configures routing tables optimized for low delay. Edge costs are proportional to the delay of the connection.
+- errorRate: configures routing tables while minimizing error rates. Edge costs are proportional to the error rate of the connection.
+
+v4
+
+When setting up routes, the configurator builds a graph representing the network topology. Vertices in the graph represent
+network nodes and connections between them, respectively. It assigns weights to vertices and edges, which are used
+by the shortest path algorithm to compute routes.
+
+The network topology is represented by the graph in the following manner:
+- Wireless nodes are considered to be connected to all other wireless nodes.
+- Vertices that represent nodes with IP forwarding turned off have infinite weight, all others 0. This keeps routes from transiting
+nodes with forwarding turned off.
+- Edge weights are assigned according to the configured metric.
+
+The available metrics are the following:
+- <strong>hopCount</strong>: configures routing tables optimized for hop count. All edges have a cost of 1. This is the default metric.
+- <strong>dataRate</strong>: configures routing tables while favoring connections with higher bandwidth. Edge costs are inversely proportional to the data rate of the connection.
+- <strong>delay</strong>: configures routing tables optimized for lower delay. Edge costs are proportional to the delay of the connection.
+- <strong>errorRate</strong>: configures routing tables while minimizing error rates. Edge costs are proportional to the error rate of the connection.
+
+@subsection s6aconfig Configuration
 
 The configuration for this step extends Step 4, thus it uses the ConfiguratorB network. The configuration in omnetpp.ini is the following:
 
 @dontinclude omnetpp.ini
-@skipline Step6
+@skipline Step6A
 @until ####
 
 The XML configuration contains the default rule for IP address assignment, and an <autoroute> element that configures the metric to be used.
-The <autoroute> element specifies parameters for automatic static routing table generation. If no <autoroute> element is specified, the configurator
+The <autoroute> element specifies parameters for automatic static routing table configuration. If no <autoroute> element is specified, the configurator
 assumes a default that affects all routing tables in the network, and computes shortest paths to all interfaces according to the hop count metric.
+The <autoroute> element can contain the following attributes:
+- <strong>sourceHosts</strong>: Selector attribute that selects which hosts' routing tables should be modified. The default value is "**".
+- <strong>destinationInterfaces</strong>: Parameter attribute that selects destination interfaces for which the shortest paths will be calculated.
+The default value is "**".
+- <strong>metric</strong>: Parameter attribute that sets the metric to be used when calculating shortest paths. The default value is "hopCount".
+
+All of these attributes are optinal, and left for the automatic configuration when not specified. There are subelements available in <autoroute>,
+which are discussed in Part B.
+
 Here the <autoroute> element specifies that routes should be added to the routing tables of all hosts (hosts="**") and the metric should be <i>dataRate</i> 
 (metric="dataRate"). The configurator assigns weights to the graph's edges that are inversely proportional to the data rate of the network links.
 This way route generation will favor routes with higher data rates.
@@ -603,12 +664,15 @@ Note that <i>router0</i> and <i>router2</i> are connected with a 10 Mbit/s ether
 The resulting routes are essentially same as in Step 5B, just realized with a different XML config (the difference is that in this step, no traffic is routed
 between router0 and router2 at all. In Step 5B, packets to router2's eth2 interface were routed through the 10Mbps link).
 
+The resulting routes are similar to the ones in Step 5B. The difference is that in this step, routes back from hosts 6-8 to hosts 0-2 go towards router1
+as well. No traffic is routed between router0 and router2 at all.
+
 <img src="step4routes_3.png">
 
 v2
 <img src="output_7.png" width="298px">
 
-@section s6results Results
+@subsection s6results Results
 
 The following image shows the visualized routes towards <i>host7</i>.
 Routes towards router2 go through router1, as opposed to the routes in Step 4.
@@ -628,8 +692,8 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
-<!TODO rewrite - its just the default rule - everything else than router1 or host0-2 subnet go via router1>The last rule describes that traffic that is not destined for <i>router0's</i> subnet or <i>router2</i> should be routed towards <i>router2</i>,
-via the 100Mbps link.
+The first 2 rules describe reaching router1 and hosts 0-2 directly. The last is the default rule, which describes that traffic to any other destination
+should be routed towards <i>router1</i>.
 
 One can easily check that no routes are going through the link between router0 and router2 by setting the destination filter to "*.*" in the visualizer.
 This indicates all routes in the network:
@@ -645,6 +709,25 @@ Testing gif:
 <img src="step4_4.gif" width="850px">
 
 @endhtmlonly
+
+@section s6b Part B - Instructing the configurator not to use a link when setting up routes
+
+This part realizes the same routes as Part A, where routes between <i>router0</i> and <i>router2</i> are routed through <i>router1</i>.
+
+@subsection s6bconfig Configuration
+
+The configuration for this step in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step6B
+@until ####
+
+The <autoroute> elements can also contain the following subelements, which can be used to specify costs in the graph:
+- <strong>node</strong>: This can be used to specify cost parameters to network nodes. The <strong>hosts</strong> selector
+attribute selects which hosts are affected, and the <strong>cost</strong> parameter sets a number for their costs.
+- <strong>link</strong>: This can used to specify cost parameters to network links. The <strong>interfaces</strong> selector
+attribute selects which links are affected, by specifying an interface they belong to. The <strong>cost</strong> parameter
+sets the cost.
 
 @fixupini
 
