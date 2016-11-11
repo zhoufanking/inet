@@ -122,9 +122,18 @@ as instructed by the <strong>assignDisjunctSubnetAddresses</strong> parameter.
 
 <img src="step1addresses.png" width=850px>
 
+v1
+
 4 interfaces belong to each subnet, 3 host and 1 router interface. A 2 bit netmask would suffice for 4 addresses, but the configurator
 doesn't assign the all-zeros and all-ones subnet addresses (subnet zero and broadcast address). Thus the netmask is 3 bits.
 Similarly, the routers.<!WIP>
+
+v2
+
+Note that the configurator assigned a 29 bit netmask to the hosts and the router interfaces connecting to the switches, and a 30 bit netmask
+to the other router interfaces. 3 hosts and the router's interface towards a switch as group has 4 interfaces, thus a 30 bit netmask/2 bit host identifier
+would have sufficed. However, the configurator doesn't assign addresses where part of the address not covered by the subnet mask - the host identifier -
+is all-zeros or all-ones (indicating subnet zero and the subnet broadcast address).
 
 @nav{index,step2}
 @fixupini
@@ -159,7 +168,7 @@ The xml configuration can be supplied to the <i>config</i> parameter in one of t
 
 In this step, the xml configuration is supplied to the configurator as inline xml. Xml configurations contain one <i><config></i> element. Under this root element there can be
 multiple configuration elements, such as the <i><interface></i> elements here.
-The <interface> element can contain selector attributes, which limit the scope of what interfaces are affected by the <interface> element.
+The <interface> element (and other elements) can contain selector attributes, which limit the scope of what interfaces are affected by the <interface> element.
 Multiple interfaces can be selected with one <interface> element using the * wildcard.
 They can also contain parameter attributes, which deal with what parameters those selected interfaces will have, like IP addresses and
 netmasks. Address templates can be specified with one or more 'x' in the address. The 'x' in the IP address and netmask signify that the value is not fixed, but the configurator should choose it automatically.
@@ -349,7 +358,7 @@ The visualized routes are displayed on the following image:
 
 Note that routes from all nodes to host7 are visualized.
 
-The routing tables are the following (routes visualized on the image above are highlighted with red):
+The routing tables are the following (routes visualized on the image above are highlighted):
 
 @htmlonly
 <div class="fragment">
@@ -447,18 +456,12 @@ This configuration uses the same network as the previous step, ConfiguratorB. Th
 
 For the routes to go through <i>router1</i>, the routing table of <i>router0</i> has to be altered.
 The new rules should dictate that packets with the destination of host7 (10.0.0.35) should be routed
-towards <i>router2</i>. The XML configuration in step5a.xml:
+towards <i>router2</i>. The XML configuration in step5a.xml is the following:
 
 @dontinclude step5a.xml
 @skipline <config>
 @until </config>
 
-v1
-The <route> element describes routing table entries for one or more nodes in the network.
-As with <interface>, selector attributes specify which nodes are affected by the <route> element,
-and parameter attributes specify the details of the routing table entry.
-
-v2
 The <route> element describes a routing table entry for one or more nodes in the network.
 The hosts selector attribute specifies which hosts' routing tables should contain the entry.
 There are 5 parameter attributes, that are optional. These are the same as in real life routing tables:
@@ -470,7 +473,7 @@ Packets with the destination of 10.0.0.35/32 should use the interface 'eth1' and
 
 @subsection s5aresults Results
 
-The routing table of <i>router0</i>:
+The routing table of <i>router0</i> (the manually added route highlighted):
 
 <div class="fragment">
 <pre class="monospace">
@@ -488,10 +491,10 @@ Destination      Netmask          Gateway          Iface            Metric
 </div>
 
 The routing table of router0 in the last step had 6 entries. Now it has 7,
-as the rule specified in the XML configuration has been added (highlighted with red).
+as the rule specified in the XML configuration has been added (highlighted).
 <!should be different color than the highlight in the last step because it doesnt signify the visualized routes>
 
-The following animation depits <i>host0</i> pinging <i>host7</i>, and <i>host1</i> pinging <i>host6</i>.
+The following animation depicts <i>host0</i> pinging <i>host7</i>, and <i>host1</i> pinging <i>host6</i>. Routes to <i>host7</i> are visualized.
 
 <img src="step5_1.gif" width="850px">
 
@@ -527,7 +530,7 @@ below). The metric is set to -1 to ensure that the manual route takes precedence
 
 @subsection s5bresults Results
 
-The routing table of <i>router0</i>:
+The routing table of <i>router0</i> (the manually added route highlighted):
 
 <div class="fragment">
 <pre class="monospace">
@@ -548,7 +551,7 @@ Destination      Netmask          Gateway          Iface            Metric
 </div>
 
 The following is the animation of <i>host0</i> pinging <i>host7</i> and <i>host1</i> pinging <i>host6</i>, similarly
-to Part A.
+to Part A. Routes to <i>host7</i> are visualized.
 
 <img src="step5B_1.gif" width="850px">
 
@@ -602,6 +605,9 @@ between router0 and router2 at all. In Step 5B, packets to router2's eth2 interf
 
 <img src="step4routes_3.png">
 
+v2
+<img src="output_7.png" width="298px">
+
 @section s6results Results
 
 The following image shows the visualized routes towards <i>host7</i>.
@@ -622,7 +628,7 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
-The last rule describes that traffic that is not destined for <i>router0's</i> subnet or <i>router2</i> should be routed towards <i>router2</i>,
+<!TODO rewrite - its just the default rule - everything else than router1 or host0-2 subnet go via router1>The last rule describes that traffic that is not destined for <i>router0's</i> subnet or <i>router2</i> should be routed towards <i>router2</i>,
 via the 100Mbps link.
 
 One can easily check that no routes are going through the link between router0 and router2 by setting the destination filter to "*.*" in the visualizer.
