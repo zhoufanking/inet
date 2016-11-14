@@ -14,3 +14,7 @@ div.contents {
 	font-family: "Courier New", monospace;
 	font-weight: bold;
 }
+
+h1 {
+	line-height: 1.25;
+}

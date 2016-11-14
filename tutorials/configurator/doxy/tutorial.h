@@ -420,7 +420,7 @@ specifically, those interfaces of the other routers that are not facing the host
 
 Below is an animation of <i>host1</i> pinging <i>host7</i>.
 
-<img src="step4_11.gif" width="850px">
+<img src="step4_13.gif" width="850px">
 
 @nav{step3,step5}
 @fixupini
@@ -496,7 +496,7 @@ as the rule specified in the XML configuration has been added (highlighted).
 
 The following animation depicts <i>host0</i> pinging <i>host7</i>, and <i>host1</i> pinging <i>host6</i>. Routes to <i>host7</i> are visualized.
 
-<img src="step5_1.gif" width="850px">
+<img src="step5a_2.gif" width="850px">
 
 Note that only routes towards <i>host7</i> are diverted at router0. The ping reply packet uses the original route between <i>router0</i> and <i>router2</i>.
 Ping packets to <i>host6</i> (and back) also use the original route.
@@ -553,7 +553,7 @@ Destination      Netmask          Gateway          Iface            Metric
 The following is the animation of <i>host0</i> pinging <i>host7</i> and <i>host1</i> pinging <i>host6</i>, similarly
 to Part A. Routes to <i>host7</i> are visualized.
 
-<img src="step5B_1.gif" width="850px">
+<img src="step5b_4.gif" width="850px">
 
 This time both packets outbound to hosts 6 and 7 take the diverted route, the replies come back on the original route.
 
@@ -564,6 +564,8 @@ This time both packets outbound to hosts 6 and 7 take the diverted route, the re
 
 @page step6 Step 6 - Setting different metric for automatic routing table configuration
 
+@nav{step5,step7}
+
 @section s6goals Goals
 
 When setting up routes, the configurator uses the shortest path algorithm. By default, paths are optimized for hop count.
@@ -572,33 +574,6 @@ However, there are other cost functions available, like data rate, error rate, e
 - <strong>Part B</strong> demonstrates instructing the configurator not to use a link when setting up routes by manually specifying link cost.
 
 @section s6a Part A: Using the data rate metric for automatically setting up routes
-
-v0
-
-When setting up routes, the configurator first builds a graph representing the network topology. It will have vertices for every network device,
-like hosts, routers, and L2 devices like switches, access points, and ethernet hubs. The graph's edges represent network connections. The configurator assigns weights to vertices and
-edges, this is used by the shortest path algorithm to set up routes. Nodes that have IP forwarding disabled get infinite weight, and all others get
-zero. This way routes will not transit nodes that have IP forwarding disabled.
-Edge weights will be chosen according to the configured metric. Routes will be created optimised for this metric. The default metric is "hopCount",
-which means that all edges will have a cost of 1. Other metrics available are "dataRate", "errorRate" and "delay". When one of these are selected as metric,
-edges will get a cost that is inversely proportional to the selected metric (i.e. when dataRate is selected, faster links will be represented by lower cost edges
-in the graph).
-When the graph is built and the weights are assigned, the configurator uses Dijkstra's shortest path algorithm to compute the routes.
-
-v1
-
-When setting up routes, the configurator builds a graph representing the network topology. The graph's vertices correspond to network devices,
-and the edges correspond to network connections. Costs are assigned to vertices and edges, in the following manner:
-Vertices that represent nodes with IP forwarding disabled get infinite cost, all others get 0. Edge costs are chosen according to the configured metric.
-The configurator uses Dijkstra's algorithm to compute the shortest paths. Based on this, it configures the routing tables.
-
-v2
-
-When setting up routes, the configurator builds a graph representing the network topology. The graph's edges represent network nodes, its
-edges represent network connections. Vertices and edges are assigned costs, which are used by the shortest path algorithm to compute routes. 
-Costs are assigned in the following manner:
-Nodes that have IP forwarding disabled get infinite cost to keep routes from transiting them. All other nodes get a cost of 0.
-Edges are assigned costs according to the configured metric. The configurator uses Dijstra's shortest path algorithm to compute routes.
 
 v3
 
@@ -627,7 +602,7 @@ The network topology is represented by the graph in the following manner:
 - Wireless nodes are considered to be connected to all other wireless nodes.
 - Vertices that represent nodes with IP forwarding turned off have infinite weight, all others 0. This keeps routes from transiting
 nodes with forwarding turned off.
-- Edge weights are assigned according to the configured metric.
+- Edge weights are assigned according to the configured metric. The metric is a function that determines the cost of vertex or edge.<!do we need this here?>
 
 The available metrics are the following:
 - <strong>hopCount</strong>: configures routing tables optimized for hop count. All edges have a cost of 1. This is the default metric.
@@ -649,10 +624,10 @@ The XML configuration contains the default rule for IP address assignment, and a
 The <autoroute> element specifies parameters for automatic static routing table configuration. If no <autoroute> element is specified, the configurator
 assumes a default that affects all routing tables in the network, and computes shortest paths to all interfaces according to the hop count metric.
 The <autoroute> element can contain the following attributes:
-- <strong>sourceHosts</strong>: Selector attribute that selects which hosts' routing tables should be modified. The default value is "**".
+- <strong>sourceHosts</strong>: Selector attribute that selects which hosts' routing tables should be modified. The default value is <tt>"**"</tt>.
 - <strong>destinationInterfaces</strong>: Parameter attribute that selects destination interfaces for which the shortest paths will be calculated.
-The default value is "**".
-- <strong>metric</strong>: Parameter attribute that sets the metric to be used when calculating shortest paths. The default value is "hopCount".
+The default value is <tt>"**"</tt>.
+- <strong>metric</strong>: Parameter attribute that sets the metric to be used when calculating shortest paths. The default value is <tt>"hopCount"</tt>.
 
 All of these attributes are optinal, and left for the automatic configuration when not specified. There are subelements available in <autoroute>,
 which are discussed in Part B.
@@ -664,9 +639,6 @@ This way route generation will favor routes with higher data rates.
 Note that <i>router0</i> and <i>router2</i> are connected with a 10 Mbit/s ethernet cable, while <i>router1</i> connects to the other routers with
 100 Mbit/s ethernet cables. Since routes are optimized for data rate, packets from router0 to router2 will go via router1 as this path has more bandwidth.
 
-The resulting routes are essentially same as in Step 5B, just realized with a different XML config (the difference is that in this step, no traffic is routed
-between router0 and router2 at all. In Step 5B, packets to router2's eth2 interface were routed through the 10Mbps link).
-
 The resulting routes are similar to the ones in Step 5B. The difference is that in this step, routes back from hosts 6-8 to hosts 0-2 go towards router1
 as well. No traffic is routed between router0 and router2 at all.
 
@@ -677,10 +649,11 @@ v2
 
 @subsection s6results Results
 
-The following image shows the visualized routes towards <i>host7</i>.
-Routes towards router2 go through router1, as opposed to the routes in Step 4.
+The following image shows the visualized routes towards <i>host1</i>,
+showing the backwards route.
+Routes towards router0 go through router1, as opposed to the routes in Step 4.
 
-<img src="s6routes.png" width=850px>
+<img src="step6aroutes.png" width="850px">
 
 The routing table of <i>router0</i> is as follows:
 
@@ -698,6 +671,22 @@ Destination      Netmask          Gateway          Iface            Metric
 The first 2 rules describe reaching router1 and hosts 0-2 directly. The last is the default rule, which describes that traffic to any other destination
 should be routed towards <i>router1</i>.
 
+The routing table of <i>router2</i> is similar:
+
+<div class="fragment">
+<pre class="monospace">
+Node ConfiguratorB.router2
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.26        255.255.255.255  *                eth0 (10.0.0.25) 0
+10.0.0.32        255.255.255.248  *                eth1 (10.0.0.33) 0
+10.0.0.0         255.255.255.224  10.0.0.26        eth0 (10.0.0.25) 0
+</pre>
+</div>
+
+The following animation shows <i>host1</i> pinging <i>host7</i> and <i>host0</i> pinging <i>host6</i>. Routes to <i>host1</i> are visualized.<!TODO: what happens>
+<img src="step6a_4.gif" width="850px">
+
 One can easily check that no routes are going through the link between router0 and router2 by setting the destination filter to "*.*" in the visualizer.
 This indicates all routes in the network:
 
@@ -706,10 +695,6 @@ This indicates all routes in the network:
 Testing svg:
 
 <img src="output_2.svg">
-
-Testing gif:
-
-<img src="step4_4.gif" width="850px">
 
 @endhtmlonly
 
@@ -727,11 +712,32 @@ The configuration for this step in omnetpp.ini is the following:
 
 The <autoroute> elements can also contain the following subelements, which can be used to specify costs in the graph:
 - <strong>node</strong>: This can be used to specify cost parameters to network nodes. The <strong>hosts</strong> selector
-attribute selects which hosts are affected, and the <strong>cost</strong> parameter sets a number for their costs.
+attribute selects which hosts are affected, and the <strong>cost</strong> parameter sets a number for their costs. Both attributes are mandatory.
 - <strong>link</strong>: This can used to specify cost parameters to network links. The <strong>interfaces</strong> selector
 attribute selects which links are affected, by specifying an interface they belong to. The <strong>cost</strong> parameter
-sets the cost.
+sets the cost. Both attributes are mandatory.
 
+This XML configuration specifies the metric to be hop count, and sets the cost of <i>router0's</i> eth2 interface to infinite.
+This affects the link between <i>router0</i> and <i>router2</i>, no routes should go through it.
+
+@subsection s6bresults Results
+
+The routes to <i>host1</i> are visualized in the following image:
+
+<img src="step6broutes.png" width="850px">
+
+The routes are the same as in Part A. In that part the data rate metric was used, routes didn't use the 10Mbps link between <i>router0</i> and <i>router2</i>.
+In this part, that link is "turned off" by specifying an infinite cost for it.
+
+<!TODO: gif><! do we need gif here, its the same as the previous>
+
+@nav{step5,step7}
 @fixupini
+
+<!-------------------------------------------------------------------------------------------------------->
+
+@page step7 Step 7 - Configuring a hierarchical network
+
+@nav{step6,step8}
 
 */
