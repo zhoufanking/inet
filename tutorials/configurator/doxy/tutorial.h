@@ -569,7 +569,7 @@ This time both packets outbound to hosts 6 and 7 take the diverted route, the re
 When setting up routes, the configurator uses the shortest path algorithm. By default, paths are optimized for hop count.
 However, there are other cost functions available, like data rate, error rate, etc. This step has two parts:
 - <strong>Part A</strong> demonstrates using the data rate metric for automatically setting up routes.
-- <strong>Part B</strong> demonstrates instructing the configurator not to use a link when setting up routes.
+- <strong>Part B</strong> demonstrates instructing the configurator not to use a link when setting up routes by manually specifying link cost.
 
 @section s6a Part A: Using the data rate metric for automatically setting up routes
 
@@ -606,7 +606,7 @@ When setting up routes, the configurator builds a graph representing the network
 which are used by the shortest path algorithm to compute routes.
 
 The network topology is represented as a graph in the following manner:
-Vertices represent network nodes, and have a weight of 0. Nodes that have IP address disabled have infinite weight to keep routes
+Vertices represent network nodes, and have a weight of 0, except for nodes that have IP address disabled have infinite weight to keep routes
 from going through them. Edges represent network connections, their costs are assigned according to the configured metric.
 <!what about wireless?>Dijkstra's shortest path algorithm is used to compute the routes.
 
@@ -614,7 +614,8 @@ The available metrics are the following:
 - hopCount: configures routing tables optimized for hop count. All edges have a cost of 1. This is the default metric.
 - dataRate: configures routing tables while favoring connections higher bandwidth. Edge costs are inversely proportional to the data rate of the connection.
 - delay: configures routing tables optimized for low delay. Edge costs are proportional to the delay of the connection.
-- errorRate: configures routing tables while minimizing error rates. Edge costs are proportional to the error rate of the connection.
+- errorRate: configures routing tables while minimizing error rates. Edge costs are proportional to the error rate of the connection. This is useful
+when the network contains wireless nodes, as the error rate of wired connections is constantly small.
 
 v4
 
@@ -633,6 +634,8 @@ The available metrics are the following:
 - <strong>dataRate</strong>: configures routing tables while favoring connections with higher bandwidth. Edge costs are inversely proportional to the data rate of the connection.
 - <strong>delay</strong>: configures routing tables optimized for lower delay. Edge costs are proportional to the delay of the connection.
 - <strong>errorRate</strong>: configures routing tables while minimizing error rates. Edge costs are proportional to the error rate of the connection.
+This is useful
+when the network contains wireless nodes, as the error rate of wired connections is constantly small.
 
 @subsection s6aconfig Configuration
 
@@ -710,7 +713,7 @@ Testing gif:
 
 @endhtmlonly
 
-@section s6b Part B - Instructing the configurator not to use a link when setting up routes
+@section s6b Part B - Instructing the configurator not to use a link when setting up routes by manually specifying link cost.
 
 This part realizes the same routes as Part A, where routes between <i>router0</i> and <i>router2</i> are routed through <i>router1</i>.
 
