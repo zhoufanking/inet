@@ -422,6 +422,8 @@ Below is an animation of <i>host1</i> pinging <i>host7</i>.
 
 <img src="step4_13.gif" width="850px">
 
+<!what happens?>
+
 @nav{step3,step5}
 @fixupini
 
@@ -738,6 +740,155 @@ In this part, that link is "turned off" by specifying an infinite cost for it.
 
 @page step7 Step 7 - Configuring a hierarchical network
 
+@section s7goals Goals
+
+In complex hierarchical networks, routing tables can grow very big. This step demonstrates ways the configurator can reduce the size of
+routing tables by optimization and the use of hierarchically assigned addresses. The step contains 3 parts:
+- <strong>Part A</strong>: Automatically assigned addresses
+- <strong>Part B</strong>: Automatically assigned addresses, using optimization
+- <strong>Part C</strong>: Hierarchically assigned addresses, using optimization
+
+<!should be using same description as in ini?>
+
+@s7a Part A - Automatically assigned addresses
+
+Assigning addresses hierarchially in a network with hierarchical topology can drasticly reduce the size of routing tables,
+by adding subnet routes. However, the configurator's automatic address assignment with its default settings doesn't assign addresses hierarchically,
+but sequentially while trying to allocate the longest subnet mask. This part uses automatic address assignment,
+and the configurator's optimization features are turned off. The size of routing tables in this part can serve as a baseline to compare
+optimizations to.
+
+@subsection s7aconfig Configuration
+
+All 3 parts in this step use the ConfiguratorC network defined in ConfiguratorC.ned. The network looks like this:
+
+<!TODO: network image>
+
+The network is comprised of 3 areas, each containing 2 subnets. Each subnet contains 3 standardHosts. The hosts in the subnet connect to an area router
+through switches. The 3 area routes connect to a central backbone router. The network contains 3 hierarchical levels - the hosts in the subnets, the area
+routers, and the backbone router.
+
+The configuration for this part in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step7A
+@until ####
+
+The configuration turns off every kind of optimization relating to address assignment and route generation.
+This means that nodes will have an individual routing table entry to every destination interface.
+
+@subsection s7aresults Results
+
+The assigned addresses are shown in the image below:
+
+<img src="step7a.png" width="850px">
+
+The size of the routing tables are the following:
+
+<img src="step7a_rt.png">
+
+The routing tables of a host (area1subnet2host2) and a router(area1router) are shown below:
+
+<div class="fragment">
+<pre class="monospace">
+Node ConfiguratorC.area1subnet2host2
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.1         255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.2         255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.3         255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.4         255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.9         255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.10        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.11        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.12        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.17        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.18        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.19        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.20        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.25        255.255.255.255  *                eth0 (10.0.0.26) 0
+10.0.0.27        255.255.255.255  *                eth0 (10.0.0.26) 0
+10.0.0.28        255.255.255.255  *                eth0 (10.0.0.26) 0
+10.0.0.33        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.34        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.35        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.36        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.41        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.42        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.43        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.44        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.49        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.50        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.53        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.54        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.57        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+10.0.0.58        255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
+
+Node ConfiguratorC.area1router
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.1         255.255.255.255  *                eth0 (10.0.0.4)  0
+10.0.0.2         255.255.255.255  *                eth0 (10.0.0.4)  0
+10.0.0.3         255.255.255.255  *                eth0 (10.0.0.4)  0
+10.0.0.9         255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.10        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.11        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.12        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.17        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.18        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.19        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.20        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.25        255.255.255.255  *                eth1 (10.0.0.28) 0
+10.0.0.26        255.255.255.255  *                eth1 (10.0.0.28) 0
+10.0.0.27        255.255.255.255  *                eth1 (10.0.0.28) 0
+10.0.0.33        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.34        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.35        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.36        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.41        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.42        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.43        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.44        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.50        255.255.255.255  *                eth2 (10.0.0.49) 0
+10.0.0.53        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.54        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.57        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+10.0.0.58        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
+</pre>
+</div>
+
+All routing table entries have a 255.255.255.255 netmask, i.e. separate routes to all destination interfaces.
+Thus hosts have 29 entries in their routing tables, for the 29 other interfaces. Simiarly, routes have 27 entries.
+
+@section s7b Part B - Automatically assigned addresses, using optimization
+
+In this part, we turn on the optimization features of the configurator that were turned off in Part A.
+This should optimize routing tables and decrease table size.
+
+@subsection s7bconfig Configuration
+
+The configuration for this part in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step7B
+@until ####
+
+The configuration is empty, the default ned parameter values will take effect. That means the following optimizations:
+assignDisjunctSubnetAddresses, addDefaultRoutes, addSubnetRoutes, optimizeRoutes.
+
+@subsection s7bresults Results
+
+The addresses are the same, but the routing table sizes have gone down:
+
+<img src="step7b_rt.png">
+
+<a href="step7a.png" data-lightbox="step7a"><img src="step7a.png" width="850px"></a>
+
+Hosts have just 2 routing table entries. One for reaching other hosts in their subnets, and a default route. 
+
+@fixupini
+
 @nav{step6,step8}
+@lightbox
 
 */

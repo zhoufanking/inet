@@ -232,7 +232,8 @@ ALIASES                = "opp=OMNeT++" \
                          "nav{2}=PREV: @ref \1 | NEXT: @ref \2" \
                          "fixupini=@htmlonly <script> $(\"div.line:contains('####')\").remove(); $(\"div.line:empty:last-child\").remove(); </script> @endhtmlonly" \
                          "marker=<span class="marker">" \
-                         "endmarker=</span>"
+                         "endmarker=</span>" \
+                         "lightbox=@htmlonly <script src="lightbox.js"></script> @endhtmlonly"
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"
@@ -1150,7 +1151,7 @@ HTML_EXTRA_STYLESHEET  = opp.css
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_FILES       =
+HTML_EXTRA_FILES       = lightbox.js, lightbox.css
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to
