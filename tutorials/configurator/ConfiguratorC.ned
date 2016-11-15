@@ -25,91 +25,91 @@ import inet.visualizer.networklayer.RoutingTableCanvasVisualizer;
 
 network ConfiguratorC
 {
-    @display("bgb=2504.3225,1393.2375");
+    @display("bgb=3225.915,1993.86");
     submodules:
         area1subnet1host0: StandardHost {
-            @display("p=380.2925,376.7875");
+            @display("p=492.195,413.82");
         }
         area1subnet1host1: StandardHost {
-            @display("p=380.2925,227.82501");
+            @display("p=492.195,147.345");
         }
         area1subnet1host2: StandardHost {
-            @display("p=380.2925,59.585003");
+            @display("p=865.26,147.345");
         }
         area1switch1: EtherSwitch {
-            @display("p=676.465,257.61752");
+            @display("p=865.26,410.685");
         }
         area2subnet1host1: StandardHost {
-            @display("p=953.36005,1307.3651");
+            @display("p=1357.455,1840.245");
         }
         area2subnet1host2: StandardHost {
-            @display("p=718.525,1307.3651");
+            @display("p=946.77,1840.245");
         }
         area2subnet1host3: StandardHost {
-            @display("p=476.68002,1307.3651");
+            @display("p=558.03,1840.245");
         }
         area2switch1: EtherSwitch {
-            @display("p=807.9025,1100.5701");
+            @display("p=1119.1951,1514.205");
         }
         area3subnet1host1: StandardHost {
-            @display("p=2216.9126,986.65753");
+            @display("p=2874.795,1360.59");
         }
         area3subnet1host2: StandardHost {
-            @display("p=2244.9526,755.3275");
+            @display("p=2871.66,1097.25");
         }
         area3subnet1host3: StandardHost {
-            @display("p=2265.9827,601.10754");
+            @display("p=2871.66,830.775");
         }
         area3switch1: EtherSwitch {
-            @display("p=1838.3726,623.89");
+            @display("p=2335.575,1075.305");
         }
         area1subnet2host1: StandardHost {
-            @display("p=368.02502,601.10754");
+            @display("p=410.685,830.775");
         }
         area1subnet2host2: StandardHost {
-            @display("p=368.02502,730.79254");
+            @display("p=410.685,1081.575");
         }
         area1subnet2host3: StandardHost {
-            @display("p=332.975,914.80505");
+            @display("p=410.685,1360.59");
         }
         area1switch2: EtherSwitch {
-            @display("p=608.11755,765.8425");
+            @display("p=865.26,1094.115");
         }
         area2subnet2host1: StandardHost {
-            @display("p=1961.0476,1281.0775");
+            @display("p=2555.025,1840.245");
         }
         area2subnet2host2: StandardHost {
-            @display("p=1659.6176,1281.0775");
+            @display("p=2094.18,1840.245");
         }
         area2subnet2host3: StandardHost {
-            @display("p=1377.4651,1307.3651");
+            @display("p=1743.06,1840.245");
         }
         area2switch2: EtherSwitch {
-            @display("p=1659.6176,1055.005");
+            @display("p=2094.18,1511.0701");
         }
         area3subnet2host1: StandardHost {
-            @display("p=2080.2175,117.4175");
+            @display("p=2551.8901,137.94");
         }
         area3subnet2host2: StandardHost {
-            @display("p=2197.635,212.0525");
+            @display("p=2997.06,137.94");
         }
         area3subnet2host3: StandardHost {
-            @display("p=2216.9126,336.48");
+            @display("p=2997.06,354.255");
         }
         area3switch2: EtherSwitch {
-            @display("p=1878.68,346.99503");
+            @display("p=2489.19,366.795");
         }
         area1router: Router {
-            @display("p=1051.5,502.96753");
+            @display("p=1119.1951,595.65");
         }
         area2router: Router {
-            @display("p=1309.1176,914.80505");
+            @display("p=1620.795,1322.97");
         }
         area3router: Router {
-            @display("p=1591.27,483.69003");
+            @display("p=2094.18,595.65");
         }
         backbonerouter: Router {
-            @display("p=1309.1176,686.98004;i=abstract/router2");
+            @display("p=1620.795,934.23;i=abstract/router2");
         }
         configurator: IPv4NetworkConfigurator {
             @display("p=124.427505,89.3775");
