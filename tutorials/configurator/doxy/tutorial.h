@@ -30,6 +30,7 @@ defined in separate .NED files.
  - @ref step4
  - @ref step5
  - @ref step6
+ - @ref step7
 
 @nav{index,step1}
 
@@ -733,6 +734,14 @@ In this part, that link is "turned off" by specifying an infinite cost for it.
 
 <!TODO: gif><! do we need gif here, its the same as the previous>
 
+trying lightbox:
+
+@htmlonly
+<a href="step6allroutes.png" data-lightbox="step6allroutes"><img src="step6allroutes.png" alt="image" width="850px"></a>
+@endhtmlonly
+
+@lightbox
+
 @nav{step5,step7}
 @fixupini
 
@@ -757,6 +766,9 @@ by adding subnet routes. However, the configurator's automatic address assignmen
 but sequentially while trying to allocate the longest subnet mask. This part uses automatic address assignment,
 and the configurator's optimization features are turned off. The size of routing tables in this part can serve as a baseline to compare
 optimizations to.
+
+v2
+as a baseline of comparison for optimization features.
 
 @subsection s7aconfig Configuration
 
@@ -857,7 +869,7 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
-All routing table entries have a 255.255.255.255 netmask, i.e. separate routes to all destination interfaces.
+All routing table entries have 255.255.255.255 netmasks, i.e. separate routes to all destination interfaces.
 Thus hosts have 29 entries in their routing tables, for the 29 other interfaces. Simiarly, routes have 27 entries.
 
 @section s7b Part B - Automatically assigned addresses, using optimization
@@ -873,7 +885,7 @@ The configuration for this part in omnetpp.ini is the following:
 @skipline Step7B
 @until ####
 
-The configuration is empty, the default ned parameter values will take effect. That means the following optimizations:
+The configuration is empty, the default ned parameter values take effect. That means that the following optimization features are turned on:
 assignDisjunctSubnetAddresses, addDefaultRoutes, addSubnetRoutes, optimizeRoutes.
 
 @subsection s7bresults Results
@@ -885,6 +897,11 @@ The addresses are the same, but the routing table sizes have gone down:
 <a href="step7a.png" data-lightbox="step7a"><img src="step7a.png" width="850px"></a>
 
 Hosts have just 2 routing table entries. One for reaching other hosts in their subnets, and a default route. 
+
+@section Part C - Hierarchically assigned addresses, optimized routing tables
+
+Having hierarchically assigned addresses in a hierarchical network results in smaller routing table sizes,
+because a large distant network can be covered with just one rule in a core router's routing table.
 
 @fixupini
 
