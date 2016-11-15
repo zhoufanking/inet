@@ -902,6 +902,34 @@ Hosts have just 2 routing table entries. One for reaching other hosts in their s
 
 Having hierarchically assigned addresses in a hierarchical network results in smaller routing table sizes,
 because a large distant network can be covered with just one rule in a core router's routing table.
+In this part, addresses are assigned hierarchically.<!TODO: more on this and rewrite>
+
+@subsection 7cconfig Configuration
+
+The configuration for this part in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step7C
+@until ####
+
+As in the previous part, all of the configurator's routing table optimization features are enabled.
+The XML configuration for this part is this:
+
+@include step7c.xml
+
+This XML configuration assigns addresses hierarchically in the following way:
+- The first octet of the address for all nodes is 10, i.e. 10.x.x.x
+- The second octet denotes the area, p.e. 10.2.x.x corresponds to <i>area2</i>
+- The third octet denotes the subnet within the area, p.e. 10.2.1.x corresponds to 
+<i>subnet1</i> in <i>area2</i>
+- The forth octet is the host identifier within a subnet, p.e. 10.2.1.4 corresponds to 
+<i>host4</i> in <i>subnet1</i> in <i>area2</i>
+
+With this setup, it is possible to cover an area with just one rule in the routing table
+of the backbone router. Similarly, the area routers need 2 rules for each subnet that they
+are connected to.
+
+@subsection s7cresults Results
 
 @fixupini
 
