@@ -79,7 +79,7 @@ network ConfiguratorC
             @display("p=2555.025,1840.245");
         }
         area2subnet2host2: StandardHost {
-            @display("p=2094.18,1840.245");
+            @display("p=2153.745,1840.245");
         }
         area2subnet2host3: StandardHost {
             @display("p=1743.06,1840.245");
@@ -97,16 +97,16 @@ network ConfiguratorC
             @display("p=2997.06,354.255");
         }
         area3switch2: EtherSwitch {
-            @display("p=2489.19,366.795");
+            @display("p=2376.33,454.575");
         }
         area1router: Router {
-            @display("p=1119.1951,595.65");
+            @display("p=1232.055,755.53503");
         }
         area2router: Router {
             @display("p=1620.795,1322.97");
         }
         area3router: Router {
-            @display("p=2094.18,595.65");
+            @display("p=2012.67,755.53503");
         }
         backbonerouter: Router {
             @display("p=1620.795,934.23;i=abstract/router2");
