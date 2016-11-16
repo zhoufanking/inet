@@ -626,6 +626,12 @@ The configuration for this step extends Step 4, thus it uses the ConfiguratorB n
 @skipline Step6A
 @until ####
 
+Below is the XML configuration in step6a.xml:
+
+@dontinclude step6a.xml
+@skipline config
+@until config
+
 The XML configuration contains the default rule for IP address assignment, and an <autoroute> element that configures the metric to be used.
 The <autoroute> element specifies parameters for automatic static routing table configuration. If no <autoroute> element is specified, the configurator
 assumes a default that affects all routing tables in the network, and computes shortest paths to all interfaces according to the hop count metric.
@@ -715,6 +721,12 @@ The configuration for this step in omnetpp.ini is the following:
 @skipline Step6B
 @until ####
 
+The XML configuration in step6b.xml is as follows:
+
+@dontinclude step6b.xml
+@skipline config
+@until config
+
 The <autoroute> elements can also contain the following optional subelements, which can be used to specify costs in the graph:
 - <strong><node></strong>: This can be used to specify cost parameters to network nodes. The <strong>hosts</strong> selector
 attribute selects which hosts are affected, and the <strong>cost</strong> parameter sets a number for their costs. Both attributes are mandatory.
@@ -753,9 +765,13 @@ routing tables by optimization and the use of hierarchically assigned addresses.
 
 <!should be using same description as in ini?>
 
+- <strong>Part A</strong>: Non optimized, fully automatic IP address assignment and static routes
+- <strong>Part B</strong>: Optimized, fully automatic IP address assignment and static routes
+- <strong>Part C</strong>: Optimized, hierarchically assigned IP addresses and static routes
+
 @section s7a Part A - Automatically assigned addresses
 
-Assigning addresses hierarchially in a network with hierarchical topology can drasticly reduce the size of routing tables,
+Assigning addresses hierarchially in a network with hierarchical topology can reduce the size of routing tables,
 by adding subnet routes. However, the configurator's automatic address assignment with its default settings doesn't assign addresses hierarchically,
 but sequentially while trying to allocate the longest subnet mask. This part uses automatic address assignment,
 and the configurator's optimization features are turned off. The size of routing tables in this part can serve as a baseline to compare
@@ -770,8 +786,8 @@ All 3 parts in this step use the ConfiguratorC network defined in ConfiguratorC.
 
 <img src="step7network.png" width="850px">
 
-The network is comprised of 3 areas, each containing 2 subnets. Each subnet contains 3 standardHosts. The hosts in the subnet connect to an area router
-through switches. The 3 area routes connect to a central backbone router. The network contains 3 hierarchical levels - the hosts in the subnets, the area
+The network is comprised of 3 areas, each containing 2 subnets. Each subnet contains 3 <tt>standardHosts</tt>. The hosts in the subnet connect to an area router
+through switches. The 3 area routes connect to a central backbone router. The network contains 3 hierarchical levels, which correspond to the hosts in the subnets, the area
 routers, and the backbone router.
 
 The configuration for this part in omnetpp.ini is the following:
@@ -785,8 +801,7 @@ This means that nodes will have an individual routing table entry to every desti
 
 @subsection s7aresults Results
 
-The assigned addresses are shown in the image below:
-
+The assigned addresses are shown on the image below:
 @htmlonly
 <a href="step7a.png" data-lightbox="step7a"><img src="step7a.png" width="850px"></a>
 @endhtmlonly
@@ -966,6 +981,20 @@ table of the backbone router contains 6 entries instead of 10 in the previous pa
 
 @section s8goals Goals
 
+@section s8config Configuration
 
+Here is the configuration for this step in omnetpp.ini:
+
+@dontinclude omnetpp.ini
+@skipline Step8
+@until ####
+
+The XML configuration in step8.xml is the following:
+
+@dontinclude step8.xml
+@skipline config
+@until config
+
+@fixupini
 
 */
