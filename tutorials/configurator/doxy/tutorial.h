@@ -349,7 +349,7 @@ are considered to be on the same link.
 The <i>General</i> configuration also sets GlobalARP to keep the packet exchanges simpler. GlobalARP fills the ARP tables of all nodes in advance,
 so when the simulation begins no ARP exchanges are necessary. The <i>**.routingTable.netmaskRoutes = ""</i> keeps the routing table modules from
 adding netmask routes to the routing tables. Netmask routes mean that nodes with the same netmask but different IP should reach each other directly.
-These routes are also added by the configurator, so netmaskRoutes are turned off to avoid duplicate routes.
+These routes are also added by the configurator, so netmaskRoutes is turned off to avoid duplicate routes.
 
 @section s4result Results
 
@@ -466,8 +466,8 @@ towards <i>router2</i>. The XML configuration in step5a.xml is the following:
 @until </config>
 
 The <route> element describes a routing table entry for one or more nodes in the network.
-The hosts selector attribute specifies which hosts' routing tables should contain the entry.
-There are 5 parameter attributes, that are optional. These are the same as in real life routing tables:
+The <i>hosts</i> optional selector attribute specifies which hosts' routing tables should contain the entry.
+There are 5 additional optional parameter attributes. These are the same as in real life routing tables:
 address, netmask, gateway, interface, metric.
 
 The <route> element in this XML configuration adds the following rule to <i>router0's</i> routing table:
@@ -476,7 +476,7 @@ Packets with the destination of 10.0.0.35/32 should use the interface 'eth1' and
 
 @subsection s5aresults Results
 
-The routing table of <i>router0</i> (the manually added route highlighted):
+The routing table of <i>router0</i> (manually added route highlighted):
 
 <div class="fragment">
 <pre class="monospace">
@@ -495,7 +495,8 @@ Destination      Netmask          Gateway          Iface            Metric
 
 The routing table of router0 in the last step had 6 entries. Now it has 7,
 as the rule specified in the XML configuration has been added (highlighted).
-<!should be different color than the highlight in the last step because it doesnt signify the visualized routes>
+This and the last rule both match packets to <i>host7</i> but the manually added route
+because it comes earlier.
 
 The following animation depicts <i>host0</i> pinging <i>host7</i>, and <i>host1</i> pinging <i>host6</i>. Routes to <i>host7</i> are visualized.
 
