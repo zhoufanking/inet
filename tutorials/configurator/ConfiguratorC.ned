@@ -52,25 +52,25 @@ network ConfiguratorC
             @display("p=1119.1951,1514.205");
         }
         area3subnet1host1: StandardHost {
-            @display("p=2874.795,1360.59");
+            @display("p=2868.5251,1583.175");
         }
         area3subnet1host2: StandardHost {
-            @display("p=2871.66,1097.25");
+            @display("p=2868.5251,1322.97");
         }
         area3subnet1host3: StandardHost {
-            @display("p=2871.66,830.775");
+            @display("p=2868.5251,1078.4401");
         }
         area3switch1: EtherSwitch {
             @display("p=2385.735,1075.305");
         }
         area1subnet2host1: StandardHost {
-            @display("p=410.685,830.775");
+            @display("p=410.685,1097.25");
         }
         area1subnet2host2: StandardHost {
-            @display("p=410.685,1081.575");
+            @display("p=410.685,1322.97");
         }
         area1subnet2host3: StandardHost {
-            @display("p=410.685,1360.59");
+            @display("p=410.685,1583.175");
         }
         area1switch2: EtherSwitch {
             @display("p=865.26,1094.115");

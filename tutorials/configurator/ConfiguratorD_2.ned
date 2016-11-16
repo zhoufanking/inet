@@ -15,7 +15,7 @@
 
 package inet.tutorials.configurator;
 
-network ConfiguratorC
+network ConfiguratorD_2
 {
     @display("bgb=3225.915,1993.86");
     submodules:

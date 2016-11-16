@@ -734,14 +734,6 @@ In this part, that link is "turned off" by specifying an infinite cost for it.
 
 <!TODO: gif><! do we need gif here, its the same as the previous>
 
-trying lightbox:
-
-@htmlonly
-<a href="step6allroutes.png" data-lightbox="step6allroutes"><img src="step6allroutes.png" alt="image" width="850px"></a>
-@endhtmlonly
-
-@lightbox
-
 @nav{step5,step7}
 @fixupini
 
@@ -759,7 +751,7 @@ routing tables by optimization and the use of hierarchically assigned addresses.
 
 <!should be using same description as in ini?>
 
-@s7a Part A - Automatically assigned addresses
+@section s7a Part A - Automatically assigned addresses
 
 Assigning addresses hierarchially in a network with hierarchical topology can drasticly reduce the size of routing tables,
 by adding subnet routes. However, the configurator's automatic address assignment with its default settings doesn't assign addresses hierarchically,
@@ -774,7 +766,7 @@ as a baseline of comparison for optimization features.
 
 All 3 parts in this step use the ConfiguratorC network defined in ConfiguratorC.ned. The network looks like this:
 
-<!TODO: network image>
+<img src="step7network.png" width="850px">
 
 The network is comprised of 3 areas, each containing 2 subnets. Each subnet contains 3 standardHosts. The hosts in the subnet connect to an area router
 through switches. The 3 area routes connect to a central backbone router. The network contains 3 hierarchical levels - the hosts in the subnets, the area
@@ -793,7 +785,9 @@ This means that nodes will have an individual routing table entry to every desti
 
 The assigned addresses are shown in the image below:
 
-<img src="step7a.png" width="850px">
+@htmlonly
+<a href="step7a.png" data-lightbox="step7a"><img src="step7a.png" width="850px"></a>
+@endhtmlonly
 
 The size of the routing tables are the following:
 
@@ -894,8 +888,6 @@ The addresses are the same, but the routing table sizes have gone down:
 
 <img src="step7b_rt.png">
 
-<a href="step7a.png" data-lightbox="step7a"><img src="step7a.png" width="850px"></a>
-
 Hosts have just 2 routing table entries. One for reaching other hosts in their subnets, and a default route. 
 
 @section Part C - Hierarchically assigned addresses, optimized routing tables
@@ -913,16 +905,16 @@ The configuration for this part in omnetpp.ini is the following:
 @until ####
 
 As in the previous part, all of the configurator's routing table optimization features are enabled.
-The XML configuration for this part is this:
+The XML configuration for this part in step7c.xml is the following:
 
 @include step7c.xml
 
 This XML configuration assigns addresses hierarchically in the following way:
 - The first octet of the address for all nodes is 10, i.e. 10.x.x.x
-- The second octet denotes the area, p.e. 10.2.x.x corresponds to <i>area2</i>
-- The third octet denotes the subnet within the area, p.e. 10.2.1.x corresponds to 
+- The second octet denotes the area, e.g. 10.2.x.x corresponds to <i>area2</i>
+- The third octet denotes the subnet within the area, e.g. 10.2.1.x corresponds to 
 <i>subnet1</i> in <i>area2</i>
-- The forth octet is the host identifier within a subnet, p.e. 10.2.1.4 corresponds to 
+- The forth octet is the host identifier within a subnet, e.g. 10.2.1.4 corresponds to 
 <i>host4</i> in <i>subnet1</i> in <i>area2</i>
 
 With this setup, it is possible to cover an area with just one rule in the routing table
@@ -931,9 +923,47 @@ are connected to.
 
 @subsection s7cresults Results
 
+The image below shows the assigned addresses.
+
+@htmlonly
+<a href="step7caddresses.png" data-lightbox="step7caddresses"><img src="step7caddresses.png" width="850px"></a>
+@endhtmlonly
+
+The sizes of routing tables are displayed in the following image.
+
+<!should crop routing table size images so they dont contain the search settings. except for the first occurence to show how it was made>
+<!maybe a few words about how to search for the routing tables>
+
+<img src="step7c_rt.png">
+
+- Hosts' routing tables contain just 2 rules, as in the previous part. One is for reaching the other members of the host's subnet, and a default rule for reaching everything
+else through the area's router.
+
+- The area routers' routing tables contain a specific rule for reaching the backbone router, 2 rules for reaching the 2 subnets that belong to the router's area,
+and a default rule for reaching everything else throught the backbone router.
+
+- The backbone router's routing table contains 3 specific rules for reaching the 3 area routers, and 3 rules to reach the 3 areas.
+
+The difference between the configuration for this part and the previous one is that addresses are assigned hierechically in this part. The routing
+table of the backbone router contains 6 entries instead of 10 in the previous part. The other nodes' routing tables remained the same.
+
+<! the difference should be more drastic - maybe it would be if there were more backbone routers>
+
+
+
+@lightbox
 @fixupini
 
 @nav{step6,step8}
-@lightbox
+
+<!-------------------------------------------------------------------------------------------------------->
+
+@page step8 Step 8 - Configuring a mixed wired/wireless network
+
+@nav{step7,step9}
+
+@section s8goals Goals
+
+
 
 */
