@@ -607,6 +607,8 @@ The network topology is represented by the graph in the following manner:
 - Vertices that represent nodes with IP forwarding turned off have infinite weight, all others 0. This keeps routes from transiting
 nodes with forwarding turned off.
 - Edge weights are assigned according to the configured metric. The metric is a function that determines the cost of vertex or edge.<!do we need this here?>
+- The metric is a function that determines the cost of vertices and edges. There are various metrics available, edge weights are assigned according to
+the configured metric.
 
 The available metrics are the following:
 - <strong>hopCount</strong>: configures routing tables optimized for hop count. All edges have a cost of 1. This is the default metric.
@@ -636,8 +638,7 @@ The default value is <tt>"**"</tt>.
 All of these attributes are optinal, and left for the automatic configuration when not specified. There are subelements available in <autoroute>,
 which are discussed in Part B.
 
-Here the <autoroute> element specifies that routes should be added to the routing tables of all hosts (hosts="**") and the metric should be <i>dataRate</i> 
-(metric="dataRate"). The configurator assigns weights to the graph's edges that are inversely proportional to the data rate of the network links.
+Here the <autoroute> element specifies that routes should be added to the routing tables of all hosts and the metric should be <i>dataRate</i>. The configurator assigns weights to the graph's edges that are inversely proportional to the data rate of the network links.
 This way route generation will favor routes with higher data rates.
 
 Note that <i>router0</i> and <i>router2</i> are connected with a 10 Mbit/s ethernet cable, while <i>router1</i> connects to the other routers with
@@ -714,10 +715,10 @@ The configuration for this step in omnetpp.ini is the following:
 @skipline Step6B
 @until ####
 
-The <autoroute> elements can also contain the following subelements, which can be used to specify costs in the graph:
-- <strong>node</strong>: This can be used to specify cost parameters to network nodes. The <strong>hosts</strong> selector
+The <autoroute> elements can also contain the following optional subelements, which can be used to specify costs in the graph:
+- <strong><node></strong>: This can be used to specify cost parameters to network nodes. The <strong>hosts</strong> selector
 attribute selects which hosts are affected, and the <strong>cost</strong> parameter sets a number for their costs. Both attributes are mandatory.
-- <strong>link</strong>: This can used to specify cost parameters to network links. The <strong>interfaces</strong> selector
+- <strong><link></strong>: This can used to specify cost parameters to network links. The <strong>interfaces</strong> selector
 attribute selects which links are affected, by specifying an interface they belong to. The <strong>cost</strong> parameter
 sets the cost. Both attributes are mandatory.
 
