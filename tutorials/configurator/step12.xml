@@ -1,5 +1,5 @@
 <config>
     <interface hosts="**" address="10.x.x.x" netmask="255.x.x.x"/>
-    <autoroute metric="hopCount" sourceHosts="*.Area2wirelessHost* *Router"/>
-    <autoroute metric="errorRate" sourceHosts="*.Area1wirelessHost*"/>
+    <autoroute metric="hopCount" sourceHosts="*.area2wirelesshost* *router"/>
+    <autoroute metric="errorRate" sourceHosts="*.area1wirelesshost*"/>
 </config>
