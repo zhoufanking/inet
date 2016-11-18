@@ -577,46 +577,23 @@ However, there are other cost functions available, like data rate, error rate, e
 - <strong>Part A</strong> demonstrates using the data rate metric for automatically setting up routes.
 - <strong>Part B</strong> demonstrates instructing the configurator not to use a link when setting up routes by manually specifying link cost.
 
-@section s6a Part A: Using the data rate metric for automatically setting up routes
+@section s6a Part A: Using the data rate metric
 
-v3
+When setting up routes, the configurator first builds a graph representing the network topology. 
+A vertex in the graph represents a network node along with all of its interfaces. An edge represents a wired or wireless connection
+between two network interfaces. When building the network topology, wireless nodes are considered to be connected to all other wireless
+nodes in the same wireless network.
 
-When setting up routes, the configurator builds a graph representing the network topology. It assigns weights to vertices and edges,
-which are used by the shortest path algorithm to compute routes.
-
-The network topology is represented as a graph in the following manner:
-Vertices represent network nodes, and have a weight of 0, except for nodes that have IP address disabled have infinite weight to keep routes
-from going through them. Edges represent network connections, their costs are assigned according to the configured metric.
-<!what about wireless?>Dijkstra's shortest path algorithm is used to compute the routes.
-
-The available metrics are the following:
-- hopCount: configures routing tables optimized for hop count. All edges have a cost of 1. This is the default metric.
-- dataRate: configures routing tables while favoring connections higher bandwidth. Edge costs are inversely proportional to the data rate of the connection.
-- delay: configures routing tables optimized for low delay. Edge costs are proportional to the delay of the connection.
-- errorRate: configures routing tables while minimizing error rates. Edge costs are proportional to the error rate of the connection. This is useful
-when the network contains wireless nodes, as the error rate of wired connections is constantly small.
-
-v4
-
-When setting up routes, the configurator builds a graph representing the network topology. Vertices in the graph represent
-network nodes and connections between them, respectively. It assigns weights to vertices and edges, which are used
-by the shortest path algorithm to compute routes.
-
-The network topology is represented by the graph in the following manner:
-- Wireless nodes are considered to be connected to all other wireless nodes.
-- Vertices that represent nodes with IP forwarding turned off have infinite weight, all others 0. This keeps routes from transiting
-nodes with forwarding turned off.
-- Edge weights are assigned according to the configured metric. The metric is a function that determines the cost of vertex or edge.<!do we need this here?>
-- The metric is a function that determines the cost of vertices and edges. There are various metrics available, edge weights are assigned according to
-the configured metric.
+After the graph is built, the configurator assigns weights to vertices and edges according to the configured metric.
+Vertices that represent network nodes with IP forwarding turned off have infinite weight, all others have 0.
+At last the shortest path algorithm is used to determine the routes based on the assigned weights.
 
 The available metrics are the following:
-- <strong>hopCount</strong>: configures routing tables optimized for hop count. All edges have a cost of 1. This is the default metric.
-- <strong>dataRate</strong>: configures routing tables while favoring connections with higher bandwidth. Edge costs are inversely proportional to the data rate of the connection.
-- <strong>delay</strong>: configures routing tables optimized for lower delay. Edge costs are proportional to the delay of the connection.
-- <strong>errorRate</strong>: configures routing tables while minimizing error rates. Edge costs are proportional to the error rate of the connection.
-This is useful
-when the network contains wireless nodes, as the error rate of wired connections is constantly small.
+- <strong>hopCount</strong>: routes are optimized for hop count. All edges have a cost of 1. This is the default metric.
+- <strong>dataRate</strong>: routes prefer connections with higher bandwidth. Edge costs are inversely proportional to the data rate of the connection.
+- <strong>delay</strong>: routes are optimized for lower delay. Edge costs are proportional to the delay of the connection.
+- <strong>errorRate</strong>: routes are optimized for smaller error rate. Edge costs are proportional to the error rate of the connection. This is mostly useful
+for wireless network because the error rate of wired connections is usually negligible.
 
 @subsection s6aconfig Configuration
 
@@ -641,28 +618,20 @@ The <autoroute> element can contain the following attributes:
 The default value is <tt>"**"</tt>.
 - <strong>metric</strong>: Parameter attribute that sets the metric to be used when calculating shortest paths. The default value is <tt>"hopCount"</tt>.
 
-All of these attributes are optinal, and left for the automatic configuration when not specified. There are subelements available in <autoroute>,
-which are discussed in Part B.
+There are subelements available in <autoroute>, which are discussed in Part B.
 
-Here the <autoroute> element specifies that routes should be added to the routing tables of all hosts and the metric should be <i>dataRate</i>. The configurator assigns weights to the graph's edges that are inversely proportional to the data rate of the network links.
+Here the <autoroute> element specifies that routes should be added to the routing table of each host and the metric should be <i>dataRate</i>. The configurator assigns weights to the graph's edges that are inversely proportional to the data rate of the network links.
 This way route generation will favor routes with higher data rates.
 
 Note that <i>router0</i> and <i>router2</i> are connected with a 10 Mbit/s ethernet cable, while <i>router1</i> connects to the other routers with
-100 Mbit/s ethernet cables. Since routes are optimized for data rate, packets from router0 to router2 will go via router1 as this path has more bandwidth.
-
-The resulting routes are similar to the ones in Step 5B. The difference is that in this step, routes back from hosts 6-8 to hosts 0-2 go towards router1
-as well. No traffic is routed between router0 and router2 at all.
+100 Mbit/s ethernet cables. Since routes are optimized for data rate, packets from router0 to router2 will go via router1 because this path has higher bandwidth.
 
 <img src="step4routes_3.png">
 
-v2
-<img src="output_7.png" width="298px">
-
 @subsection s6results Results
 
-The following image shows the visualized routes towards <i>host1</i>,
-showing the backwards route.
-Routes towards router0 go through router1, as opposed to the routes in Step 4.
+The following image shows the backward routes towards <i>host1</i>.
+The resulting routes are similar to the ones in Step 5B. The difference is that routes going backward, from hosts 6-8 to hosts 0-2, go through router1. No traffic is routed between router0 and router2 at all (as opposed to Step 4 and 5).
 
 <img src="step6aroutes.png" width="850px">
 
@@ -679,7 +648,7 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
-The first 2 rules describe reaching router1 and hosts 0-2 directly. The last is the default rule, which describes that traffic to any other destination
+The first 2 rules describe reaching router1 and hosts 0-2 directly. The last rule specifies that traffic to any other destination
 should be routed towards <i>router1</i>.
 
 The routing table of <i>router2</i> is similar:
@@ -695,10 +664,10 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
-The following animation shows <i>host1</i> pinging <i>host7</i> and <i>host0</i> pinging <i>host6</i>. Routes to <i>host1</i> are visualized.<!TODO: what happens>
+The following animation shows <i>host1</i> pinging <i>host7</i> and <i>host0</i> pinging <i>host6</i>. Routes towards <i>host1</i> are visualized.<!TODO: what happens>
 <img src="step6a_4.gif" width="850px">
 
-One can easily check that no routes are going through the link between router0 and router2 by setting the destination filter to "*.*" in the visualizer.
+One can easily check that no routes go through the link between router0 and router2 by setting the destination filter to "*.*" in the visualizer.
 This indicates all routes in the network:
 
 <img src="step6allroutes.png" width=850px>
@@ -709,9 +678,10 @@ Testing svg:
 
 @endhtmlonly
 
-@section s6b Part B - Instructing the configurator not to use a link when setting up routes by manually specifying link cost.
+@section s6b Part B - Manually specifying link cost
 
-This part realizes the same routes as Part A, where routes between <i>router0</i> and <i>router2</i> are routed through <i>router1</i>.
+This part configures the same routes as Part A, where routes between <i>router0</i> and <i>router2</i> lead through <i>router1</i>.
+TODO: Instructing the configurator not to use a link when setting up routes by manually specifying link cost.
 
 @subsection s6bconfig Configuration
 
@@ -759,26 +729,14 @@ In this part, that link is "turned off" by specifying an infinite cost for it.
 
 In complex hierarchical networks, routing tables can grow very big. This step demonstrates ways the configurator can reduce the size of
 routing tables by optimization and the use of hierarchically assigned addresses. The step contains 3 parts:
-- <strong>Part A</strong>: Automatically assigned addresses
+- <strong>Part A</strong>: Automatically assigned addresses, no optimization
 - <strong>Part B</strong>: Automatically assigned addresses, using optimization
 - <strong>Part C</strong>: Hierarchically assigned addresses, using optimization
 
-<!should be using same description as in ini?>
-
-- <strong>Part A</strong>: Non optimized, fully automatic IP address assignment and static routes
-- <strong>Part B</strong>: Optimized, fully automatic IP address assignment and static routes
-- <strong>Part C</strong>: Optimized, hierarchically assigned IP addresses and static routes
-
 @section s7a Part A - Automatically assigned addresses
 
-Assigning addresses hierarchially in a network with hierarchical topology can reduce the size of routing tables,
-by adding subnet routes. However, the configurator's automatic address assignment with its default settings doesn't assign addresses hierarchically,
-but sequentially while trying to allocate the longest subnet mask. This part uses automatic address assignment,
-and the configurator's optimization features are turned off. The size of routing tables in this part can serve as a baseline to compare
-optimizations to.
-
-v2
-as a baseline of comparison for optimization features.
+Assigning addresses hierarchially in a network with hierarchical topology can reduce the size of routing tables. However, the configurator's automatic address assignment with its default settings doesn't assign addresses hierarchically. This part uses automatic address assignment,
+and the configurator's routing table optimization features are turned off. The size of routing tables in this part can serve as a baseline to compare with.
 
 @subsection s7aconfig Configuration
 
@@ -909,9 +867,8 @@ Hosts have just 2 routing table entries. One for reaching other hosts in their s
 
 @section Part C - Hierarchically assigned addresses, optimized routing tables
 
-Having hierarchically assigned addresses in a hierarchical network results in smaller routing table sizes,
+Having hierarchically assigned addresses in a network results in smaller routing table sizes,
 because a large distant network can be covered with just one rule in a core router's routing table.
-In this part, addresses are assigned hierarchically.<!TODO: more on this and rewrite>
 
 @subsection 7cconfig Configuration
 
@@ -934,7 +891,8 @@ This XML configuration assigns addresses hierarchically in the following way:
 - The forth octet is the host identifier within a subnet, e.g. 10.2.1.4 corresponds to 
 <i>host4</i> in <i>subnet1</i> in <i>area2</i>
 
-With this setup, it is possible to cover an area with just one rule in the routing table
+TODO: these numbers only cover rules looking down in the hierarchy, should be clarified
+With this setup, it's possible to cover an area with just one rule in the routing table
 of the backbone router. Similarly, the area routers need 2 rules for each subnet that they
 are connected to.
 
