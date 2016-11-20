@@ -357,7 +357,8 @@ The visualized routes are displayed on the following image:
 
 <img src="step4routes.png" width=850px>
 
-Note that routes from all nodes to host7 are visualized.
+Note that routes from all nodes to host7 are visualized. Note that arrows don't go through switches,
+because they not the next hop. When routes are concerned, they are transparent L2 devices.
 
 The routing tables are the following (routes visualized on the image above are highlighted):
 
@@ -498,7 +499,7 @@ as the rule specified in the XML configuration has been added (highlighted).
 This and the last rule both match packets to <i>host7</i> but the manually added route
 because it comes earlier.
 
-The following animation depicts <i>host0</i> pinging <i>host7</i>, and <i>host1</i> pinging <i>host6</i>. Routes to <i>host7</i> are visualized.
+The following animation depicts <i>host1</i> pinging <i>host7</i>, and <i>host0</i> pinging <i>host6</i>. Routes to <i>host7</i> are visualized.
 
 <img src="step5a_2.gif" width="850px">
 
@@ -529,8 +530,7 @@ The <route> element specifies a routing table entry for <i>router0</i>. The dest
 which designates the addresses of hosts 6-8. The gateway is <i>router1's</i> address, the interface is the one connected towards
 <i>router1</i> (eth1). This rule is added to <i>router0's</i> routing table <strong>in addition</strong>
 to the rule added automatically by the configurator. They match the same packets, but the parameters are different (see at the result section
-below). The metric is set to -1 to ensure that the manual route takes precedence.
-<!if the manual route is always before the automatic one, is metric=-1 necessary?>
+below). The manually added routes come before the automatic ones in routing tables, thus the manual ones take precedence.
 
 @subsection s5bresults Results
 
@@ -554,7 +554,7 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
-The following is the animation of <i>host0</i> pinging <i>host7</i> and <i>host1</i> pinging <i>host6</i>, similarly
+The following is the animation of <i>host1</i> pinging <i>host7</i> and <i>host0</i> pinging <i>host6</i>, similarly
 to Part A. Routes to <i>host7</i> are visualized.
 
 <img src="step5b_4.gif" width="850px">
@@ -709,7 +709,7 @@ This affects the link between <i>router0</i> and <i>router2</i>, no routes shoul
 
 @subsection s6bresults Results
 
-The routes to <i>host1</i> are visualized in the following image:
+The routes towards <i>host1</i> are visualized in the following image:
 
 <img src="step6broutes.png" width="850px">
 
@@ -744,8 +744,8 @@ All 3 parts in this step use the ConfiguratorC network defined in ConfiguratorC.
 
 <img src="step7network.png" width="850px">
 
-The network is comprised of 3 areas, each containing 2 subnets. Each subnet contains 3 <tt>standardHosts</tt>. The hosts in the subnet connect to an area router
-through switches. The 3 area routes connect to a central backbone router. The network contains 3 hierarchical levels, which correspond to the hosts in the subnets, the area
+The network is comprised of 3 areas, each containing 2 local area networks (LANs). Each LAN contains 3 <tt>standardHosts</tt>. The hosts in the LAN connect to an area router
+through switches. The 3 area routes connect to a central backbone router. The network contains 3 hierarchical levels, which correspond to the hosts in the LANs, the area
 routers, and the backbone router.
 
 The configuration for this part in omnetpp.ini is the following:
@@ -768,11 +768,11 @@ The size of the routing tables are the following:
 
 <img src="step7a_rt.png">
 
-The routing tables of a host (area1subnet2host2) and a router(area1router) are shown below:
+The routing tables of a host (area1lan2host2) and a router(area1router) are shown below:
 
 <div class="fragment">
 <pre class="monospace">
-Node ConfiguratorC.area1subnet2host2
+Node ConfiguratorC.area1lan2host2
 -- Routing table --
 Destination      Netmask          Gateway          Iface            Metric
 10.0.0.1         255.255.255.255  10.0.0.28        eth0 (10.0.0.26) 0
@@ -838,8 +838,12 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
+There are 18 hosts in the network, each with 1 interface. The 3 routers each have
+3 interfaces. Thus there are 30 interfaces in the network. 
+Hosts have 1 interface, routers have 3. There are 18 hosts and 3 routers, thus there are
+30 interfaces in the network.
 All routing table entries have 255.255.255.255 netmasks, i.e. separate routes to all destination interfaces.
-Thus hosts have 29 entries in their routing tables, for the 29 other interfaces. Simiarly, routes have 27 entries.
+Thus hosts have 29 entries in their routing tables, for the 29 other interfaces. Similarly, routes have 27 entries.
 
 @section s7b Part B - Automatically assigned addresses, using optimization
 
@@ -863,14 +867,14 @@ The addresses are the same, but the routing table sizes have gone down:
 
 <img src="step7b_rt.png">
 
-Hosts have just 2 routing table entries. One for reaching other hosts in their subnets, and a default route. 
+Hosts have just 2 routing table entries. One for reaching other hosts in their LANs, and a default route. 
 
 @section Part C - Hierarchically assigned addresses, optimized routing tables
 
 Having hierarchically assigned addresses in a network results in smaller routing table sizes,
 because a large distant network can be covered with just one rule in a core router's routing table.
 
-@subsection 7cconfig Configuration
+@subsection 7cconfig Confsiguration
 
 The configuration for this part in omnetpp.ini is the following:
 
@@ -886,14 +890,14 @@ The XML configuration for this part in step7c.xml is the following:
 This XML configuration assigns addresses hierarchically in the following way:
 - The first octet of the address for all nodes is 10, i.e. 10.x.x.x
 - The second octet denotes the area, e.g. 10.2.x.x corresponds to <i>area2</i>
-- The third octet denotes the subnet within the area, e.g. 10.2.1.x corresponds to 
-<i>subnet1</i> in <i>area2</i>
-- The forth octet is the host identifier within a subnet, e.g. 10.2.1.4 corresponds to 
-<i>host4</i> in <i>subnet1</i> in <i>area2</i>
+- The third octet denotes the LAN within the area, e.g. 10.2.1.x corresponds to 
+<i>lan1</i> in <i>area2</i>
+- The forth octet is the host identifier within a LAN, e.g. 10.2.1.4 corresponds to 
+<i>host4</i> in <i>lan1</i> in <i>area2</i>
 
 TODO: these numbers only cover rules looking down in the hierarchy, should be clarified
 With this setup, it's possible to cover an area with just one rule in the routing table
-of the backbone router. Similarly, the area routers need 2 rules for each subnet that they
+of the backbone router. Similarly, the area routers need 2 rules for each LAN that they
 are connected to.
 
 @subsection s7cresults Results
@@ -911,10 +915,40 @@ The sizes of routing tables are displayed in the following image.
 
 <img src="step7c_rt.png">
 
-- Hosts' routing tables contain just 2 rules, as in the previous part. One is for reaching the other members of the host's subnet, and a default rule for reaching everything
+The routing tables are the following:
+
+<div class="fragment">
+<pre class="monospace">
+Node ConfiguratorC.area1lan1host0
+-- Routing table --
+Destination      Netmask          Gateway          Iface           Metric
+10.1.1.0         255.255.255.248  *                eth0 (10.1.1.1) 0
+<i></i>*                *                10.1.1.4         eth0 (10.1.1.1) 0
+
+Node ConfiguratorC.area1router
+-- Routing table --
+Destination      Netmask          Gateway          Iface           Metric
+10.1.3.1         255.255.255.255  *                eth2 (10.1.3.2) 0
+10.1.1.0         255.255.255.248  *                eth0 (10.1.1.4) 0
+10.1.2.0         255.255.255.248  *                eth1 (10.1.2.4) 0
+10.2.0.0         255.254.0.0      10.1.3.1         eth2 (10.1.3.2) 0
+
+Node ConfiguratorC.backbonerouter
+-- Routing table --
+Destination      Netmask          Gateway          Iface           Metric
+10.1.3.2         255.255.255.255  *                eth0 (10.1.3.1) 0
+10.2.3.2         255.255.255.255  *                eth2 (10.2.3.1) 0
+10.3.3.2         255.255.255.255  *                eth1 (10.3.3.1) 0
+10.1.0.0         255.255.252.0    10.1.3.2         eth0 (10.1.3.1) 0
+10.2.0.0         255.255.252.0    10.2.3.2         eth2 (10.2.3.1) 0
+10.3.0.0         255.255.252.0    10.3.3.2         eth1 (10.3.3.1) 0
+</pre>
+</div>
+
+- Hosts' routing tables contain just 2 rules, as in the previous part. One is for reaching the other members of the host's LAN, and a default rule for reaching everything
 else through the area's router.
 
-- The area routers' routing tables contain a specific rule for reaching the backbone router, 2 rules for reaching the 2 subnets that belong to the router's area,
+- The area routers' routing tables contain a specific rule for reaching the backbone router, 2 rules for reaching the 2 LANs that belong to the router's area,
 and a default rule for reaching everything else throught the backbone router.
 
 - The backbone router's routing table contains 3 specific rules for reaching the 3 area routers, and 3 rules to reach the 3 areas.

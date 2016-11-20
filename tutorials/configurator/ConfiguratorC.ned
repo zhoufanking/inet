@@ -27,73 +27,73 @@ network ConfiguratorC
 {
     @display("bgb=3225.915,1993.86");
     submodules:
-        area1subnet1host0: StandardHost {
+        area1lan1host0: StandardHost {
             @display("p=492.195,413.82");
         }
-        area1subnet1host1: StandardHost {
+        area1lan1host1: StandardHost {
             @display("p=492.195,147.345");
         }
-        area1subnet1host2: StandardHost {
+        area1lan1host2: StandardHost {
             @display("p=865.26,147.345");
         }
         area1switch1: EtherSwitch {
             @display("p=865.26,410.685");
         }
-        area2subnet1host1: StandardHost {
+        area2lan1host1: StandardHost {
             @display("p=1357.455,1840.245");
         }
-        area2subnet1host2: StandardHost {
+        area2lan1host2: StandardHost {
             @display("p=946.77,1840.245");
         }
-        area2subnet1host3: StandardHost {
+        area2lan1host3: StandardHost {
             @display("p=558.03,1840.245");
         }
         area2switch1: EtherSwitch {
             @display("p=1119.1951,1514.205");
         }
-        area3subnet1host1: StandardHost {
+        area3lan1host1: StandardHost {
             @display("p=2868.5251,1583.175");
         }
-        area3subnet1host2: StandardHost {
+        area3lan1host2: StandardHost {
             @display("p=2868.5251,1322.97");
         }
-        area3subnet1host3: StandardHost {
+        area3lan1host3: StandardHost {
             @display("p=2868.5251,1078.4401");
         }
         area3switch1: EtherSwitch {
             @display("p=2385.735,1075.305");
         }
-        area1subnet2host1: StandardHost {
+        area1lan2host1: StandardHost {
             @display("p=410.685,1097.25");
         }
-        area1subnet2host2: StandardHost {
+        area1lan2host2: StandardHost {
             @display("p=410.685,1322.97");
         }
-        area1subnet2host3: StandardHost {
+        area1lan2host3: StandardHost {
             @display("p=410.685,1583.175");
         }
         area1switch2: EtherSwitch {
             @display("p=865.26,1094.115");
         }
-        area2subnet2host1: StandardHost {
+        area2lan2host1: StandardHost {
             @display("p=2555.025,1840.245");
         }
-        area2subnet2host2: StandardHost {
+        area2lan2host2: StandardHost {
             @display("p=2153.745,1840.245");
         }
-        area2subnet2host3: StandardHost {
+        area2lan2host3: StandardHost {
             @display("p=1743.06,1840.245");
         }
         area2switch2: EtherSwitch {
             @display("p=2094.18,1511.0701");
         }
-        area3subnet2host1: StandardHost {
+        area3lan2host1: StandardHost {
             @display("p=2551.8901,137.94");
         }
-        area3subnet2host2: StandardHost {
+        area3lan2host2: StandardHost {
             @display("p=2997.06,137.94");
         }
-        area3subnet2host3: StandardHost {
+        area3lan2host3: StandardHost {
             @display("p=2997.06,354.255");
         }
         area3switch2: EtherSwitch {
@@ -118,31 +118,31 @@ network ConfiguratorC
             @display("p=124.427505,282.15253");
         }
     connections:
-        area2subnet1host1.ethg++ <--> Eth100M <--> area2switch1.ethg++;
-        area2subnet1host2.ethg++ <--> Eth100M <--> area2switch1.ethg++;
-        area2subnet1host3.ethg++ <--> Eth100M <--> area2switch1.ethg++;
-        area1switch2.ethg++ <--> Eth100M <--> area1subnet2host1.ethg++;
-        area1subnet2host2.ethg++ <--> Eth100M <--> area1switch2.ethg++;
-        area1switch2.ethg++ <--> Eth100M <--> area1subnet2host3.ethg++;
-        area1switch1.ethg++ <--> Eth100M <--> area1subnet1host0.ethg++;
-        area1switch1.ethg++ <--> Eth100M <--> area1subnet1host1.ethg++;
-        area1switch1.ethg++ <--> Eth100M <--> area1subnet1host2.ethg++;
+        area2lan1host1.ethg++ <--> Eth100M <--> area2switch1.ethg++;
+        area2lan1host2.ethg++ <--> Eth100M <--> area2switch1.ethg++;
+        area2lan1host3.ethg++ <--> Eth100M <--> area2switch1.ethg++;
+        area1switch2.ethg++ <--> Eth100M <--> area1lan2host1.ethg++;
+        area1lan2host2.ethg++ <--> Eth100M <--> area1switch2.ethg++;
+        area1switch2.ethg++ <--> Eth100M <--> area1lan2host3.ethg++;
+        area1switch1.ethg++ <--> Eth100M <--> area1lan1host0.ethg++;
+        area1switch1.ethg++ <--> Eth100M <--> area1lan1host1.ethg++;
+        area1switch1.ethg++ <--> Eth100M <--> area1lan1host2.ethg++;
         area1switch1.ethg++ <--> Eth100M <--> area1router.ethg++;
         area1switch2.ethg++ <--> Eth100M <--> area1router.ethg++;
         area1router.ethg++ <--> Eth100M <--> backbonerouter.ethg++;
         area2switch1.ethg++ <--> Eth100M <--> area2router.ethg++;
         area2router.ethg++ <--> Eth100M <--> area2switch2.ethg++;
-        area2switch2.ethg++ <--> Eth100M <--> area2subnet2host1.ethg++;
-        area2switch2.ethg++ <--> Eth100M <--> area2subnet2host2.ethg++;
-        area2switch2.ethg++ <--> Eth100M <--> area2subnet2host3.ethg++;
-        area3switch1.ethg++ <--> Eth100M <--> area3subnet1host1.ethg++;
-        area3switch1.ethg++ <--> Eth100M <--> area3subnet1host2.ethg++;
-        area3switch1.ethg++ <--> Eth100M <--> area3subnet1host3.ethg++;
+        area2switch2.ethg++ <--> Eth100M <--> area2lan2host1.ethg++;
+        area2switch2.ethg++ <--> Eth100M <--> area2lan2host2.ethg++;
+        area2switch2.ethg++ <--> Eth100M <--> area2lan2host3.ethg++;
+        area3switch1.ethg++ <--> Eth100M <--> area3lan1host1.ethg++;
+        area3switch1.ethg++ <--> Eth100M <--> area3lan1host2.ethg++;
+        area3switch1.ethg++ <--> Eth100M <--> area3lan1host3.ethg++;
         area3switch1.ethg++ <--> Eth100M <--> area3router.ethg++;
         area3router.ethg++ <--> Eth100M <--> area3switch2.ethg++;
-        area3switch2.ethg++ <--> Eth100M <--> area3subnet2host1.ethg++;
-        area3switch2.ethg++ <--> Eth100M <--> area3subnet2host2.ethg++;
-        area3switch2.ethg++ <--> Eth100M <--> area3subnet2host3.ethg++;
+        area3switch2.ethg++ <--> Eth100M <--> area3lan2host1.ethg++;
+        area3switch2.ethg++ <--> Eth100M <--> area3lan2host2.ethg++;
+        area3switch2.ethg++ <--> Eth100M <--> area3lan2host3.ethg++;
         area3router.ethg++ <--> Eth100M <--> backbonerouter.ethg++;
         area2router.ethg++ <--> Eth100M <--> backbonerouter.ethg++;
 }
