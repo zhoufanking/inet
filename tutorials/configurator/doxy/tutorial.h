@@ -422,9 +422,7 @@ specifically, those interfaces of the other routers that are not facing the host
 
 Below is an animation of <i>host1</i> pinging <i>host7</i>.
 
-<img src="step4_13.gif" width="850px">
-
-<!what happens?>
+<img src="step4_new_4.gif" width="850px">
 
 @nav{step3,step5}
 @fixupini
@@ -448,7 +446,7 @@ This step has two parts:
 In this part we will override the routes going from the subnet of <i>router0</i> to <i>host7</i>. With the automatic configuration, packets
 from router0's subnet would go through router2 to reach host7 (as in the previous step). We want them to go through router1 instead.
 
-<img src="step1network.png">
+<img src="step4network.png">
 
 @subsection s5aconfig Configuration
 
@@ -457,6 +455,10 @@ This configuration uses the same network as the previous step, ConfiguratorB. Th
 @dontinclude omnetpp.ini
 @skipline Step5
 @until ####
+
+A ping application is added to <i>host0</i>, in addition to the one in <i>host1</i> added in Step 4.
+The new app in <i>host0</i> pings <i>host6</i>, this can demonstrate that only packets sent to <i>host7</i>
+are affected by the route override.
 
 For the routes to go through <i>router1</i>, the routing table of <i>router0</i> has to be altered.
 The new rules should dictate that packets with the destination of host7 (10.0.0.35) should be routed
@@ -501,7 +503,7 @@ because it comes earlier.
 
 The following animation depicts <i>host1</i> pinging <i>host7</i>, and <i>host0</i> pinging <i>host6</i>. Routes to <i>host7</i> are visualized.
 
-<img src="step5a_2.gif" width="850px">
+<img src="step5a.gif" width="850px">
 
 Note that only routes towards <i>host7</i> are diverted at router0. The ping reply packet uses the original route between <i>router0</i> and <i>router2</i>.
 Ping packets to <i>host6</i> (and back) also use the original route.
@@ -557,7 +559,7 @@ Destination      Netmask          Gateway          Iface            Metric
 The following is the animation of <i>host1</i> pinging <i>host7</i> and <i>host0</i> pinging <i>host6</i>, similarly
 to Part A. Routes to <i>host7</i> are visualized.
 
-<img src="step5b_4.gif" width="850px">
+<img src="step5b.gif" width="850px">
 
 This time both packets outbound to hosts 6 and 7 take the diverted route, the replies come back on the original route.
 
@@ -665,7 +667,7 @@ Destination      Netmask          Gateway          Iface            Metric
 </div>
 
 The following animation shows <i>host1</i> pinging <i>host7</i> and <i>host0</i> pinging <i>host6</i>. Routes towards <i>host1</i> are visualized.<!TODO: what happens>
-<img src="step6a_4.gif" width="850px">
+<img src="step6a.gif" width="850px">
 
 One can easily check that no routes go through the link between router0 and router2 by setting the destination filter to "*.*" in the visualizer.
 This indicates all routes in the network:
@@ -681,6 +683,7 @@ Testing svg:
 @section s6b Part B - Manually specifying link cost
 
 This part configures the same routes as Part A, where routes between <i>router0</i> and <i>router2</i> lead through <i>router1</i>.
+The link between <i>router0</i> and <i>router2</i> is "turned off", by manually specifying an infinite cost for it.
 TODO: Instructing the configurator not to use a link when setting up routes by manually specifying link cost.
 
 @subsection s6bconfig Configuration
@@ -761,14 +764,15 @@ This means that nodes will have an individual routing table entry to every desti
 
 The assigned addresses are shown on the image below:
 @htmlonly
-<a href="step7a.png" data-lightbox="step7a"><img src="step7a.png" width="850px"></a>
+<center><a href="step7a.png" data-lightbox="step7a"><img src="step7a.png" width="850px"></a></center>
 @endhtmlonly
 
 The size of some of the routing tables are the following:
 
 <img src="step7a_rt.png">
 
-The routing tables of a host (area1lan2host2) and a router (area1router) are shown below:
+The routing tables of a host (area1lan2host2) and a router (area1router) are shown below.
+The backbone router's routing table is similar to <i>area1router's</i>.
 
 <div class="fragment">
 <pre class="monospace">
@@ -907,13 +911,15 @@ for reaching the backbone router, 2 rules for reaching the 2 LANs it's connected
 through the backbone router. 
 - Similarly, the backbone router has 3 rules for reaching the 3 area routers, and 6 rules for reaching the 6 LANs
 in the network.
+- The backbone router has separate rules for the 2 LANs connected to an area router, because the addresses are not contiguously assigned to the 2 LANs.
+<!TODO: clarify>
 
 @section Part C - Hierarchically assigned addresses, optimized routing tables
 
 Having hierarchically assigned addresses in a network results in smaller routing table sizes,
 because a large distant network can be covered with just one rule in a core router's routing table.
 
-@subsection 7cconfig Confsiguration
+@subsection s7cconfig Configuration
 
 The configuration for this part in omnetpp.ini is the following:
 
@@ -944,7 +950,7 @@ are connected to.
 The image below shows the assigned addresses.
 
 @htmlonly
-<a href="step7caddresses.png" data-lightbox="step7caddresses"><img src="step7caddresses.png" width="850px"></a>
+<center><a href="step7caddresses.png" data-lightbox="step7caddresses"><img src="step7caddresses.png" width="850px"></a></center>
 @endhtmlonly
 
 The sizes of some of the routing tables are displayed in the following image.
@@ -993,11 +999,8 @@ and a default rule for reaching everything else throught the backbone router.
 - The backbone router's routing table contains 3 specific rules for reaching the 3 area routers, and 3 rules to reach the 3 areas.
 
 The difference between the configuration for this part and the previous one is that addresses are assigned hierechically in this part. The routing
-table of the backbone router contains 6 entries instead of 10 in the previous part. The other nodes' routing tables remained the same.
-
-<! the difference should be more drastic - maybe it would be if there were more backbone routers>
-
-
+table of the backbone router contains 6 entries instead of 10 in the previous part. The other nodes' routing tables remained the same. The difference is not drastic because the network is small. However, using hierarchical address assignment in a larger network would make a significant
+difference in routing table size.
 
 @lightbox
 @fixupini
