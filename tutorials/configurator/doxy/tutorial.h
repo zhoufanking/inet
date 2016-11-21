@@ -674,10 +674,6 @@ This indicates all routes in the network:
 
 <img src="step6allroutes.png" width=850px>
 
-Testing svg:
-
-<img src="output_2.svg">
-
 @endhtmlonly
 
 @section s6b Part B - Manually specifying link cost
@@ -719,7 +715,7 @@ The routes towards <i>host1</i> are visualized in the following image:
 The routes are the same as in Part A. In that part the data rate metric was used, routes didn't use the 10Mbps link between <i>router0</i> and <i>router2</i>.
 In this part, that link is "turned off" by specifying an infinite cost for it.
 
-<!TODO: gif><! do we need gif here, its the same as the previous>
+<img src="step6a.gif" width="850px">
 
 @nav{step5,step7}
 @fixupini
