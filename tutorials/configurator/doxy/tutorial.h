@@ -764,11 +764,11 @@ The assigned addresses are shown on the image below:
 <a href="step7a.png" data-lightbox="step7a"><img src="step7a.png" width="850px"></a>
 @endhtmlonly
 
-The size of the routing tables are the following:
+The size of some of the routing tables are the following:
 
 <img src="step7a_rt.png">
 
-The routing tables of a host (area1lan2host2) and a router(area1router) are shown below:
+The routing tables of a host (area1lan2host2) and a router (area1router) are shown below:
 
 <div class="fragment">
 <pre class="monospace">
@@ -838,10 +838,10 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
-There are 18 hosts in the network, each with 1 interface. The 3 routers each have
-3 interfaces. Thus there are 30 interfaces in the network. 
-Hosts have 1 interface, routers have 3. There are 18 hosts and 3 routers, thus there are
-30 interfaces in the network.
+There are 18 hosts in the network, each with 1 interface. The 3 routers and the backbone router each have
+3 interfaces. Thus there are 30 interfaces in the network (18*1 + 4*3). 
+Hosts have 1 interface, routers have 3. There are 18 hosts and 4 routers, thus there are
+30 interfaces in the network (18*1 + 4*3).<!TODO: choose one version>
 All routing table entries have 255.255.255.255 netmasks, i.e. separate routes to all destination interfaces.
 Thus hosts have 29 entries in their routing tables, for the 29 other interfaces. Similarly, routes have 27 entries.
 
@@ -867,7 +867,46 @@ The addresses are the same, but the routing table sizes have gone down:
 
 <img src="step7b_rt.png">
 
-Hosts have just 2 routing table entries. One for reaching other hosts in their LANs, and a default route. 
+The routing tables of a host, an area router and the backbone router are the following:
+
+<div class="fragment">
+<pre class="monospace">
+Node ConfiguratorC.area1lan1host0
+-- Routing table --
+Destination      Netmask          Gateway          Iface           Metric
+10.0.0.0         255.255.255.248  *                eth0 (10.0.0.1) 0
+<i></i>*                *                10.0.0.4         eth0 (10.0.0.1) 0
+
+Node ConfiguratorC.area1router
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.50        255.255.255.255  *                eth2 (10.0.0.49) 0
+10.0.0.0         255.255.255.248  *                eth0 (10.0.0.4) 	0
+10.0.0.24        255.255.255.248  *                eth1 (10.0.0.28) 0
+10.0.0.0         255.255.255.192  10.0.0.50        eth2 (10.0.0.49) 0
+
+Node ConfiguratorC.backbonerouter
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.0.0.49        255.255.255.255  *                eth0 (10.0.0.50) 0
+10.0.0.53        255.255.255.255  *                eth2 (10.0.0.54) 0
+10.0.0.57        255.255.255.255  *                eth1 (10.0.0.58) 0
+10.0.0.8         255.255.255.248  10.0.0.53        eth2 (10.0.0.54) 0
+10.0.0.16        255.255.255.248  10.0.0.57        eth1 (10.0.0.58) 0
+10.0.0.32        255.255.255.248  10.0.0.53        eth2 (10.0.0.54) 0
+10.0.0.40        255.255.255.248  10.0.0.57        eth1 (10.0.0.58) 0
+10.0.0.0         255.255.255.224  10.0.0.49        eth0 (10.0.0.50) 0
+10.0.0.0         255.255.255.192  10.0.0.53        eth2 (10.0.0.54) 0
+10.0.0.0         255.255.255.192  10.0.0.57        eth1 (10.0.0.58) 0
+</pre>
+</div>
+
+- Hosts have just 2 routing table entries. One for reaching other hosts in their LANs, and a default route. 
+- The area routers have a rule
+for reaching the backbone router, 2 rules for reaching the 2 LANs it's connected to, and a default rule for reaching the rest of the network
+through the backbone router. 
+- Similarly, the backbone router has 3 rules for reaching the 3 area routers, and 6 rules for reaching the 6 LANs
+in the network.
 
 @section Part C - Hierarchically assigned addresses, optimized routing tables
 
@@ -908,7 +947,7 @@ The image below shows the assigned addresses.
 <a href="step7caddresses.png" data-lightbox="step7caddresses"><img src="step7caddresses.png" width="850px"></a>
 @endhtmlonly
 
-The sizes of routing tables are displayed in the following image.
+The sizes of some of the routing tables are displayed in the following image.
 
 <!should crop routing table size images so they dont contain the search settings. except for the first occurence to show how it was made>
 <!maybe a few words about how to search for the routing tables>

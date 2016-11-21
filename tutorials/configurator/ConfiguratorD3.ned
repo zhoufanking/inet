@@ -32,22 +32,22 @@ network ConfiguratorD3 extends ConfiguratorC
         area3AP: AccessPoint {
             @display("p=2642.991,725.00995");
         }
-        area1subnet3host1: WirelessHost {
+        area1lan3host1: WirelessHost {
             @display("p=211.3514,585.5005");
         }
-        area1subnet3host2: WirelessHost {
+        area1lan3host2: WirelessHost {
             @display("p=211.3514,754.0104");
         }
-        area1subnet3host3: WirelessHost {
+        area1lan3host3: WirelessHost {
             @display("p=211.3514,911.0958");
         }
-        area3subnet3host1: WirelessHost {
+        area3lan3host1: WirelessHost {
             @display("p=2825.3418,551.44696");
         }
-        area3subnet3host2: WirelessHost {
+        area3lan3host2: WirelessHost {
             @display("p=2936.0706,725.44934");
         }
-        area3subnet3host3: WirelessHost {
+        area3lan3host3: WirelessHost {
             @display("p=2824.6829,885.3909");
         }
         radioMedium: Ieee80211ScalarRadioMedium {
