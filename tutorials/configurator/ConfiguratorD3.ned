@@ -50,8 +50,8 @@ network ConfiguratorD3 extends ConfiguratorC
         area3lan3host3: WirelessHost {
             @display("p=2824.6829,885.3909");
         }
-        radioMediumA: Ieee80211ScalarRadioMedium {
-            @display("p=1313.8059,137.09279");
+        radioMedium: Ieee80211ScalarRadioMedium {
+            @display("p=150,400");
         }
         area1DHCP: StandardHost {
             @display("p=694.0323,922.52026");
@@ -61,9 +61,6 @@ network ConfiguratorD3 extends ConfiguratorC
         }
         integratedVisualizer: IntegratedCanvasVisualizer {
             @display("p=1405.2012,357.01248");
-        }
-        radioMediumB: Ieee80211ScalarRadioMedium {
-            @display("p=1656.538,137.09279");
         }
     connections:
         area3router.ethg++ <--> Eth100M <--> area3AP.ethg++;
