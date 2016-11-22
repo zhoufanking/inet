@@ -112,10 +112,10 @@ network ConfiguratorC
             @display("p=1620.795,934.23;i=abstract/router2");
         }
         configurator: IPv4NetworkConfigurator {
-            @display("p=124.427505,89.3775");
+            @display("p=150,100");
         }
         visualizer: RoutingTableCanvasVisualizer {
-            @display("p=124.427505,282.15253");
+            @display("p=150,250");
         }
     connections:
         area2lan1host1.ethg++ <--> Eth100M <--> area2switch1.ethg++;

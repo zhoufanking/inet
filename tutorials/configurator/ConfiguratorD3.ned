@@ -51,7 +51,7 @@ network ConfiguratorD3 extends ConfiguratorC
             @display("p=2824.6829,885.3909");
         }
         radioMedium: Ieee80211ScalarRadioMedium {
-            @display("p=119.95619,439.8394");
+            @display("p=150,400");
         }
         area1DHCP: StandardHost {
             @display("p=694.0323,922.52026");
