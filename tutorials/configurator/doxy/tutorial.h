@@ -666,7 +666,8 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
-The following animation shows <i>host1</i> pinging <i>host7</i> and <i>host0</i> pinging <i>host6</i>. Routes towards <i>host1</i> are visualized.<!TODO: what happens>
+The following animation shows <i>host1</i> pinging <i>host7</i> and <i>host0</i> pinging <i>host6</i>. Routes towards <i>host1</i> are visualized.
+The packets don't use the link between <i>router0</i> and <i>router2</i>.
 <img src="step6a.gif" width="850px">
 
 One can easily check that no routes go through the link between router0 and router2 by setting the destination filter to "*.*" in the visualizer.
@@ -679,8 +680,11 @@ This indicates all routes in the network:
 @section s6b Part B - Manually specifying link cost
 
 This part configures the same routes as Part A, where routes between <i>router0</i> and <i>router2</i> lead through <i>router1</i>.
-The link between <i>router0</i> and <i>router2</i> is "turned off", by manually specifying an infinite cost for it.
-TODO: Instructing the configurator not to use a link when setting up routes by manually specifying link cost.
+
+v1: The link between <i>router0</i> and <i>router2</i> is "turned off", by manually specifying an infinite cost for it.
+
+v2: The configurator is instructed not to use the link between <i>router0</i> and <i>router2</i> when setting up routes, by specifying the cost of the link to
+be infinite.
 
 @subsection s6bconfig Configuration
 
@@ -838,10 +842,7 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
-There are 18 hosts in the network, each with 1 interface. The 3 routers and the backbone router each have
-3 interfaces. Thus there are 30 interfaces in the network (18*1 + 4*3). 
-Hosts have 1 interface, routers have 3. There are 18 hosts and 4 routers, thus there are
-30 interfaces in the network (18*1 + 4*3).<!TODO: choose one version>
+There are 30 interfaces in the network (18 hosts * 1 interface + 4 routers * 3 interfaces).
 All routing table entries have 255.255.255.255 netmasks, i.e. separate routes to all destination interfaces.
 Thus hosts have 29 entries in their routing tables, for the 29 other interfaces. Similarly, routes have 27 entries.
 
@@ -907,8 +908,8 @@ for reaching the backbone router, 2 rules for reaching the 2 LANs it's connected
 through the backbone router. 
 - Similarly, the backbone router has 3 rules for reaching the 3 area routers, and 6 rules for reaching the 6 LANs
 in the network.
-- The backbone router has separate rules for the 2 LANs connected to an area router, because the addresses are not contiguously assigned to the 2 LANs.
-<!TODO: clarify>
+- The backbone router has separate rules for the 2 LANs connected to an area router, because the addresses are not contiguously assigned to the 2 LANs
+(e.g. <i>area2lan1</i> has address 10.0.0.8/29, <i>area2lan2</i> has 10.0.0.32/29. But <i>area3lan1</i> has 10.0.0.16/29, which is between the two former address ranges). Thus area2 cannot be covered by a single rule.
 
 @section Part C - Hierarchically assigned addresses, optimized routing tables
 
@@ -951,7 +952,6 @@ The image below shows the assigned addresses.
 
 The sizes of some of the routing tables are displayed in the following image.
 
-<!should crop routing table size images so they dont contain the search settings. except for the first occurence to show how it was made>
 <!maybe a few words about how to search for the routing tables>
 
 <img src="step7c_rt.png">
