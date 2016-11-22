@@ -23,36 +23,36 @@ import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
 network ConfiguratorE
 {
-    @display("bgb=1013,653");
+    @display("bgb=939.89996,581.1");
     submodules:
-        aodvRouter: AODVRouter {
-            @display("p=307.47598,274.626");
+        aodvRouter7: AODVRouter {
+            @display("p=487.494,226.008");
         }
         aodvRouter1: AODVRouter {
-            @display("p=495.378,329.814");
+            @display("p=239.148,74.897995");
         }
         aodvRouter2: AODVRouter {
-            @display("p=399.456,170.81999");
+            @display("p=792.342,457.272");
         }
         aodvRouter3: AODVRouter {
-            @display("p=625.464,211.554");
+            @display("p=513.774,345.582");
         }
         aodvRouter4: AODVRouter {
-            @display("p=741.096,363.978;b=7,5");
+            @display("p=304.848,182.646;b=7,5");
         }
         aodvRouter5: AODVRouter {
-            @display("p=596.55597,469.098");
+            @display("p=650.43,436.248");
         }
         aodvRouter6: AODVRouter {
-            @display("p=366.606,417.852");
+            @display("p=361.35,294.336");
         }
         configurator: IPv4NetworkConfigurator {
-            @display("p=59,58");
+            @display("p=50,50");
         }
         radioMedium: Ieee80211ScalarRadioMedium {
-            @display("p=69,145");
+            @display("p=50,100");
         }
         visualizer: IntegratedCanvasVisualizer {
-            @display("p=77,233");
+            @display("p=50,150");
         }
 }
