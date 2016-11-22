@@ -1011,7 +1011,16 @@ difference in routing table size.
 
 @section s8goals Goals
 
+This step demonstrates routing table configuration in a mixed wired/wireless network.
+
 @section s8config Configuration
+
+This step uses the ConfiguratorD network defined in ConfiguratorD3.ned. The network is displayed on the following image.
+
+<!TODO: network image>
+
+The ConfiguratorD network extends ConfiguratorC by adding 2 wireless LANs, <i>area1lan3</i> and <i>area3lan3</i>. The additional LANs consist of an <tt>AccessPoint</tt>
+and 3 <tt>WirelessHosts</tt>.
 
 Here is the configuration for this step in omnetpp.ini:
 
@@ -1024,6 +1033,12 @@ The XML configuration in step8.xml is the following:
 @dontinclude step8.xml
 @skipline config
 @until config
+
+Wireless interfaces are considered to be connected to all other wireless interfaces that are on the same medium, and are in the same wireless network.
+The configurator determines the members of a wireless network according to the SSID set in their agent modules.
+
+<! what does it mean in the ned doc that the <wireless> tag should be used when the network cannot be determined from the ssid?
+if there is no ssid?>
 
 @fixupini
 
