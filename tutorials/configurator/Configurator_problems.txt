@@ -49,3 +49,7 @@ first could be merged with last one (gw:* gateway is the same as the destination
 Error in module (inet::IPv4NetworkConfigurator) ConfiguratorB.configurator (id=2) during network initialization: ASSERT: condition false false in function checkOriginalRoutes, inet/networklayer/configurator/ipv4/IPv4NetworkConfigurator.cc line 1496.
 
 solved by optimizeRoutes=false
+
+12.	<autoroute> subelements: link selection should be more accurate
+
+13.	RoutingTableCanvasVisualizer: when nodes have address <unspec>, it matches the default route, and it visualizes that. Also, it doesnt react to changing addresses
