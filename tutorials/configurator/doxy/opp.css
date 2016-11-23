@@ -18,3 +18,8 @@ div.contents {
 h1 {
 	line-height: 1.25;
 }
+
+div.fragment
+{
+	overflow: auto;
+}

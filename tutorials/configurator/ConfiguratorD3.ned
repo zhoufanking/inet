@@ -59,9 +59,6 @@ network ConfiguratorD3 extends ConfiguratorC
         area3DHCP: StandardHost {
             @display("p=2441.9653,885.3909");
         }
-        integratedVisualizer: IntegratedCanvasVisualizer {
-            @display("p=1405.2012,357.01248");
-        }
     connections:
         area3router.ethg++ <--> Eth100M <--> area3AP.ethg++;
         area1router.ethg++ <--> Eth100M <--> area1AP.ethg++;

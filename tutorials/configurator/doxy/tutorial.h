@@ -728,6 +728,8 @@ In this part, that link is "turned off" by specifying an infinite cost for it.
 
 @page step7 Step 7 - Configuring a hierarchical network
 
+@nav{step6,step8}
+
 @section s7goals Goals
 
 In complex hierarchical networks, routing tables can grow very big. This step demonstrates ways the configurator can reduce the size of
@@ -1013,11 +1015,13 @@ difference in routing table size.
 
 This step demonstrates routing table configuration in a mixed wired/wireless network.
 
-@section s8config Configuration
+@section s8model The model
 
 This step uses the ConfiguratorD network defined in ConfiguratorD3.ned. The network is displayed on the following image.
 
-<!TODO: network image>
+<img src="step8network.png" width="850px">
+
+<!TODO: move dhcp to router>
 
 The ConfiguratorD network extends ConfiguratorC by adding 2 wireless LANs, <i>area1lan3</i> and <i>area3lan3</i>. The additional LANs consist of an <tt>AccessPoint</tt>
 and 3 <tt>WirelessHosts</tt>.
@@ -1028,17 +1032,101 @@ Here is the configuration for this step in omnetpp.ini:
 @skipline Step8
 @until ####
 
+A wireless host in <i>area1</i> is configured to ping a wireless host in <i>area3</i>, this helps visualize that routing works.
+
 The XML configuration in step8.xml is the following:
 
 @dontinclude step8.xml
 @skipline config
 @until config
 
-Wireless interfaces are considered to be connected to all other wireless interfaces that are on the same medium, and are in the same wireless network.
+The XML configuration uses the same hierarchical addressing scheme as in step 7. Wireless interfaces are considered to be connected to all other wireless interfaces that are on the same medium, and are in the same wireless network.
 The configurator determines the members of a wireless network according to the SSID set in their agent modules.
 
 <! what does it mean in the ned doc that the <wireless> tag should be used when the network cannot be determined from the ssid?
 if there is no ssid?>
+
+<!TODO: about wireless tag>
+
+The configurator figures that the wireless hosts are connected to the access point next to them. Routes are set up according to the default hop count metric.
+
+@section s8results Results
+
+<! routing tables of wireless hosts, the visualized routes, ping gif>
+
+
+
+@nav{step7,step9}
+@fixupini
+
+<!-------------------------------------------------------------------------------------------------------->
+
+@page step9 Step 9 - Leaving some part of the network unconfigured
+
+@nav{step8,step10}
+
+@section s9goals Goals
+
+Configuring the whole network is not always desirable, because some part of the network should rather be configured dynamically.
+
+@section s9model The model
+
+@nav{step8,step10}
+
+<!-------------------------------------------------------------------------------------------------------->
+
+@page step10 Step 10 - Completely wireless network, routing tables unconfigured
+
+@nav{step9,step11}
+
+@section s10goals Goals
+
+The topology of a completely wireless networks is unclear in a static analysis. By default, the configurator assumes nodes can directly talk to each other.
+In this step, routing tables are left unconfigured by the configurator, so a dynamic routing protocol can configure them. The step has 2 parts:
+
+- Part A: unconfigured routing tables, prepared for MANET routing
+- Part B: unconfigured routing tables, configured using AODV protocol
+
+@section s10a Part A: unconfigured routing tables, prepared for MANET routing
+
+This step uses the ConfiguratorE network, defined in ConfiguratorE.ned. The network looks like this:
+
+<img src="step10network.png" width="850px">
+
+It contains 8 <i>AODVRouters</i> laid out in a chain. The visualizer module is <tt>IntegratedCanvasVisualizer</tt>, which contains multiple
+visualizer modules.
+
+@subsection s10aconfig Configuration
+
+The configuration for this part in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step10A
+@until ####
+
+The configurator is instructed to leave the routing tables empty, by setting <tt>addStaticRoutes</tt> to false.
+The transmitter power value for hosts set their communication range. The range is set up so hosts are in range of the adjacent hosts in the chain.
+
+The <tt>routingTableCanvasVisualizer</tt> is set to visualize every routing table. Communication ranges of all hosts are displayed.
+
+@subsection s10aresults Results
+
+<img src="step10a.png" width="850px">
+
+As instructed, the configurator didn't add any routes. The routing tables are empty.
+
+<img src="step10a_rt.png">
+
+@section s10b Part B: routing tables configured using AODV protocol
+
+In this part, routing tables are set up by the Ad-hoc On-demand Distance Vector (AODV) dinamic routing protocol. The configuration for this part extends Part A. The configuration in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step10B
+@until ####
+
+As specified in the previous part, the configurator is still instructed not to add any routes. Additionally, <i>aodvRouter1</i> is set to ping
+<i>aodvRouter2</i>. The ping is required to trigger the AODV protocol to set up routes. 
 
 @fixupini
 
