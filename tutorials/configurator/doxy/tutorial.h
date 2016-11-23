@@ -1126,8 +1126,45 @@ In this part, routing tables are set up by the Ad-hoc On-demand Distance Vector 
 @until ####
 
 As specified in the previous part, the configurator is still instructed not to add any routes. Additionally, <i>aodvRouter1</i> is set to ping
-<i>aodvRouter2</i>. The ping is required to trigger the AODV protocol to set up routes. 
+<i>aodvRouter2</i>. Since AODV is a reactive routing protocol, the ping is required to trigger the AODV protocol to set up routes.
 
+@subsection s10bresults Results
+
+When <i>aodvRouter1</i> prepares to send the first ping packet, it triggers AODV's route discovery. The hosts send Route Request (RREQ) and
+Route Reply (RREP) packets
+to neighbouring hosts, mapping the route to <i>aodvRouter2</i>. In this process, the hosts' routing tables get loaded with entries. The route discovery
+is shown on the following animation.
+
+<img src="step10_2.gif">
+
+The size of hosts' routing tables are displayed in the top right corner. Routing tables are getting filled with entries as routes are discovered.
+
+The following animation displays the ping packet making it to its destination, and the reply going back to <i>aodvRouter1</i>.
+
+<img src="step10_9.gif">
+
+AODV is a reactive protocol, unused routes expire after a while. This happens to the routes to <i>aodvRouter7</i>, as it's not in the path between
+<i>aodvRouter1</i> and <i>aodvRouter2</i>. This is diplayed in the following animation.
+
+<img src="step10_6.gif">
+
+To record the animation, the simulation was run in fast mode, thus routes appear instantly. It takes a few seconds simulation time for the unused
+routes to expire.
+
+@nav{step9,step11}
 @fixupini
+
+<!-------------------------------------------------------------------------------------------------------->
+
+@page step11 Step 11 - Manually modifying an automatically created complete configuration
+
+@nav{step10,step12}
+
+@section s11goals Goals
+
+Sometimes the configuration is just almost right. In such a case it's possible to dump the configuration into a file, update it and use the file in place of the original configuration. This step has 2 parts:
+
+- Part A: dumping the full configuration
+- Part B: using the modified configuration
 
 */
