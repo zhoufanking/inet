@@ -776,7 +776,7 @@ The size of some of the routing tables are the following:
 The routing tables of a host (area1lan2host2) and a router (area1router) are shown below.
 The backbone router's routing table is similar to <i>area1router's</i>.
 
-<center><div class="fragment fit">
+<div class="fragment fit">
 <pre class="monospace">
 Node ConfiguratorC.area1lan2host2
 -- Routing table --
@@ -842,7 +842,7 @@ Destination      Netmask          Gateway          Iface            Metric
 10.0.0.57        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
 10.0.0.58        255.255.255.255  10.0.0.50        eth2 (10.0.0.49) 0
 </pre>
-</div></center>
+</div>
 
 There are 30 interfaces in the network (18 hosts * 1 interface + 4 routers * 3 interfaces).
 All routing table entries have 255.255.255.255 netmasks, i.e. separate routes to all destination interfaces.
