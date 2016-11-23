@@ -23,3 +23,7 @@ div.fragment
 {
 	overflow: auto;
 }
+
+.fit {
+	display: inline-flex;
+}
