@@ -1184,6 +1184,8 @@ This step demonstrates using the error rate metric to configure routes in a wire
 
 The step uses the ConfiguratorE network, defined in ConfiguratorE.ned. The network looks like this:
 
+<!TODO: network layout>
+
 <!TODO: network image>
 
 The core of the network is composed of 3 routers connected to each other, each belonging to an area. There are 3 areas, each contains a number of hosts,
@@ -1205,6 +1207,16 @@ The configuration for this step in omnetpp.ini is the following:
 @dontinclude omnetpp.ini
 @skipline Step12
 @until ####
+
+For hosts in area1 to operate in ad-hoc mode, IP forwarding is turned on, and their management modules are set to ad-hoc management.
+<!TODO: other settings in ini>
+
+
+The XML configuration in step12.xml is the following:
+
+@dontinclude step12.xml
+@skipline config
+@until config
 
 @fixupini
 
