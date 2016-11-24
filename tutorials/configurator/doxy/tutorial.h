@@ -1104,7 +1104,8 @@ The configuration for this part in omnetpp.ini is the following:
 @skipline Step10A
 @until ####
 
-The configurator is instructed to leave the routing tables empty, by setting <tt>addStaticRoutes</tt> to false.
+The configurator is instructed to leave the routing tables empty, by setting <tt>addStaticRoutes</tt> to false. The configurator just assigns
+the addresses.
 The transmitter power value for hosts set their communication range. The range is set up so hosts are in range of the adjacent hosts in the chain.
 
 The <tt>routingTableCanvasVisualizer</tt> is set to visualize every routing table. Communication ranges of all hosts are displayed.
@@ -1166,5 +1167,47 @@ Sometimes the configuration is just almost right. In such a case it's possible t
 
 - Part A: dumping the full configuration
 - Part B: using the modified configuration
+
+@nav{step10,step12}
+
+<!-------------------------------------------------------------------------------------------------------->
+
+@page step12 Step 12 - Configuring a wireless network to use error rate metric
+
+@nav{step11,step13}
+
+@section s12goals Goals
+
+This step demonstrates using the error rate metric to configure routes in a wireless network.
+
+@section s12model The model
+
+The step uses the ConfiguratorE network, defined in ConfiguratorE.ned. The network looks like this:
+
+<!TODO: network image>
+
+The core of the network is composed of 3 routers connected to each other, each belonging to an area. There are 3 areas, each contains a number of hosts,
+connected to the area router. 
+- Area1 is composed of 3 WirelessHosts, one of them
+is connected to the router with a wired connection. 
+- Area2 has an AccessPoint, and 3 WirelessHosts. 
+- Area3 has 3 StandardHosts connected to the
+router through a switch.
+
+There is no access point in area1, the hosts create an ad-hoc wireless network, and connect to the rest of the network through area1wirelesshost3.
+However, area1wirelesshost3 is not in the communication range of area1wirelesshost1. Thus area1wirelesshost2 is configured to forward
+area1wirelesshost1's packets to area1wirelesshost3.
+
+<!maybe they should be called area1host1 etc>
+
+The configuration for this step in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step12
+@until ####
+
+@fixupini
+
+
 
 */
