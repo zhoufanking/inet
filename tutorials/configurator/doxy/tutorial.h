@@ -1017,7 +1017,7 @@ This step demonstrates routing table configuration in a mixed wired/wireless net
 
 @section s8model The model
 
-This step uses the ConfiguratorD network defined in ConfiguratorD3.ned. The network is displayed on the following image.
+This step uses the ConfiguratorD network defined in ConfiguratorD.ned. The network is displayed on the following image.
 
 <img src="step8network.png" width="850px">
 
@@ -1188,15 +1188,18 @@ The step uses the ConfiguratorE network, defined in ConfiguratorE.ned. The netwo
 
 The core of the network is composed of 3 routers connected to each other, each belonging to an area. There are 3 areas, each contains a number of hosts,
 connected to the area router. 
-- Area1 is composed of 3 WirelessHosts, one of them
+- Area1 is composed of 3 <tt>WirelessHosts</tt>, one of them
 is connected to the router with a wired connection. 
-- Area2 has an AccessPoint, and 3 WirelessHosts. 
-- Area3 has 3 StandardHosts connected to the
+- Area2 has an <tt>AccessPoint</tt>, and 3 <tt>WirelessHosts</tt>. 
+- Area3 has 3 <tt>StandardHosts</tt> connected to the
 router through a switch.
 
-There is no access point in area1, the hosts create an ad-hoc wireless network, and connect to the rest of the network through area1wirelesshost3.
-However, area1wirelesshost3 is not in the communication range of area1wirelesshost1. Thus area1wirelesshost2 is configured to forward
-area1wirelesshost1's packets to area1wirelesshost3.
+Since there is no access point in <i>area1</i>, the hosts create an ad-hoc wireless network. They connect to the rest of the network through <i>area1host3</i>,
+which has a wired connection to the router.
+However, <i>area1host3</i> is not in the communication range of <i>area1host1</i> (illustrated on the image below). Thus <i>area1host2</i> is configured to forward
+<i>area1host1's</i> packets to <i>area1host3</i>.
+
+<img src="step12ranges.png">
 
 The configuration for this step in omnetpp.ini is the following:
 
