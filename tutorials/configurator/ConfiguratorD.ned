@@ -15,10 +15,7 @@
 
 package inet.tutorials.configurator;
 
-import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.ethernet.Eth100M;
-import inet.node.ethernet.EtherSwitch;
-import inet.node.inet.Router;
 import inet.node.inet.StandardHost;
 import inet.node.inet.WirelessHost;
 import inet.node.wireless.AccessPoint;
@@ -26,131 +23,45 @@ import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
 import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
 
-network ConfiguratorD
+network ConfiguratorD extends ConfiguratorC
 {
-    @display("bgb=2504.3225,1393.2375");
     submodules:
-        area1subnet1host0: StandardHost {
-            @display("p=380.2925,376.7875");
-        }
-        area1subnet1host1: StandardHost {
-            @display("p=380.2925,227.82501");
-        }
-        area1subnet1host2: StandardHost {
-            @display("p=380.2925,59.585003");
-        }
-        area1switch1: EtherSwitch {
-            @display("p=683.43,300.96");
-        }
-        area2subnet1host1: StandardHost {
-            @display("p=953.36005,1307.3651");
-        }
-        area2subnet1host2: StandardHost {
-            @display("p=718.525,1307.3651");
-        }
-        area2subnet1host3: StandardHost {
-            @display("p=476.68002,1307.3651");
-        }
-        area2switch1: EtherSwitch {
-            @display("p=807.9025,1100.5701");
-        }
-        area3subnet1host1: StandardHost {
-            @display("p=2216.9126,986.65753");
-        }
-        area3subnet1host2: StandardHost {
-            @display("p=2244.9526,755.3275");
-        }
-        area3subnet1host3: StandardHost {
-            @display("p=2265.9827,601.10754");
-        }
-        area3switch1: EtherSwitch {
-            @display("p=1838.3726,623.89");
-        }
-        area1subnet2host1: WirelessHost {
-            @display("p=368.02502,601.10754");
-        }
-        area1subnet2host2: WirelessHost {
-            @display("p=368.02502,730.79254");
-        }
-        area1subnet2host3: WirelessHost {
-            @display("p=332.975,914.80505");
-        }
         area1AP: AccessPoint {
-            @display("p=598.78503,683.43");
-        }
-        area2subnet2host1: StandardHost {
-            @display("p=1961.0476,1281.0775");
-        }
-        area2subnet2host2: StandardHost {
-            @display("p=1659.6176,1281.0775");
-        }
-        area2subnet2host3: StandardHost {
-            @display("p=1377.4651,1307.3651");
-        }
-        area2switch2: EtherSwitch {
-            @display("p=1659.6176,1055.005");
-        }
-        area3subnet2host1: WirelessHost {
-            @display("p=2080.2175,117.4175");
-        }
-        area3subnet2host2: WirelessHost {
-            @display("p=2197.635,212.0525");
-        }
-        area3subnet2host3: WirelessHost {
-            @display("p=2216.9126,336.48");
+            @display("p=520.68896,751.37396");
         }
         area3AP: AccessPoint {
-            @display("p=1878.68,346.99503");
+            @display("p=2642.991,725.00995");
         }
-        area1router: Router {
-            @display("p=1051.5,502.96753");
+        area1lan3host1: WirelessHost {
+            @display("p=211.3514,585.5005");
         }
-        area2router: Router {
-            @display("p=1309.1176,914.80505");
+        area1lan3host2: WirelessHost {
+            @display("p=211.3514,754.0104");
         }
-        area3router: Router {
-            @display("p=1591.27,483.69003");
+        area1lan3host3: WirelessHost {
+            @display("p=211.3514,911.0958");
         }
-        Backbonerouter: Router {
-            @display("p=1309.1176,686.98004;i=abstract/router2");
+        area3lan3host1: WirelessHost {
+            @display("p=2825.3418,551.44696");
         }
-        configurator: IPv4NetworkConfigurator {
-            @display("p=124.427505,89.3775");
+        area3lan3host2: WirelessHost {
+            @display("p=2936.0706,725.44934");
         }
-        visualizer: IntegratedCanvasVisualizer {
-            @display("p=124.427505,282.15253");
+        area3lan3host3: WirelessHost {
+            @display("p=2824.6829,885.3909");
         }
         radioMedium: Ieee80211ScalarRadioMedium {
-            @display("p=94.05,467.115");
+            @display("p=150,400");
         }
-        standardHost: StandardHost {
-            @display("p=799.425,827.64");
+        area1DHCP: StandardHost {
+            @display("p=694.0323,922.52026");
         }
-        standardHost1: StandardHost {
-            @display("p=1724.25,219.45");
+        area3DHCP: StandardHost {
+            @display("p=2441.9653,885.3909");
         }
     connections:
-        area2subnet1host1.ethg++ <--> Eth100M <--> area2switch1.ethg++;
-        area2subnet1host2.ethg++ <--> Eth100M <--> area2switch1.ethg++;
-        area2subnet1host3.ethg++ <--> Eth100M <--> area2switch1.ethg++;
-        area1switch1.ethg++ <--> Eth100M <--> area1subnet1host0.ethg++;
-        area1switch1.ethg++ <--> Eth100M <--> area1subnet1host1.ethg++;
-        area1switch1.ethg++ <--> Eth100M <--> area1subnet1host2.ethg++;
-        area1switch1.ethg++ <--> Eth100M <--> area1router.ethg++;
-        area1AP.ethg++ <--> Eth100M <--> area1router.ethg++;
-        area1router.ethg++ <--> Eth100M <--> Backbonerouter.ethg++;
-        area2switch1.ethg++ <--> Eth100M <--> area2router.ethg++;
-        area2router.ethg++ <--> Eth100M <--> area2switch2.ethg++;
-        area2switch2.ethg++ <--> Eth100M <--> area2subnet2host1.ethg++;
-        area2switch2.ethg++ <--> Eth100M <--> area2subnet2host2.ethg++;
-        area2switch2.ethg++ <--> Eth100M <--> area2subnet2host3.ethg++;
-        area3switch1.ethg++ <--> Eth100M <--> area3subnet1host1.ethg++;
-        area3switch1.ethg++ <--> Eth100M <--> area3subnet1host2.ethg++;
-        area3switch1.ethg++ <--> Eth100M <--> area3subnet1host3.ethg++;
-        area3switch1.ethg++ <--> Eth100M <--> area3router.ethg++;
         area3router.ethg++ <--> Eth100M <--> area3AP.ethg++;
-        area3router.ethg++ <--> Eth100M <--> Backbonerouter.ethg++;
-        area2router.ethg++ <--> Eth100M <--> Backbonerouter.ethg++;
-        standardHost.ethg++ <--> Eth100M <--> area1AP.ethg++;
-        area3AP.ethg++ <--> Eth100M <--> standardHost1.ethg++;
+        area1router.ethg++ <--> Eth100M <--> area1AP.ethg++;
+        area1DHCP.ethg++ <--> Eth100M <--> area1AP.ethg++;
+        area3DHCP.ethg++ <--> Eth100M <--> area3AP.ethg++;
 }

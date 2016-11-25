@@ -1184,9 +1184,7 @@ This step demonstrates using the error rate metric to configure routes in a wire
 
 The step uses the ConfiguratorE network, defined in ConfiguratorE.ned. The network looks like this:
 
-<!TODO: network layout>
-
-<!TODO: network image>
+<img src="step12network.png">
 
 The core of the network is composed of 3 routers connected to each other, each belonging to an area. There are 3 areas, each contains a number of hosts,
 connected to the area router. 
@@ -1199,8 +1197,6 @@ router through a switch.
 There is no access point in area1, the hosts create an ad-hoc wireless network, and connect to the rest of the network through area1wirelesshost3.
 However, area1wirelesshost3 is not in the communication range of area1wirelesshost1. Thus area1wirelesshost2 is configured to forward
 area1wirelesshost1's packets to area1wirelesshost3.
-
-<!maybe they should be called area1host1 etc>
 
 The configuration for this step in omnetpp.ini is the following:
 

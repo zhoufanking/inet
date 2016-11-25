@@ -26,13 +26,13 @@ network ConfiguratorE
     @display("bgb=939.89996,581.1");
     submodules:
         aodvRouter7: AODVRouter {
-            @display("p=487.494,226.008");
+            @display("p=778,462");
         }
         aodvRouter1: AODVRouter {
             @display("p=239.148,74.897995");
         }
         aodvRouter2: AODVRouter {
-            @display("p=792.342,457.272");
+            @display("p=483,221");
         }
         aodvRouter3: AODVRouter {
             @display("p=513.774,345.582");
