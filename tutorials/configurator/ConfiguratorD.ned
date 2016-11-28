@@ -53,15 +53,7 @@ network ConfiguratorD extends ConfiguratorC
         radioMedium: Ieee80211ScalarRadioMedium {
             @display("p=150,400");
         }
-        area1DHCP: StandardHost {
-            @display("p=694.0323,922.52026");
-        }
-        area3DHCP: StandardHost {
-            @display("p=2441.9653,885.3909");
-        }
     connections:
         area3router.ethg++ <--> Eth100M <--> area3AP.ethg++;
         area1router.ethg++ <--> Eth100M <--> area1AP.ethg++;
-        area1DHCP.ethg++ <--> Eth100M <--> area1AP.ethg++;
-        area3DHCP.ethg++ <--> Eth100M <--> area3AP.ethg++;
 }
