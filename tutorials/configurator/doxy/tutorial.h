@@ -1013,15 +1013,15 @@ difference in routing table size.
 
 @section s8goals Goals
 
-This step demonstrates routing table configuration in a mixed wired/wireless network.
+This step demonstrates routing table configuration in a mixed wired/wireless network. This step consists of 2 parts:
+- Part A: Determining members of wireless networks with <wireless> attribute
+- Part B: Determining members of wireless networks by SSID
 
-@section s8model The model
+@section s8a Part A: Determining members of wireless networks with <wireless> attribute
 
 This step uses the ConfiguratorD network defined in ConfiguratorD.ned. The network is displayed on the following image.
 
 <img src="step8network.png" width="850px">
-
-<!TODO: move dhcp to router>
 
 The ConfiguratorD network extends ConfiguratorC by adding 2 wireless LANs, <i>area1lan3</i> and <i>area3lan3</i>. The additional LANs consist of an <tt>AccessPoint</tt>
 and 3 <tt>WirelessHosts</tt>.
@@ -1034,21 +1034,15 @@ Here is the configuration for this step in omnetpp.ini:
 
 A wireless host in <i>area1</i> is configured to ping a wireless host in <i>area3</i>, this helps visualize that routing works.
 
-The XML configuration in step8.xml is the following:
+The XML configuration in step8a.xml is the following:
 
-@dontinclude step8.xml
+@dontinclude step8a.xml
 @skipline config
 @until config
 
-The XML configuration uses the same hierarchical addressing scheme as in step 7. Wireless interfaces are considered to be connected to all other wireless interfaces that are on the same medium, and are in the same wireless network.
-The configurator determines the members of a wireless network according to the SSID set in their agent modules.
+Wireless interfaces are considered to be connected to all other wireless interfaces that are on the same medium, and are in the same wireless network. The <wireless> attribute selects which interfaces should belong to a wireless network. In the <wireless> attribute, the <strong>hosts</strong> and <strong>interfaces</strong> selector attributes can be used to specify members.
 
-<! what does it mean in the ned doc that the <wireless> tag should be used when the network cannot be determined from the ssid?
-if there is no ssid?>
-
-<!TODO: about wireless tag>
-
-The configurator figures that the wireless hosts are connected to the access point next to them. Routes are set up according to the default hop count metric.
+The XML configuration uses the same hierarchical addressing scheme as in step 7. The 2 wireless LANs are out of range of each other, thus they are specified to be in separate wireless networks. Note that the wireless interfaces of the access points also belong to the wireless networks.
 
 @section s8results Results
 
