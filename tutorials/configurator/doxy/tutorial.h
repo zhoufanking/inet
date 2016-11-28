@@ -1058,10 +1058,27 @@ When they get the addresses from the dhcp server, they can be reached with ping.
 
 The visualizer routes are changing only if the routing tables are changing and not when there is a change in addresses.
 
+The addresses and routes are indicated on the following image. Routes leading to hosts <i>area3lan3</i> are visualized.
+
+@htmlonly
+<center><a href="step8a.png" data-lightbox="step8a"><img src="step8a.png" width="850px"></a></center>
+@endhtmlonly
+
+Wireless hosts connect to the router through the access points. The access point are L2 devices, similar to switches, so they are transparent for
+the routing table visualizer arrows. Wireless hosts get associated with their corresponding access points before they can communicate with the rest of the network.
+
+<!TODO: ping gif>
+
+@htmlonly
+<a href="step8_2.gif" data-lightbox="step8_2"><img src="step8_2.gif" width="850px"></a>
+@endhtmlonly
+
+<!do we need this? too wide>
 
 
 @nav{step7,step9}
 @fixupini
+@lightbox
 
 <!-------------------------------------------------------------------------------------------------------->
 
