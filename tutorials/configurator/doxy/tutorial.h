@@ -1048,6 +1048,16 @@ The XML configuration uses the same hierarchical addressing scheme as in step 7.
 
 <! routing tables of wireless hosts, the visualized routes, ping gif>
 
+The routes will be set just as with the wired network. The only thing is they have to associate to the AP before they can be sending and receiving.
+Then they do it just like the wired ones.
+
+In the next step, it is not like that at all. They have unspecified addresses and there will be no routes leading to them. Except if there are
+subnet routes. The interface eth3 on the router has an address and a netmask set, and the others have routes for it.
+The address and netmask for that interface is assigned so there is enough addresses allocated for the dhcp hosts.
+When they get the addresses from the dhcp server, they can be reached with ping. The routes should reflect that but they dont work. The visualizer.
+
+The visualizer routes are changing only if the routing tables are changing and not when there is a change in addresses.
+
 
 
 @nav{step7,step9}
