@@ -53,6 +53,9 @@ network ConfiguratorD extends ConfiguratorC
         radioMedium: Ieee80211ScalarRadioMedium {
             @display("p=150,400");
         }
+        integratedCanvasVisualizer: IntegratedCanvasVisualizer {
+            @display("p=1618.5363,246.21124;b=44.39875,20.18125");
+        }
     connections:
         area3router.ethg++ <--> Eth100M <--> area3AP.ethg++;
         area1router.ethg++ <--> Eth100M <--> area1AP.ethg++;
