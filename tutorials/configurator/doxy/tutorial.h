@@ -31,6 +31,11 @@ defined in separate .NED files.
  - @ref step5
  - @ref step6
  - @ref step7
+ - @ref step8
+ - @ref step9
+ - @ref step10
+ - @ref step11
+ - @ref step12
 
 @nav{index,step1}
 
@@ -931,7 +936,7 @@ The XML configuration for this part in step7c.xml is the following:
 
 @include step7c.xml
 
-This XML configuration assigns addresses hierarchically in the following way:
+This XML configuration assigns addresses hierarchically in the following way, when looking down the hierarchy from the backbone router towards the hosts:
 - The first octet of the address for all nodes is 10, i.e. 10.x.x.x
 - The second octet denotes the area, e.g. 10.2.x.x corresponds to <i>area2</i>
 - The third octet denotes the LAN within the area, e.g. 10.2.1.x corresponds to 
@@ -939,7 +944,6 @@ This XML configuration assigns addresses hierarchically in the following way:
 - The forth octet is the host identifier within a LAN, e.g. 10.2.1.4 corresponds to 
 <i>host4</i> in <i>lan1</i> in <i>area2</i>
 
-TODO: these numbers only cover rules looking down in the hierarchy, should be clarified
 With this setup, it's possible to cover an area with just one rule in the routing table
 of the backbone router. Similarly, the area routers need 2 rules for each LAN that they
 are connected to.
@@ -1151,6 +1155,12 @@ The addresses and routes are visualized below.
 <center></center><a href="step9routes.png" data-lightbox="step9routes"><img src="step9routes.png" width="850px"></a></center>
 @endhtmlonly
 
+<!TODO: what it takes for routing to work to unspec addresses>
+
+The hosts of <i>area1lan3, area2lan1 and area3lan3</i> have unspecified interfaces. The routing tables of all hosts contain subnet routes
+to these 3 LANs. Since these hosts don't have addresses at the start of the simulation, not all routes leading to <i>area3lan3host2</i> are
+visualized. The only routes indicated are the default routes of hosts
+
 @lightbox
 @fixupini
 
@@ -1158,75 +1168,93 @@ The addresses and routes are visualized below.
 
 <!-------------------------------------------------------------------------------------------------------->
 
-@page step10 Step 10 - Completely wireless network, routing tables unconfigured
+@page step10 Step 10 - Configuring a completely wireless network
 
 @nav{step9,step11}
 
 @section s10goals Goals
 
-The topology of a completely wireless networks is unclear in a static analysis. By default, the configurator assumes nodes can directly talk to each other.
-In this step, routing tables are left unconfigured by the configurator, so a dynamic routing protocol can configure them. The step has 2 parts:
+This step demonstrates using the error rate metric for configuring static routes. It also demonstrates leaving the routing tables unconfigured, so a dinamic routing protocol can configure them. The step has 3 parts:
 
-- Part A: unconfigured routing tables, prepared for MANET routing
-- Part B: unconfigured routing tables, configured using AODV protocol
+- Part A: Static routing based on error rate metric
+- Part B: Unconfigured routing tables, prepared for MANET routing
+- Part C: Unconfigured routing tables, configured using AODV protocol
 
-@section s10a Part A: unconfigured routing tables, prepared for MANET routing
+@section s10a Part A: Static routing based on error rate metric
+
+The topology of completely wireless networks is unclear in a static analysis. By default, the configurator assumes nodes can directly talk to each other.
+In a lot of cases they can't, and wireless nodes have to be put in different wireless networks in order to have proper routes. This can be achieved with the <wireless> attribute in the
+XML configuration, or by setting different SSIDs in nodes. Additionally, the error rate metric is well suited for configuring routes in wireless networks.
+When using the default hop count metric, each node would be in 1 hop distance from the others. The error rate metric can quantify poor reception,
+essentially which nodes can hear each other. Thus the automatic route configuration can set up routes properly in a complex wireless network.
 
 This step uses the ConfiguratorE network, defined in ConfiguratorE.ned. The network looks like this:
 
 <img src="step10network.png" width="850px">
 
-It contains 8 <i>AODVRouters</i> laid out in a chain. The visualizer module is <tt>IntegratedCanvasVisualizer</tt>, which contains multiple
-visualizer modules.
+It contains 8 <tt>AODVRouters</tt> laid out in a chain. The visualizer module is <tt>IntegratedCanvasVisualizer</tt>, which contains multiple
+visualizer modules.<!TODO: is this needed? >
 
-@subsection s10aconfig Configuration
-
-The configuration for this part in omnetpp.ini is the following:
+The configuration for this part in omnetpp.ini is the folowing:
 
 @dontinclude omnetpp.ini
 @skipline Step10A
 @until ####
 
-The configurator is instructed to leave the routing tables empty, by setting <tt>addStaticRoutes</tt> to false. The configurator just assigns
-the addresses.
-The transmitter power value for hosts set their communication range. The range is set up so hosts are in range of the adjacent hosts in the chain.
-
+The transmitter power value for hosts determine their communication range. The range is set up so hosts are in range of the adjacent hosts in the chain.
 The <tt>routingTableCanvasVisualizer</tt> is set to visualize every routing table. Communication ranges of all hosts are displayed.
+
+The XML configuration in step10a.xml is as follows:
+
+@dontinclude step10a.xml
+@skipline config
+@until config
+
+It contains a copy of the default address configurations, and an autoroute attribute using the error rate metric.
 
 @subsection s10aresults Results
 
-<img src="step10a.png" width="850px">
+Configured routes and communication ranges are displayed on the following image.
 
-As instructed, the configurator didn't add any routes. The routing tables are empty.
+<img src="step10aroutes.png" width="850px">
 
-<img src="step10a_rt.png">
+@section s10b Part B: Unconfigured routing tables, prepared for MANET routing
 
-@section s10b Part B: routing tables configured using AODV protocol
+Static routing is often not adequate in wireless networks, as the nodes might be moving and the topology can change.
+Dinamic routing protocols can react to these changes. When using dinamic protocols, the configurator is only used
+to configure the addresses. It leaves the routing table configuration to the dinamic protocol.
 
-In this part, routing tables are set up by the Ad-hoc On-demand Distance Vector (AODV) dinamic routing protocol. The configuration for this part extends Part A. The configuration in omnetpp.ini is the following:
+The configuration for this part extends the one for Part A. The configuration for this part in omnetpp.ini is the following:
 
 @dontinclude omnetpp.ini
 @skipline Step10B
 @until ####
 
-As specified in the previous part, the configurator is still instructed not to add any routes. Additionally, <i>aodvRouter1</i> is set to ping
-<i>aodvRouter2</i>. Since AODV is a reactive routing protocol, the ping is required to trigger the AODV protocol to set up routes.
+The configurator is instructed to leave the routing tables empty, by setting <tt>addStaticRoutes</tt> to false. The configurator just assigns
+the addresses according to the default XML configuration.
 
 @subsection s10bresults Results
 
-When <i>aodvRouter1</i> prepares to send the first ping packet, it triggers AODV's route discovery. The hosts send Route Request (RREQ) and
-Route Reply (RREP) packets
-to neighbouring hosts, mapping the route to <i>aodvRouter2</i>. In this process, the hosts' routing tables get loaded with entries. The route discovery
-is shown on the following animation.
+<img src="step10a.png" width="850px">
 
-<img src="step10_2.gif">
+As instructed, the configurator didn't add any routes, as indicated by the lack of arrows. The routing tables are empty.
 
-The size of hosts' routing tables are displayed in the top right corner. Routing tables are getting filled with entries as routes are discovered.
+<img src="step10b_rt.png">
 
-The following animation displays the ping packet making it to its destination, and the reply going back to <i>aodvRouter1</i>.
+@section s10c Part C: Routing tables configured using AODV protocol
 
-<img src="step10_9.gif">
+In this part, routing tables are set up by the Ad-hoc On-demand Distance Vector (AODV) dinamic routing protocol. The configuration for this part extends Part A. The configuration in omnetpp.ini is the following:
 
+@dontinclude omnetpp.ini
+@skipline Step10C
+@until ####
+
+As specified in the previous part, the configurator is still instructed not to add any routes. Additionally, <i>aodvRouter1</i> is set to ping
+<i>aodvRouter2</i>. Since AODV is a reactive routing protocol, the ping is required to trigger the AODV protocol to set up routes.
+
+@subsection s10cresults Results
+
+The routing tables are initially empty. The first ping packet triggers AODV's route discovery process, which eventually configures the routes.
 AODV is a reactive protocol, unused routes expire after a while. This happens to the routes to <i>aodvRouter7</i>, as it's not in the path between
 <i>aodvRouter1</i> and <i>aodvRouter2</i>. This is diplayed in the following animation.
 
