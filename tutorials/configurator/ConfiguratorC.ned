@@ -20,7 +20,7 @@ import inet.node.ethernet.Eth100M;
 import inet.node.ethernet.EtherSwitch;
 import inet.node.inet.Router;
 import inet.node.inet.StandardHost;
-import inet.visualizer.networklayer.RoutingTableCanvasVisualizer;
+import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
 
 network ConfiguratorC
@@ -114,7 +114,7 @@ network ConfiguratorC
         configurator: IPv4NetworkConfigurator {
             @display("p=150,100");
         }
-        visualizer: RoutingTableCanvasVisualizer {
+        visualizer: IntegratedCanvasVisualizer {
             @display("p=150,250");
         }
     connections:
