@@ -1044,7 +1044,7 @@ Wireless interfaces are considered to be connected to all other wireless interfa
 
 The XML configuration uses the same hierarchical addressing scheme as in step 7. The 2 wireless LANs are out of range of each other, thus they are specified to be in separate wireless networks. Note that the wireless interfaces of the access points also belong to the wireless networks.
 
-@section s8results Results
+@subsection s8aresults Results
 
 <! routing tables of wireless hosts, the visualized routes, ping gif>
 
@@ -1064,10 +1064,10 @@ The addresses and routes are indicated on the following image. Routes leading to
 <center><a href="step8a.png" data-lightbox="step8a"><img src="step8a.png" width="850px"></a></center>
 @endhtmlonly
 
-Wireless hosts connect to the router through the access points. The access point are L2 devices, similar to switches, so they are transparent for
+Wireless hosts connect to the router through the access points. The access points are L2 devices, similar to switches, so they are transparent for
 the routing table visualizer arrows. Wireless hosts get associated with their corresponding access points before they can communicate with the rest of the network.
 
-<!TODO: ping gif>
+On the following animation, <i>area1lan3host2</i> pings <i>area3lan3host2</i>.
 
 @htmlonly
 <a href="step8_2.gif" data-lightbox="step8_2"><img src="step8_2.gif" width="850px"></a>
@@ -1075,6 +1075,32 @@ the routing table visualizer arrows. Wireless hosts get associated with their co
 
 <!do we need this? too wide>
 
+@section s8b Part B - Determining members of wireless networks by SSID
+
+By default, the configurator determines which interfaces belong to a wireless network by the default ssid set in the hosts' agent submodule.
+If the ssid set on the access points and hosts are the default ("ssid"), the configurator puts all interfaces on the same wireless network.
+This can be overriden with the <wireless> attribute, which specifies members of a wireless network. In order to properly configure wireless networks,
+either the SSIDs need to be set to something else than the default, or members need to be specified with the <wireless> attribute.
+In this step, the SSID is used for this purpose.<!rewrite>
+
+The configuration for this part extends Part A. The configuration in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step8B
+@until ####
+
+The XML configuration in step8b.xml (displayed below) is the same as the XML configuration for Part A, except it is missing the <wireless> attributes that defined wireless networks.
+They are not needed because different SSIDs are configured for the members of the 2 wireless LANs.
+
+@dontinclude step8b.xml
+@skipline config
+@until config
+
+@subsecton s8bresults Results
+
+The results are the same as in the previous part. The 2 wireless LANs are considered to be different wireless networks.
+
+<!TODO: what would happen if they were all on the same wireless network?>
 
 @nav{step7,step9}
 @fixupini
