@@ -1101,6 +1101,7 @@ They are not needed because different SSIDs are configured for the members of th
 The results are the same as in the previous part. The 2 wireless LANs are considered to be different wireless networks.
 
 <!TODO: what would happen if they were all on the same wireless network?>
+<!TODO: rewrite>
 
 @nav{step7,step9}
 @fixupini
@@ -1115,8 +1116,43 @@ The results are the same as in the previous part. The 2 wireless LANs are consid
 @section s9goals Goals
 
 Configuring the whole network is not always desirable, because some part of the network should rather be configured dynamically.
+In this step, some wired and wireless LANs' addresses are unspecified by the configurator, and get their addresses with DHCP.
 
 @section s9model The model
+
+This step uses the ConfiguratorD network, defined in ConfiguratorD.ned.
+
+<img src="step8network.png" width="850px">
+
+The configuration for this step in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step9A
+@until ####
+
+The XML configuration in step9.xml is the following:
+
+@dontinclude step9.xml
+@skipline config
+@until config
+
+<!about the xml config: leaving the 3 lans unspecified, they will get addresses with dhcp, the routes work because of subnet routes>
+
+- Similarly to Step8B, members of the 2 wireless LANs are specified by SSID. <i>Area1lan3host2</i> is configured to ping <i>area3lan3host3</i>.
+The pingApp is delayed, so it starts sending pings after the hosts associated with the access points and got their addresses from the dhcp servers.
+
+- Routes to the latter are visualized. Additionally, <tt>interfaceTableVisualizer</tt> is configured to indicate the IP addresses of wireless hosts.
+
+@section s9results Results
+
+The addresses and routes are visualized below.
+
+@htmlonly
+<center></center><a href="step9routes.png" data-lightbox="step9routes"><img src="step9routes.png" width="850px"></a></center>
+@endhtmlonly
+
+@lightbox
+@fixupini
 
 @nav{step8,step10}
 

@@ -16,5 +16,6 @@
 	<wireless hosts="area3lan2* area3AP"/>
 	<wireless interfaces="area1lan2*%wlan0 area1AP%wlan0"/>
 	<wireless interfaces="area3lan2*%wlan0 area3AP%wlan0"/>
+	TODO: remove this
 -->
 </config>

@@ -25,26 +25,26 @@ network ConfiguratorE
 {
     @display("bgb=939.89996,581.1");
     submodules:
-        aodvRouter7: AODVRouter {
-            @display("p=778,462");
-        }
-        aodvRouter1: AODVRouter {
+        host1: AODVRouter {
             @display("p=239.148,74.897995");
         }
-        aodvRouter2: AODVRouter {
+        host2: AODVRouter {
             @display("p=483,221");
         }
-        aodvRouter3: AODVRouter {
+        host3: AODVRouter {
             @display("p=513.774,345.582");
         }
-        aodvRouter4: AODVRouter {
+        host4: AODVRouter {
             @display("p=304.848,182.646;b=7,5");
         }
-        aodvRouter5: AODVRouter {
+        host5: AODVRouter {
             @display("p=650.43,436.248");
         }
-        aodvRouter6: AODVRouter {
+        host6: AODVRouter {
             @display("p=361.35,294.336");
+        }
+        host7: AODVRouter {
+            @display("p=778,462");
         }
         configurator: IPv4NetworkConfigurator {
             @display("p=50,50");
