@@ -1283,13 +1283,14 @@ Sometimes the configuration is just almost right. In such a case it's possible t
 
 <!-------------------------------------------------------------------------------------------------------->
 
-@page step12 Step 12 - Configuring a wireless network to use error rate metric
+@page step12 Step 12 - Mixing different kinds of autorouting
 
-@nav{step11,step13}
+@nav{step11,index}
 
 @section s12goals Goals
 
-This step demonstrates using the error rate metric to configure routes in a wireless network.
+Sometimes it is best to configure different parts of a network according to different metrics. This step demonstrates
+using the hop count and error rate metrics in a mixed wired/wireless network.
 
 @section s12model The model
 
