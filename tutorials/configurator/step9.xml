@@ -8,8 +8,8 @@
 	<interface among="backbonerouter area2router" address="10.2.3.x" netmask="255.255.255.x"/>
 	<interface hosts="backbonerouter" towards="area3router" address="10.3.3.x" netmask="255.255.255.x"/>
 	<interface hosts="area1router" names="eth3" address="10.1.4.x" netmask="255.255.255.x"/>
-	<interface hosts="area3router" names="eth3" address="10.3.4.x" netmask="255.255.255.x"/>
 	<interface hosts="area2router" names="eth0" address="10.2.1.x" netmask="255.255.255.x"/>
+	<interface hosts="area3router" names="eth3" address="10.3.4.x" netmask="255.255.255.x"/>
 	<interface hosts="area*router" address="10.x.x.x"/>
 <!--
 	<wireless hosts="area1lan2* area1AP"/>
