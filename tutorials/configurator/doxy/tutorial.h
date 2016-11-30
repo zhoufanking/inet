@@ -1307,7 +1307,7 @@ Sometimes the configuration is just almost right. In such a case it's possible t
 @section s11a Part A - dumping the full configuration
 
 The configurator can be instructed to dump its configuration in a config file, in the XML configuration format. This contains
-all the assigned addresses, routing table entries and members of wireless links, so it can be easily modified. The modified
+all the assigned addresses, routing table entries and members of wireless links, so they can be easily modified. The modified
 config file can be used as the XML configuration for subsequent simulation runs.
 
 @subsection s11aconfig Configuration
@@ -1324,6 +1324,14 @@ The configuration for this part in omnetpp.ini is the following:
 
 The configurator's <tt>dumpConfig</tt> parameter can be used to dump the configuration into a file.
 
+@subsection s11aresults Results
+
+Routes to all nodes are visualized on the following image.
+
+<img src="step11a.png" width="850px">
+
+The configuration is dumped into step11dump.xml.
+
 @section s11b Part B - Using the modified configuration
 
 In this part, we modify to config file, and use it as the XML configuration. The goal is that packets should travel counter-clockwise in the triangle of the 3 routers. That is, every router should forward packets in the triangle through its interface on the right.
@@ -1339,7 +1347,26 @@ The configuration for this part in omnetpp.ini is the following:
 The modified config is used as the XML configuration. Since the configuration specifies all routes, <tt>addStaticRoutes</tt> needs to be set to
 <strong>false</strong>. A host in each LAN pings another host in the counter-clockwisely adjacent LAN. <!is there such a word?>
 
-The modified XML configuration is in step11b.xml. The difference between the original and the modified config files is displayed below. 
+The modified XML configuration is in step11b.xml (see step11dump.xml for the original). The differences between the original and the modified config files area displayed below (the original is shown in red).
+
+@htmlonly
+<a href="step11diff.png" data-lightbox="step11diff"><img src="step11diff.png" width="900px"></a>
+@endhtmlonly
+
+@subsection s11bresults Results
+
+Routes to all nodes are visualized on the following image. Note that arrows point only counter-clockwise in the triangle.
+
+<img src="step11b.png" width="850px">
+
+The ping exchanges are displayed in the animation below.
+
+<img src="step11_3.gif" width="850px">
+
+The packets travel only counter-clockwise in the triangle of the 3 routers.
+
+
+@lightbox
 @fixupini
 @nav{step10,step12}
 
