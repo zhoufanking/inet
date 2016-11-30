@@ -1158,8 +1158,8 @@ The XML configuration in step9.xml is the following:
 
 Addresses are assigned hierarchically. 5 LANs in the network have addresses assigned by the configurator. 3 LANs get their
 addresses from DHCP servers, their interfaces are left unspecified by the configurator. This is accomplished by the lack of address assignment rules
-in the XML configuration. The area routers' interfaces connecting to the latter LANs are specified. This is required for
-correct routes to these LANs.
+in the XML configuration. The area routers' interfaces connecting to the latter LANs need to be specified in order to have correct routes to these
+LANs.
 
 
 @section s9results Results
@@ -1175,6 +1175,12 @@ The addresses and routes are visualized below.
 The hosts of <i>area1lan3, area2lan1 and area3lan3</i> have unspecified interfaces. The routing tables of all hosts contain subnet routes
 to these 3 LANs. Since these hosts don't have addresses at the start of the simulation, not all routes leading to <i>area3lan3host2</i> are
 visualized. The only routes indicated are the default routes of hosts
+
+Though the hosts in the 3 LANs have unspecified addresses, routes are configured towards these hosts.
+The area routers' interfaces connecting to these LANs have an address and subnet mask assigned.
+The subnet mask is assigned so there are addresses allocated to the unspecified hosts.
+For example, <i>area1router's eth3</i> interface has the address 10.1.4.1/29, and has 4 addresses allocated (10.1.4.2-5).
+The unspecified hosts can be reached using subnet routes.
 
 @lightbox
 @fixupini
@@ -1198,19 +1204,9 @@ This step demonstrates using the error rate metric for configuring static routes
 @section s10a Part A: Static routing based on error rate metric
 
 The topology of completely wireless networks is unclear in a static analysis. By default, the configurator assumes nodes can directly talk to each other.
-In a lot of cases they can't, and wireless nodes have to be put in different wireless networks in order to have proper routes. This can be achieved with the <wireless> attribute in the
-XML configuration, or by setting different SSIDs in nodes. Additionally, the error rate metric is well suited for configuring routes in wireless networks.
-When using the default hop count metric, each node would be in 1 hop distance from the others. The error rate metric can quantify poor reception,
-essentially which nodes can hear each other. Thus the automatic route configuration can set up routes properly in a complex wireless network.
+When they can't, the error rate metric can be used for automatic route configuration instead of the default hop count.
 
-Completely wireless networks cannot be divided into wireless LANs, because there is no wireless infrastructure.
-
-The topology of completely wireless networks is unclear in a static analysis.
-
-<!WIP>
-
-The error rate metric can quantify reception quality, essentially which nodes are connected to which.
-Actually, it doesnt, but the configurator chooses edges with the lowest cost, that is where the reception is the strongest.
+@subsection s10aconfig Configuration
 
 This step uses the ConfiguratorE network, defined in ConfiguratorE.ned. The network looks like this:
 
