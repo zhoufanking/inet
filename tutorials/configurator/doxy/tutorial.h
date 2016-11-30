@@ -1052,16 +1052,6 @@ The XML configuration uses the same hierarchical addressing scheme as in step 7.
 
 <! routing tables of wireless hosts, the visualized routes, ping gif>
 
-The routes will be set just as with the wired network. The only thing is they have to associate to the AP before they can be sending and receiving.
-Then they do it just like the wired ones.
-
-In the next step, it is not like that at all. They have unspecified addresses and there will be no routes leading to them. Except if there are
-subnet routes. The interface eth3 on the router has an address and a netmask set, and the others have routes for it.
-The address and netmask for that interface is assigned so there is enough addresses allocated for the dhcp hosts.
-When they get the addresses from the dhcp server, they can be reached with ping. The routes should reflect that but they dont work. The visualizer.
-
-The visualizer routes are changing only if the routing tables are changing and not when there is a change in addresses.
-
 The addresses and routes are indicated on the following image. Routes leading to hosts <i>area3lan3</i> are visualized.
 
 @htmlonly
@@ -1100,7 +1090,7 @@ They are not needed because different SSIDs are configured for the members of th
 @skipline config
 @until config
 
-@subsecton s8bresults Results
+@subsection s8bresults Results
 
 The results are the same as in the previous part. The 2 wireless LANs are considered to be different wireless networks.
 
@@ -1120,7 +1110,7 @@ The results are the same as in the previous part. The 2 wireless LANs are consid
 @section s9goals Goals
 
 Configuring the whole network is not always desirable, because some part of the network should rather be configured dynamically.
-In this step, some wired and wireless LANs' addresses are unspecified by the configurator, and get their addresses with DHCP.
+In this step, some wired and wireless LANs' addresses are unspecified by the configurator, and they get addresses with DHCP.
 
 @section s9model The model
 
@@ -1134,6 +1124,13 @@ The configuration for this step in omnetpp.ini is the following:
 @skipline Step9A
 @until ####
 
+- Similarly to Step8B, members of the 2 wireless LANs are specified by SSID. <i>Area1lan3host2</i> is configured to ping <i>area3lan3host3</i>.
+The pingApp is delayed, so it starts sending pings after the hosts associated with the access points and got their addresses from the dhcp servers.
+- <i>DHCPServer</i> submodules are added to the area routers. There is a LAN in each area that is left unspecified by the configurator, and get
+the addresses from the DHCP server in the corresponding area router.
+
+- Routes to <i>area3lan3host3</i> are visualized. Additionally, <tt>interfaceTableVisualizer</tt> is configured to indicate the IP addresses of wireless hosts.
+
 The XML configuration in step9.xml is the following:
 
 @dontinclude step9.xml
@@ -1142,10 +1139,11 @@ The XML configuration in step9.xml is the following:
 
 <!about the xml config: leaving the 3 lans unspecified, they will get addresses with dhcp, the routes work because of subnet routes>
 
-- Similarly to Step8B, members of the 2 wireless LANs are specified by SSID. <i>Area1lan3host2</i> is configured to ping <i>area3lan3host3</i>.
-The pingApp is delayed, so it starts sending pings after the hosts associated with the access points and got their addresses from the dhcp servers.
+Addresses are assigned hierarchically. 5 LANs in the network have addresses assigned by the configurator. 3 LANs get their
+addresses from DHCP servers, their interfaces are left unspecified by the configurator. This is accomplished by the lack of address assignment rules
+in the XML configuration. The area routers' interfaces connecting to the latter LANs are specified. This is required for
+correct routes to these LANs.
 
-- Routes to the latter are visualized. Additionally, <tt>interfaceTableVisualizer</tt> is configured to indicate the IP addresses of wireless hosts.
 
 @section s9results Results
 
@@ -1174,7 +1172,7 @@ visualized. The only routes indicated are the default routes of hosts
 
 @section s10goals Goals
 
-This step demonstrates using the error rate metric for configuring static routes. It also demonstrates leaving the routing tables unconfigured, so a dinamic routing protocol can configure them. The step has 3 parts:
+This step demonstrates using the error rate metric for configuring static routes. It also demonstrates leaving the routing tables unconfigured, so a dynamic routing protocol can configure them. The step has 3 parts:
 
 - Part A: Static routing based on error rate metric
 - Part B: Unconfigured routing tables, prepared for MANET routing
@@ -1201,8 +1199,8 @@ The configuration for this part in omnetpp.ini is the folowing:
 @skipline Step10A
 @until ####
 
-The transmitter power value for hosts determine their communication range. The range is set up so hosts are in range of the adjacent hosts in the chain.
-The <tt>routingTableCanvasVisualizer</tt> is set to visualize every routing table. Communication ranges of all hosts are displayed.
+The transmitter power value for hosts determine their communication range. The range is set up so hosts are only in range of the adjacent hosts in the chain.
+The <tt>routingTableCanvasVisualizer</tt> is set to visualize all routing tables. Communication ranges of all hosts are displayed.
 
 The XML configuration in step10a.xml is as follows:
 
@@ -1214,17 +1212,18 @@ It contains a copy of the default address configurations, and an autoroute attri
 
 @subsection s10aresults Results
 
-Configured routes and communication ranges are displayed on the following image.
+Configured routes and communication ranges are displayed on the following image. Routes lead through adjacent hosts in the chain. In each
+segment of the path, correct reception is possible.
 
 <img src="step10aroutes.png" width="850px">
 
 @section s10b Part B: Unconfigured routing tables, prepared for MANET routing
 
 Static routing is often not adequate in wireless networks, as the nodes might be moving and the topology can change.
-Dinamic routing protocols can react to these changes. When using dinamic protocols, the configurator is only used
-to configure the addresses. It leaves the routing table configuration to the dinamic protocol.
+Dynamic routing protocols can react to these changes. When using dynamic protocols, the configurator is only used
+to configure the addresses. It leaves the routing table configuration to the dynamic protocol.
 
-The configuration for this part extends the one for Part A. The configuration for this part in omnetpp.ini is the following:
+The configuration for this part in omnetpp.ini extends the one for Part A. It is the following:
 
 @dontinclude omnetpp.ini
 @skipline Step10B
@@ -1243,7 +1242,7 @@ As instructed, the configurator didn't add any routes, as indicated by the lack 
 
 @section s10c Part C: Routing tables configured using AODV protocol
 
-In this part, routing tables are set up by the Ad-hoc On-demand Distance Vector (AODV) dinamic routing protocol. The configuration for this part extends Part A. The configuration in omnetpp.ini is the following:
+In this part, routing tables are set up by the Ad-hoc On-demand Distance Vector (AODV) dynamic routing protocol. The configuration for this part extends Part A. The configuration in omnetpp.ini is the following:
 
 @dontinclude omnetpp.ini
 @skipline Step10C
