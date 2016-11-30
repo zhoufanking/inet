@@ -1304,6 +1304,43 @@ Sometimes the configuration is just almost right. In such a case it's possible t
 - Part A: dumping the full configuration
 - Part B: using the modified configuration
 
+@section s11a Part A - dumping the full configuration
+
+The configurator can be instructed to dump its configuration in a config file, in the XML configuration format. This contains
+all the assigned addresses, routing table entries and members of wireless links, so it can be easily modified. The modified
+config file can be used as the XML configuration for subsequent simulation runs.
+
+@subsection s11aconfig Configuration
+
+This step uses the ConfiguratorB network defined in ConfiguratorB.ned.
+
+<img src="step4network.png">
+
+The configuration for this part in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step11A
+@until ####
+
+The configurator's <tt>dumpConfig</tt> parameter can be used to dump the configuration into a file.
+
+@section s11b Part B - Using the modified configuration
+
+In this part, we modify to config file, and use it as the XML configuration. The goal is that packets should travel counter-clockwise in the triangle of the 3 routers. That is, every router should forward packets in the triangle through its interface on the right.
+
+@subsection s11bconfig Configuration
+
+The configuration for this part in omnetpp.ini is the following:
+
+@dontinclude omnetpp.ini
+@skipline Step11B
+@until ####
+
+The modified config is used as the XML configuration. Since the configuration specifies all routes, <tt>addStaticRoutes</tt> needs to be set to
+<strong>false</strong>. A host in each LAN pings another host in the counter-clockwisely adjacent LAN. <!is there such a word?>
+
+The modified XML configuration is in step11b.xml. The difference between the original and the modified config files is displayed below. 
+@fixupini
 @nav{step10,step12}
 
 <!-------------------------------------------------------------------------------------------------------->
