@@ -1203,6 +1203,8 @@ XML configuration, or by setting different SSIDs in nodes. Additionally, the err
 When using the default hop count metric, each node would be in 1 hop distance from the others. The error rate metric can quantify poor reception,
 essentially which nodes can hear each other. Thus the automatic route configuration can set up routes properly in a complex wireless network.
 
+Completely wireless networks cannot be divided into wireless LANs, because there is no wireless infrastructure.
+
 This step uses the ConfiguratorE network, defined in ConfiguratorE.ned. The network looks like this:
 
 <img src="step10network.png" width="850px">
