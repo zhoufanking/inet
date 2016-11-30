@@ -1205,6 +1205,13 @@ essentially which nodes can hear each other. Thus the automatic route configurat
 
 Completely wireless networks cannot be divided into wireless LANs, because there is no wireless infrastructure.
 
+The topology of completely wireless networks is unclear in a static analysis.
+
+<!WIP>
+
+The error rate metric can quantify reception quality, essentially which nodes are connected to which.
+Actually, it doesnt, but the configurator chooses edges with the lowest cost, that is where the reception is the strongest.
+
 This step uses the ConfiguratorE network, defined in ConfiguratorE.ned. The network looks like this:
 
 <img src="step10network.png" width="850px">
