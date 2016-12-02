@@ -1332,7 +1332,7 @@ Routes to all nodes are visualized on the following image.
 
 <img src="step11a.png" width="850px">
 
-The configuration is dumped into step11dump.xml.
+The configuration is dumped into step11a_dump.xml.
 
 @section s11b Part B - Using the modified configuration
 
@@ -1349,6 +1349,10 @@ The configuration for this part in omnetpp.ini is the following:
 The modified config is used as the XML configuration. Since the configuration specifies all routes, <tt>addStaticRoutes</tt> needs to be set to
 <strong>false</strong>. A host in each LAN pings another host in the counter-clockwisely adjacent LAN. <!is there such a word?>
 
+To this end, the routes in the router are modified. Routes that would send packets the wrong way (i.e. not counter-clockwise in the triangle) are
+redirected to the other interface. In essence, all routers send out packets through their interface to the right (expect for packets destined to
+the connecting LAN).
+
 The modified XML configuration is in step11b.xml (see step11dump.xml for the original). The differences between the original and the modified config files area displayed below (the original is shown in red).
 
 @htmlonly
@@ -1359,7 +1363,9 @@ The modified XML configuration is in step11b.xml (see step11dump.xml for the ori
 
 Routes to all nodes are visualized on the following image. Note that arrows point only counter-clockwise in the triangle.
 
-<img src="step11b.png" width="850px">
+@htmlonly
+<center><a href="step11b.png" data-lightbox="step11b"><img src="step11b.png" width="850px"></a></center>
+@endhtmlonly
 
 The ping exchanges are displayed in the animation below.
 
