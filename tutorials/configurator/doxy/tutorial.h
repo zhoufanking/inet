@@ -1144,7 +1144,8 @@ The configuration for this step in omnetpp.ini is the following:
 
 - Similarly to Step8B, members of the 2 wireless LANs are specified by SSID. <i>Area1lan3host2</i> is configured to ping <i>area3lan3host3</i>.
 The pingApp is delayed, so it starts sending pings after the hosts associated with the access points and got their addresses from the dhcp servers.
-- <i>DHCPServer</i> submodules are added to the area routers. There is a LAN in each area that is left unspecified by the configurator, and get
+- <i>DHCPServer</i> submodules are added to the area routers. There is a LAN in each area that is left unspecified by the configurator. They are
+<i>area1lan3, area2lan1 and area3lan3</i>. These get
 the addresses from the DHCP server in the corresponding area router.
 
 - Routes to <i>area3lan3host3</i> are visualized. Additionally, <tt>interfaceTableVisualizer</tt> is configured to indicate the IP addresses of wireless hosts.
@@ -1174,14 +1175,18 @@ The addresses and routes are visualized below.
 <!TODO: what it takes for routing to work to unspec addresses>
 
 The hosts of <i>area1lan3, area2lan1 and area3lan3</i> have unspecified interfaces. The routing tables of all hosts contain subnet routes
-to these 3 LANs. Since these hosts don't have addresses at the start of the simulation, not all routes leading to <i>area3lan3host2</i> are
-visualized. The only routes indicated are the default routes of hosts
+to these 3 LANs. Since these hosts don't have addresses at the start of the simulation, not all routes leading to <i>area3lan3host2</i> can be
+visualized. The only routes indicated are the default routes of hosts with static address assignment.
 
 Though the hosts in the 3 LANs have unspecified addresses, routes are configured towards these hosts.
 The area routers' interfaces connecting to these LANs have an address and subnet mask assigned.
 The subnet mask is assigned so there are addresses allocated to the unspecified hosts.
 For example, <i>area1router's eth3</i> interface has the address 10.1.4.1/29, and has 4 addresses allocated (10.1.4.2-5).
 The unspecified hosts can be reached using subnet routes.
+
+<!TODO: routing tables that show that there are routes, just not visualized>
+
+<!TODO: ping gif>
 
 @lightbox
 @fixupini
