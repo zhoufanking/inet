@@ -1227,7 +1227,7 @@ The configuration for this part in omnetpp.ini is the folowing:
 @skipline Step10A
 @until ####
 
-The transmitter power value for hosts determine their communication range. The range is set up so hosts are only in range of the adjacent hosts in the chain.
+The transmitter power value of hosts' radios determine their communication range. The range is set up so hosts are only in range of the adjacent hosts in the chain.
 The <tt>routingTableCanvasVisualizer</tt> is set to visualize all routing tables. Communication ranges of all hosts are displayed.
 
 The XML configuration in step10a.xml is as follows:
@@ -1247,7 +1247,7 @@ segment of the path, correct reception is possible.
 
 @section s10b Part B: Unconfigured routing tables, prepared for MANET routing
 
-Static routing is often not adequate in wireless networks, as the nodes might be moving and the topology can change.
+Static routing is often not adequate in wireless networks, as the nodes might move and the topology can change.
 Dynamic routing protocols can react to these changes. When using dynamic protocols, the configurator is only used
 to configure the addresses. It leaves the routing table configuration to the dynamic protocol.
 
@@ -1276,8 +1276,8 @@ In this part, routing tables are set up by the Ad-hoc On-demand Distance Vector 
 @skipline Step10C
 @until ####
 
-As specified in the previous part, the configurator is still instructed not to add any routes. Additionally, <i>aodvRouter1</i> is set to ping
-<i>aodvRouter2</i>. Since AODV is a reactive routing protocol, the ping is required to trigger the AODV protocol to set up routes.
+As specified in the previous part, the configurator is still instructed not to add any routes. Additionally, <i>host1</i> is set to ping
+<i>host2</i>. Since AODV is a reactive routing protocol, the ping is required to trigger the AODV protocol to set up routes.
 
 @subsection s10cresults Results
 
