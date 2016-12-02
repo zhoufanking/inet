@@ -1419,9 +1419,10 @@ The configuration for this step in omnetpp.ini is the following:
 @skipline Step12
 @until ####
 
-For hosts in area1 to operate in ad-hoc mode, IP forwarding is turned on, and their management modules are set to ad-hoc management.
-<!TODO: other settings in ini>
-
+- For hosts in area1 to operate in ad-hoc mode, IP forwarding is turned on, and their management modules are set to ad-hoc management.
+- <i>area1host1</i> is configured to ping <i>area2host1</i>, which is on the other side of the network
+- Routes to all hosts, addresses of wireless interfaces and communication ranges are visualized.
+- <i>optimizeRoutes = false</i> is required for the simulation to work <!more specifically?>
 
 The XML configuration in step12.xml is the following:
 
@@ -1429,8 +1430,56 @@ The XML configuration in step12.xml is the following:
 @skipline config
 @until config
 
-Every node/interface must be covered by the autoroute elements. The appropriate autoroute element needs to cover interfaces of the wireless hosts,
-and the wired hosts.
+To have routes from every node to every other node, all nodes must be covered by an autoroute element.
+The XML configuration contains 2 autoroute elements. Routing tables of hosts in <i>area1</i> are configured according to the error rate metric,
+while all others according to hop count.
+
+The global <i>addStaticRoutes, addDefaultRoutes and addSubnetRoutes</i> parameters can be specified per interface, with the <interface> attribute.
+These can be set with the <strong>add-static-route</strong>, <strong>add-default-route</strong> and <strong>add-subnet-route</strong> bool parameters.
+They are true by default. The global and per-interface settings are in a logical AND relationship, thus both have to be true for the parameter's true value to take effect.
+
+The default route assumes there is one gateway,
+and all nodes on the link can reach it directly. This is not the case for <i>area1</i>, because <i>area1host1</i> is out of range of the gateway host. 
+The <i>add-default-route</i> parameter is set to false for the <i>area1</i> hosts.
+
+@section s12results Results
+
+The routes are visualized on the following image.
+
+<img src="step12routes.png">
+
+As intended, <i>area1host1</i> connects to the network via <i>area1host2</i>.
+
+The routing of <i>area1host1</i> is as follows:
+
+<div class="fragment fit">
+<pre class="monospace">
+Node ConfiguratorF.area1host1
+-- Routing table --
+Destination      Netmask          Gateway          Iface             Metric
+10.0.0.1         255.255.255.255  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.2         255.255.255.255  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.5         255.255.255.255  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.6         255.255.255.255  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.9         255.255.255.255  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.10        255.255.255.255  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.18        255.255.255.255  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.28        255.255.255.255  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.33        255.255.255.255  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.34        255.255.255.255  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.41        255.255.255.255  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.16        255.255.255.248  *                wlan0 (10.0.0.17) 0
+10.0.0.24        255.255.255.248  10.0.0.19        wlan0 (10.0.0.17) 0
+10.0.0.40        255.255.255.248  10.0.0.19        wlan0 (10.0.0.17) 0
+</pre>
+</div>
+
+The gateway is 10.0.0.19 (<i>area1host2</i>) in all rules, expect the one where it is *. That rule is for reaching
+the other hosts in the LAN directly. This doesn't seem to be according to the error rate metric, but this rule
+matches destinations 10.0.0.18 and 10.0.0.19 only. Since 10.0.0.18 is covered by a previous rule, this one
+is actually for reaching 10.0.0.19 directly.
+
+<!gif>
 
 @fixupini
 
