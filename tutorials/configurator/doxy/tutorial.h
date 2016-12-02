@@ -1161,7 +1161,7 @@ The XML configuration in step9.xml is the following:
 Addresses are assigned hierarchically. 5 LANs in the network have addresses assigned by the configurator. 3 LANs get their
 addresses from DHCP servers, their interfaces are left unspecified by the configurator. This is accomplished by the lack of address assignment rules
 in the XML configuration. The area routers' interfaces connecting to the latter LANs need to be specified in order to have correct routes to these
-LANs.
+LANs. Additionally, the addresses for the interfaces need to assigned specifially, and they have to fall in the configured dhcp server address ranges.
 
 
 @section s9results Results
@@ -1333,6 +1333,8 @@ Routes to all nodes are visualized on the following image.
 <img src="step11a.png" width="850px">
 
 The configuration is dumped into step11a_dump.xml.
+
+<!TODO: modify addresses?>
 
 @section s11b Part B - Using the modified configuration
 

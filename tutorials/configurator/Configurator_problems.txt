@@ -53,3 +53,5 @@ solved by optimizeRoutes=false
 12.	<autoroute> subelements: link selection should be more accurate
 
 13.	RoutingTableCanvasVisualizer: when nodes have address <unspec>, it matches the default route, and it visualizes that. Also, it doesnt react to changing addresses from unspec to specified
+
+14.	Mixed metric autoroute in step 12: when addDefaultRoutes = true, the routing table changes and we dont understand why
