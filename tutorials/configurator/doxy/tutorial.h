@@ -1139,7 +1139,7 @@ This step uses the ConfiguratorD network, defined in ConfiguratorD.ned.
 The configuration for this step in omnetpp.ini is the following:
 
 @dontinclude omnetpp.ini
-@skipline Step9A
+@skipline Step9
 @until ####
 
 - Similarly to Step8B, members of the 2 wireless LANs are specified by SSID. <i>Area1lan3host2</i> is configured to ping <i>area3lan3host3</i>.
@@ -1159,8 +1159,8 @@ The XML configuration in step9.xml is the following:
 <!about the xml config: leaving the 3 lans unspecified, they will get addresses with dhcp, the routes work because of subnet routes>
 
 Addresses are assigned hierarchically. 5 LANs in the network have addresses assigned by the configurator. 3 LANs get their
-addresses from DHCP servers, their interfaces are left unspecified by the configurator. This is accomplished by the lack of address assignment rules
-in the XML configuration. The area routers' interfaces connecting to the latter LANs need to be specified in order to have correct routes to these
+addresses from DHCP servers, their interfaces are left unspecified by the configurator. This is accomplished by the lack of address assignment rules for
+these hosts in the XML configuration. The area routers' interfaces connecting to the latter LANs need to be specified in order to have correct routes to these
 LANs. Additionally, the addresses for the interfaces need to assigned specifially, and they have to fall in the configured dhcp server address ranges.
 
 
@@ -1408,7 +1408,8 @@ router through a switch.
 Since there is no access point in <i>area1</i>, the hosts create an ad-hoc wireless network. They connect to the rest of the network through <i>area1host3</i>,
 which has a wired connection to the router.
 However, <i>area1host3</i> is not in the communication range of <i>area1host1</i> (illustrated on the image below). Thus <i>area1host2</i> is configured to forward
-<i>area1host1's</i> packets to <i>area1host3</i>.
+<i>area1host1's</i> packets to <i>area1host3</i>. The error rate metric is better suited to configure routes in this LAN. Routes in the rest of the network
+can be configured properly based on the hop count metric.
 
 <img src="step12ranges.png">
 
