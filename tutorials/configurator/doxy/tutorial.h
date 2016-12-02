@@ -1041,7 +1041,8 @@ and 3 <tt>WirelessHosts</tt>.
 
 The 2 wireless LANs in the network are out of range of each other. The <i>default_ssid</i> parameters are left on default ("SSID"). By default,
 the configurator would put them in the same wireless network, and assume that they can all reach each other directly. This would be reflected
-in the routes, hosts in <i>area1lan3</i> would reach hosts in <i>area3lan3</i> directly. This is obviously wrong. The 2 LANs need to be in
+in the routes, hosts in <i>area1lan3</i> would reach hosts in <i>area3lan3</i> directly. This is obviously wrong, because they are out of
+range from each other. The 2 LANs need to be in
 2 different wireless networks.
 
 Here is the configuration for this step in omnetpp.ini:
@@ -1050,7 +1051,7 @@ Here is the configuration for this step in omnetpp.ini:
 @skipline Step8
 @until ####
 
-A wireless host in <i>area1</i> is configured to ping a wireless host in <i>area3</i>, this helps visualize that routing works.
+A wireless host in <i>area1</i> is configured to ping a wireless host in <i>area3</i>, this helps visualize routes.
 
 The XML configuration in step8a.xml is the following:
 
@@ -1087,6 +1088,8 @@ This is how the routes would look like if the XML configuration didnt contain th
 <center><a href="step8fullmesh.png" data-lightbox="step8fullmesh"><img src="step8fullmesh.png" width="850px"></a></center>
 @endhtmlonly
 
+All wireless hosts would have direct routes to each other.
+
 <!do we need this?>
 
 @section s8b Part B - Determining members of wireless networks by SSID
@@ -1111,8 +1114,6 @@ They are not needed because different SSIDs are configured for the members of th
 @subsection s8bresults Results
 
 The results are the same as in the previous part. The 2 wireless LANs are considered to be different wireless networks.
-
-<!TODO: rewrite>
 
 @nav{step7,step9}
 @fixupini
