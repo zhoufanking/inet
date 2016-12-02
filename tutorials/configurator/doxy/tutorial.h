@@ -363,7 +363,7 @@ The visualized routes are displayed on the following image:
 <img src="step4routes.png" width=850px>
 
 Note that routes from all nodes to host7 are visualized. Note that arrows don't go through switches,
-because they not the next hop. When routes are concerned, they are transparent L2 devices.
+because they are not the next hop. When routes are concerned, they are transparent L2 devices.
 
 The routing tables are the following (routes visualized on the image above are highlighted):
 
