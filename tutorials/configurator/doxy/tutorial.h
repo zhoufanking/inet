@@ -1169,7 +1169,7 @@ LANs. Additionally, the addresses for the interfaces need to assigned specifiall
 The addresses and routes are visualized below.
 
 @htmlonly
-<center></center><a href="step9routes.png" data-lightbox="step9routes"><img src="step9routes.png" width="850px"></a></center>
+<center><a href="step9routes.png" data-lightbox="step9routes"><img src="step9routes.png" width="850px"></a></center>
 @endhtmlonly
 
 <!TODO: what it takes for routing to work to unspec addresses>
@@ -1186,7 +1186,9 @@ The unspecified hosts can be reached using subnet routes.
 
 <!TODO: routing tables that show that there are routes, just not visualized>
 
-<!TODO: ping gif>
+@htmlonly
+<center><a href="step9_6.gif" data-lightbox="step9_6"><img src="step9_6.gif" width="850px"></a></center>
+@endhtmlonly
 
 @lightbox
 @fixupini
