@@ -1018,15 +1018,15 @@ difference in routing table size.
 @section s8goals Goals
 
 This step demonstrates routing table configuration in a mixed wired/wireless network. This step consists of 2 parts:
-- Part A: Determining members of wireless networks with <wireless> attribute
+- Part A: Determining members of wireless networks with <wireless> element
 - Part B: Determining members of wireless networks by SSID
 
-@section s8a Part A: Determining members of wireless networks with <wireless> attribute
+@section s8a Part A: Using the <wireless> element
 
 The configurator assumes that interfaces of wireless nodes in the same wireless network can reach each other directly.
 It can determine which nodes belong to a wireless network in 2 ways:
 - It looks at the <i>default_ssid</i> parameter in nodes' agent submodule. Nodes with the same SSID are assumed to be in the same wireless network.
-- Members of wireless networks can be specified by the <wireless> attribute in the XML configuration. In the <wireless> attribute, the <strong>hosts</strong> and <strong>interfaces</strong> selector attributes can be used to specify members.
+- Members of wireless networks can be specified by the <wireless> element in the XML configuration. In the <wireless> element, the <strong>hosts</strong> and <strong>interfaces</strong> selector attributes can be used to specify members.
 
 Note that nodes need to use the same radio medium module to be in the same wireless network.
 
@@ -1039,6 +1039,7 @@ This step uses the ConfiguratorD network defined in ConfiguratorD.ned. The netwo
 The ConfiguratorD network extends ConfiguratorC by adding 2 wireless LANs, <i>area1lan3</i> and <i>area3lan3</i>. The additional LANs consist of an <tt>AccessPoint</tt>
 and 3 <tt>WirelessHosts</tt>.
 
+<!TODO: rewrite>
 The 2 wireless LANs in the network are out of range of each other. The <i>default_ssid</i> parameters are left on default ("SSID"). By default,
 the configurator would put them in the same wireless network, and assume that they can all reach each other directly. This would be reflected
 in the routes, hosts in <i>area1lan3</i> would reach hosts in <i>area3lan3</i> directly. This is obviously wrong, because they are out of
@@ -1065,7 +1066,7 @@ The XML configuration uses the same hierarchical addressing scheme as in Step 7.
 
 <!TODO: routing tables of wireless hosts - do we need that? the routing tables of wireless hosts maybe>
 
-The addresses and routes are indicated on the following image. Routes leading to hosts <i>area3lan3</i> are visualized.
+The addresses and routes are indicated on the following image. Routes leading towards hosts <i>area3lan3</i> are visualized.
 
 @htmlonly
 <center><a href="step8a.png" data-lightbox="step8a"><img src="step8a.png" width="850px"></a></center>
@@ -1086,7 +1087,7 @@ On the following animation, <i>area1lan3host2</i> pings <i>area3lan3host2</i>.
 
 <!TODO: outdated gif>
 
-This is how the routes would look like if the XML configuration didnt contain the <wireless> attributes:
+This is how the routes would look like if the XML configuration didnt contain the <wireless> elements:
 
 @htmlonly
 <center><a href="step8fullmesh.png" data-lightbox="step8fullmesh"><img src="step8fullmesh.png" width="850px"></a></center>
@@ -1096,7 +1097,7 @@ All wireless hosts would have direct routes to each other.
 
 <!do we need this?>
 
-@section s8b Part B - Determining members of wireless networks by SSID
+@section s8b Part B - Using SSID
 
 In this part, the SSID is used to put the 2 wireless LANs in 2 different wireless networks.
 
@@ -1108,7 +1109,7 @@ The configuration for this part extends Part A. The configuration in omnetpp.ini
 @skipline Step8B
 @until ####
 
-The XML configuration in step8b.xml (displayed below) is the same as the XML configuration for Part A, except it is missing the <wireless> attributes that defined wireless networks.
+The XML configuration in step8b.xml (displayed below) is the same as the XML configuration for Part A, except it is missing the <wireless> elements that defined wireless networks.
 They are not needed because different SSIDs are configured for the members of the 2 wireless LANs.
 
 @dontinclude step8b.xml

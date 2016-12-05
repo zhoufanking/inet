@@ -24,6 +24,11 @@ div.fragment
 	overflow: auto;
 }
 
+div.line
+{
+	white-space: nowrap;
+}
+
 .fit {
 	display: inline-flex;
 }

@@ -22,7 +22,9 @@ import inet.node.wireless.AccessPoint;
 import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
 import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
-
+channel Eth100MLong extends Eth100M {
+    length = 100m;
+}
 network ConfiguratorD extends ConfiguratorC
 {
     submodules:
@@ -54,6 +56,6 @@ network ConfiguratorD extends ConfiguratorC
             @display("p=150,400");
         }
     connections:
-        area3router.ethg++ <--> Eth100M <--> area3AP.ethg++;
-        area1router.ethg++ <--> Eth100M <--> area1AP.ethg++;
+        area3router.ethg++ <--> Eth100MLong <--> area3AP.ethg++;
+        area1router.ethg++ <--> Eth100MLong <--> area1AP.ethg++;
 }
