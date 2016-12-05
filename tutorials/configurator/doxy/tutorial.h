@@ -1160,12 +1160,10 @@ The XML configuration in step9.xml is the following:
 @skipline config
 @until config
 
-<!about the xml config: leaving the 3 lans unspecified, they will get addresses with dhcp, the routes work because of subnet routes>
-
 Addresses are assigned hierarchically. 5 LANs in the network have addresses assigned by the configurator. 3 LANs get their
 addresses from DHCP servers, their interfaces are left unspecified by the configurator. This is accomplished by the lack of address assignment rules for
 these hosts in the XML configuration. The area routers' interfaces connecting to the latter LANs need to be specified in order to have correct routes to these
-LANs. Additionally, the addresses for the interfaces need to assigned specifially, and they have to fall in the configured dhcp server address ranges.
+LANs. Additionally, the addresses for the interfaces need to be assigned specifially, and they have to fall in the configured dhcp server address ranges.
 
 
 @section s9results Results
@@ -1175,8 +1173,6 @@ The addresses and routes are visualized below.
 @htmlonly
 <center><a href="step9routes.png" data-lightbox="step9routes"><img src="step9routes.png" width="850px"></a></center>
 @endhtmlonly
-
-<!TODO: what it takes for routing to work to unspec addresses>
 
 The hosts of <i>area1lan3, area2lan1 and area3lan3</i> have unspecified interfaces. The routing tables of all hosts contain subnet routes
 to these 3 LANs. Since these hosts don't have addresses at the start of the simulation, not all routes leading to <i>area3lan3host2</i> can be
