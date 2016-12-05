@@ -1063,13 +1063,15 @@ The XML configuration uses the same hierarchical addressing scheme as in Step 7.
 
 @subsection s8aresults Results
 
-<! routing tables of wireless hosts, the visualized routes, ping gif>
+<!TODO: routing tables of wireless hosts - do we need that? the routing tables of wireless hosts maybe>
 
 The addresses and routes are indicated on the following image. Routes leading to hosts <i>area3lan3</i> are visualized.
 
 @htmlonly
 <center><a href="step8a.png" data-lightbox="step8a"><img src="step8a.png" width="850px"></a></center>
 @endhtmlonly
+
+<!TODO: outdated screenshot>
 
 Wireless hosts connect to the router through the access points. The access points are L2 devices, similar to switches, so they are transparent for
 the routing table visualizer arrows. Wireless hosts get associated with their corresponding access points before they can communicate with the rest of the network.
@@ -1081,6 +1083,8 @@ On the following animation, <i>area1lan3host2</i> pings <i>area3lan3host2</i>.
 @endhtmlonly
 
 <!do we need this? too wide>
+
+<!TODO: outdated gif>
 
 This is how the routes would look like if the XML configuration didnt contain the <wireless> attributes:
 
