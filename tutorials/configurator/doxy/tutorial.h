@@ -570,6 +570,7 @@ This time both packets outbound to hosts 6 and 7 take the diverted route, the re
 
 @nav{step4,step6}
 @fixupini
+@keyword
 
 <!-------------------------------------------------------------------------------------------------------->
 
@@ -728,6 +729,7 @@ In this part, that link is "turned off" by specifying an infinite cost for it.
 
 @nav{step5,step7}
 @fixupini
+@keyword
 
 <!-------------------------------------------------------------------------------------------------------->
 
