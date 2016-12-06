@@ -1039,8 +1039,7 @@ This step uses the ConfiguratorD network defined in ConfiguratorD.ned. The netwo
 The ConfiguratorD network extends ConfiguratorC by adding 2 wireless LANs, <i>area1lan3</i> and <i>area3lan3</i>. The additional LANs consist of an <tt>AccessPoint</tt>
 and 3 <tt>WirelessHosts</tt>.
 
-<!TODO: rewrite>
-The 2 wireless LANs in the network are out of range of each other. The <i>default_ssid</i> parameters are left on default ("SSID"). By default,
+The default SSID settings of all wireless nodes is "SSID". By default,
 the configurator would put them in the same wireless network, and assume that they can all reach each other directly. This would be reflected
 in the routes, hosts in <i>area1lan3</i> would reach hosts in <i>area3lan3</i> directly. This is obviously wrong, because they are out of
 range from each other. The 2 LANs need to be in
@@ -1087,6 +1086,8 @@ On the following animation, <i>area1lan3host2</i> pings <i>area3lan3host2</i>.
 
 <!TODO: outdated gif>
 
+<!TODO: all wireless nodes get the transmission but not all of them can receive it correctly>
+
 This is how the routes would look like if the XML configuration didnt contain the <wireless> elements:
 
 @htmlonly
@@ -1094,6 +1095,8 @@ This is how the routes would look like if the XML configuration didnt contain th
 @endhtmlonly
 
 All wireless hosts would have direct routes to each other.
+
+<!TODO: why there is no arrow at the backbone router>
 
 <!do we need this?>
 
@@ -1109,7 +1112,7 @@ The configuration for this part extends Part A. The configuration in omnetpp.ini
 @skipline Step8B
 @until ####
 
-The XML configuration in step8b.xml (displayed below) is the same as the XML configuration for Part A, except it is missing the <wireless> elements that defined wireless networks.
+The XML configuration in step8b.xml (displayed below) is the same as the XML configuration for Part A, except there are no <wireless> elements that defined wireless networks.
 They are not needed because different SSIDs are configured for the members of the 2 wireless LANs.
 
 @dontinclude step8b.xml
@@ -1123,6 +1126,7 @@ The results are the same as in the previous part. The 2 wireless LANs are consid
 @nav{step7,step9}
 @fixupini
 @lightbox
+@keyword
 
 <!-------------------------------------------------------------------------------------------------------->
 
@@ -1193,6 +1197,8 @@ The unspecified hosts can be reached using subnet routes.
 
 @lightbox
 @fixupini
+
+@keyword
 
 @nav{step8,step10}
 
