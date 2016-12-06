@@ -1052,6 +1052,7 @@ Here is the configuration for this step in omnetpp.ini:
 @until ####
 
 A wireless host in <i>area1</i> is configured to ping a wireless host in <i>area3</i>, this helps visualize routes.
+The control bit rate of all wireless nodes is set to 54 Mbps for faster ACK transmissions.
 
 The XML configuration in step8a.xml is the following:
 
@@ -1151,9 +1152,12 @@ The configuration for this step in omnetpp.ini is the following:
 @skipline Step9
 @until ####
 
+- The control bit rate of wireless nodes is set to 54 Mbps, so ACK transmissions are faster
 - Similarly to Step8B, members of the 2 wireless LANs are specified by SSID. <i>Area1lan3host2</i> is configured to ping <i>area3lan3host3</i>.
 The pingApp is delayed, so it starts sending pings after the hosts associated with the access points and got their addresses from the dhcp servers.
-- <i>DHCPServer</i> submodules are added to the area routers. There is a LAN in each area that is left unspecified by the configurator. They are
+- <i>DHCPServer</i> submodules are added to the area routers. The DHCP server is configured to listen on the interface connecting to the unspecified LAN.
+The interface's netmask is the DHCP server's address range. 
+- DHCPClient submodules are added to the LANs unspecified by the configurator. There is one such LAN in each area, they are
 <i>area1lan3, area2lan1 and area3lan3</i>. These get
 the addresses from the DHCP server in the corresponding area router.
 
@@ -1168,18 +1172,18 @@ The XML configuration in step9.xml is the following:
 Addresses are assigned hierarchically. 5 LANs in the network have addresses assigned by the configurator. 3 LANs get their
 addresses from DHCP servers, their interfaces are left unspecified by the configurator. This is accomplished by the lack of address assignment rules for
 these hosts in the XML configuration. The area routers' interfaces connecting to the latter LANs need to be specified in order to have correct routes to these
-LANs. Additionally, the addresses for the interfaces need to be assigned specifially, and they have to fall in the configured dhcp server address ranges.
+LANs. Additionally, the addresses for the interfaces need to be assigned specifically, and they have to fall in the configured dhcp server address ranges.
 
 
 @section s9results Results
 
-The addresses and routes are visualized below.
+The addresses and routes are visualized below. This is the state of the network at the start of the simulation.
 
 @htmlonly
 <center><a href="step9routes.png" data-lightbox="step9routes"><img src="step9routes.png" width="850px"></a></center>
 @endhtmlonly
 
-The hosts of <i>area1lan3, area2lan1 and area3lan3</i> have unspecified interfaces. The routing tables of all hosts contain subnet routes
+The hosts of <i>area1lan3, area2lan1 and area3lan3</i> have unspecified addresses. The routing tables of all hosts contain subnet routes
 to these 3 LANs. Since these hosts don't have addresses at the start of the simulation, not all routes leading to <i>area3lan3host2</i> can be
 visualized. The only routes indicated are the default routes of hosts with static address assignment.
 
@@ -1188,6 +1192,12 @@ The area routers' interfaces connecting to these LANs have an address and subnet
 The subnet mask is assigned so there are addresses allocated to the unspecified hosts.
 For example, <i>area1router's eth3</i> interface has the address 10.1.4.1/29, and has 4 addresses allocated (10.1.4.2-5).
 The unspecified hosts can be reached using subnet routes.
+
+v1
+
+Though the hosts in the 3 LANs have unspecified addresses, subnet routes leading to these LANs are added to the routing tables
+of all hosts. The addresses for the interfaces connecting to these LANs have a netmask assigned so there are addresses allocated
+for the unspecified hosts. For example, <i>area1router's eth3</i> interface has the address 10.1.4.1/29, and has 4 addresses allocated (10.1.4.2-5).
 
 <!TODO: routing tables that show that there are routes, just not visualized>
 

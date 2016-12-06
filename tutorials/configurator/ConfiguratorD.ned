@@ -31,10 +31,10 @@ network ConfiguratorD extends ConfiguratorC
 {
     submodules:
         area1AP: AccessPoint {
-            @display("p=520.68896,751.37396");
+            @display("p=611.64716,928.3376");
         }
         area3AP: AccessPoint {
-            @display("p=2642.991,725.00995");
+            @display("p=2552.152,881.76544");
         }
         area1lan3host1: WirelessHost {
             @display("p=211.3514,585.5005");
