@@ -1037,7 +1037,7 @@ This step uses the ConfiguratorD network defined in ConfiguratorD.ned. The netwo
 <img src="step8network.png" width="850px">
 
 The ConfiguratorD network extends ConfiguratorC by adding 2 wireless LANs, <i>area1lan3</i> and <i>area3lan3</i>. The additional LANs consist of an <tt>AccessPoint</tt>
-and 3 <tt>WirelessHosts</tt>.
+and 3 <tt>WirelessHosts</tt>. The visualizer module is <tt>IntegratedCanvasVisualizer</tt>, which contains multiple visualizer submodules.
 
 The default SSID settings of all wireless nodes is "SSID". By default,
 the configurator would put them in the same wireless network, and assume that they can all reach each other directly. This would be reflected
@@ -1228,7 +1228,7 @@ This step demonstrates using the error rate metric for configuring static routes
 
 @section s10a Part A: Static routing based on error rate metric
 
-The topology of completely wireless networks is unclear in a static analysis. By default, the configurator assumes nodes can directly talk to each other.
+The topology of completely wireless networks is unclear in a static analysis. By default, the configurator assumes all nodes can directly talk to each other.
 When they can't, the error rate metric can be used for automatic route configuration instead of the default hop count.
 
 @subsection s10aconfig Configuration
@@ -1237,8 +1237,7 @@ This step uses the ConfiguratorE network, defined in ConfiguratorE.ned. The netw
 
 <img src="step10network.png" width="850px">
 
-It contains 8 <tt>AODVRouters</tt> laid out in a chain. The visualizer module is <tt>IntegratedCanvasVisualizer</tt>, which contains multiple
-visualizer modules.<!TODO: is this needed? >
+It contains 8 <tt>AODVRouters</tt> laid out in a chain.
 
 The configuration for this part in omnetpp.ini is the folowing:
 
@@ -1246,8 +1245,12 @@ The configuration for this part in omnetpp.ini is the folowing:
 @skipline Step10A
 @until ####
 
-The transmitter power value of hosts' radios determine their communication range. The range is set up so hosts are only in range of the adjacent hosts in the chain.
-The <tt>routingTableCanvasVisualizer</tt> is set to visualize all routing tables. Communication ranges of all hosts are displayed.
+The transmitter power of radios determine their communication range. The range is set up so hosts are only in range of the adjacent hosts in the chain.
+The <tt>routingTableCanvasVisualizer</tt> is set to visualize routes to all destinations. Communication ranges of all hosts are displayed.
+
+The transmission power outside the communication range is below the sensitivity of the receiving node, thus the
+error rate is infinite. However, the fact that the receiving host is within the communication range circle doesn't
+mean that it can receive the transmission correctly.
 
 The XML configuration in step10a.xml is as follows:
 
@@ -1255,11 +1258,15 @@ The XML configuration in step10a.xml is as follows:
 @skipline config
 @until config
 
-It contains a copy of the default address configurations, and an autoroute attribute using the error rate metric.
+It contains a copy of the default address configurations, and an autoroute element using the error rate metric.
+The configurator calculates the packet error rate for an Maximum Transfer Unit (MTU) sized packet. Edge costs in the connectivity
+graph are assigned according to this. 
+
 
 @subsection s10aresults Results
 
-Configured routes and communication ranges are displayed on the following image. Routes lead through adjacent hosts in the chain. In each
+Configured routes and communication ranges are displayed on the following image. Error rate outside the communication range is infinite,
+thus all arrows are within the circles. Routes lead through adjacent hosts in the chain. In each
 segment of the path, correct reception is possible.
 
 <img src="step10aroutes.png" width="850px">
@@ -1289,7 +1296,7 @@ As instructed, the configurator didn't add any routes, as indicated by the lack 
 
 @section s10c Part C: Routing tables configured using AODV protocol
 
-In this part, routing tables are set up by the Ad-hoc On-demand Distance Vector (AODV) dynamic routing protocol. The configuration for this part extends Part A. The configuration in omnetpp.ini is the following:
+In this part, routing tables are set up by the Ad-hoc On-demand Distance Vector (AODV) dynamic routing protocol. The configuration for this part extends Part B. The configuration in omnetpp.ini is the following:
 
 @dontinclude omnetpp.ini
 @skipline Step10C
