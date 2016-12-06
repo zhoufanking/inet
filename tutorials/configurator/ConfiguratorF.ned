@@ -16,7 +16,7 @@
 package inet.tutorials.configurator;
 
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
-import inet.node.ethernet.Eth100M;
+import inet.node.ethernet.Eth10M;
 import inet.node.ethernet.EtherSwitch;
 import inet.node.inet.Router;
 import inet.node.inet.StandardHost;
@@ -34,13 +34,13 @@ network ConfiguratorF
             @display("p=519.75,535.8375");
         }
         area1host1: WirelessHost {
-            @display("p=246.26251,368.775");
+            @display("p=208.008,369.792");
         }
         area1host3: WirelessHost {
             @display("p=404.6625,506.1375");
         }
         area1host2: WirelessHost {
-            @display("p=377.4375,409.61252");
+            @display("p=379.422,369.792");
         }
         area3host3: StandardHost {
             @display("p=971.568,832.476");
@@ -73,22 +73,22 @@ network ConfiguratorF
             @display("p=763.53754,280.9125");
         }
         area2host1: WirelessHost {
-            @display("p=876.15,173.25");
+            @display("p=855.144,175.26599");
         }
         area2host2: WirelessHost {
-            @display("p=936.78754,279.67502");
+            @display("p=934.11,281.19598");
         }
         area2host3: WirelessHost {
-            @display("p=876.15,382.3875");
+            @display("p=855.144,390.978");
         }
     connections:
-        area3host1.ethg++ <--> Eth100M <--> area3Switch.ethg++;
-        area3host2.ethg++ <--> Eth100M <--> area3Switch.ethg++;
-        area3Switch.ethg++ <--> Eth100M <--> area3host3.ethg++;
-        area3Switch.ethg++ <--> Eth100M <--> area3router.ethg++;
-        area3router.ethg++ <--> Eth100M <--> area1router.ethg++;
-        area1router.ethg++ <--> Eth100M <--> area1host3.ethg++;
-        area1router.ethg++ <--> Eth100M <--> area2router.ethg++;
-        area2router.ethg++ <--> Eth100M <--> area3router.ethg++;
-        area2router.ethg++ <--> Eth100M <--> area2AP.ethg++;
+        area3host1.ethg++ <--> Eth10M <--> area3Switch.ethg++;
+        area3host2.ethg++ <--> Eth10M <--> area3Switch.ethg++;
+        area3Switch.ethg++ <--> Eth10M <--> area3host3.ethg++;
+        area3Switch.ethg++ <--> Eth10M <--> area3router.ethg++;
+        area3router.ethg++ <--> Eth10M <--> area1router.ethg++;
+        area1router.ethg++ <--> Eth10M <--> area1host3.ethg++;
+        area1router.ethg++ <--> Eth10M <--> area2router.ethg++;
+        area2router.ethg++ <--> Eth10M <--> area3router.ethg++;
+        area2router.ethg++ <--> Eth10M <--> area2AP.ethg++;
 }

@@ -1052,7 +1052,14 @@ Here is the configuration for this step in omnetpp.ini:
 @until ####
 
 A wireless host in <i>area1</i> is configured to ping a wireless host in <i>area3</i>, this helps visualize routes.
-The control bit rate of all wireless nodes is set to 54 Mbps for faster ACK transmissions.
+
+There are some settings in the General configuration pertaining to wireless networks:
+- The control bit rate of all wireless nodes is set to 54 Mbps for faster ACK transmissions.
+- <tt>InterfaceTableVisualizer</tt> is configured to indicate the IP addresses of wireless hosts.
+
+@dontinclude omnetpp.ini
+@skipline General
+@until ####
 
 The XML configuration in step8a.xml is the following:
 
@@ -1061,6 +1068,7 @@ The XML configuration in step8a.xml is the following:
 @until config
 
 The XML configuration uses the same hierarchical addressing scheme as in Step 7. The 2 wireless LANs are specified to be in separate wireless networks. Note that the wireless interfaces of the access points also belong to the wireless networks.
+
 
 @subsection s8aresults Results
 
@@ -1152,7 +1160,6 @@ The configuration for this step in omnetpp.ini is the following:
 @skipline Step9
 @until ####
 
-- The control bit rate of wireless nodes is set to 54 Mbps, so ACK transmissions are faster
 - Similarly to Step8B, members of the 2 wireless LANs are specified by SSID. <i>Area1lan3host2</i> is configured to ping <i>area3lan3host3</i>.
 The pingApp is delayed, so it starts sending pings after the hosts associated with the access points and got their addresses from the dhcp servers.
 - <i>DHCPServer</i> submodules are added to the area routers. The DHCP server is configured to listen on the interface connecting to the unspecified LAN.
@@ -1161,7 +1168,7 @@ The interface's netmask is the DHCP server's address range.
 <i>area1lan3, area2lan1 and area3lan3</i>. These get
 the addresses from the DHCP server in the corresponding area router.
 
-- Routes to <i>area3lan3host3</i> are visualized. Additionally, <tt>interfaceTableVisualizer</tt> is configured to indicate the IP addresses of wireless hosts.
+- Routes to <i>area3lan3host3</i> are visualized.
 
 The XML configuration in step9.xml is the following:
 
@@ -1321,13 +1328,13 @@ routes to expire.
 
 <!-------------------------------------------------------------------------------------------------------->
 
-@page step11 Step 11 - Manually modifying an automatically created complete configuration
+@page step11 Step 11 - Manually modifying an automatically created configuration
 
 @nav{step10,step12}
 
 @section s11goals Goals
 
-Sometimes the configuration is just almost right. In such a case it's possible to dump the configuration into a file, update it and use the file in place of the original configuration. This step has 2 parts:
+Sometimes the configuration is just almost right. In such a case it's possible to dump the configuration into a file, edit it and use the file in place of the original configuration. This step has 2 parts:
 
 - Part A: dumping the full configuration
 - Part B: using the modified configuration
@@ -1364,7 +1371,7 @@ The configuration is dumped into step11a_dump.xml.
 
 @section s11b Part B - Using the modified configuration
 
-In this part, we modify to config file, and use it as the XML configuration. The goal is that packets should travel counter-clockwise in the triangle of the 3 routers. That is, every router should forward packets in the triangle through its interface on the right.
+In this part, we edit the config file, and use it as the XML configuration. The goal is that packets should travel counter-clockwise in the triangle of the 3 routers. That is, every router should forward packets in the triangle through its interface on the right.
 
 @subsection s11bconfig Configuration
 
@@ -1375,7 +1382,7 @@ The configuration for this part in omnetpp.ini is the following:
 @until ####
 
 The modified config is used as the XML configuration. Since the configuration specifies all routes, <tt>addStaticRoutes</tt> needs to be set to
-<strong>false</strong>. A host in each LAN pings another host in the counter-clockwisely adjacent LAN. <!is there such a word?>
+<strong>false</strong>, so the configurator doesn't add automatic static routes. A host in each LAN pings another host in the adjacent LAN in the counter-clockwise direction.
 
 To this end, the routes in the router are modified. Routes that would send packets the wrong way (i.e. not counter-clockwise in the triangle) are
 redirected to the other interface. In essence, all routers send out packets through their interface to the right (expect for packets destined to
@@ -1460,9 +1467,9 @@ To have routes from every node to every other node, all nodes must be covered by
 The XML configuration contains 2 autoroute elements. Routing tables of hosts in <i>area1</i> are configured according to the error rate metric,
 while all others according to hop count.
 
-The global <i>addStaticRoutes, addDefaultRoutes and addSubnetRoutes</i> parameters can be specified per interface, with the <interface> attribute.
+The global <i>addStaticRoutes, addDefaultRoutes and addSubnetRoutes</i> parameters can be specified per interface, with the <interface> element.
 These can be set with the <strong>add-static-route</strong>, <strong>add-default-route</strong> and <strong>add-subnet-route</strong> bool parameters.
-They are true by default. The global and per-interface settings are in a logical AND relationship, thus both have to be true for the parameter's true value to take effect.
+They are true by default. The global and per-interface settings are in a logical AND relationship, thus both have to be true to take effect.
 
 The default route assumes there is one gateway,
 and all nodes on the link can reach it directly. This is not the case for <i>area1</i>, because <i>area1host1</i> is out of range of the gateway host. 
