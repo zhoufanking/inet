@@ -1076,7 +1076,8 @@ The addresses and routes are indicated on the following image. Routes leading to
 Wireless hosts connect to the router through the access points. The access points are L2 devices, similar to switches, so they are transparent for
 the routing table visualizer arrows. Wireless hosts get associated with their corresponding access points before they can communicate with the rest of the network.
 
-On the following animation, <i>area1lan3host2</i> pings <i>area3lan3host2</i>.
+On the following animation, <i>area1lan3host2</i> pings <i>area3lan3host2</i>. Transmissions are sent to all wireless nodes, but only those in communication range
+can receive them correctly (i.e. nodes in the same LAN).
 
 @htmlonly
 <center><a href="step8_2.gif" data-lightbox="step8_2"><img src="step8_2.gif" width="850px"></a></center>
@@ -1086,19 +1087,18 @@ On the following animation, <i>area1lan3host2</i> pings <i>area3lan3host2</i>.
 
 <!TODO: outdated gif>
 
-<!TODO: all wireless nodes get the transmission but not all of them can receive it correctly>
-
 This is how the routes would look like if the XML configuration didnt contain the <wireless> elements:
 
 @htmlonly
 <center><a href="step8fullmesh.png" data-lightbox="step8fullmesh"><img src="step8fullmesh.png" width="850px"></a></center>
 @endhtmlonly
 
-All wireless hosts would have direct routes to each other.
+There are no routes visualized between the <i>backbonerouter</i> and <i>area3router</i>, because routes towards <i>area3lan3</i> go via <i>area1router</i>.
+<i>Area3lan3</i> can be reached from the <i>backbonerouter</i> in 2 ways:
+- <i>area1router->area1AP->area3lan3</i> (<i>area1AP</i> reaches <i>area3lan3</i> directly since they are assumed to be in the same wireless network)
+- <i>area3router->area3AP->area3lan3</i>
 
-<!TODO: why there is no arrow at the backbone router>
-
-<!do we need this?>
+In both ways, <i>area3lan3</i> is 2 hops away from the <i>backbonerouter</i>. Routes are configured according to hop count, and the configurator chose the first way.
 
 @section s8b Part B - Using SSID
 

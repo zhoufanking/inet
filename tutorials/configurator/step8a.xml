@@ -11,6 +11,4 @@
 	<interface hosts="backbonerouter" towards="area2router" address="10.2.3.x" netmask="255.255.255.x"/>
 	<interface hosts="backbonerouter" towards="area3router" address="10.3.3.x" netmask="255.255.255.x"/>
 	<interface hosts="*" address="10.x.x.x" netmask="255.255.255.x"/>
-	<wireless hosts="area1lan3* area1AP"/>
-	<wireless hosts="area3lan3* area3AP"/>
 </config>
