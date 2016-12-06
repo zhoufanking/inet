@@ -16,7 +16,7 @@
 package inet.tutorials.configurator;
 
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
-import inet.node.ethernet.Eth100M;
+import inet.node.ethernet.Eth10M;
 import inet.node.ethernet.EtherSwitch;
 import inet.node.inet.Router;
 import inet.node.inet.StandardHost;
@@ -118,31 +118,31 @@ network ConfiguratorC
             @display("p=150,250");
         }
     connections:
-        area2lan1host1.ethg++ <--> Eth100M <--> area2switch1.ethg++;
-        area2lan1host2.ethg++ <--> Eth100M <--> area2switch1.ethg++;
-        area2lan1host3.ethg++ <--> Eth100M <--> area2switch1.ethg++;
-        area1switch2.ethg++ <--> Eth100M <--> area1lan2host1.ethg++;
-        area1lan2host2.ethg++ <--> Eth100M <--> area1switch2.ethg++;
-        area1switch2.ethg++ <--> Eth100M <--> area1lan2host3.ethg++;
-        area1switch1.ethg++ <--> Eth100M <--> area1lan1host0.ethg++;
-        area1switch1.ethg++ <--> Eth100M <--> area1lan1host1.ethg++;
-        area1switch1.ethg++ <--> Eth100M <--> area1lan1host2.ethg++;
-        area1switch1.ethg++ <--> Eth100M <--> area1router.ethg++;
-        area1switch2.ethg++ <--> Eth100M <--> area1router.ethg++;
-        area1router.ethg++ <--> Eth100M <--> backbonerouter.ethg++;
-        area2switch1.ethg++ <--> Eth100M <--> area2router.ethg++;
-        area2router.ethg++ <--> Eth100M <--> area2switch2.ethg++;
-        area2switch2.ethg++ <--> Eth100M <--> area2lan2host1.ethg++;
-        area2switch2.ethg++ <--> Eth100M <--> area2lan2host2.ethg++;
-        area2switch2.ethg++ <--> Eth100M <--> area2lan2host3.ethg++;
-        area3switch1.ethg++ <--> Eth100M <--> area3lan1host1.ethg++;
-        area3switch1.ethg++ <--> Eth100M <--> area3lan1host2.ethg++;
-        area3switch1.ethg++ <--> Eth100M <--> area3lan1host3.ethg++;
-        area3switch1.ethg++ <--> Eth100M <--> area3router.ethg++;
-        area3router.ethg++ <--> Eth100M <--> area3switch2.ethg++;
-        area3switch2.ethg++ <--> Eth100M <--> area3lan2host1.ethg++;
-        area3switch2.ethg++ <--> Eth100M <--> area3lan2host2.ethg++;
-        area3switch2.ethg++ <--> Eth100M <--> area3lan2host3.ethg++;
-        area3router.ethg++ <--> Eth100M <--> backbonerouter.ethg++;
-        area2router.ethg++ <--> Eth100M <--> backbonerouter.ethg++;
+        area2lan1host1.ethg++ <--> Eth10M <--> area2switch1.ethg++;
+        area2lan1host2.ethg++ <--> Eth10M <--> area2switch1.ethg++;
+        area2lan1host3.ethg++ <--> Eth10M <--> area2switch1.ethg++;
+        area1switch2.ethg++ <--> Eth10M <--> area1lan2host1.ethg++;
+        area1lan2host2.ethg++ <--> Eth10M <--> area1switch2.ethg++;
+        area1switch2.ethg++ <--> Eth10M <--> area1lan2host3.ethg++;
+        area1switch1.ethg++ <--> Eth10M <--> area1lan1host0.ethg++;
+        area1switch1.ethg++ <--> Eth10M <--> area1lan1host1.ethg++;
+        area1switch1.ethg++ <--> Eth10M <--> area1lan1host2.ethg++;
+        area1switch1.ethg++ <--> Eth10M <--> area1router.ethg++;
+        area1switch2.ethg++ <--> Eth10M <--> area1router.ethg++;
+        area2switch1.ethg++ <--> Eth10M <--> area2router.ethg++;
+        area2router.ethg++ <--> Eth10M <--> area2switch2.ethg++;
+        area2switch2.ethg++ <--> Eth10M <--> area2lan2host1.ethg++;
+        area2switch2.ethg++ <--> Eth10M <--> area2lan2host2.ethg++;
+        area2switch2.ethg++ <--> Eth10M <--> area2lan2host3.ethg++;
+        area3switch1.ethg++ <--> Eth10M <--> area3lan1host1.ethg++;
+        area3switch1.ethg++ <--> Eth10M <--> area3lan1host2.ethg++;
+        area3switch1.ethg++ <--> Eth10M <--> area3lan1host3.ethg++;
+        area3switch1.ethg++ <--> Eth10M <--> area3router.ethg++;
+        area3router.ethg++ <--> Eth10M <--> area3switch2.ethg++;
+        area3switch2.ethg++ <--> Eth10M <--> area3lan2host1.ethg++;
+        area3switch2.ethg++ <--> Eth10M <--> area3lan2host2.ethg++;
+        area3switch2.ethg++ <--> Eth10M <--> area3lan2host3.ethg++;
+        area2router.ethg++ <--> Eth10M <--> backbonerouter.ethg++;
+        area1router.ethg++ <--> Eth10M <--> backbonerouter.ethg++;
+        backbonerouter.ethg++ <--> Eth10M <--> area3router.ethg++;
 }

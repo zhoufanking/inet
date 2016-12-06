@@ -16,13 +16,15 @@
 package inet.tutorials.configurator;
 
 import inet.node.ethernet.Eth100M;
+import inet.node.ethernet.Eth10M;
 import inet.node.inet.StandardHost;
 import inet.node.inet.WirelessHost;
 import inet.node.wireless.AccessPoint;
 import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
 import inet.visualizer.integrated.IntegratedCanvasVisualizer;
 
-channel Eth100MLong extends Eth100M {
+channel Eth100MLong extends Eth100M
+{
     length = 100m;
 }
 network ConfiguratorD extends ConfiguratorC
@@ -56,6 +58,6 @@ network ConfiguratorD extends ConfiguratorC
             @display("p=150,400");
         }
     connections:
-        area3router.ethg++ <--> Eth100MLong <--> area3AP.ethg++;
-        area1router.ethg++ <--> Eth100MLong <--> area1AP.ethg++;
+        area1router.ethg++ <--> Eth10M <--> area1AP.ethg++;
+        area3router.ethg++ <--> Eth10M <--> area3AP.ethg++;
 }
