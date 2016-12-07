@@ -53,5 +53,8 @@ solved by optimizeRoutes=false
 12.	<autoroute> subelements: link selection should be more accurate
 
 13.	RoutingTableCanvasVisualizer: when nodes have address <unspec>, it matches the default route, and it visualizes that. Also, it doesnt react to changing addresses from unspec to specified
+					it should visualize default routes from <unspec> addresses
 
 14.	Mixed metric autoroute in step 12: when addDefaultRoutes = true, the routing table changes and we dont understand why
+
+15.	DHCP Server: it should be enough to specify numReservedAddresses or maxNumClients. In general, DHCP config should be simpler.

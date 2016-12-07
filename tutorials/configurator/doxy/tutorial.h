@@ -1208,7 +1208,42 @@ Though the hosts in the 3 LANs have unspecified addresses, subnet routes leading
 of all hosts. The addresses for the interfaces connecting to these LANs have a netmask assigned so there are addresses allocated
 for the unspecified hosts. For example, <i>area1router's eth3</i> interface has the address 10.1.4.1/29, and has 4 addresses allocated (10.1.4.2-5).
 
-<!TODO: routing tables that show that there are routes, just not visualized>
+<!TODO: this paragraph>
+
+The routing tables of <i>area1lan3host2, area1router and backbonerouter</i> are the following (routes for reaching the unspecified hosts are highlighted):
+
+<div class="fragment fit">
+<pre class="monospace">
+Node ConfiguratorD.area1lan3host2
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+<span class="marker">10.1.3.0         255.255.255.248  *                wlan0 (<unspec>) 0</span>
+<span class="marker"><i></i>*                *                10.1.3.1         wlan0 (<unspec>) 0</span>
+
+Node ConfiguratorD.area1router
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.1.0.1         255.255.255.255  *                eth2 (10.1.0.2)  0
+10.1.1.0         255.255.255.248  *                eth0 (10.1.1.4)  0
+10.1.2.0         255.255.255.248  *                eth1 (10.1.2.4)  0
+<span class="marker">10.1.3.0         255.255.255.248  *                eth3 (10.1.3.1)  0</span>
+<span class="marker">10.2.0.0         255.254.0.0      10.1.0.1         eth2 (10.1.0.2)  0</span>
+
+Node ConfiguratorD.backbonerouter
+-- Routing table --
+Destination      Netmask          Gateway          Iface            Metric
+10.1.0.2         255.255.255.255  *                eth1 (10.1.0.1)  0
+10.2.0.2         255.255.255.255  *                eth0 (10.2.0.1)  0
+10.3.0.2         255.255.255.255  *                eth2 (10.3.0.1)  0
+<span class="marker">10.1.0.0         255.255.252.0    10.1.0.2         eth1 (10.1.0.1)  0</span>
+<span class="marker">10.2.0.0         255.255.252.0    10.2.0.2         eth0 (10.2.0.1)  0</span>
+10.3.0.0         255.255.252.0    10.3.0.2         eth2 (10.3.0.1)  0
+</pre>
+</div>
+
+- <i>Area1lan3host2</i> has a default route for reaching the other hosts in the LAN. 
+- <i>Area1Router</i> has a route for reaching hosts in <i>area1lan3</i>, and a default route for reaching <i>area2 and area3</i>.
+- The <i>backbonerouter</i> has subnet routes to each area.
 
 @htmlonly
 <center><a href="step9_6.gif" data-lightbox="step9_6"><img src="step9_6.gif" width="850px"></a></center>
