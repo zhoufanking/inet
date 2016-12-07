@@ -571,6 +571,7 @@ This time both packets outbound to hosts 6 and 7 take the diverted route, the re
 @nav{step4,step6}
 @fixupini
 @keyword
+@prewrap
 
 <!-------------------------------------------------------------------------------------------------------->
 
@@ -1254,6 +1255,7 @@ Destination      Netmask          Gateway          Iface            Metric
 @fixupini
 
 @keyword
+@prewrap
 
 @nav{step8,step10}
 
