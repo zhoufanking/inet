@@ -1162,11 +1162,12 @@ The configuration for this step in omnetpp.ini is the following:
 @skipline Step9
 @until ####
 
-- Similarly to Step8B, members of the 2 wireless LANs are specified by SSID. <i>Area1lan3host2</i> is configured to ping <i>area3lan3host3</i>.
+- Similarly to Step8B, members of the 2 wireless LANs are specified by SSID. 
+- <i>Area1lan3host2</i> is configured to ping <i>area3lan3host3</i>.
 The pingApp is delayed, so it starts sending pings after the hosts associated with the access points and got their addresses from the dhcp servers.
 - <i>DHCPServer</i> submodules are added to the area routers. The DHCP server is configured to listen on the interface connecting to the unspecified LAN.
 The interface's netmask is the DHCP server's address range. 
-- DHCPClient submodules are added to the LANs unspecified by the configurator. There is one such LAN in each area, they are
+- DHCPClient submodules are added to the LANs which are unspecified by the configurator. There is one such LAN in each area, they are
 <i>area1lan3, area2lan1 and area3lan3</i>. These get
 the addresses from the DHCP server in the corresponding area router.
 
@@ -1181,7 +1182,7 @@ The XML configuration in step9.xml is the following:
 Addresses are assigned hierarchically. 5 LANs in the network have addresses assigned by the configurator. 3 LANs get their
 addresses from DHCP servers, their interfaces are left unspecified by the configurator. This is accomplished by the lack of address assignment rules for
 these hosts in the XML configuration. The area routers' interfaces connecting to the latter LANs need to be specified in order to have correct routes to these
-LANs. Additionally, the addresses for the interfaces need to be assigned specifically, and they have to fall in the configured dhcp server address ranges.
+LANs. Additionally, the addresses for these interfaces need to be assigned specifically, and they have to fall in the configured dhcp server address ranges.
 
 
 @section s9results Results
