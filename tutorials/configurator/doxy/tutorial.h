@@ -80,7 +80,7 @@ It also contains an instance of <tt>IPv4NetworkConfigurator</tt>.
 
 The configuration for this step in omnetpp.ini is the following: 
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skip Step1
 @until ####
 
@@ -103,7 +103,7 @@ Additionally, the <strong>dumpAddresses</strong> parameter sets whether the conf
 This is false by default, but it's set to true in the <i>General</i> configuration at the begining of omnetpp.ini (along with other settings, which
 will be discussed later).
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline General
 @until ####
 
@@ -163,7 +163,7 @@ and 10.0.0.100 to <i>host3</i>. The configurator will automatically assign addre
 
 The configuration in omnetpp.ini for this step is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skip Step2
 @until ####
 
@@ -232,7 +232,7 @@ One switch and the connected hosts as a group will be one the same subnet, and t
 
 The configuration is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step3
 @until ####
 
@@ -303,7 +303,7 @@ the addition of a <tt>RoutingTableCanvasVisualizer</tt> module.
 
 The configuration for this step in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skip Step4
 @until ####
 
@@ -347,7 +347,7 @@ Additionally, the <i>dumpTopology</i>, <i>dumpLinks</i> and <i>dumpRoutes</i> pa
 These instruct the configurator to print to the module output the topology of the network, the recognized network links, and the routing tables of all nodes, respectively. Topology describes which nodes are connected to which nodes. Hosts that can directly reach each other (i.e. the next hop is the destination), 
 are considered to be on the same link.
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skip General
 @until ####
 
@@ -457,7 +457,7 @@ from router0's subnet would go through router2 to reach host7 (as in the previou
 
 This configuration uses the same network as the previous step, ConfiguratorB. The configuration in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step5
 @until ####
 
@@ -522,7 +522,7 @@ These routes will go through <i>router1</i>, just as in Part A.
 
 The configuration in omnetpp.ini:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step5B
 @until ####
 
@@ -608,7 +608,7 @@ for wireless network because the error rate of wired connections is usually negl
 
 The configuration for this step extends Step 4, thus it uses the ConfiguratorB network. The configuration in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step6A
 @until ####
 
@@ -697,7 +697,7 @@ be infinite.
 
 The configuration for this step in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step6B
 @until ####
 
@@ -763,7 +763,7 @@ routers, and the backbone router.
 
 The configuration for this part in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step7A
 @until ####
 
@@ -865,7 +865,7 @@ This should optimize routing tables and decrease table size.
 
 The configuration for this part in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step7B
 @until ####
 
@@ -930,7 +930,7 @@ because a large distant network can be covered with just one rule in a core rout
 
 The configuration for this part in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step7C
 @until ####
 
@@ -1050,7 +1050,7 @@ range from each other. The 2 LANs need to be in
 
 Here is the configuration for this step in omnetpp.ini:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step8
 @until ####
 
@@ -1060,7 +1060,7 @@ There are some settings in the General configuration pertaining to wireless netw
 - The control bit rate of all wireless nodes is set to 54 Mbps for faster ACK transmissions.
 - <tt>InterfaceTableVisualizer</tt> is configured to indicate the IP addresses of wireless hosts.
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline General
 @until ####
 
@@ -1120,7 +1120,7 @@ In this part, the SSID is used to put the 2 wireless LANs in 2 different wireles
 
 The configuration for this part extends Part A. The configuration in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step8B
 @until ####
 
@@ -1159,7 +1159,7 @@ This step uses the ConfiguratorD network, defined in ConfiguratorD.ned.
 
 The configuration for this step in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step9
 @until ####
 
@@ -1288,7 +1288,7 @@ It contains 8 <tt>AODVRouters</tt> laid out in a chain.
 
 The configuration for this part in omnetpp.ini is the folowing:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step10A
 @until ####
 
@@ -1326,7 +1326,7 @@ to configure the addresses. It leaves the routing table configuration to the dyn
 
 The configuration for this part in omnetpp.ini extends the one for Part A. It is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step10B
 @until ####
 
@@ -1345,7 +1345,7 @@ As instructed, the configurator didn't add any routes, as indicated by the lack 
 
 In this part, routing tables are set up by the Ad-hoc On-demand Distance Vector (AODV) dynamic routing protocol. The configuration for this part extends Part B. The configuration in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step10C
 @until ####
 
@@ -1393,7 +1393,7 @@ This step uses the ConfiguratorB network defined in ConfiguratorB.ned.
 
 The configuration for this part in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step11A
 @until ####
 
@@ -1417,7 +1417,7 @@ In this part, we edit the config file, and use it as the XML configuration. The 
 
 The configuration for this part in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step11B
 @until ####
 
@@ -1488,7 +1488,7 @@ can be configured properly based on the hop count metric.
 
 The configuration for this step in omnetpp.ini is the following:
 
-@dontinclude omnetpp.ini
+@dontinclude omnetpp.uncommented.ini
 @skipline Step12
 @until ####
 
