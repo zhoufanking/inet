@@ -1205,6 +1205,8 @@ for the unspecified hosts. For example, <i>area1router's eth3</i> interface has 
 
 <!TODO: this paragraph>
 
+<!should be v1>
+
 The routing tables of <i>area1lan3host2, area1router and backbonerouter</i> are the following (routes for reaching the unspecified hosts are highlighted):
 
 <div class="fragment fit">
