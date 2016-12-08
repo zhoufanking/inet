@@ -171,9 +171,9 @@ Multiple interfaces can be selected with one <interface> element using the * wil
 They can also contain parameter attributes, which deal with what parameters those selected interfaces will have, like IP addresses and
 netmasks. Address templates can be specified with one or more 'x' in the address. The 'x' in the IP address and netmask signify that the value is not fixed, but the configurator should choose it automatically.
 With these address templates it is possible to leave everything to the configurator or specify everything, and anything in between.
-- The <strong>hosts</strong> selector attribute selects hosts. The selection pattern can be full path (i.e. "*.host0") or a module name anywhere in the hierarchy (i.e. "host0"). Only interfaces in the selected host will be affected by the <interface> element.
-- The <strong>names</strong> selector attribute selects interfaces. Only the interfaces that match the specified names will be selected (i.e. "eth0").
-- The <strong>address</strong> parameter attribute specifies the addresses to be assigned. Address templates can be used, where an 'x' in place of a byte means that the value
+- The <strong>hosts</strong> selector attribute selects hosts. The selection pattern can be full path (e.g. "*.host0") or a module name anywhere in the hierarchy (e.g. "host0"). Only interfaces in the selected host will be affected by the <interface> element.
+- The <strong>names</strong> selector attribute selects interfaces. Only the interfaces that match the specified names will be selected (e.g. "eth0").
+- The <strong>address</strong> parameter attribute specifies the addresses to be assigned. Address templates can be used, where an 'x' in place of an octet means that the value
 should be selected by the configurator automatically. The value "" means that the no address will be assigned. Unconfigured interfaces will still have
 allocated addresses in their subnets, so they can be easily configured later dynamically.
 - The <strong>netmask</strong> parameter attribute specifies the netmasks to be assigned. Address templetes can be used here as well.
@@ -255,7 +255,6 @@ Another alternative xml configuration is the following:
 This assigns an address to one host in each of the 3 subnets. It assigns addresses to the interfaces of the routers facing the other routers, and includes a copy of the default
 configuration. Because <i>assignDisjunctSubnetAddresses=true</i>, the configurator puts the unspecified hosts, and the subnet facing
 router interfaces into the same subnet as the specified host.
-<!is it ok like that?>
 
 @section s3results Results
 
@@ -326,7 +325,7 @@ optimizeRoutes = default(true)
 
 The configuration for this step didn't set any of these parameters, thus the default values will take effect.
 
-- <i>addStaticRoutes</i>: the configurator adds static routes to the routing table of all nodes in the network, 
+- <i>addStaticRoutes</i>: Add static routes to the routing table of all nodes in the network, 
 with routes leading to all destination interfaces.
 - <i>addDefaultRoutes</i>: Add a default route if all routes from a node go through the same gateway.
 This is often the case with hosts, which usually connect to a network via a single interface. This parameter
@@ -354,7 +353,7 @@ The visualized routes are displayed on the following image:
 
 <img src="step4routes.png" width=850px>
 
-Note that routes from all nodes to host7 are visualized. Note that arrows don't go through switches,
+Routes from all nodes to host7 are visualized. Note that arrows don't go through switches,
 because they are not the next hop. When routes are concerned, they are transparent L2 devices.
 
 The routing tables are the following (routes visualized on the image above are highlighted):
@@ -472,7 +471,6 @@ address, netmask, gateway, interface, metric.
 
 The <route> element in this XML configuration adds the following rule to <i>router0's</i> routing table:
 Packets with the destination of 10.0.0.35/32 should use the interface 'eth1' and the gateway 10.0.0.18 (router2).
-<!should be more detailed>
 
 @subsection s5aresults Results
 
@@ -495,19 +493,19 @@ Destination      Netmask          Gateway          Iface            Metric
 
 The routing table of router0 in the last step had 6 entries. Now it has 7,
 as the rule specified in the XML configuration has been added (highlighted).
-This and the last rule both match packets to <i>host7</i> but the manually added route
+This and the last rule both match packets to <i>host7</i> but the manually added route takes effect
 because it comes earlier.
 
 The following animation depicts <i>host1</i> pinging <i>host7</i>, and <i>host0</i> pinging <i>host6</i>. Routes to <i>host7</i> are visualized.
 
 <img src="step5a.gif" width="850px">
 
-Note that only routes towards <i>host7</i> are diverted at router0. The ping reply packet uses the original route between <i>router0</i> and <i>router2</i>.
+Note that only routes towards <i>host7</i> are diverted at <i>router0</i>. The ping reply packet uses the original route between <i>router0</i> and <i>router2</i>.
 Ping packets to <i>host6</i> (and back) also use the original route.
 
 @section s5b Part B - Overriding routes to a set of hosts
 
-In this part, we will override routes going from the subnet of hosts 0-2 to the subnet of hosts 6-8.
+In this part, we will override routes going from the subnet of <i>hosts 0-2</i> to the subnet of <i>hosts 6-8</i>.
 These routes will go through <i>router1</i>, just as in Part A.
 
 @subsection s5bconfig Configuration
@@ -594,11 +592,12 @@ The available metrics are the following:
 - <strong>dataRate</strong>: routes prefer connections with higher bandwidth. Edge costs are inversely proportional to the data rate of the connection.
 - <strong>delay</strong>: routes are optimized for lower delay. Edge costs are proportional to the delay of the connection.
 - <strong>errorRate</strong>: routes are optimized for smaller error rate. Edge costs are proportional to the error rate of the connection. This is mostly useful
-for wireless network because the error rate of wired connections is usually negligible.
+for wireless networks because the error rate of wired connections is usually negligible.
 
 @subsection s6aconfig Configuration
 
 The configuration for this step extends Step 4, thus it uses the ConfiguratorB network. The configuration in omnetpp.ini is the following:
+<!TODO: network image?>
 
 @dontinclude omnetpp.uncommented.ini
 @skipline Step6A
@@ -700,9 +699,9 @@ The XML configuration in step6b.xml is as follows:
 @until config
 
 The <autoroute> elements can also contain the following optional subelements, which can be used to specify costs in the graph:
-- <strong><node></strong>: This can be used to specify cost parameters to network nodes. The <strong>hosts</strong> selector
+- <strong><node></strong>: Specifies cost parameters to network nodes. The <strong>hosts</strong> selector
 attribute selects which hosts are affected, and the <strong>cost</strong> parameter sets a number for their costs. Both attributes are mandatory.
-- <strong><link></strong>: This can used to specify cost parameters to network links. The <strong>interfaces</strong> selector
+- <strong><link></strong>: Specifies cost parameters to network links. The <strong>interfaces</strong> selector
 attribute selects which links are affected, by specifying an interface they belong to. The <strong>cost</strong> parameter
 sets the cost. Both attributes are mandatory.
 
@@ -750,7 +749,7 @@ All 3 parts in this step use the ConfiguratorC network defined in ConfiguratorC.
 <img src="step7network.png" width="850px">
 
 The network is comprised of 3 areas, each containing 2 local area networks (LANs). Each LAN contains 3 <tt>standardHosts</tt>. The hosts in the LAN connect to an area router
-through switches. The 3 area routes connect to a central backbone router. The network contains 3 hierarchical levels, which correspond to the hosts in the LANs, the area
+through switches. The 3 area routers connect to a central backbone router. The network contains 3 hierarchical levels, which correspond to the hosts in the LANs, the area
 routers, and the backbone router.
 
 The configuration for this part in omnetpp.ini is the following:
@@ -1068,6 +1067,8 @@ The XML configuration uses the same hierarchical addressing scheme as in Step 7.
 @subsection s8aresults Results
 
 <!TODO: routing tables of wireless hosts - do we need that? the routing tables of wireless hosts maybe>
+
+<!dont need that>
 
 The addresses and routes are indicated on the following image. Routes leading towards hosts <i>area3lan3</i> are visualized.
 
