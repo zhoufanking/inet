@@ -111,9 +111,9 @@ An XML configuration can be supplied with the <i>config</i> parameter. When the 
 the configurator will use the following default configuration:
 
 <div class="fragment">
-<code>
-config = default(xml("<config><interface hosts='**' address='10.x.x.x' netmask='255.x.x.x'/></config>"));
-</code>
+<pre class="monospace">
+config = default(xml("<config><interface hosts='**' address='10.x.x.x' netmask='255.x.x.x'/></config>"))
+</pre>
 </div>
 
 The default xml configuration tells the configurator to assign IP addresses to all interfaces of all hosts, 
@@ -563,7 +563,7 @@ This time both packets outbound to hosts 6 and 7 take the diverted route, the re
 @nav{step4,step6}
 @fixupini
 @keyword
-@prewrap
+
 
 <!-------------------------------------------------------------------------------------------------------->
 
@@ -1247,7 +1247,6 @@ Destination      Netmask          Gateway          Iface            Metric
 @fixupini
 
 @keyword
-@prewrap
 
 @nav{step8,step10}
 
@@ -1357,6 +1356,7 @@ routes to expire.
 
 @nav{step9,step11}
 @fixupini
+@keyword
 
 <!-------------------------------------------------------------------------------------------------------->
 
