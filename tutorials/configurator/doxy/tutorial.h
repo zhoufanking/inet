@@ -128,14 +128,6 @@ as instructed by the <strong>assignDisjunctSubnetAddresses</strong> parameter.
 
 <img src="step1addresses.png" width=850px>
 
-v1
-
-4 interfaces belong to each subnet, 3 host and 1 router interface. A 2 bit netmask would suffice for 4 addresses, but the configurator
-doesn't assign the all-zeros and all-ones subnet addresses (subnet zero and broadcast address). Thus the netmask is 3 bits.
-Similarly, the routers.<!WIP>
-
-v2
-
 Note that the configurator assigned a 29 bit netmask to the hosts and the router interfaces connecting to the switches, and a 30 bit netmask
 to the other router interfaces. 3 hosts and the router's interface towards a switch as group has 4 interfaces, thus a 30 bit netmask/2 bit host identifier
 would have sufficed. However, the configurator doesn't assign addresses where part of the address not covered by the subnet mask - the host identifier -
@@ -1494,8 +1486,7 @@ The configuration for this step in omnetpp.ini is the following:
 
 - For hosts in area1 to operate in ad-hoc mode, IP forwarding is turned on, and their management modules are set to ad-hoc management.
 - <i>area1host1</i> is configured to ping <i>area2host1</i>, which is on the other side of the network
-- Routes to all hosts, addresses of wireless interfaces and communication ranges are visualized.
-- <i>optimizeRoutes = false</i> is required for the simulation to work <!more specifically?>
+- Routes to all hosts and communication ranges are visualized.
 
 The XML configuration in step12.xml is the following:
 
@@ -1555,6 +1546,7 @@ is actually for reaching 10.0.0.19 directly.
 <!gif>
 
 @fixupini
+@keyword
 
 
 
