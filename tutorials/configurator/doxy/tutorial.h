@@ -359,7 +359,7 @@ because they are not the next hop. When routes are concerned, they are transpare
 The routing tables are the following (routes visualized on the image above are highlighted):
 
 @htmlonly
-<div class="fragment">
+<div class="fragment fit">
 <pre class="monospace">
 Node ConfiguratorB.host0 (hosts 1-2 similar)
 -- Routing table --
@@ -476,7 +476,7 @@ Packets with the destination of 10.0.0.35/32 should use the interface 'eth1' and
 
 The routing table of <i>router0</i> (manually added route highlighted):
 
-<div class="fragment">
+<div class="fragment fit">
 <pre class="monospace">
 Node ConfiguratorB.router0
 -- Routing table --
@@ -533,7 +533,7 @@ below). The manually added routes come before the automatic ones in routing tabl
 
 The routing table of <i>router0</i> (the manually added route highlighted):
 
-<div class="fragment">
+<div class="fragment fit">
 <pre class="monospace">
 Node ConfiguratorB.router0
 -- Routing table --
@@ -637,7 +637,7 @@ The resulting routes are similar to the ones in Step 5B. The difference is that 
 
 The routing table of <i>router0</i> is as follows:
 
-<div class="fragment">
+<div class="fragment fit">
 <pre class="monospace">
 Node ConfiguratorB.router0
 -- Routing table --
@@ -653,7 +653,7 @@ should be routed towards <i>router1</i>.
 
 The routing table of <i>router2</i> is similar:
 
-<div class="fragment">
+<div class="fragment fit">
 <pre class="monospace">
 Node ConfiguratorB.router2
 -- Routing table --
@@ -871,7 +871,7 @@ The addresses are the same, but the routing table sizes have gone down:
 
 The routing tables of a host, an area router and the backbone router are the following:
 
-<div class="fragment">
+<div class="fragment fit">
 <pre class="monospace">
 Node ConfiguratorC.area1lan1host0
 -- Routing table --
@@ -958,7 +958,7 @@ The sizes of some of the routing tables are displayed in the following image.
 
 The routing tables are the following:
 
-<div class="fragment">
+<div class="fragment fit">
 <pre class="monospace">
 Node ConfiguratorC.area1lan1host0
 -- Routing table --
