@@ -1066,10 +1066,6 @@ The XML configuration uses the same hierarchical addressing scheme as in Step 7.
 
 @subsection s8aresults Results
 
-<!TODO: routing tables of wireless hosts - do we need that? the routing tables of wireless hosts maybe>
-
-<!dont need that>
-
 The addresses and routes are indicated on the following image. Routes leading towards hosts <i>area3lan3</i> are visualized.
 
 @htmlonly
@@ -1087,8 +1083,6 @@ can receive them correctly (i.e. nodes in the same LAN).
 @htmlonly
 <center><a href="step8_2.gif" data-lightbox="step8_2"><img src="step8_2.gif" width="850px"></a></center>
 @endhtmlonly
-
-<!do we need this? too wide>
 
 <!TODO: outdated gif>
 
@@ -1191,21 +1185,9 @@ The hosts of <i>area1lan3, area2lan1 and area3lan3</i> have unspecified addresse
 to these 3 LANs. Since these hosts don't have addresses at the start of the simulation, not all routes leading to <i>area3lan3host2</i> can be
 visualized. The only routes indicated are the default routes of hosts with static address assignment.
 
-Though the hosts in the 3 LANs have unspecified addresses, routes are configured towards these hosts.
-The area routers' interfaces connecting to these LANs have an address and subnet mask assigned.
-The subnet mask is assigned so there are addresses allocated to the unspecified hosts.
-For example, <i>area1router's eth3</i> interface has the address 10.1.4.1/29, and has 4 addresses allocated (10.1.4.2-5).
-The unspecified hosts can be reached using subnet routes.
-
-v1
-
 Though the hosts in the 3 LANs have unspecified addresses, subnet routes leading to these LANs are added to the routing tables
 of all hosts. The addresses for the interfaces connecting to these LANs have a netmask assigned so there are addresses allocated
 for the unspecified hosts. For example, <i>area1router's eth3</i> interface has the address 10.1.4.1/29, and has 4 addresses allocated (10.1.4.2-5).
-
-<!TODO: this paragraph>
-
-<!should be v1>
 
 The routing tables of <i>area1lan3host2, area1router and backbonerouter</i> are the following (routes for reaching the unspecified hosts are highlighted):
 
