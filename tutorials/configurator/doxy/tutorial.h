@@ -66,7 +66,7 @@ based on information contained in the global <tt>IPv4NetworkConfigurator</tt> mo
 
 The configurator supports automatic and manual network configuration, and their combination. By default,
 the configuration is fully automatic, but the user can specify parts (or all) of the configuration manually, and the rest
-will be configured automatically by the configurator. The configurator's various features can be turned on and off with NED parameters. The details of the configuration, such as IP addresses and routes, can be specified in an xml configuration file.
+will be configured automatically by the configurator. The configurator's various features can be turned on and off with NED parameters. The details of the configuration, such as IP addresses and routes, can be specified in an XML configuration file.
 
 @subsection s1configuration The configuration
 
@@ -84,7 +84,7 @@ The configuration for this step in omnetpp.ini is the following:
 @skip Step1
 @until ####
 
-The configuration for Step 1 is basically empty. The configurator configures addresses according to its default parameters, and using the default xml configuration.
+The configuration for Step 1 is basically empty. The configurator configures addresses according to its default parameters, and using the default XML configuration.
 
 The default parameters pertaining to IP address assignment are the following:
 
@@ -93,8 +93,8 @@ assignAddresses = default(true);
 assignDisjunctSubnetAddresses = default(true);
 </pre>
 
-- <strong>assignAddresses = true</strong> tells the configurator to assign IP addresses to interfaces. It assigns addresses based on the supplied xml configuration,
-or the default xml configuration if none is specified. Since no xml configuration is specified in this step, it uses the default configuration.
+- <strong>assignAddresses = true</strong> tells the configurator to assign IP addresses to interfaces. It assigns addresses based on the supplied XML configuration,
+or the default XML configuration if none is specified. Since no XML configuration is specified in this step, it uses the default configuration.
 
 - <strong>assignDisjunctSubnetAddresses = true</strong> sets that the configurator should assign different address prefixes and netmasks
 to nodes on different links (nodes are considered to be on the same link if they can reach each other directly, or through L2 devices only).
@@ -107,7 +107,7 @@ will be discussed later).
 @skipline General
 @until ####
 
-An XML configuration can be supplied with the <i>config</i> parameter. When the user doesn't specify an xml configuration,
+An XML configuration can be supplied with the <i>config</i> parameter. When the user doesn't specify an XML configuration,
 the configurator will use the following default configuration:
 
 <div class="fragment">
@@ -116,7 +116,7 @@ config = default(xml("<config><interface hosts='**' address='10.x.x.x' netmask='
 </pre>
 </div>
 
-The default xml configuration tells the configurator to assign IP addresses to all interfaces of all hosts, 
+The default XML configuration tells the configurator to assign IP addresses to all interfaces of all hosts, 
 from the IP range 10.0.0.0 - 10.255.255.255 and netmask range 255.0.0.0 - 255.255.255.255.
 
 @section s1results Results
@@ -159,12 +159,12 @@ The configuration in omnetpp.ini for this step is the following:
 @skip Step2
 @until ####
 
-The xml configuration can be supplied to the <i>config</i> parameter in one of two ways:
+The XML configuration can be supplied to the <i>config</i> parameter in one of two ways:
 
-- Inline xml using the <i>xml()</i> function. The argument of the function is the xml code.
-- External xml file using the <i>xmldoc()</i> function. The argument of the function is the name of the xml configuration file.
+- Inline XML using the <i>xml()</i> function. The argument of the function is the XML code.
+- External XML file using the <i>XMLdoc()</i> function. The argument of the function is the name of the XML configuration file.
 
-In this step, the xml configuration is supplied to the configurator as inline xml. Xml configurations contain one <i><config></i> element. Under this root element there can be
+In this step, the XML configuration is supplied to the configurator as inline XML. XML configurations contain one <i><config></i> element. Under this root element there can be
 multiple configuration elements, such as the <i><interface></i> elements here.
 The <interface> element (and other elements) can contain selector attributes, which limit the scope of what interfaces are affected by the <interface> element.
 Multiple interfaces can be selected with one <interface> element using the * wildcard.
@@ -183,13 +183,13 @@ All attributes are optional. Attributes not specified are left for the automatic
 
 In the XML configuration for this step, the first two rules state that host3's (hosts="*.host3") interface named 'eth0' (names="eth0") should get the IP address 10.0.0.100 (address="10.0.0.100"), and host1's interface 'eth0' should get 10.0.0.50.
 The third rule is the exact copy of the default configuration, which tells the configurator to assign the rest of the addresses automatically.
-Note that this is the default rule in two contexts. It is the default rule that the configurator uses when no xml config is specified. Also it is
+Note that this is the default rule in two contexts. It is the default rule that the configurator uses when no XML config is specified. Also it is
 the last and least specific among the address assignment rules here, thus it takes effect for interfaces that don't match the previous rules.
 
-Note that the order of configuration elements is important, but the configurator doesn't assign addresses in the order of xml interface elements. It iterates
-interfaces in the network, and for each interface the first matching rule in the xml configuration will take effect. Thus, the statements that are positioned earlier in the configuration take precedence over those that come later.
+Note that the order of configuration elements is important, but the configurator doesn't assign addresses in the order of XML interface elements. It iterates
+interfaces in the network, and for each interface the first matching rule in the XML configuration will take effect. Thus, the statements that are positioned earlier in the configuration take precedence over those that come later.
 
-When an xml configuration is supplied, it must contain interface elements in order to assign addresses at all. To make sure the configurator automatically assigns addresses to all interfaces, a rule similar to the one in the default configuration has to be included. Unless the intention is to leave some interfaces unassigned. The default rule should be the <strong>last</strong> one among the interface rules (so the more specific ones override it).
+When an XML configuration is supplied, it must contain interface elements in order to assign addresses at all. To make sure the configurator automatically assigns addresses to all interfaces, a rule similar to the one in the default configuration has to be included. Unless the intention is to leave some interfaces unassigned. The default rule should be the <strong>last</strong> one among the interface rules (so the more specific ones override it).
 
 @section s2results Results
 
@@ -228,7 +228,7 @@ The configuration is the following:
 @skipline Step3
 @until ####
 
-This time the xml configuration is supplied in an external file (step3.xml), using the xmldoc function:
+This time the XML configuration is supplied in an external file (step3.xml), using the xmldoc function:
 
 @include step3.xml
 
@@ -241,14 +241,14 @@ The next 3 entries specify that each router's interface that connects to the sub
 The routers' interfaces facing the subnets were assigned addresses by the previous rules, so this rule only effects the interfaces facing the other
 routers. These 7 rules assign addresses to all interfaces in the network, thus a default rule is not required.
 
-The same effect can be achieved in more than one way. Here is an alternative xml configuration (step3alt1.xml) that results in the same address assignment:
+The same effect can be achieved in more than one way. Here is an alternative XML configuration (step3alt1.xml) that results in the same address assignment:
 
 @include step3alt1.xml
 
 The <i>among</i> selector selects the interfaces of the specified hosts towards the specified hosts (the statement <i>among="X Y Z"</i> is the same as
 <i>hosts="X Y Z" towards="X Y Z"</i>).
 
-Another alternative xml configuration is the following:
+Another alternative XML configuration is the following:
 
 @include step3alt2.xml
 
