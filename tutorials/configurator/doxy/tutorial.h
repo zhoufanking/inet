@@ -772,8 +772,8 @@ The size of some of the routing tables are the following:
 
 <img src="step7a_rt.png">
 
-The routing tables of a host (area1lan2host2) and a router (area1router) are shown below.
-The backbone router's routing table is similar to <i>area1router's</i>.
+The routing tables of a host (<i>area1lan2host2</i>) and a router (<i>area1router</i>) are shown below.
+The <i>backbonerouter's</i> routing table is similar to <i>area1router's</i>.
 
 <div class="fragment fit">
 <pre class="monospace">
@@ -1331,8 +1331,8 @@ As specified in the previous part, the configurator is still instructed not to a
 @subsection s10cresults Results
 
 The routing tables are initially empty. The first ping packet triggers AODV's route discovery process, which eventually configures the routes.
-AODV is a reactive protocol, unused routes expire after a while. This happens to the routes to <i>aodvRouter7</i>, as it's not in the path between
-<i>aodvRouter1</i> and <i>aodvRouter2</i>. This is diplayed in the following animation.
+AODV is a reactive protocol, unused routes expire after a while. This happens to the routes to <i>host2</i>, as it's not in the path between
+<i>host1</i> and <i>host7</i>. This is diplayed in the following animation.
 
 <img src="step10_6.gif">
 
@@ -1528,7 +1528,7 @@ the other hosts in the LAN directly. This doesn't seem to be according to the er
 matches destinations 10.0.0.18 and 10.0.0.19 only. Since 10.0.0.18 is covered by a previous rule, this one
 is actually for reaching 10.0.0.19 directly.
 
-<!gif>
+<TODO: !gif>
 
 @fixupini
 @keyword
