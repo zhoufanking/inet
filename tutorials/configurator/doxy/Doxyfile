@@ -234,7 +234,7 @@ ALIASES                = "opp=OMNeT++" \
                          "marker=<span class="marker">" \
                          "endmarker=</span>" \
                          "lightbox=@htmlonly <script src="lightbox.js"></script><script>lightbox.option({'resizeDuration': 5,'fadeDuration' : 5,'imageFadeDuration': 5,'wrapAround': true});</script> @endhtmlonly" \
-                         "keyword=@htmlonly <script>$(\"span:contains('interface')\").css(\"color\",\"black\");</script> @endhtmlonly" \
+                         "keyword=@htmlonly <script>$(\"span:contains('interface'), span:contains('default')\").css(\"color\",\"black\");</script> @endhtmlonly" \
                          "prewrap=@htmlonly <script>$(\"div.line\").css(\"white-space\",\"pre-wrap\");</script> @endhtmlonly"
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).

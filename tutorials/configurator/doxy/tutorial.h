@@ -181,7 +181,7 @@ allocated addresses in their subnets, so they can be easily configured later dyn
 All attributes are optional. Attributes not specified are left for the automatic configuration. There are many other attributes available. For the complete list of attributes of the <interface> element
 (or any other element), please refer to the <a href="https://omnetpp.org/doc/inet/api-current/neddoc/index.html?p=inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator.html" target="_blank"><tt>IPv4NetworkConfigurator</tt></a> NED documentation.
 
-In the XML configuration for this step, the first two rules state that host3's (hosts="*.host3") interface named 'eth0' (names="eth0") should get the IP address 10.0.0.100 (address="10.0.0.100"), and host1's interface 'eth0' should get 10.0.0.50.
+In the XML configuration for this step, the first two rules state that <i>host3's</i> (hosts="*.host3") interface named 'eth0' (names="eth0") should get the IP address 10.0.0.100 (address="10.0.0.100"), and <i>host1's</i> interface 'eth0' should get 10.0.0.50.
 The third rule is the exact copy of the default configuration, which tells the configurator to assign the rest of the addresses automatically.
 Note that this is the default rule in two contexts. It is the default rule that the configurator uses when no XML config is specified. Also it is
 the last and least specific among the address assignment rules here, thus it takes effect for interfaces that don't match the previous rules.
@@ -353,7 +353,7 @@ The visualized routes are displayed on the following image:
 
 <img src="step4routes.png" width=850px>
 
-Routes from all nodes to host7 are visualized. Note that arrows don't go through switches,
+Routes from all nodes to <i>host7</i> are visualized. Note that arrows don't go through switches,
 because they are not the next hop. When routes are concerned, they are transparent L2 devices.
 
 The routing tables are the following (routes visualized on the image above are highlighted):
@@ -440,7 +440,7 @@ This step has two parts:
 @section s5a Part A - Overriding routes to a specific host
 
 In this part we will override the routes going from the subnet of <i>router0</i> to <i>host7</i>. With the automatic configuration, packets
-from router0's subnet would go through router2 to reach host7 (as in the previous step). We want them to go through router1 instead.
+from <i>router0's</i> subnet would go through <i>router2</i> to reach <i>host7</i> (as in the previous step). We want them to go through <i>router1</i> instead.
 
 <img src="step4network.png">
 
@@ -457,7 +457,7 @@ The new app in <i>host0</i> pings <i>host6</i>, this can demonstrate that only p
 are affected by the route override.
 
 For the routes to go through <i>router1</i>, the routing table of <i>router0</i> has to be altered.
-The new rules should dictate that packets with the destination of host7 (10.0.0.35) should be routed
+The new rules should dictate that packets with the destination of <i>host7</i> (10.0.0.35) should be routed
 towards <i>router2</i>. The XML configuration in step5a.xml is the following:
 
 @dontinclude step5a.xml
@@ -491,7 +491,7 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
-The routing table of router0 in the last step had 6 entries. Now it has 7,
+The routing table of <i>router0</i> in the last step had 6 entries. Now it has 7,
 as the rule specified in the XML configuration has been added (highlighted).
 This and the last rule both match packets to <i>host7</i> but the manually added route takes effect
 because it comes earlier.
@@ -516,7 +516,7 @@ The configuration in omnetpp.ini:
 @skipline Step5B
 @until ####
 
-As in Part A, the routing table of <i>router0</i> has to be altered, so that packets to hosts 6-8 go towards <i>router1</i>. 
+As in Part A, the routing table of <i>router0</i> has to be altered, so that packets to <i>hosts 6-8</i> go towards <i>router1</i>. 
 The XML configuration in step5b.xml:
 
 @dontinclude step5b.xml
@@ -556,7 +556,7 @@ to Part A. Routes to <i>host7</i> are visualized.
 
 <img src="step5b.gif" width="850px">
 
-This time both packets outbound to hosts 6 and 7 take the diverted route, the replies come back on the original route.
+This time both packets outbound to <i>hosts 6 and 7</i> take the diverted route, the replies come back on the original route.
 
 @nav{step4,step6}
 @fixupini
@@ -624,14 +624,14 @@ Here the <autoroute> element specifies that routes should be added to the routin
 This way route generation will favor routes with higher data rates.
 
 Note that <i>router0</i> and <i>router2</i> are connected with a 10 Mbit/s ethernet cable, while <i>router1</i> connects to the other routers with
-100 Mbit/s ethernet cables. Since routes are optimized for data rate, packets from router0 to router2 will go via router1 because this path has higher bandwidth.
+100 Mbit/s ethernet cables. Since routes are optimized for data rate, packets from <i>router0</i> to <i>router2</i> will go via <i>router1</i> because this path has higher bandwidth.
 
 <img src="step4routes_3.png">
 
 @subsection s6results Results
 
 The following image shows the backward routes towards <i>host1</i>.
-The resulting routes are similar to the ones in Step 5B. The difference is that routes going backward, from hosts 6-8 to hosts 0-2, go through router1. No traffic is routed between router0 and router2 at all (as opposed to Step 4 and 5).
+The resulting routes are similar to the ones in Step 5B. The difference is that routes going backward, from <i>hosts 6-8</i> to <i>hosts 0-2</i>, go through <i>router1</i>. No traffic is routed between <i>router0</i> and <i>router2</i> at all (as opposed to Step 4 and 5).
 
 <img src="step6aroutes.png" width="850px">
 
@@ -648,7 +648,7 @@ Destination      Netmask          Gateway          Iface            Metric
 </pre>
 </div>
 
-The first 2 rules describe reaching router1 and hosts 0-2 directly. The last rule specifies that traffic to any other destination
+The first 2 rules describe reaching <i>router1</i> and <i>hosts 0-2</i> directly. The last rule specifies that traffic to any other destination
 should be routed towards <i>router1</i>.
 
 The routing table of <i>router2</i> is similar:
@@ -668,7 +668,7 @@ The following animation shows <i>host1</i> pinging <i>host7</i> and <i>host0</i>
 The packets don't use the link between <i>router0</i> and <i>router2</i>.
 <img src="step6a.gif" width="850px">
 
-One can easily check that no routes go through the link between router0 and router2 by setting the destination filter to "*.*" in the visualizer.
+One can easily check that no routes go through the link between <i>router0</i> and <i>router2</i> by setting the destination filter to "*.*" in the visualizer.
 This indicates all routes in the network:
 
 <img src="step6allroutes.png" width=850px>
