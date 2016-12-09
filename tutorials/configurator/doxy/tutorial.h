@@ -1530,6 +1530,17 @@ is actually for reaching 10.0.0.19 directly.
 
 <TODO: !gif>
 
+
+@htmlonly
+<img class="gif" data-mode="video" data-mp4="step4_4.mp4" src="step4routes.png">
+@endhtmlonly
+
+@htmlonly
+<script>
+$('.gif').gifplayer();
+</script>
+@endhtmlonly
+
 @fixupini
 @keyword
 

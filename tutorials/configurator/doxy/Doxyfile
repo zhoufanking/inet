@@ -1144,6 +1144,7 @@ HTML_STYLESHEET        =
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
 HTML_EXTRA_STYLESHEET  = lightbox.css \
+						 gifplayer.css \
 						 opp.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
@@ -1154,7 +1155,8 @@ HTML_EXTRA_STYLESHEET  = lightbox.css \
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_FILES       = lightbox.js
+HTML_EXTRA_FILES       = lightbox.js \
+						 jquery.gifplayer.js
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to
