@@ -679,9 +679,7 @@ This indicates all routes in the network:
 
 This part configures the same routes as Part A, where routes between <i>router0</i> and <i>router2</i> lead through <i>router1</i>.
 
-v1: The link between <i>router0</i> and <i>router2</i> is "turned off", by manually specifying an infinite cost for it.
-
-v2: The configurator is instructed not to use the link between <i>router0</i> and <i>router2</i> when setting up routes, by specifying the cost of the link to
+The configurator is instructed not to use the link between <i>router0</i> and <i>router2</i> when setting up routes, by specifying the cost of the link to
 be infinite.
 
 @subsection s6bconfig Configuration
@@ -951,8 +949,6 @@ The image below shows the assigned addresses.
 @endhtmlonly
 
 The sizes of some of the routing tables are displayed in the following image.
-
-<!maybe a few words about how to search for the routing tables>
 
 <img src="step7c_rt.png">
 
