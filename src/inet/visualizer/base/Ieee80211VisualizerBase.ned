@@ -19,13 +19,19 @@ package inet.visualizer.base;
 
 //
 // This is a base module for IEEE 802.11 association visualizer simple modules.
+// It keeps track of wireless interface associations by subscribing to a number
+// of signals at the provided subscription module.
 //
-// @see ~Ieee80211CanvasVisualizer, ~Ieee80211OsgVisualizer, ~IIeee80211Visualizer, ~Ieee80211VisualizerBase
+// This module subscribes for NF_L2_ASSOCIATED, NF_L2_DISASSOCIATED,
+// NF_L2_AP_ASSOCIATED,NF_L2_AP_DISASSOCIATED on the module determined by the
+// subscriptionModule parameter.
+//
+// @see ~Ieee80211CanvasVisualizer, ~Ieee80211OsgVisualizer, ~IIeee80211Visualizer, ~VisualizerBase
 //
 simple Ieee80211VisualizerBase extends VisualizerBase
 {
     parameters:
-        string networkNodeVisualizerModule = default("^.networkNodeVisualizer");
+        string networkNodeVisualizerModule = default("^.networkNodeVisualizer"); // module path to the network node visualizer module, refers to a sibling submodule by default
         string subscriptionModule = default("<root>"); // module path where the visualizer subscribes for interface changed signals, root module by default
         string nodeFilter = default(""); // which nodes are considered, matches no nodes by default
         string interfaceFilter = default("*"); // which interfaces are considered, matches all interfaces by default

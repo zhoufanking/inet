@@ -27,7 +27,7 @@ package inet.visualizer.base;
 // subscriptionModule parameter. If the visualizer receives a link break signal,
 // then it stores the broken link and starts the link break visualization.
 //
-// @see ~LinkBreakCanvasVisualizer, ~LinkBreakOsgVisualizer, ~ILinkBreakVisualizer, ~LinkBreakVisualizerBase
+// @see ~LinkBreakCanvasVisualizer, ~LinkBreakOsgVisualizer, ~ILinkBreakVisualizer, ~VisualizerBase
 //
 simple LinkBreakVisualizerBase extends VisualizerBase
 {
@@ -37,7 +37,7 @@ simple LinkBreakVisualizerBase extends VisualizerBase
         string icon = default("status/stop");
         double iconTintAmount = default(0);
         string iconTintColor = default("");
-        string fadeOutMode @enum("realTime", "animationTime", "simulationTime") = default("realTime");
+        string fadeOutMode @enum("realTime", "animationTime", "simulationTime") = default("realTime"); // specifies how inactive link breaks fade out
         double fadeOutHalfLife @unit(s) = default(1s); // how quickly link breaks fade away, opacity halves every second by default
         @class(LinkBreakVisualizerBase);
 }

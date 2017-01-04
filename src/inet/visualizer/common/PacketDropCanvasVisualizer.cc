@@ -24,7 +24,7 @@ namespace visualizer {
 
 Define_Module(PacketDropCanvasVisualizer);
 
-PacketDropCanvasVisualizer::PacketDropCanvasVisualization::PacketDropCanvasVisualization(cIconFigure *figure, int moduleId, const cPacket *packet, const Coord& position) :
+PacketDropCanvasVisualizer::PacketDropCanvasVisualization::PacketDropCanvasVisualization(LabeledIcon *figure, int moduleId, const cPacket *packet, const Coord& position) :
     PacketDropVisualization(moduleId, packet, position),
     figure(figure)
 {
@@ -46,15 +46,22 @@ void PacketDropCanvasVisualizer::initialize(int stage)
 
 const PacketDropVisualizerBase::PacketDropVisualization *PacketDropCanvasVisualizer::createPacketDropVisualization(cModule *module, cPacket *packet) const
 {
-    auto figure = new cIconFigure("packetDrop");
-    figure->setTags("packet_drop");
-    figure->setTooltip("This icon represents a packet dropped in a network node");
-    figure->setAssociatedObject(packet);
-    figure->setImageName(icon);
-    figure->setTintAmount(iconTintAmount);
-    figure->setTintColor(iconTintColor);
-    figure->setPosition(canvasProjection->computeCanvasPoint(getPosition(getContainingNode(module))));
+    std::string icon(this->icon);
     auto position = getPosition(getContainingNode(module));
+    auto figure = new LabeledIcon("packetDrop");
+    figure->setPosition(canvasProjection->computeCanvasPoint(position));
+    auto iconFigure = figure->getIconFigure();
+    auto labelFigure = figure->getLabelFigure();
+    iconFigure->setTags("packet_drop");
+    iconFigure->setTooltip("This icon represents a packet dropped in a network node");
+    iconFigure->setAssociatedObject(packet);
+    iconFigure->setImageName(icon.substr(0, icon.find_first_of(".")).c_str());
+    iconFigure->setTintAmount(iconTintAmount);
+    iconFigure->setTintColor(iconTintColor);
+    labelFigure->setTags("packet_drop");
+    labelFigure->setTooltip("This icon represents a packet dropped in a network node");
+    labelFigure->setAssociatedObject(packet);
+    labelFigure->setText(packet->getName());
     return new PacketDropCanvasVisualization(figure, module->getId(), packet, position);
 }
 

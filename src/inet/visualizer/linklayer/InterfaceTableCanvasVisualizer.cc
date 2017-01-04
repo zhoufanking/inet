@@ -48,6 +48,7 @@ InterfaceTableVisualizerBase::InterfaceVisualization *InterfaceTableCanvasVisual
     figure->setTooltip("This label represents a network interface in a network node");
     figure->setAssociatedObject(interfaceEntry);
     figure->setZIndex(zIndex);
+    figure->getLabelFigure()->setFont(font);
     figure->setFontColor(fontColor);
     figure->setBackgroundColor(backgroundColor);
     figure->setOpacity(opacity);

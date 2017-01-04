@@ -18,6 +18,7 @@
 #ifndef __INET_PACKETDROPCANVASVISUALIZER_H
 #define __INET_PACKETDROPCANVASVISUALIZER_H
 
+#include "inet/common/figures/LabeledIcon.h"
 #include "inet/common/geometry/common/CanvasProjection.h"
 #include "inet/visualizer/base/PacketDropVisualizerBase.h"
 
@@ -30,10 +31,10 @@ class INET_API PacketDropCanvasVisualizer : public PacketDropVisualizerBase
   protected:
     class INET_API PacketDropCanvasVisualization : public PacketDropVisualization {
       public:
-        cIconFigure *figure;
+        LabeledIcon *figure;
 
       public:
-        PacketDropCanvasVisualization(cIconFigure *figure, int moduleId, const cPacket *packet, const Coord& position);
+        PacketDropCanvasVisualization(LabeledIcon *figure, int moduleId, const cPacket *packet, const Coord& position);
         virtual ~PacketDropCanvasVisualization() { delete figure; }
     };
 

@@ -55,6 +55,7 @@ InfoVisualizerBase::InfoVisualization *InfoCanvasVisualizer::createInfoVisualiza
     figure->setTooltip("This label represents a module");
     figure->setAssociatedObject(module);
     figure->setZIndex(zIndex);
+    figure->getLabelFigure()->setFont(font);
     figure->setFontColor(fontColor);
     figure->setBackgroundColor(backgroundColor);
     figure->setOpacity(opacity);

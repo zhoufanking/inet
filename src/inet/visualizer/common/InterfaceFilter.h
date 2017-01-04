@@ -33,12 +33,11 @@ class INET_API InterfaceFilter
 {
   protected:
     cMatchExpression matchExpression;
-    MatchableObject matchableObject;
 
   public:
     void setPattern(const char *pattern);
 
-    bool matches(const InterfaceEntry *interfaceEntry);
+    bool matches(const InterfaceEntry *interfaceEntry) const;
 };
 
 } // namespace visualizer

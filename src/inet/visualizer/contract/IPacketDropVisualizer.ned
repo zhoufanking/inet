@@ -18,11 +18,11 @@
 package inet.visualizer.contract;
 
 //
-// This module interface allows configuring different IPacketDropVisualizer
+// This module interface allows configuring different ~IPacketDropVisualizer
 // submodules from INI files. Such a visualizer displays the packet drops
 // in a network.
 //
-// @see ~PacketDropCanvasVisualizer, ~PacketDropOsgVisualizer, ~PacketDropVisualizerBase
+// @see ~PacketDropCanvasVisualizer, ~PacketDropOsgVisualizer, ~PacketDropVisualizer, ~PacketDropVisualizerBase
 //
 moduleinterface IPacketDropVisualizer
 {

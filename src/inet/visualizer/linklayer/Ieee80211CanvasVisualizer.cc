@@ -44,17 +44,20 @@ void Ieee80211CanvasVisualizer::initialize(int stage)
 Ieee80211VisualizerBase::Ieee80211Visualization *Ieee80211CanvasVisualizer::createIeee80211Visualization(cModule *networkNode, InterfaceEntry *interfaceEntry, std::string ssid)
 {
     std::hash<std::string> hasher;
+    std::string icon(this->icon);
     auto labeledIconFigure = new LabeledIcon();
+    labeledIconFigure->setZIndex(zIndex);
     auto iconFigure = labeledIconFigure->getIconFigure();
     iconFigure->setTags("ieee80211_association");
     iconFigure->setTooltip("This icon represents an IEEE 802.11 association");
     iconFigure->setAnchor(cFigure::ANCHOR_NW);
-    iconFigure->setImageName(icon);
+    iconFigure->setImageName(icon.substr(0, icon.find_first_of(".")).c_str());
     iconFigure->setTintColor(cFigure::GOOD_DARK_COLORS[hasher(ssid) % (sizeof(cFigure::GOOD_DARK_COLORS) / sizeof(cFigure::Color))]);
     iconFigure->setTintAmount(1);
     auto labelFigure = labeledIconFigure->getLabelFigure();
     labelFigure->setTags("ieee80211_association SSID");
     labelFigure->setTooltip("This label represents the SSID of an IEEE 802.11 network");
+    labelFigure->setAnchor(cFigure::ANCHOR_CENTER);
     labelFigure->setText(ssid.c_str());
     labelFigure->setColor(cFigure::BLACK);
     labelFigure->setPosition(iconFigure->getBounds().getSize() / 2);

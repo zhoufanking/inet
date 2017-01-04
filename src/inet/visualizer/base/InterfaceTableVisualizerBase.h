@@ -48,6 +48,7 @@ class INET_API InterfaceTableVisualizerBase : public VisualizerBase, public cLis
     NetworkNodeFilter nodeFilter;
     InterfaceFilter interfaceFilter;
     const char *content = nullptr;
+    cFigure::Font font;
     cFigure::Color fontColor;
     cFigure::Color backgroundColor;
     double opacity = NaN;

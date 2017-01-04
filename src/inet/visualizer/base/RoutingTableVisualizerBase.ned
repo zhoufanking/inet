@@ -18,16 +18,16 @@
 package inet.visualizer.base;
 
 //
-// This is a base module for routing table visualizer simple modules. It keeps
-// track of routes in the routing tables of the network. Routes present in the
-// routing tables are not displayed by default, see the module parameters for
-// how to enable the visualization. The actual visualization of routes is done
-// in derived modules.
+// This is a base module for routing table visualizer simple modules. It displays
+// routes in the routing tables of the network. Routes present are not displayed
+// by default, see the module parameters for how to enable the visualization.
+// The actual visualization of routes is done in derived modules.
 //
-// This module subscribes for NF_ROUTE_ADDED, NF_ROUTE_CHANGED and
-// NF_ROUTE_DELETED on the module determined by the subscriptionModule parameter.
+// This module subscribes for NF_ROUTE_ADDED, NF_ROUTE_CHANGED, NF_ROUTE_DELETED,
+// NF_INTERFACE_IPv4CONFIG_CHANGED on the module determined by the subscriptionModule
+// parameter.
 //
-// @see ~RoutingTableCanvasVisualizer, ~RoutingTableOsgVisualizer, ~IRoutingTableVisualizer, ~RoutingTableVisualizerBase
+// @see ~RoutingTableCanvasVisualizer, ~RoutingTableOsgVisualizer, ~IRoutingTableVisualizer, ~VisualizerBase
 //
 simple RoutingTableVisualizerBase extends VisualizerBase
 {
@@ -39,7 +39,7 @@ simple RoutingTableVisualizerBase extends VisualizerBase
         double lineWidth = default(2); // route line width
         double lineShift = default(10); // line shift to avoid overlapping lines
         string lineShiftMode = default("normal"); // determines how overlapping lines are shifted, possible values are: none, normal, x, y, z; optional prefix + or -
-        double lineContactSpacing = default(3);
-        string lineContactMode @enum("circular", "rectangular") = default("rectangular");
+        double lineContactSpacing = default(3); // spacing between arrow end and submodule icon
+        string lineContactMode @enum("circular", "rectangular") = default("rectangular"); // determines how arrows are clipped at the submodules
         @class(RoutingTableVisualizerBase);
 }

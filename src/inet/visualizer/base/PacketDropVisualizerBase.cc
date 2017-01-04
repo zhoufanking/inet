@@ -95,6 +95,7 @@ void PacketDropVisualizerBase::refreshDisplay() const
 
 void PacketDropVisualizerBase::receiveSignal(cComponent *source, simsignal_t signal, cObject *object, cObject *details)
 {
+    Enter_Method_Silent();
     if (signal == LayeredProtocolBase::packetFromLowerDroppedSignal || signal == LayeredProtocolBase::packetFromUpperDroppedSignal) {
         auto packet = check_and_cast<cPacket *>(object);
         if (packetFilter.matches(packet))

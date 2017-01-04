@@ -60,12 +60,13 @@ void LinkBreakCanvasVisualizer::refreshDisplay() const
 
 const LinkBreakVisualizerBase::LinkBreakVisualization *LinkBreakCanvasVisualizer::createLinkBreakVisualization(cModule *transmitter, cModule *receiver) const
 {
+    std::string icon(this->icon);
     auto transmitterPosition = canvasProjection->computeCanvasPoint(getPosition(getContainingNode(transmitter)));
     auto receiverPosition = canvasProjection->computeCanvasPoint(getPosition(getContainingNode(receiver)));
     auto figure = new cIconFigure("linkBreak");
     figure->setTags("link_break");
     figure->setTooltip("This icon represents a link break in a network node");
-    figure->setImageName(icon);
+    figure->setImageName(icon.substr(0, icon.find_first_of(".")).c_str());
     figure->setTintAmount(iconTintAmount);
     figure->setTintColor(iconTintColor);
     figure->setPosition((transmitterPosition + receiverPosition) / 2);

@@ -20,6 +20,13 @@ package inet.visualizer.transportlayer;
 import inet.visualizer.base.TransportConnectionVisualizerBase;
 import inet.visualizer.contract.ITransportConnectionVisualizer;
 
+//
+// This module visualizes transport layer connections on a 3D osg scene.
+// It displays a pair of colored icons for each connection at the network nodes
+// where the connection starts or ends.
+//
+// @see ~TransportConnectionCanvasVisualizer, ~TransportConnectionVisualizer, ~TransportConnectionVisualizerBase, ~ITransportConnectionVisualizer
+//
 simple TransportConnectionOsgVisualizer extends TransportConnectionVisualizerBase like ITransportConnectionVisualizer
 {
     parameters:

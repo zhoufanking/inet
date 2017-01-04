@@ -18,6 +18,7 @@
 #ifndef __INET_TRANSPORTCONNECTIONCANVASVISUALIZER_H
 #define __INET_TRANSPORTCONNECTIONCANVASVISUALIZER_H
 
+#include "inet/common/figures/LabeledIcon.h"
 #include "inet/common/geometry/common/CanvasProjection.h"
 #include "inet/visualizer/base/TransportConnectionVisualizerBase.h"
 #include "inet/visualizer/networknode/NetworkNodeCanvasVisualizer.h"
@@ -31,11 +32,11 @@ class INET_API TransportConnectionCanvasVisualizer : public TransportConnectionV
   protected:
     class INET_API TransportConnectionCanvasVisualization : public TransportConnectionVisualization {
       public:
-        cIconFigure *sourceFigure = nullptr;
-        cIconFigure *destinationFigure = nullptr;
+        LabeledIcon *sourceFigure = nullptr;
+        LabeledIcon *destinationFigure = nullptr;
 
       public:
-        TransportConnectionCanvasVisualization(cIconFigure *sourceFigure, cIconFigure *destinationFigure, int sourceModuleId, int destinationModuleId, int count);
+        TransportConnectionCanvasVisualization(LabeledIcon *sourceFigure, LabeledIcon *destinationFigure, int sourceModuleId, int destinationModuleId, int count);
     };
 
   protected:
@@ -46,7 +47,7 @@ class INET_API TransportConnectionCanvasVisualizer : public TransportConnectionV
   protected:
     virtual void initialize(int stage) override;
 
-    virtual cIconFigure *createConnectionEndFigure(tcp::TCPConnection *connectionVisualization) const;
+    virtual LabeledIcon *createConnectionEndFigure(tcp::TCPConnection *connectionVisualization) const;
     virtual const TransportConnectionVisualization *createConnectionVisualization(cModule *source, cModule *destination, tcp::TCPConnection *tcpConnection) const override;
     virtual void addConnectionVisualization(const TransportConnectionVisualization *connectionVisualization) override;
     virtual void removeConnectionVisualization(const TransportConnectionVisualization *connectionVisualization) override;

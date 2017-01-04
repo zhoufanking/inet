@@ -69,6 +69,7 @@ void RoutingTableVisualizerBase::initialize(int stage)
 
 void RoutingTableVisualizerBase::receiveSignal(cComponent *source, simsignal_t signal, cObject *object, cObject *details)
 {
+    Enter_Method_Silent();
     if (signal == NF_ROUTE_ADDED || signal == NF_ROUTE_DELETED || signal == NF_ROUTE_CHANGED)
         updateRoutes(check_and_cast<IIPv4RoutingTable *>(source));
     else if (signal == NF_INTERFACE_IPv4CONFIG_CHANGED) {

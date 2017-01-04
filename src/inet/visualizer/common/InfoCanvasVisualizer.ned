@@ -20,9 +20,15 @@ package inet.visualizer.common;
 import inet.visualizer.base.InfoVisualizerBase;
 import inet.visualizer.contract.IInfoVisualizer;
 
+//
+// This module visualizes some information of a submodule for each network node
+// on a 2D canvas.
+//
+// @see ~InfoOsgVisualizer, ~InfoVisualizer, ~InfoVisualizerBase, ~IInfoVisualizer
+//
 simple InfoCanvasVisualizer extends InfoVisualizerBase like IInfoVisualizer
 {
     parameters:
-        double zIndex = default(0); // determines the drawing order of figures relative to other visualizers
+        double zIndex = default(10); // determines the drawing order of figures relative to other visualizers
         @class(InfoCanvasVisualizer);
 }

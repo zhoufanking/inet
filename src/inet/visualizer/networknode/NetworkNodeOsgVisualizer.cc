@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 OpenSim Ltd.
+// Copyright (C) OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -37,7 +37,7 @@ void NetworkNodeOsgVisualizer::initialize(int stage)
         auto scene = inet::osg::TopLevelScene::getSimulationScene(visualizerTargetModule);
         for (cModule::SubmoduleIterator it(getSystemModule()); !it.end(); it++) {
             auto networkNode = *it;
-            if (isNetworkNode(networkNode) && networkNodePathMatcher.matches(networkNode->getFullPath().c_str())) {
+            if (isNetworkNode(networkNode) && nodeFilter.matches(networkNode)) {
                 auto positionAttitudeTransform = createNetworkNodeVisualization(networkNode);
                 setNetworkNodeVisualization(networkNode, positionAttitudeTransform);
                 scene->addChild(positionAttitudeTransform);

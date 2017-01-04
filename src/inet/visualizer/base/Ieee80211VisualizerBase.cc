@@ -81,6 +81,7 @@ void Ieee80211VisualizerBase::removeIeee80211Visualization(Ieee80211Visualizatio
 
 void Ieee80211VisualizerBase::receiveSignal(cComponent *source, simsignal_t signal, cObject *object, cObject *details)
 {
+    Enter_Method_Silent();
     if (signal == NF_L2_ASSOCIATED) {
         auto networkNode = getContainingNode(check_and_cast<cModule *>(source));
         if (nodeFilter.matches(networkNode)) {

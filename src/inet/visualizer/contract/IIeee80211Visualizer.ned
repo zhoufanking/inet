@@ -18,11 +18,11 @@
 package inet.visualizer.contract;
 
 //
-// This module interface allows configuring different IIeee80211Visualizer
-// submodules from INI files. Such a visualizer displays where network nodes
-// are associated.
+// This module interface allows configuring different ~IIeee80211Visualizer
+// submodules from INI files. Such a visualizer displays IEEE 802.11 network
+// interface associations.
 //
-// @see ~Ieee80211CanvasVisualizer, ~Ieee80211OsgVisualizer, ~Ieee80211VisualizerBase
+// @see ~Ieee80211CanvasVisualizer, ~Ieee80211OsgVisualizer, ~Ieee80211Visualizer, ~Ieee80211VisualizerBase
 //
 moduleinterface IIeee80211Visualizer
 {

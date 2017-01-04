@@ -18,11 +18,11 @@
 package inet.visualizer.contract;
 
 //
-// This module interface allows configuring different IInfoVisualizer
-// submodules from INI files. Such a visualizer displays various state
-// information from modules in a network.
+// This module interface allows configuring different ~IInfoVisualizer
+// submodules from INI files. Such a visualizer displays various information
+// from submodules of network nodes.
 //
-// @see ~InfoCanvasVisualizer, ~InfoOsgVisualizer, ~InfoVisualizerBase
+// @see ~InfoCanvasVisualizer, ~InfoOsgVisualizer, ~InfoVisualizer, ~InfoVisualizerBase
 //
 moduleinterface IInfoVisualizer
 {

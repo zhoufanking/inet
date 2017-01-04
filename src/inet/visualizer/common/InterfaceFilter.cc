@@ -24,13 +24,13 @@ namespace visualizer {
 void InterfaceFilter::setPattern(const char* pattern)
 {
     matchExpression.setPattern(pattern, false, true, true);
-    matchableObject.setDefaultAttribute(MatchableObject::ATTRIBUTE_FULLNAME);
 }
 
-bool InterfaceFilter::matches(const InterfaceEntry *interfaceEntry)
+bool InterfaceFilter::matches(const InterfaceEntry *interfaceEntry) const
 {
-    matchableObject.setObject(interfaceEntry);
-    return matchExpression.matches(&matchableObject);
+    MatchableObject matchableObject(MatchableObject::ATTRIBUTE_FULLNAME, interfaceEntry);
+    // TODO: eliminate const_cast when cMatchExpression::matches becomes const
+    return const_cast<InterfaceFilter *>(this)->matchExpression.matches(&matchableObject);
 }
 
 } // namespace visualizer

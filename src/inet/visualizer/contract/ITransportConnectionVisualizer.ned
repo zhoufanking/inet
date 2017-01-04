@@ -18,11 +18,11 @@
 package inet.visualizer.contract;
 
 //
-// This module interface allows configuring different IConnectionVisualizer
+// This module interface allows configuring different ~ITransportConnectionVisualizer
 // submodules from INI files. Such a visualizer displays the active transport
 // connections in a network.
 //
-// @see ~TransportConnectionCanvasVisualizer, ~TransportConnectionOsgVisualizer, ~TransportConnectionVisualizerBase
+// @see ~TransportConnectionCanvasVisualizer, ~TransportConnectionOsgVisualizer, ~TransportConnectionVisualizer, ~TransportConnectionVisualizerBase
 //
 moduleinterface ITransportConnectionVisualizer
 {

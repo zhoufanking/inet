@@ -32,12 +32,11 @@ class INET_API PacketFilter
 {
   protected:
     cMatchExpression matchExpression;
-    MatchableObject matchableObject;
 
   public:
     void setPattern(const char *pattern);
 
-    bool matches(const cPacket *packet);
+    bool matches(const cPacket *packet) const;
 };
 
 } // namespace visualizer

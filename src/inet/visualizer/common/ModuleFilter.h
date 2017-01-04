@@ -32,12 +32,11 @@ class INET_API ModuleFilter
 {
   protected:
     cMatchExpression matchExpression;
-    MatchableObject matchableObject;
 
   public:
     void setPattern(const char *pattern);
 
-    bool matches(const cModule *module);
+    bool matches(const cModule *module) const;
 };
 
 } // namespace visualizer

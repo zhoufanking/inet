@@ -41,5 +41,17 @@ cFigure::Rectangle LabeledIcon::getBounds() const
     return cFigure::Rectangle(x, y, width, height);
 }
 
+void LabeledIcon::setOpacity(double opacity)
+{
+    iconFigure->setOpacity(opacity);
+    labelFigure->setOpacity(opacity);
+}
+
+void LabeledIcon::setPosition(cFigure::Point position)
+{
+    iconFigure->setPosition(position);
+    labelFigure->setPosition(position);
+}
+
 } // namespace inet
 

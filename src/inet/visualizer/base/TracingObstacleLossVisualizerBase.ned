@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 OpenSim Ltd.
+// Copyright (C) OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -22,14 +22,21 @@ package inet.visualizer.base;
 // subscribes on the obstacle loss module for physical object penetrated signals.
 // The actual visualization of obstacle loss is done in derived modules.
 //
-// @see ~TracingObstacleLossCanvasVisualizer, ~TracingObstacleLossOsgVisualizer,
-// ~ITracingObstacleLossVisualizer, and ~TracingObstacleLossVisualizerBase
+// @see ~TracingObstacleLossCanvasVisualizer, ~TracingObstacleLossOsgVisualizer, ~ITracingObstacleLossVisualizer, ~VisualizerBase
 //
 simple TracingObstacleLossVisualizerBase extends VisualizerBase
 {
     parameters:
-        string subscriptionModule = default(""); // module path where the visualizer subscribes for obstacle loss signals, root module by default
-        bool displayIntersectionTrail = default(false); // display instersections of transmissions and physical objects, disabled by default
-        bool displayFaceNormalVectorTrail = default(false); // display face normal vectors of instersections, disabled by default
+        string subscriptionModule = default("<root>"); // module path where the visualizer subscribes for obstacle loss signals, root module by default
+        bool displayIntersection = default(false); // display instersections of transmissions and physical objects, disabled by default
+        bool displayFaceNormalVector = default(false); // display face normal vectors of instersections, disabled by default
+        string intersectionLineColor = default("red");
+        string intersectionLineStyle = default("solid");
+        double intersectionLineWidth = default(1);
+        string faceNormalLineColor = default("grey");
+        string faceNormalLineStyle = default("solid");
+        double faceNormalLineWidth = default(1);
+        string fadeOutMode @enum("realTime", "animationTime", "simulationTime") = default("realTime"); // specifies how inactive obstacle losses fade out
+        double fadeOutHalfLife @unit(s) = default(1s); // how quickly link breaks fade away, opacity halves every second by default
         @class(TracingObstacleLossVisualizerBase);
 }

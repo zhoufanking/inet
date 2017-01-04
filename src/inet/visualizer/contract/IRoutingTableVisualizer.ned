@@ -18,11 +18,11 @@
 package inet.visualizer.contract;
 
 //
-// This module interface allows configuring different IRoutingTableVisualizer
+// This module interface allows configuring different ~IRoutingTableVisualizer
 // submodules from INI files. Such a visualizer displays routes present in the
 // routing tables of a network.
 //
-// @see ~RoutingTableCanvasVisualizer, ~RoutingTableOsgVisualizer, ~RoutingTableVisualizerBase
+// @see ~RoutingTableCanvasVisualizer, ~RoutingTableOsgVisualizer, ~RoutingTableVisualizer, ~RoutingTableVisualizerBase
 //
 moduleinterface IRoutingTableVisualizer
 {

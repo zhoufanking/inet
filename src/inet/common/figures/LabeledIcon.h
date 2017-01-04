@@ -35,6 +35,10 @@ class INET_API LabeledIcon : public cGroupFigure
 
     cIconFigure *getIconFigure() const { return iconFigure; }
     cLabelFigure *getLabelFigure() const { return labelFigure; }
+
+    void setOpacity(double opacity);
+
+    void setPosition(cFigure::Point position);
 };
 
 } // namespace inet

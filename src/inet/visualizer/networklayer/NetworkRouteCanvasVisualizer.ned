@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 OpenSim Ltd.
+// Copyright (C) OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -17,7 +17,7 @@
 
 package inet.visualizer.networklayer;
 
-import inet.visualizer.base.RouteVisualizerBase;
+import inet.visualizer.base.PathVisualizerBase;
 import inet.visualizer.contract.INetworkRouteVisualizer;
 
 //
@@ -29,11 +29,11 @@ import inet.visualizer.contract.INetworkRouteVisualizer;
 // time until the route becomes inactive unless it is reinforced by another
 // packet. The polyline automatically follows the movement of mobile nodes.
 //
-// @see ~NetworkRouteOsgVisualizer, ~NetworkRouteVisualizer, ~RouteVisualizerBase,
-// and ~INetworkRouteVisualizer
+// @see ~NetworkRouteOsgVisualizer, ~NetworkRouteVisualizer, ~PathVisualizerBase, ~INetworkRouteVisualizer
 //
-simple NetworkRouteCanvasVisualizer extends RouteVisualizerBase like INetworkRouteVisualizer
+simple NetworkRouteCanvasVisualizer extends PathVisualizerBase like INetworkRouteVisualizer
 {
     parameters:
+        double zIndex = default(3); // determines the drawing order of figures relative to other visualizers
         @class(NetworkRouteCanvasVisualizer);
 }

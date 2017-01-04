@@ -65,6 +65,7 @@ void TransportConnectionVisualizerBase::removeConnectionVisualization(const Tran
 
 void TransportConnectionVisualizerBase::receiveSignal(cComponent *source, simsignal_t signal, cObject *object, cObject *details)
 {
+    Enter_Method_Silent();
     if (signal == inet::tcp::TCP::tcpConnectionAddedSignal) {
         auto tcpConnection = check_and_cast<inet::tcp::TCPConnection *>(object);
         L3AddressResolver resolver;

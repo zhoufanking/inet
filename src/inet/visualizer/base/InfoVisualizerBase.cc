@@ -31,6 +31,7 @@ void InfoVisualizerBase::initialize(int stage)
     VisualizerBase::initialize(stage);
     if (!hasGUI()) return;
     if (stage == INITSTAGE_LOCAL) {
+        font = cFigure::parseFont(par("font"));
         fontColor = cFigure::Color(par("fontColor"));
         backgroundColor = cFigure::Color(par("backgroundColor"));
         moduleFilter.setPattern(par("modules"));
@@ -55,7 +56,7 @@ void InfoVisualizerBase::refreshDisplay() const
             const char *content = par("content");
             const char *info;
             if (!strcmp(content, "info"))
-                info = module->info().c_str();
+                info = module->str().c_str();
             else if (!strcmp(content, "displayStringText"))
                 info = module->getDisplayString().getTagArg("t", 0);
             else

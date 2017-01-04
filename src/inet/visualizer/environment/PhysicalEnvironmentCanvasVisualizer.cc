@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 OpenSim Ltd.
+// Copyright (C) OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -34,10 +34,12 @@ void PhysicalEnvironmentCanvasVisualizer::initialize(int stage)
     PhysicalEnvironmentVisualizerBase::initialize(stage);
     if (!hasGUI()) return;
     if (stage == INITSTAGE_LOCAL) {
-        objectsLayer = new cGroupFigure("objectsLayer");
+        zIndex = par("zIndex");
         cCanvas *canvas = visualizerTargetModule->getCanvas();
-        canvas->addFigureBelow(objectsLayer, canvas->getSubmodulesLayer());
         canvasProjection = CanvasProjection::getCanvasProjection(visualizerTargetModule->getCanvas());
+        objectsLayer = new cGroupFigure("objectsLayer");
+        objectsLayer->setZIndex(zIndex);
+        canvas->addFigureBelow(objectsLayer, canvas->getSubmodulesLayer());
     }
 }
 
@@ -69,6 +71,8 @@ void PhysicalEnvironmentCanvasVisualizer::refreshDisplay() const
             if (sphere) {
                 double radius = sphere->getRadius();
                 cOvalFigure *figure = new cOvalFigure("sphere");
+                figure->setTooltip("This oval represents a physical object");
+                figure->setAssociatedObject(const_cast<cObject *>(check_and_cast<const cObject *>(object)));
                 figure->setFilled(true);
                 cFigure::Point center = canvasProjection->computeCanvasPoint(position);
                 figure->setBounds(cFigure::Rectangle(center.x - radius, center.y - radius, radius * 2, radius * 2));
@@ -124,6 +128,8 @@ void PhysicalEnvironmentCanvasVisualizer::computeFacePoints(const IPhysicalObjec
             canvasPoints.push_back(canvPoint);
         }
         cPolygonFigure *figure = new cPolygonFigure("objectFace");
+        figure->setTooltip("This polygon represents a physical object");
+        figure->setAssociatedObject(const_cast<cObject *>(check_and_cast<const cObject *>(object)));
         figure->setFilled(true);
         figure->setPoints(canvasPoints);
         figure->setLineWidth(object->getLineWidth());

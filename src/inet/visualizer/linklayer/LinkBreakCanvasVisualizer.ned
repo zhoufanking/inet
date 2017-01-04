@@ -31,6 +31,6 @@ import inet.visualizer.contract.ILinkBreakVisualizer;
 simple LinkBreakCanvasVisualizer extends LinkBreakVisualizerBase like ILinkBreakVisualizer
 {
     parameters:
-        double zIndex = default(0); // determines the drawing order of figures relative to other visualizers
+        double zIndex = default(2); // determines the drawing order of figures relative to other visualizers
         @class(LinkBreakCanvasVisualizer);
 }

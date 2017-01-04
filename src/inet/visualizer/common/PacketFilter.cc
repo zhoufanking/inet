@@ -24,13 +24,13 @@ namespace visualizer {
 void PacketFilter::setPattern(const char* pattern)
 {
     matchExpression.setPattern(pattern, false, true, true);
-    matchableObject.setDefaultAttribute(MatchableObject::ATTRIBUTE_FULLNAME);
 }
 
-bool PacketFilter::matches(const cPacket *packet)
+bool PacketFilter::matches(const cPacket *packet) const
 {
-    matchableObject.setObject(packet);
-    return matchExpression.matches(&matchableObject);
+    MatchableObject matchableObject(MatchableObject::ATTRIBUTE_FULLNAME, packet);
+    // TODO: eliminate const_cast when cMatchExpression::matches becomes const
+    return const_cast<PacketFilter *>(this)->matchExpression.matches(&matchableObject);
 }
 
 } // namespace visualizer

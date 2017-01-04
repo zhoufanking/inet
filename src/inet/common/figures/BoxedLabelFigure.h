@@ -32,6 +32,9 @@ class INET_API BoxedLabelFigure : public cGroupFigure
   public:
     BoxedLabelFigure(const char *name = nullptr);
 
+    cLabelFigure *getLabelFigure() const { return labelFigure; }
+    cRectangleFigure *getBackgroundFigure() const { return rectangleFigure; }
+
     const cFigure::Rectangle& getBounds() const;
 
     const cFigure::Color& getFontColor() const;

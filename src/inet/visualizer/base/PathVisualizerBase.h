@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 OpenSim Ltd.
+// Copyright (C) OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -19,8 +19,10 @@
 #define __INET_PATHVISUALIZERBASE_H
 
 #include "inet/common/geometry/common/Coord.h"
-#include "inet/common/PatternMatcher.h"
 #include "inet/visualizer/base/VisualizerBase.h"
+#include "inet/visualizer/common/AnimationPosition.h"
+#include "inet/visualizer/common/LineManager.h"
+#include "inet/visualizer/common/PacketFilter.h"
 
 namespace inet {
 
@@ -29,39 +31,44 @@ namespace visualizer {
 class INET_API PathVisualizerBase : public VisualizerBase, public cListener
 {
   protected:
-    class INET_API Path {
+    class INET_API PathVisualization : public LineManager::ModulePath {
       public:
-        mutable double offset = NaN;
-        mutable simtime_t lastUsage = simTime();
-        const std::vector<int> moduleIds;
+        mutable AnimationPosition lastUsageAnimationPosition;
 
       public:
-        Path(const std::vector<int>& path);
-        virtual ~Path() {}
+        PathVisualization(const std::vector<int>& path);
+        virtual ~PathVisualization() {}
     };
 
   protected:
     /** @name Parameters */
     //@{
     cModule *subscriptionModule = nullptr;
-    inet::PatternMatcher packetNameMatcher;
+    PacketFilter packetFilter;
     cFigure::Color lineColor;
+    cFigure::LineStyle lineStyle;
     double lineWidth = NaN;
-    double opacityHalfLife = NaN;
+    double lineShift = NaN;
+    const char *lineShiftMode = nullptr;
+    double lineContactSpacing = NaN;
+    const char *lineContactMode = nullptr;
+    const char *fadeOutMode = nullptr;
+    double fadeOutHalfLife = NaN;
     //@}
 
+    LineManager *lineManager = nullptr;
     /**
      * Maps packet to module vector.
      */
     std::map<int, std::vector<int>> incompletePaths;
     /**
-     * Maps source/destination modules to multiple paths between them.
-     */
-    std::multimap<std::pair<int, int>, const Path *> paths;
-    /**
      * Maps nodes to the number of paths that go through it.
      */
     std::map<int, int> numPaths;
+    /**
+     * Maps source/destination modules to multiple paths between them.
+     */
+    std::multimap<std::pair<int, int>, const PathVisualization *> pathVisualizations;
 
   protected:
     virtual void initialize(int stage) override;
@@ -70,23 +77,21 @@ class INET_API PathVisualizerBase : public VisualizerBase, public cListener
     virtual bool isPathEnd(cModule *module) const = 0;
     virtual bool isPathElement(cModule *module) const = 0;
 
-    virtual const Path *createPath(const std::vector<int>& path) const = 0;
-    virtual void setAlpha(const Path *path, double alpha) const = 0;
-    virtual void setPosition(cModule *node, const Coord& position) const = 0;
-
-    virtual const Path *getPath(std::pair<int, int> sourceAndDestination, const std::vector<int>& path);
-    virtual void addPath(std::pair<int, int> sourceAndDestination, const Path *path);
-    virtual void removePath(std::pair<int, int> sourceAndDestination, const Path *path);
+    virtual const PathVisualization *createPathVisualization(const std::vector<int>& path) const = 0;
+    virtual const PathVisualization *getPathVisualization(std::pair<int, int> sourceAndDestination, const std::vector<int>& path);
+    virtual void addPathVisualization(std::pair<int, int> sourceAndDestination, const PathVisualization *pathVisualization);
+    virtual void removePathVisualization(std::pair<int, int> sourceAndDestination, const PathVisualization *pathVisualization);
+    virtual void setAlpha(const PathVisualization *pathVisualization, double alpha) const = 0;
 
     virtual const std::vector<int> *getIncompletePath(int treeId);
     virtual void addToIncompletePath(int treeId, cModule *module);
     virtual void removeIncompletePath(int treeId);
 
-    virtual void updateOffsets();
-    virtual void updatePositions();
     virtual void updatePath(const std::vector<int>& path);
 
   public:
+    virtual ~PathVisualizerBase();
+
     virtual void receiveSignal(cComponent *source, simsignal_t signal, cObject *object, cObject *details) override;
 };
 

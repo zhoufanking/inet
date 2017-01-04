@@ -23,12 +23,12 @@ package inet.visualizer.base;
 // default, see module parameters for how to enable the visualization. The
 // actual visualization of packet drops is done in derived modules.
 //
-// This module subscribes for packetFromLowerDroppedSignal and
-// packetFromUpperDroppedSignal on the module determined by the subscriptionModule
-// parameter. If the visualizer receives a packet dropped signal, then it stores
-// the dropped packet and starts the drop visualization.
+// This module subscribes for packetFromLowerDropped and packetFromUpperDropped
+// on the module determined by the subscriptionModule parameter. If the
+// visualizer receives a packet dropped signal, then it stores the dropped
+// packet and starts the drop visualization.
 //
-// @see ~PacketDropCanvasVisualizer, ~PacketDropOsgVisualizer, ~IPacketDropVisualizer, ~PacketDropVisualizerBase
+// @see ~PacketDropCanvasVisualizer, ~PacketDropOsgVisualizer, ~IPacketDropVisualizer, ~VisualizerBase
 //
 simple PacketDropVisualizerBase extends VisualizerBase
 {
@@ -38,7 +38,7 @@ simple PacketDropVisualizerBase extends VisualizerBase
         string icon = default("msg/packet_s"); // packet drop visualization icon
         double iconTintAmount = default(0); // colorization amount between 0 and 1, disabled by default
         string iconTintColor = default(""); // color for icon tinting, disabled by default
-        string fadeOutMode @enum("realTime", "animationTime", "simulationTime") = default("realTime");
+        string fadeOutMode @enum("realTime", "animationTime", "simulationTime") = default("realTime"); // specifies how inactive packet drops fade out
         double fadeOutHalfLife @unit(s) = default(1s); // how quickly packet drops fade away, opacity halves every second by default
         @class(PacketDropVisualizerBase);
 }

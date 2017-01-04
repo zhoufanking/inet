@@ -41,6 +41,7 @@ class INET_API InfoVisualizerBase : public VisualizerBase
   protected:
     /** @name Parameters */
     //@{
+    cFigure::Font font;
     cFigure::Color fontColor;
     cFigure::Color backgroundColor;
     ModuleFilter moduleFilter;

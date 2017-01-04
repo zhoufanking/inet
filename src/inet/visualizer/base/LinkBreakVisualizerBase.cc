@@ -88,6 +88,7 @@ void LinkBreakVisualizerBase::refreshDisplay() const
 
 void LinkBreakVisualizerBase::receiveSignal(cComponent *source, simsignal_t signal, cObject *object, cObject *details)
 {
+    Enter_Method_Silent();
     if (signal == NF_LINK_BREAK) {
         MACAddress transmitterAddress;
         MACAddress receiverAddress;

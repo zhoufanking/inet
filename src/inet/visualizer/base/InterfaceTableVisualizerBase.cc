@@ -56,6 +56,7 @@ void InterfaceTableVisualizerBase::initialize(int stage)
         nodeFilter.setPattern(par("nodeFilter"));
         interfaceFilter.setPattern(par("interfaceFilter"));
         content = par("content");
+        font = cFigure::parseFont(par("font"));
         fontColor = cFigure::parseColor(par("fontColor"));
         backgroundColor = cFigure::parseColor(par("backgroundColor"));
         opacity = par("opacity");
@@ -95,6 +96,7 @@ std::string InterfaceTableVisualizerBase::getVisualizationText(const InterfaceEn
 
 void InterfaceTableVisualizerBase::receiveSignal(cComponent *source, simsignal_t signal, cObject *object, cObject *details)
 {
+    Enter_Method_Silent();
     if (signal == NF_INTERFACE_CREATED) {
         auto networkNode = getContainingNode(static_cast<cModule *>(source));
         if (nodeFilter.matches(networkNode)) {
