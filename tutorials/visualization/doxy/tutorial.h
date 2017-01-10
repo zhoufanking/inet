@@ -79,8 +79,8 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 @section s2goals Goals
 In network simulation it's often desirable to have a real world context. Although displaying a map
-doesn't directly affect the outcome of the simulation, nevertheless it still facilitates understanding.
-In this step we display a street map of Boston downtown.
+doesn't directly affect the outcome of the simulation, nevertheless it can still facilitate understanding.
+In this step we display a street map of downtown Boston.
 
 @section s2model The model
 <!--
@@ -174,8 +174,8 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 @section s5goals Goals
 
-For wireless networks to work, devices have to be within each other's communication range. 
-In this step we display communication ranges to help place nodes.
+Wireless communication is only possible if devices are within each other's communication range.
+In this step we visualize communication ranges. This can help in the placement of network nodes.
 
 <!--
 Ebben a lépésben a wireless node-ok communication range-eit fogjuk megjeleníteni. 
@@ -247,6 +247,8 @@ However it doesn't directly affect the outcome of the simulation, it is
 more understandable if the appearance of nodes is similar as in real world.
 The default icon for the pedestrians is a cellphone. In this step we replace 
 the default icon with a 3D animated model.
+
+NOTE/TODO: visualization by definition doesnt affect the outcome of the simulation.
 
 <!--
 ad2:
@@ -403,10 +405,12 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 @section s9goals Goals
 
-In infrastructure mode wireless nodes have to associate with access points to be able to communicate.
+In infrastructure mode, wireless nodes have to be associated with an access point to be able to communicate.
 The association may change over time, or at any given time there might be several access points for a
 wireless node to associate with. In general, it's difficult to tell which nodes are associated with which access points.
 In this step we enable displaying the association between wireless nodes and access points.
+
+TODO/NOTE: its easier to tell which nodes are associated with which access points if its visualized. e.g. dont have to use the inspector window...
 
 @section s9model The model
 <!--
@@ -452,6 +456,8 @@ In this step we display transmissions and receptions to identify the participant
 Data communication refers to the exchange of data between a source and a receiver. 
 The meanings of source and receiver are very simple. The device that transmits the data 
 is known as source and the device that receives the transmitted data is known as receiver.
+
+TODO/NOTE: source and receiver definition seems trivial
 
 <!--
 ---
@@ -734,6 +740,8 @@ The routing process usually directs forwarding on the basis of routing tables,
 which maintain a record of the routes to various network destinations. 
 In this step we show routes from all nodes towards videoStreamServer.
 
+NOTE/TODO: seems trivial
+
 <!--
 Csomagkapcsolt hálózatokban a routing határozza meg a csomagtovábbítást, azaz az IP címmel ellátott
 csomagok átvitelét a forrás irányából a cél irányába, köztes node-okon keresztül. 
@@ -948,8 +956,7 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 @section s18goals Goals
 
-We can place obstacles into our simulation, which are in effect on the operation 
-of the network. In this step we display the physical environment.
+We can place obstacles into our simulation, which can obstruct radio signals. In this step we display the physical environment.
 
 <!--
 A szimulációba egyszerűen beépíthetjük azokat az akadályokat, amik valóban 
@@ -1039,6 +1046,9 @@ In this step we show transport connections. To establish a link, TCP uses
 three-way handshake. It's open until one of the participants initiate closing the 
 connection. By displaying these, it will be easy to understand which hosts are the 
 participants of a transport connection.
+
+In this step we show how to visualize transport layer connections, such as TCP.
+The transport connection visualizer indicates the two end-points of a connection.
 
 <!--
 Ebben a lépésben a nyitott hálózati kapcsolatokat jelenítjük meg.
