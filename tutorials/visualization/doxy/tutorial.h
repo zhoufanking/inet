@@ -157,6 +157,8 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 @section s4goals Goals
 In tis step we extend the scene with a 3D object model. 
 
+TODO: We can add static 3D models to the scene, to put things in real world context. E.g. cars...
+
 @section s4model The model
 
 @section s4results Results
@@ -175,7 +177,7 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 @section s5goals Goals
 
 Wireless communication is only possible if devices are within each other's communication range.
-In this step we visualize communication ranges. This can help in the placement of network nodes.
+In this step we visualize communication and interference ranges. This can help in the placement of network nodes.
 
 <!--
 Ebben a lépésben a wireless node-ok communication range-eit fogjuk megjeleníteni. 
@@ -250,6 +252,11 @@ the default icon with a 3D animated model.
 
 NOTE/TODO: visualization by definition doesnt affect the outcome of the simulation.
 
+By default, wirelessHosts are indicated by a cell phone icon.
+However, a 3D animated model of a pedestrian may depict the moving wirelessHosts better
+in a real world context. It also fits better in the 3D environment.
+In this step, we replace the cell phone icon that represents hosts with a 3D model.
+
 <!--
 ad2:
 The simulation is more understandable if the appearance of nodes is similar as in real world.
@@ -304,6 +311,10 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 When wireless nodes roam in a network, it's often difficult to follow their movement. 
 In this step we visualize the recent movement trajectory of network nodes.
+
+TODO:
+When wireless nodes move around the playground, it can be easier to track them
+by displaying their recent movement. In this step, we visualize nodes' movement trails.
 
 @section s7model The model
 
@@ -360,6 +371,10 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 Understanding network traffic often requires identifying nodes based on their IP addresses.
 In this step we show the IP addresses assigned by the network configurator. 
 
+TODO:
+It's often convenient to tell a node's IP address at a glance, without using the module inspector.
+In this step we show the IP addresses assigned by the network configurator.
+
 @section s8model The model
 <!--
 If we want to see the network nodes' IP addresses we have to set the parameters of the <tt>InterfaceTableVisualizer</tt>.
@@ -407,7 +422,7 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 In infrastructure mode, wireless nodes have to be associated with an access point to be able to communicate.
 The association may change over time, or at any given time there might be several access points for a
-wireless node to associate with. In general, it's difficult to tell which nodes are associated with which access points.
+wireless node to associate with. It's useful to tell which node is associated with which access point just by looking at its icon.
 In this step we enable displaying the association between wireless nodes and access points.
 
 TODO/NOTE: its easier to tell which nodes are associated with which access points if its visualized. e.g. dont have to use the inspector window...
@@ -452,12 +467,8 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 @section s10goals Goals
 
-In this step we display transmissions and receptions to identify the participants of communication.
-Data communication refers to the exchange of data between a source and a receiver. 
-The meanings of source and receiver are very simple. The device that transmits the data 
-is known as source and the device that receives the transmitted data is known as receiver.
-
-TODO/NOTE: source and receiver definition seems trivial
+It can be useful to have a visual clue about which nodes are currently transmitting or receiving a signal.
+In this step we visualize nodes' transmission and reception states.
 
 <!--
 ---
@@ -504,8 +515,8 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 @section s11goals Goals
 
-It's often important to see wireless signals, thus we can monitor the network traffic. 
-In this step we visualize propagating signals.
+We can visualize radio signals as they propagate through the medium.
+It can provide information about how transmissions happen in time, and can help in detecting overlapping signals and collisions.
 
 <!--
 Sokszor fontos, hogy lássuk a vezeték nélküli jeleket, mert így monitorozhatjuk 
@@ -562,11 +573,8 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 @section s12goals Goals
 
-In this step we show active physical links in VoIP communication.
-These display which node receives VoIP packets from the sender device. 
-Using this visualizer we verify whether there's physical connection 
-between communication devices.
-
+In this step we visualize active physical links in a VoIP communication.
+These display which node receives VoIP packets successfully from the sender device at the physical layer. 
 <!--
 Ebben a lépésben megmutatjuk a VoIP kommunikáció aktív fizikai linkjeit.
 Ezek azt mutatják meg, hogy mely eszköz fogad VoIP csomagot a küldő eszköztől. 
@@ -624,8 +632,8 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 @section s13goals Goals
 
-In this step we display the VoIP communication's data links. By visualizing 
-data links we check that, the VoIP packet correctly arrived at the destination node.
+In this step we visualize the VoIP communication's data link layer connections. By visualizing 
+active data links, we can verify that the VoIP packets arrived correctly at the destination node.
 
 <!--
 Ebben a lépésben a VoIP kommunikáció data linkjeit mutatjuk meg. A data linkek 
@@ -674,6 +682,12 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 We need precise data to monitor working of simulation. These can
 be obtained from statistics. In this step we make statistic about VoIP playout delay,
 this shows information about VoIP communication.
+
+We can indicate certain statistics about nodes and transmissionsin real time, while the simulation is running.
+
+We can indicate the last value of a statistic for certain nodes as the simulation is running.
+This is useful because we can observe how statistics change in real time, not just when analyzing results.
+In this step we display the statistic about VoIP playout delay.
 
 @note When a router receives a Real-Time Protocol (RTP) audio stream for Voice over IP (VoIP),
 it must compensate for the jitter that is encountered. The mechanism that handles this function
@@ -729,16 +743,17 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 @page step15 Step 15 - Showing configured routing tables
 
+TODO: Showing configured routes
+
+TODO: Add RIP to this step ?
+
 @nav{step14,step16}
 
 @section s15goals Goals
 
-In packet switching networks, routing is the higher-level decision making that 
-directs network packets from their source towards their destination through 
-intermediate network nodes. 
-The routing process usually directs forwarding on the basis of routing tables, 
-which maintain a record of the routes to various network destinations. 
-In this step we show routes from all nodes towards videoStreamServer.
+We can visualize IP routes as set up by the configurator.
+We can see how routes are set up without examining routing tables, just by looking at the network.
+In this step we show routes from all nodes leading towards <tt>videoStreamServer</tt>.
 
 NOTE/TODO: seems trivial
 
