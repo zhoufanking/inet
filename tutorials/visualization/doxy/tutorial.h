@@ -979,7 +979,7 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 We can place obstacles into our simulation, which can obstruct radio signals. In this step we display the physical environment.
 
 In this step, we place obstacles into our model. Obstacles make up the physical environment, as they can obstruct radio signals.
-This it possible to simulate complex real world locations.
+This makes it possible to simulate complex real world locations.
 
 <!--
 A szimulációba egyszerűen beépíthetjük azokat az akadályokat, amik valóban 
@@ -1008,7 +1008,7 @@ Impediments shield the signals of wireless communication. In this step we
 show the obstacle loss.
 
 Obstacles are in the model to simulate the effect they have on radio signals.
-It is useful to actually see how radio transmissions intersect obstacles,
+It is useful to actually see how and where radio transmissions intersect obstacles,
 and how this affects communication. In this step, we visualize obstacle loss.
 <!--
 Az akadályok árnyékolják a vezeték nélküli kommunikáció jeleit. 
