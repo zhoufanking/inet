@@ -45,6 +45,7 @@ Consecutive steps mostly share the same network, defined in NED.
 - @ref step22
 - @ref step23
 - @ref step24
+- @ref step25
 - @ref conclusion
 
 @nav{index,step1}
@@ -838,6 +839,10 @@ In this step we display how wireless nodes gain access to the channel using
 CSMA/CA access method. Visualizing this, we get a clear picture of the state 
 of nodes.
 
+In this step, we turn on visualization to indicate nodes' CSMA/CA channel access state,
+i.e. if they are currently idle, owning the channel and transmitting, or in the backoff period.
+This helps to get a clear picture of how nodes are accessing a channel just by looking at them on the playground.
+
 <!--
 Ebben a lépésben azt mutatjuk meg, hogy hogyan történik a vezeték nélküli
 csatorna lefoglalása a node-ok részéről. Ennek a vizualizálásával 
@@ -907,12 +912,12 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 @section s17goals Goals
 
-In this step we enable displaying active network routes for videostream. 
-With this visualizer we check, whether the videostream packets arrived at the 
-destination's client application. In network nodes, applications handle the 
-UDP based traffic, for example video stream. 
-When a video stream packet leaves the destination's network layer, 
-network route becomes active between the source and the destination node. 
+In this step we enable displaying active network routes for the videostream. 
+With this visualizer, we can verify whether the videostream packets arrived at the 
+destination's UDP client application. In network nodes, applications handle the 
+UDP based traffic, for example video stream. <! this sentence seems trivial>
+When an incoming video stream packet is passed up from the destination's network layer, the
+network route becomes active between the source and the destination node.<! this sentence should belong in the model section> 
 
 <!--
 Ebben a lépésben az aktív hálózati útvonalakat jelenítjük meg.
@@ -973,6 +978,9 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 We can place obstacles into our simulation, which can obstruct radio signals. In this step we display the physical environment.
 
+In this step, we place obstacles into our model. Obstacles make up the physical environment, as they can obstruct radio signals.
+This it possible to simulate complex real world locations.
+
 <!--
 A szimulációba egyszerűen beépíthetjük azokat az akadályokat, amik valóban 
 hatással vannak a hálózat működésére. Ebben a lépésben a fizikai környezetet 
@@ -998,6 +1006,10 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 Impediments shield the signals of wireless communication. In this step we 
 show the obstacle loss.
+
+Obstacles are in the model to simulate the effect they have on radio signals.
+It is useful to actually see how radio transmissions intersect obstacles,
+and how this affects communication. In this step, we visualize obstacle loss.
 <!--
 Az akadályok árnyékolják a vezeték nélküli kommunikáció jeleit. 
 Ebben a lépésben az akadályokon eső veszteségeket mutatjuk meg.
@@ -1024,11 +1036,17 @@ In packet switching networks sometimes packets may fail to reach their destinati
 WIP
 
 In this step we visualize packet drops. Packet drops occure when one or more 
-packets of data travelling across a computer network fail to reach their destination. 
+packets of data travelling across a computer network fail to reach their destination.
+<! this is a lost packet, not a dropped one> 
 Packet drops are typically caused by network congestion but it can be caused by 
 a number of other factors such as radio signals that are too weak due to distance, 
 natural or artifical obstacles in the environment or faulty networking hardware. 
 Visualizing packet drops helps to put wireless access points to the right place.
+
+<! can we simulate faulty networking hardware?>
+
+We can visualize when network nodes drop packets, with a packet dropping animation.
+It can be convenient to see at a glance that packets are being dropped at certain nodes in the network.
 
 <!--
 A hálózatokban előfordulhat hogy a csomagok eldobódnak.
@@ -1091,8 +1109,8 @@ Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
 In this step we display link breaks between network devices. When a mobile node 
 exits from an access point's communication range the link breaks up and the devices 
-can't communicate with each other. This leads to packet loss when the mobile 
-node distributes data on the network.
+can't communicate with each other any more. This leads to packet loss when the mobile 
+node distributes data on the network.<! this sentence seems unnecessary>
 
 <!--
 Ebben a lépésben a link break-eket mutatjuk meg. 
@@ -1123,6 +1141,10 @@ and into the range of another access point. In general, it's difficult to tell
 which nodes are associated with which access points. In this step we display 
 handovers.
 
+A handover happens when a client moves beyond the radio range of one access point,
+and into the range of another. The association state can be visualized, and this
+step shows what happens during a handover, i.e. how the association state changes.
+
 <!--
 -----
 -->
@@ -1148,6 +1170,8 @@ In this step we visualize changing routes between videoStreamServer and video cl
 When devices roam in the network, routes may change between two nodes. By displaying 
 changes we always know the actual network routes between communicating devices.
 
+<! the routes change because of a dinamic protocol like RIP?>
+
 <!--
 Amikor az eszközök mozognak, gyakran változhat két node között a csomagok útja. 
 A változások megjelenítésével bármelyik pillanatban meg tudjuk állapítani, hogy az 
@@ -1160,7 +1184,23 @@ eszközök között milyen úton folyik a kommunikáció.
 
 Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
 
-@nav{step23,conclusion}
+@nav{step23,step25}
+@fixupini
+
+<!------------------------------------------------------------------------>
+
+@page step25 Step 25 - Turning on all visualizers at once
+
+@nav{step24,conclusion}
+
+@section s25goals Goals
+
+As a summary, in this step we turn on all the visualizers that were featured in this tutorial
+to see them all in action.
+
+Sources: @ref omnetpp.ini, @ref VisualizationNetworks.ned
+
+@nav{step24,conclusion}
 @fixupini
 
 <!------------------------------------------------------------------------>
