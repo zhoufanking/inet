@@ -34,6 +34,7 @@ static const char *PKEY_TEXT = "text";
 static const char *PKEY_TEXT_FONT = "textFont";
 static const char *PKEY_TEXT_COLOR = "textColor";
 static const char *PKEY_LABEL = "label";
+static const char *PKEY_LABELOFFSET = "labelOffset";
 static const char *PKEY_LABEL_FONT = "labelFont";
 static const char *PKEY_LABEL_COLOR = "labelColor";
 static const char *PKEY_INITIAL_VALUE = "initialValue";
@@ -41,7 +42,6 @@ static const char *PKEY_POS = "pos";
 static const char *PKEY_SIZE = "size";
 static const char *PKEY_ANCHOR = "anchor";
 static const char *PKEY_BOUNDS = "bounds";
-static const char *PKEY_LABELOFFSET = "labelOffset";
 
 ProgressMeterFigure::ProgressMeterFigure(const char *name) : cGroupFigure(name)
 {
@@ -131,6 +131,20 @@ void ProgressMeterFigure::setLabel(const char *text)
     labelFigure->setText(text);
 }
 
+const int ProgressMeterFigure::getLabelOffset() const
+{
+    return labelOffset;
+}
+
+void ProgressMeterFigure::setLabelOffset(int offset)
+{
+    if(labelOffset != offset)   {
+    labelOffset = offset;
+    labelFigure->setPosition(Point(getBounds().x + getBounds().width / 2, getBounds().y + getBounds().height + labelOffset));
+    };
+}
+
+
 const cFigure::Font& ProgressMeterFigure::getLabelFont() const
 {
     return labelFigure->getFont();
@@ -189,12 +203,10 @@ void ProgressMeterFigure::parse(cProperty *property)
 {
     cGroupFigure::parse(property);
 
-    const char *s;
-    if ((s = property->getValue(PKEY_LABELOFFSET)) != nullptr)
-        setLabelOffset(atoi(s));
 
     setBounds(parseBounds(property, getBounds()));
 
+    const char *s;
     if ((s = property->getValue(PKEY_BACKGROUND_COLOR)) != nullptr)
         setBackgroundColor(parseColor(s));
     if ((s = property->getValue(PKEY_STRIP_COLOR)) != nullptr)
@@ -215,6 +227,8 @@ void ProgressMeterFigure::parse(cProperty *property)
         setTextColor(parseColor(s));
     if ((s = property->getValue(PKEY_LABEL)) != nullptr)
         setLabel(s);
+    if ((s = property->getValue(PKEY_LABELOFFSET)) != nullptr)
+        setLabelOffset(atoi(s));
     if ((s = property->getValue(PKEY_LABEL_FONT)) != nullptr)
         setLabelFont(parseFont(s));
     if ((s = property->getValue(PKEY_LABEL_COLOR)) != nullptr)
@@ -230,8 +244,9 @@ const char **ProgressMeterFigure::getAllowedPropertyKeys() const
         const char *localKeys[] = {
             PKEY_BACKGROUND_COLOR, PKEY_STRIP_COLOR, PKEY_CORNER_RADIUS, PKEY_BORDER_WIDTH,
             PKEY_MIN_VALUE, PKEY_MAX_VALUE, PKEY_TEXT, PKEY_TEXT_FONT, PKEY_TEXT_COLOR, PKEY_LABEL,
-            PKEY_LABEL_FONT, PKEY_LABEL_COLOR, PKEY_INITIAL_VALUE, PKEY_POS, PKEY_SIZE, PKEY_ANCHOR,
-            PKEY_BOUNDS, PKEY_LABELOFFSET, nullptr
+            PKEY_LABELOFFSET, PKEY_LABEL_FONT, PKEY_LABEL_COLOR, PKEY_INITIAL_VALUE, PKEY_POS,
+            PKEY_SIZE, PKEY_ANCHOR,
+            PKEY_BOUNDS, nullptr
         };
         concatArrays(keys, cGroupFigure::getAllowedPropertyKeys(), localKeys);
     }
@@ -286,11 +301,6 @@ void ProgressMeterFigure::setValue(int series, simtime_t timestamp, double newVa
         value = newValue;
         refresh();
     }
-}
-
-void ProgressMeterFigure::setLabelOffset(int offset)
-{
-    labelOffset = offset;
 }
 
 void ProgressMeterFigure::refresh()

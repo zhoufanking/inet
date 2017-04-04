@@ -34,6 +34,7 @@ static const double LABEL_Y_DISTANCE_FACTOR = 1.5;
 
 static const char *PKEY_BACKGROUND_COLOR = "backgroundColor";
 static const char *PKEY_LABEL = "label";
+static const char *PKEY_LABEL_OFFSET = "labelOffset";
 static const char *PKEY_LABEL_FONT = "labelFont";
 static const char *PKEY_LABEL_COLOR = "labelColor";
 static const char *PKEY_VALUE_TICK_SIZE = "valueTickSize";
@@ -46,7 +47,6 @@ static const char *PKEY_POS = "pos";
 static const char *PKEY_SIZE = "size";
 static const char *PKEY_ANCHOR = "anchor";
 static const char *PKEY_BOUNDS = "bounds";
-static const char *PKEY_LABEL_OFFSET = "labelOffset";
 
 PlotFigure::PlotFigure(const char *name) : cGroupFigure(name)
 {
@@ -167,9 +167,17 @@ void PlotFigure::setLabel(const char *text)
     labelFigure->setText(text);
 }
 
+const int PlotFigure::getLabelOffset() const
+{
+    return labelOffset;
+}
+
 void PlotFigure::setLabelOffset(int offset)
 {
-    labelOffset = offset;
+    if(labelOffset != offset)   {
+        labelOffset = offset;
+        layout();
+    }
 }
 
 const cFigure::Font& PlotFigure::getLabelFont() const
@@ -196,12 +204,10 @@ void PlotFigure::parse(cProperty *property)
 {
     cGroupFigure::parse(property);
 
-    const char *s;
-    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
-                setLabelOffset(atoi(s));
 
     setBounds(parseBounds(property, getBounds()));
 
+    const char *s;
     if ((s = property->getValue(PKEY_BACKGROUND_COLOR)) != nullptr)
         setBackgroundColor(parseColor(s));
     if ((s = property->getValue(PKEY_VALUE_TICK_SIZE)) != nullptr)
@@ -216,6 +222,8 @@ void PlotFigure::parse(cProperty *property)
         setMaxValue(atof(s));
     if ((s = property->getValue(PKEY_LABEL)) != nullptr)
         setLabel(s);
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+                setLabelOffset(atoi(s));
     if ((s = property->getValue(PKEY_LABEL_COLOR)) != nullptr)
         setLabelColor(parseColor(s));
     if ((s = property->getValue(PKEY_LABEL_FONT)) != nullptr)
@@ -233,8 +241,8 @@ const char **PlotFigure::getAllowedPropertyKeys() const
         const char *localKeys[] = {
             PKEY_VALUE_TICK_SIZE, PKEY_TIME_WINDOW, PKEY_TIME_TICK_SIZE,
             PKEY_LINE_COLOR, PKEY_MIN_VALUE, PKEY_MAX_VALUE, PKEY_BACKGROUND_COLOR,
-            PKEY_LABEL, PKEY_LABEL_COLOR, PKEY_LABEL_FONT, PKEY_POS, PKEY_SIZE,
-            PKEY_ANCHOR, PKEY_BOUNDS, PKEY_LABEL_OFFSET, nullptr
+            PKEY_LABEL, PKEY_LABEL_OFFSET, PKEY_LABEL_COLOR, PKEY_LABEL_FONT, PKEY_POS,
+            PKEY_SIZE, PKEY_ANCHOR, PKEY_BOUNDS, nullptr
         };
         concatArrays(keys, cGroupFigure::getAllowedPropertyKeys(), localKeys);
     }

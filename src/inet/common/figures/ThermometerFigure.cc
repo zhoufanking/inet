@@ -92,9 +92,16 @@ void ThermometerFigure::setLabel(const char *text)
     labelFigure->setText(text);
 }
 
+const int ThermometerFigure::getLabelOffset() const
+{
+    return labelOffset;
+}
 void ThermometerFigure::setLabelOffset(int offset)
 {
+    if(labelOffset != offset)   {
     labelOffset = offset;
+    labelFigure->setPosition(Point(getBounds().getCenter().x, getBounds().y + getBounds().height + labelOffset));
+    }
 }
 
 const cFigure::Font& ThermometerFigure::getLabelFont() const
@@ -163,9 +170,6 @@ void ThermometerFigure::parse(cProperty *property)
 {
     cGroupFigure::parse(property);
 
-    const char *s;
-    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
-            setLabelOffset(atoi(s));
 
     setBounds(parseBounds(property, getBounds()));
 
@@ -174,10 +178,13 @@ void ThermometerFigure::parse(cProperty *property)
     redrawTicks();
 
 
+    const char *s;
     if ((s = property->getValue(PKEY_MERCURY_COLOR)) != nullptr)
         setMercuryColor(parseColor(s));
     if ((s = property->getValue(PKEY_LABEL)) != nullptr)
         setLabel(s);
+    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
+            setLabelOffset(atoi(s));
     if ((s = property->getValue(PKEY_LABEL_FONT)) != nullptr)
         setLabelFont(parseFont(s));
     if ((s = property->getValue(PKEY_LABEL_COLOR)) != nullptr)
@@ -191,8 +198,6 @@ void ThermometerFigure::parse(cProperty *property)
         setMaxValue(utils::atod(s));
     if ((s = property->getValue(PKEY_INITIAL_VALUE)) != nullptr)
         setValue(0, simTime(), utils::atod(s));
-    if ((s = property->getValue(PKEY_LABEL_OFFSET)) != nullptr)
-        setLabelOffset(atoi(s));
 }
 
 const char **ThermometerFigure::getAllowedPropertyKeys() const

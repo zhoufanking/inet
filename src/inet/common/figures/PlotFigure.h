@@ -78,7 +78,6 @@ class INET_API PlotFigure : public cGroupFigure, public inet::IIndicatorFigure
 
     double getValueTickSize() const;
     void setValueTickSize(double size);
-    void setLabelOffset(int offset);
 
     simtime_t getTimeWindow() const;
     void setTimeWindow(simtime_t timeWindow);
@@ -97,6 +96,9 @@ class INET_API PlotFigure : public cGroupFigure, public inet::IIndicatorFigure
 
     const char *getLabel() const;
     void setLabel(const char *text);
+
+    const int getLabelOffset() const;
+    void setLabelOffset(int offset);
 
     const Font& getLabelFont() const;
     void setLabelFont(const Font& font);
