@@ -37,6 +37,7 @@ static const char *PKEY_LABEL = "label";
 static const char *PKEY_LABEL_OFFSET = "labelOffset";
 static const char *PKEY_LABEL_FONT = "labelFont";
 static const char *PKEY_LABEL_COLOR = "labelColor";
+static const char *PKEY_NUMBER_SIZE_FACTOR = "numberSizeFactor";
 static const char *PKEY_VALUE_TICK_SIZE = "valueTickSize";
 static const char *PKEY_TIME_WINDOW = "timeWindow";
 static const char *PKEY_TIME_TICK_SIZE = "timeTickSize";
@@ -204,10 +205,12 @@ void PlotFigure::parse(cProperty *property)
 {
     cGroupFigure::parse(property);
 
+    const char *s;
+    if ((s = property->getValue(PKEY_NUMBER_SIZE_FACTOR)) != nullptr)
+            numberSizeFactor = atof(s);
 
     setBounds(parseBounds(property, getBounds()));
 
-    const char *s;
     if ((s = property->getValue(PKEY_BACKGROUND_COLOR)) != nullptr)
         setBackgroundColor(parseColor(s));
     if ((s = property->getValue(PKEY_VALUE_TICK_SIZE)) != nullptr)
@@ -241,7 +244,8 @@ const char **PlotFigure::getAllowedPropertyKeys() const
         const char *localKeys[] = {
             PKEY_VALUE_TICK_SIZE, PKEY_TIME_WINDOW, PKEY_TIME_TICK_SIZE,
             PKEY_LINE_COLOR, PKEY_MIN_VALUE, PKEY_MAX_VALUE, PKEY_BACKGROUND_COLOR,
-            PKEY_LABEL, PKEY_LABEL_OFFSET, PKEY_LABEL_COLOR, PKEY_LABEL_FONT, PKEY_POS,
+            PKEY_LABEL, PKEY_LABEL_OFFSET, PKEY_LABEL_COLOR, PKEY_LABEL_FONT,
+            PKEY_NUMBER_SIZE_FACTOR, PKEY_POS,
             PKEY_SIZE, PKEY_ANCHOR, PKEY_BOUNDS, nullptr
         };
         concatArrays(keys, cGroupFigure::getAllowedPropertyKeys(), localKeys);
@@ -287,6 +291,16 @@ void PlotFigure::redrawValueTicks()
     Rectangle bounds = getBounds();
     int numTicks = std::abs(max - min) / valueTickSize + 1;
 
+    int fontSize = bounds.height * NUMBER_SIZE_PERCENT * numberSizeFactor;
+
+    double valueTickYposAdjust[2] = { 0, 0 };
+
+    if(valueTicks.size() == 1)
+    {
+        valueTickYposAdjust[0] = - (fontSize / 2);
+        valueTickYposAdjust[1] = fontSize / 2;
+    }
+
     // Allocate ticks and numbers if needed
     if (numTicks > valueTicks.size())
         while (numTicks > valueTicks.size()) {
@@ -297,7 +311,7 @@ void PlotFigure::redrawValueTicks()
             dashLine->setLineStyle(LINE_DASHED);
 
             number->setAnchor(ANCHOR_W);
-            number->setFont(Font("", bounds.height * NUMBER_SIZE_PERCENT));
+            number->setFont(Font("", bounds.height * NUMBER_SIZE_PERCENT * numberSizeFactor));
             tick->insertBelow(plotFigure);
             dashLine->insertBelow(plotFigure);
             number->insertBelow(plotFigure);
@@ -332,7 +346,7 @@ void PlotFigure::redrawValueTicks()
         char buf[32];
         sprintf(buf, "%g", min + i * valueTickSize);
         valueTicks[i].number->setText(buf);
-        valueTicks[i].number->setPosition(Point(x + bounds.height * NUMBER_DISTANCE_FROM_TICK, y));
+        valueTicks[i].number->setPosition(Point(x + bounds.height * NUMBER_DISTANCE_FROM_TICK, y + valueTickYposAdjust[i % 2]));
     }
 }
 
@@ -364,7 +378,7 @@ void PlotFigure::redrawTimeTicks()
             dashLine->setLineStyle(LINE_DASHED);
 
             number->setAnchor(ANCHOR_N);
-            number->setFont(Font("", bounds.height * NUMBER_SIZE_PERCENT));
+            number->setFont(Font("", bounds.height * NUMBER_SIZE_PERCENT * numberSizeFactor));
             tick->insertBelow(plotFigure);
             dashLine->insertBelow(plotFigure);
             number->insertBelow(plotFigure);
