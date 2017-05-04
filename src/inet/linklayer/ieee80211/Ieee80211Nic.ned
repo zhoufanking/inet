@@ -22,6 +22,7 @@ import inet.linklayer.contract.IWirelessNic;
 import inet.linklayer.ieee802.Ieee802Llc;
 import inet.linklayer.ieee80211.mgmt.IIeee80211Mgmt;
 import inet.linklayer.ieee80211.mgmt.Ieee80211AgentSTA;
+import inet.linklayer.ieee80211.mib.Ieee80211Mib;
 import inet.physicallayer.contract.packetlevel.IRadio;
 
 
@@ -50,6 +51,8 @@ module Ieee80211Nic like IWirelessNic
         bool _agentNeeded = (mgmtType == "Ieee80211MgmtSTA");   // internal par. do not use, shows if optional agent module is needed
         **.opMode = opMode;
         **.bitrate = bitrate;
+        *.macModule = default(absPath(".mac"));
+        *.mibModule = default(absPath(".mib"));
         *.interfaceTableModule = default(absPath(interfaceTableModule));
         *.energySourceModule = default(absPath(energySourceModule));
         @nic;
@@ -59,30 +62,33 @@ module Ieee80211Nic like IWirelessNic
         output upperLayerOut; // from upper layers
         input radioIn @labels(IRadioFrame); // to receive radio frames
     submodules:
+        mib: Ieee80211Mib {
+            parameters:
+                @display("p=100,100;is=s");
+        }
         llc: Ieee802Llc {
             parameters:
-                @display("p=100,100");
+                @display("p=250,100");
         }
         classifier: <classifierType> like IIeee8021dQoSClassifier if classifierType != "" {
             parameters:
-                @display("p=200,100");
+                @display("p=400,100");
         }
         agent: Ieee80211AgentSTA if _agentNeeded {
             parameters:
-                @display("p=300,200");
+                @display("p=550,250");
         }
         mgmt: <mgmtType> like IIeee80211Mgmt {
             parameters:
-                macModule = "^.mac";
-                @display("p=200,200");
+                @display("p=400,250");
         }
         mac: <macType> like IIeee80211Mac {
             parameters:
-                @display("p=100,200");
+                @display("p=250,250");
         }
         radio: <radioType> like IRadio {
             parameters:
-                @display("p=100,300");
+                @display("p=250,400");
         }
     connections:
         radioIn --> { @display("m=s"); } --> radio.radioIn;

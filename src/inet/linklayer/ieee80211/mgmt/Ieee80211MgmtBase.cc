@@ -31,6 +31,7 @@ namespace ieee80211 {
 void Ieee80211MgmtBase::initialize(int stage)
 {
     if (stage == INITSTAGE_LOCAL) {
+        mib = getModuleFromPar<Ieee80211Mib>(par("mibModule"), this);
         numMgmtFramesReceived = 0;
         numMgmtFramesDropped = 0;
         WATCH(numMgmtFramesReceived);

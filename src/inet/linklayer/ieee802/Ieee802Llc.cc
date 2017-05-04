@@ -41,7 +41,12 @@ void Ieee802Llc::handleMessage(cMessage *message)
     else if (message->arrivedOn("lowerLayerIn")) {
         auto packet = check_and_cast<Packet *>(message);
         decapsulate(packet);
-        send(packet, "upperLayerOut");
+        // KLUDGE: AP may not be connected, is this the right thing to do?
+        // TODO: performance!
+        if (gate("upperLayerOut")->getPathEndGate()->isConnected())
+            send(packet, "upperLayerOut");
+        else
+            delete packet;
     }
     else
         throw cRuntimeError("Unknown message");

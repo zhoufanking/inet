@@ -15,6 +15,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "inet/common/ModuleAccess.h"
 #include "inet/common/ProtocolTag_m.h"
 #include "inet/linklayer/common/EtherTypeTag_m.h"
 #include "inet/linklayer/common/Ieee802Ctrl.h"
@@ -23,6 +24,7 @@
 #include "inet/linklayer/common/UserPriorityTag_m.h"
 #include "inet/linklayer/ieee802/Ieee802LlcHeader_m.h"
 #include "inet/linklayer/ieee80211/mgmt/Ieee80211MgmtSTASimplified.h"
+#include "inet/networklayer/common/L3AddressResolver.h"
 
 namespace inet {
 
@@ -33,10 +35,20 @@ Define_Module(Ieee80211MgmtSTASimplified);
 void Ieee80211MgmtSTASimplified::initialize(int stage)
 {
     Ieee80211MgmtBase::initialize(stage);
-
     if (stage == INITSTAGE_LOCAL) {
-        accessPointAddress.setAddress(par("accessPointAddress").stringValue());
-        receiveSequence = 0;
+        mib->sta.isBssMember = true;
+        mib->sta.bssMemberStatus = Ieee80211Sta::ASSOCIATED;
+        mib->bss.bssid.setAddress(par("accessPointAddress").stringValue());
+    }
+    else if (stage == INITSTAGE_LINK_LAYER_2) {
+        L3AddressResolver addressResolver;
+        auto host = addressResolver.findHostWithAddress(mib->bss.bssid);
+        auto interfaceTable = addressResolver.findInterfaceTableOf(host);
+        auto interfaceEntry = interfaceTable->findInterfaceByAddress(mib->bss.bssid);
+        auto apMib = dynamic_cast<Ieee80211Mib *>(interfaceEntry->getInterfaceModule()->getSubmodule("mib"));
+        auto sta = new Ieee80211Sta();
+        sta->bssMemberStatus = Ieee80211Sta::ASSOCIATED;
+        apMib->bss.stations[myAddress] = sta;
     }
 }
 

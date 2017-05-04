@@ -53,6 +53,7 @@ void Ieee80211Mac::initialize(int stage)
 {
     MACProtocolBase::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
+        mib = getModuleFromPar<Ieee80211Mib>(par("mibModule"), this);
         qosSta = par("qosStation");
         cModule *radioModule = gate("lowerLayerOut")->getNextGate()->getOwnerModule();
         radioModule->subscribe(IRadio::radioModeChangedSignal, this);
@@ -118,17 +119,56 @@ InterfaceEntry *Ieee80211Mac::createInterfaceEntry()
     return e;
 }
 
+void Ieee80211Mac::handleMessageWhenUp(cMessage *message)
+{
+    if (message->arrivedOn("mgmtIn"))
+        handleMgmtPacket(check_and_cast<Packet *>(message));
+    else
+        LayeredProtocolBase::handleMessageWhenUp(message);
+}
+
 void Ieee80211Mac::handleSelfMessage(cMessage *msg)
 {
     ASSERT(false);
 }
 
+void Ieee80211Mac::handleMgmtPacket(Packet *packet)
+{
+    const auto& header = std::make_shared<Ieee80211ManagementHeader>();
+    header->setTransmitterAddress(address);
+    header->setReceiverAddress(packet->getMandatoryTag<MacAddressReq>()->getDestAddress());
+    if (mib->sta.isAp)
+        header->setAddress3(mib->bss.bssid);
+    packet->insertHeader(header);
+    const auto& trailer = std::make_shared<Ieee80211MacTrailer>();
+    // TODO: add module parameter, implement fcs computing
+    // TODO: trailer->setFcsMode(FCS_COMPUTED);
+    packet->insertTrailer(trailer);
+    processUpperFrame(packet, header);
+}
+
 void Ieee80211Mac::handleUpperPacket(cPacket *msg)
 {
     auto packet = check_and_cast<Packet *>(msg);
+    if (mib->sta.isBssMember && mib->bss.bssid.isUnspecified()) {
+        EV << "STA is not associated with an access point, discarding packet " << msg << "\n";
+        delete msg;
+        return;
+    }
     encapsulate(packet);
-    auto frame = packet->peekHeader<Ieee80211DataOrMgmtFrame>();
-    processUpperFrame(packet, frame);
+    const auto& header = packet->peekHeader<Ieee80211DataOrMgmtFrame>();
+    if (mib->sta.isAp) {
+        auto receiverAddress = header->getReceiverAddress();
+        if (!receiverAddress.isMulticast()) {
+            auto it = mib->bss.stations.find(receiverAddress);
+            if (it == mib->bss.stations.end() || it->second->bssMemberStatus != Ieee80211Sta::ASSOCIATED) {
+                EV << "STA with MAC address " << receiverAddress << " not associated with this AP, dropping frame\n";
+                delete packet;
+                return;
+            }
+        }
+    }
+    processUpperFrame(packet, header);
 }
 
 void Ieee80211Mac::handleLowerPacket(cPacket *msg)
@@ -183,29 +223,24 @@ void Ieee80211Mac::handleUpperCommand(cMessage *msg)
 
 void Ieee80211Mac::encapsulate(Packet *packet)
 {
-    // 1. Adhoc Data
+    auto macAddressReq = packet->getMandatoryTag<MacAddressReq>();
+    auto destAddress = macAddressReq->getDestAddress();
     const auto& header = std::make_shared<Ieee80211DataFrame>();
     header->setTransmitterAddress(address);
-    header->setReceiverAddress(packet->getMandatoryTag<MacAddressReq>()->getDestAddress());
-
-//    // 2. STA Data or STA simplified Data
-//    header->setToDS(true);
-//    header->setReceiverAddress(apAddress);
-//    header->setAddress3(packet->getMandatoryTag<MacAddressReq>()->getDestAddress());
-//
-//    // 3. STA Mgmt
-//    header->setReceiverAddress(destAddress);
-//
-//    // 4. AP Data
-//    header->setFromDS(true);
-//    header->setAddress3(packet->getMandatoryTag<MacAddressReq>()->getSrcAddress());
-//    header->setReceiverAddress(packet->getMandatoryTag<MacAddressReq>()->getDestAddress());
-//
-//    // 5. AP Mgmt
-//    header->setReceiverAddress(destAddress);
-//    header->setAddress3(apAddress);
-
-    // common
+    if (!mib->sta.isBssMember)
+        header->setReceiverAddress(destAddress);
+    else {
+        if (mib->sta.isAp) {
+            header->setFromDS(true);
+            header->setAddress3(address);
+            header->setReceiverAddress(destAddress);
+        }
+        else {
+            header->setToDS(true);
+            header->setReceiverAddress(mib->bss.bssid);
+            header->setAddress3(destAddress);
+        }
+    }
     if (auto userPriorityReq = packet->getTag<UserPriorityReq>()) {
         // make it a QoS frame, and set TID
         header->setType(ST_DATA_WITH_QOS);
@@ -232,6 +267,31 @@ void Ieee80211Mac::decapsulate(Packet *packet)
     }
     packet->ensureTag<InterfaceInd>()->setInterfaceId(interfaceEntry->getInterfaceId());
     packet->popTrailer<Ieee80211MacTrailer>();
+}
+
+void Ieee80211Mac::distributeReceivedDataFrame(Packet *incomingPacket, const Ptr<Ieee80211DataOrMgmtFrame>& incomingHeader)
+{
+    incomingPacket->removePoppedChunks();
+    const auto& outgoingHeader = std::static_pointer_cast<Ieee80211DataOrMgmtFrame>(incomingHeader->dupShared());
+
+    // adjust toDS/fromDS bits, and shuffle addresses
+    outgoingHeader->setToDS(false);
+    outgoingHeader->setFromDS(true);
+
+    // move destination address to address1 (receiver address),
+    // and fill address3 with original source address;
+    ASSERT(!outgoingHeader->getAddress3().isUnspecified());
+    outgoingHeader->setTransmitterAddress(address);
+    outgoingHeader->setReceiverAddress(incomingHeader->getAddress3());
+    outgoingHeader->setAddress3(incomingHeader->getTransmitterAddress());
+
+    auto outgoingPacket = new Packet(incomingPacket->getName(), incomingPacket->peekData());
+    outgoingPacket->insertHeader(outgoingHeader);
+    const auto& trailer = std::make_shared<Ieee80211MacTrailer>();
+    // TODO: add module parameter, implement fcs computing
+    // TODO: trailer->setFcsMode(FCS_COMPUTED);
+    outgoingPacket->insertTrailer(trailer);
+    processUpperFrame(outgoingPacket, outgoingHeader);
 }
 
 void Ieee80211Mac::receiveSignal(cComponent *source, simsignal_t signalID, long value, cObject *details)
@@ -271,8 +331,54 @@ void Ieee80211Mac::sendUp(cMessage *msg)
 {
     Enter_Method("sendUp(\"%s\")", msg->getName());
     take(msg);
-    decapsulate(check_and_cast<Packet *>(msg));
-    MACProtocolBase::sendUp(msg);
+    auto packet = check_and_cast<Packet *>(msg);
+    if (mib->sta.isAp) {
+        const auto& header = packet->peekHeader<Ieee80211DataOrMgmtFrame>();
+        decapsulate(packet);
+        // check toDS bit
+        if (!header->getToDS()) {
+            // looks like this is not for us - discard
+            EV << "Frame is not for us (toDS=false) -- discarding\n";
+            delete packet;
+            return;
+        }
+        // handle broadcast/multicast frames
+        if (header->getAddress3().isMulticast()) {
+            EV << "Handling multicast frame\n";
+            MACProtocolBase::sendUp(packet->dup());
+            distributeReceivedDataFrame(packet, header);
+            return;
+        }
+        // look up destination address in our STA list
+        auto it = mib->bss.stations.find(header->getAddress3());
+        if (it == mib->bss.stations.end()) {
+            EV << "Frame's destination address is not in our STA list -- passing up\n";
+            MACProtocolBase::sendUp(packet);
+        }
+        else {
+            // dest address is our STA, but is it already associated?
+            if (it->second->bssMemberStatus == Ieee80211Sta::ASSOCIATED)
+                distributeReceivedDataFrame(packet, header); // send it out to the destination STA
+            else {
+                EV << "Frame's destination STA is not in associated state -- dropping frame\n";
+                delete packet;
+            }
+        }
+    }
+    else if (mib->sta.isBssMember) {
+        if (mib->sta.bssMemberStatus != Ieee80211Sta::ASSOCIATED) {
+            EV << "Rejecting data frame as STA is not associated with an AP" << endl;
+            delete packet;
+        }
+        else {
+            decapsulate(packet);
+            MACProtocolBase::sendUp(packet);
+        }
+    }
+    else {
+        decapsulate(packet);
+        MACProtocolBase::sendUp(msg);
+    }
 }
 
 void Ieee80211Mac::sendFrame(Packet *frame)

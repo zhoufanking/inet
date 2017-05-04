@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2015 Andras Varga
+// Copyright (C) OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -14,21 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program; if not, see http://www.gnu.org/licenses/.
 //
-// Author: Andras Varga
-//
 
-package inet.linklayer.common;
+package inet.linklayer.ieee80211.mib;
 
-//
-// Interface for 802.1d QoS classifiers. For each packet, the classifier
-// computes a 802.1d User Priority (UP) value, and sets in on the
-// Iee802Ctrl control info before sending out the packet on the "out" gate.
-//
-moduleinterface IIeee8021dQoSClassifier
+simple Ieee80211Mib
 {
     parameters:
-        @display("i=block/fork");
-    gates:
-        input in;
-        output out;
+        @display("i=block/table");
 }

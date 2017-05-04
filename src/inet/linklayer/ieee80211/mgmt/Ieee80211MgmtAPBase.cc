@@ -40,6 +40,8 @@ void Ieee80211MgmtAPBase::initialize(int stage)
     Ieee80211MgmtBase::initialize(stage);
 
     if (stage == INITSTAGE_LOCAL) {
+        mib->sta.isAp = true;
+        mib->sta.isBssMember = true;
         const char *encDec = par("encapDecap").stringValue();
         if (!strcmp(encDec, "true"))
             encapDecap = ENCAP_DECAP_TRUE;
@@ -50,45 +52,6 @@ void Ieee80211MgmtAPBase::initialize(int stage)
         else
             throw cRuntimeError("Unknown encapDecap parameter value: '%s'! Must be 'true','false' or 'eth'.", encDec);
     }
-}
-
-void Ieee80211MgmtAPBase::sendToUpperLayer(Packet *packet)
-{
-    switch (encapDecap) {
-        case ENCAP_DECAP_ETH:
-#ifdef WITH_ETHERNET
-            convertToEtherFrame(packet);
-#else // ifdef WITH_ETHERNET
-            throw cRuntimeError("INET compiled without ETHERNET feature, but the 'encapDecap' parameter is set to 'eth'!");
-#endif // ifdef WITH_ETHERNET
-            break;
-
-        case ENCAP_DECAP_TRUE: {
-            const auto& frame = packet->popHeader<Ieee80211DataFrame>();
-            auto macAddressInd = packet->ensureTag<MacAddressInd>();
-            macAddressInd->setSrcAddress(frame->getTransmitterAddress());
-            macAddressInd->setDestAddress(frame->getAddress3());
-            int tid = frame->getTid();
-            if (tid < 8)
-                packet->ensureTag<UserPriorityInd>()->setUserPriority(tid); // TID values 0..7 are UP
-            const auto& snapHeader = packet->popHeader<Ieee802SnapHeader>();
-            if (snapHeader) {
-                int etherType = snapHeader->getProtocolId();
-                packet->ensureTag<EtherTypeInd>()->setEtherType(etherType);
-                packet->ensureTag<DispatchProtocolReq>()->setProtocol(ProtocolGroup::ethertype.getProtocol(etherType));
-                packet->ensureTag<PacketProtocolTag>()->setProtocol(ProtocolGroup::ethertype.getProtocol(etherType));
-            }
-        }
-        break;
-
-        case ENCAP_DECAP_FALSE:
-            break;
-
-        default:
-            throw cRuntimeError("Unknown encapDecap value: %d", encapDecap);
-            break;
-    }
-    sendUp(packet);
 }
 
 void Ieee80211MgmtAPBase::convertToEtherFrame(Packet *packet)

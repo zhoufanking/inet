@@ -64,15 +64,6 @@ class INET_API Ieee80211MgmtAPBase : public Ieee80211MgmtBase
      * with EtherFrames.
      */
     virtual void convertToEtherFrame(Packet *packet);
-
-    /**
-     * Utility function: send a frame to upperLayerOut.
-     * If convertToEtherFrameFlag is true, converts the given frame to EtherFrame, deleting the
-     * original frame, and send the converted frame.
-     * This function is needed for LAN bridging functionality:
-     * MACRelayUnit deals with EtherFrames.
-     */
-    virtual void sendToUpperLayer(Packet *packet);
 };
 
 } // namespace ieee80211
